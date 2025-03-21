@@ -1,0 +1,53 @@
+body {
+    display: flex;
+    background-color: #000;
+    color: #0f0;
+    font-family: Arial, sans-serif;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #111;
+    padding: 20px;
+    height: 100vh;
+}
+
+.logo {
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    padding: 10px 0;
+}
+
+nav ul li a {
+    color: #0f0;
+    text-decoration: none;
+}
+
+.dropdown-menu {
+    display: none;
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+#searchBar {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+}
