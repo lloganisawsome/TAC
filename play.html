@@ -28,6 +28,14 @@
             background-color: #058b4a;
             color: white;
         }
+        #search-bar {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #058b4a;
+            border-radius: 8px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -46,8 +54,8 @@
     </div>
     <div class="content">
         <h1>Play Games</h1>
-        <input type="text" id="search-bar" placeholder="Search for a game...">
-        <div class="games-list">
+        <input type="text" id="search-bar" placeholder="Search for a game..." onkeyup="searchGames()">
+        <div class="games-list" id="games-list">
             <button onclick="location.href='games/Monster Tracks.html'">Monster Tracks</button>
             <button onclick="location.href='games/Moto Road Rash 3D.html'">Moto Road Rash 3D</button>
             <button onclick="location.href='games/Moto X3M.html'">Moto X3M</button>
@@ -72,6 +80,22 @@
             <button onclick="location.href='games/Traffic Jam 3D.html'">Traffic Jam 3D</button>
             <button onclick="location.href='games/Tunnel Rush.html'">Tunnel Rush</button>
             <button onclick="location.href='games/Unicycle Hero.html'">Unicycle Hero</button>
+            <button onclick="location.href='games/1v1.lol.html'">1v1.lol</button>
+            <button onclick="location.href='games/Basket Random.html'">Basket Random</button>
+            <button onclick="location.href='games/Basketball Stars.html'">Basketball Stars</button>
+            <button onclick="location.href='games/Eggy Car.html'">Eggy Car</button>
+            <button onclick="location.href='games/Escaping The Prision.html'">Escaping The Prison</button>
+            <button onclick="location.href='games/Gobble.html'">Gobble</button>
+            <button onclick="location.href='games/Hills Of Steel.html'">Hills Of Steel</button>
+            <button onclick="location.href='games/Jumping Shell.html'">Jumping Shell</button>
+            <button onclick="location.href='games/Level Devil.html'">Level Devil</button>
+            <button onclick="location.href='games/Among Us.html'">Among Us</button>
+            <button onclick="location.href='games/Cookie Clicker.html'">Cookie Clicker</button>
+            <button onclick="location.href='games/Cut The Rope.html'">Cut The Rope</button>
+            <button onclick="location.href='games/Duck Life.html'">Duck Life</button>
+            <button onclick="location.href='games/Duck Life 2.html'">Duck Life 2</button>
+            <button onclick="location.href='games/Duck Life 3.html'">Duck Life 3</button>
+            <button onclick="location.href='games/Hangman.html'">Hangman</button>
         </div>
     </div>
     <script src="script.js"></script>
