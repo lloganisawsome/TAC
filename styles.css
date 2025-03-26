@@ -3,6 +3,7 @@ body {
     background-color: #000;
     color: #0f0;
     font-family: Arial, sans-serif;
+    cursor: url('cursor.png'), auto;
 }
 
 .sidebar {
