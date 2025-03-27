@@ -3,7 +3,7 @@ body {
     background-color: #000;
     color: #058b4a;
     font-family: Arial, sans-serif;
-    cursor: url('cursor.png'), auto;
+   
 }
 
 .sidebar {
@@ -47,4 +47,12 @@ nav ul li a {
 .content {
     flex: 1;
     padding: 20px;
+}
+
+body {
+    cursor: url('cursor.png'), auto;
+}
+
+a, button {
+    cursor: url('clicky.png'), pointer;
 }
