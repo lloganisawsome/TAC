@@ -1,21 +1,23 @@
 body {
     display: flex;
     background-color: #000;
-    color: #0f0;
+    color: #058b4a;
     font-family: Arial, sans-serif;
     cursor: url('cursor.png'), auto;
 }
 
 .sidebar {
     width: 250px;
-    background-color: #111;
+    background-color: #1a1a1a !important; /* Dark gray */
     padding: 20px;
     height: 100vh;
 }
 
 .logo {
-    max-width: 100%;
-    margin-bottom: 20px;
+    max-width: 80%; /* Adjusted size */
+    height: auto; /* Maintain aspect ratio */
+    display: block;
+    margin: 0 auto 20px auto; /* Center it */
 }
 
 nav ul {
@@ -28,7 +30,7 @@ nav ul li {
 }
 
 nav ul li a {
-    color: #0f0;
+    color: #058b4a;
     text-decoration: none;
 }
 
@@ -45,10 +47,4 @@ nav ul li a {
 .content {
     flex: 1;
     padding: 20px;
-}
-
-#searchBar {
-    width: 100%;
-    padding: 10px;
-    margin-top: 20px;
 }
