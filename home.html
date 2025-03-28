@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Session</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        function checkBooking() {
+            var nameInput = document.getElementById("name").value.toLowerCase();
+            if (nameInput === "tac") {
+                window.location.href = "index.html"; // Redirect to homepage
+            } else {
+                document.getElementById("error").innerText = "Booking failed. Please try again.";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Book a Session</h1>
+        <p>Fill out the form below to book your session.</p>
+        <label for="name">Full Name:</label>
+        <input type="text" id="name" placeholder="Enter your name" required>
+        <br>
+        <label for="date">Preferred Date:</label>
+        <input type="date" id="date" required>
+        <br>
+        <button onclick="checkBooking()">Submit</button>
+        <p id="error" style="color: red;"></p>
+    </div>
+</body>
+</html>
