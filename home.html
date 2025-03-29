@@ -3,78 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | TAC</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Login - Main Page</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
             background-color: #f0f0f0;
         }
+
         .login-container {
-            background: white;
+            background-color: white;
             padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        .login-container h2 {
             text-align: center;
         }
-        input {
+
+        .login-container input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
         }
-        button {
-            background-color: #0078D7;
-            color: white;
-            padding: 10px;
-            border: none;
+
+        .login-container button {
             width: 100%;
-            border-radius: 5px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
-            background-color: #005ea6;
+
+        .login-container button:hover {
+            background-color: #45a049;
         }
-        .error {
+
+        .error-message {
             color: red;
+            text-align: center;
+            display: none;
         }
     </style>
-    <script>
-        function login() {
-            var username = document.getElementById("username").value;
-            var password = document.getElementById("password").value;
-            var timestamp = new Date().toLocaleString();
-            
-            if (password === "tac") {
-                fetch("https://script.google.com/macros/s/AKfycbwCnJgcibX8Kya8ZkSjI4ihhNg_nXpKmJn_KIZ7qDP7kSQezWlJCjVsZrxDvZkGh_2s/exec", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ username, timestamp })
-                })
-                .then(response => response.text())
-                .then(() => {
-                    window.location.href = "index.html"; // Redirect on success
-                })
-                .catch(error => console.error("Error:", error));
-            } else {
-                document.getElementById("error").innerText = "Invalid credentials. Try again.";
-            }
-        }
-    </script>
 </head>
 <body>
+
     <div class="login-container">
-        <h2>Sign In</h2>
+        <h2>Login</h2>
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required>
         <button onclick="login()">Login</button>
-        <p id="error" class="error"></p>
+        <p class="error-message" id="error-message">Invalid login credentials. Please try again.</p>
     </div>
+
+    <script>
+        function login() {
+            var username = document.getElementById("username").value; // The username is ignored
+            var password = document.getElementById("password").value;
+
+            // Check if the password is "tac" (lowercase)
+            if (password === "tac") {
+                // Redirect to the main page (index.html)
+                window.location.href = "index.html"; // Redirect to index.html
+            } else {
+                // Show error message if password is incorrect
+                document.getElementById("error-message").style.display = "block";
+            }
+        }
+    </script>
+
 </body>
 </html>

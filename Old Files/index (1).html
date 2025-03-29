@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAC</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .gif-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .gif-container img {
+            width: 1000px;
+            height: 1000px;
+        }
+        .counter {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-database.js"></script>
+    <script>
+        // Firebase Configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDnY_-Zoc8Qam45S00ORxD687fe_vIzZh0",
+            authDomain: "taccounter.firebaseapp.com",
+            databaseURL: "https://taccounter-default-rtdb.firebaseio.com",
+            projectId: "taccounter",
+            storageBucket: "taccounter.firebasestorage.app",
+            messagingSenderId: "17218889352",
+            appId: "1:17218889352:web:2426e60687a5ca6531e13d",
+            measurementId: "G-92ES9BDRVT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+
+        // Function to increment the login counter
+        function incrementLoginCount() {
+            var counterRef = database.ref('loginCount');
+
+            counterRef.transaction(function(currentValue) {
+                return (currentValue || 0) + 1;
+            });
+        }
+
+        // On page load, call incrementLoginCount
+        window.onload = function() {
+            incrementLoginCount();
+            getLoginCount(); // To display the updated count
+        };
+
+        // Function to retrieve and display the current login count
+        function getLoginCount() {
+            var counterRef = database.ref('loginCount');
+            counterRef.once('value', function(snapshot) {
+                var count = snapshot.val() || 0;
+                document.getElementById("login-count").innerText = "Login Count: " + count;
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar" style="background-color: #008000;">
+        <img src="logo.png" class="logo" alt="TAC Logo">
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="games/Prox.html">TAC Search 1.7</a></li>
+                <li><a href="chat.html">Chat</a></li>
+                <li><a href="https://forms.gle/4ReLe47a1QdcWFBCA" target="_blank">Report & Help</a></li>
+                <li><a href="https://forms.gle/oQp4489igthymH23A" target="_blank">Apply for Leader</a></li>
+                <li><a href="members.html">Members</a></li>
+                <li><a href="homework.html">Not games</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div class="content">
+        <h1>Welcome to TAC</h1>
+        <p>Explore the community, join discussions, and have fun!</p>
+        <div class="gif-container">
+            <img src="Untitled design.gif" alt="TAC Animation">
+        </div>
+        <div class="counter">
+            <p id="login-count">Login Count: Loading...</p>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 TAC. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

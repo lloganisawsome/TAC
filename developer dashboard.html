@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #008000;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header img {
+            max-width: 150px;
+        }
+
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .counter {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #008000;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="logo.png" alt="TAC Logo">
+        <h1>Welcome, Developer!</h1>
+    </header>
+
+    <div class="container">
+        <h2>Login Count</h2>
+        <div class="counter" id="loginCount">
+            Loading...
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 TAC. All rights reserved.</p>
+    </footer>
+
+    <!-- Firebase Configuration -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnY_-Zoc8Qam45S00ORxD687fe_vIzZh0",
+            authDomain: "taccounter.firebaseapp.com",
+            databaseURL: "https://taccounter-default-rtdb.firebaseio.com",
+            projectId: "taccounter",
+            storageBucket: "taccounter.firebasestorage.app",
+            messagingSenderId: "17218889352",
+            appId: "1:17218889352:web:2426e60687a5ca6531e13d",
+            measurementId: "G-92ES9BDRVT"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Reference to login count in Firebase
+        const loginCountRef = database.ref("loginCount");
+
+        // Display login count
+        loginCountRef.on("value", function(snapshot) {
+            const loginCount = snapshot.val();
+            if (loginCount !== null) {
+                document.getElementById("loginCount").textContent = loginCount;
+            } else {
+                console.error("Failed to load login count. No data available.");
+                document.getElementById("loginCount").textContent = "Error: No data available";
+            }
+        });
+    </script>
+
+</body>
+</html>

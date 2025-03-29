@@ -16,6 +16,25 @@
             width: 1000px;
             height: 1000px;
         }
+        /* Style for the Developer button that blends in */
+        .dev-button {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #008000;
+            color: transparent;
+            border: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-align: center;
+            border-radius: 5px;
+        }
+
+        /* Hover effect for the Developer button */
+        .dev-button:hover {
+            background-color: #005500;
+        }
     </style>
     <script>
         // Redirect only if the user hasn't visited before
@@ -50,6 +69,9 @@
     <footer>
         <p>&copy; 2025 TAC. All rights reserved.</p>
     </footer>
+    <!-- The Developer Button -->
+    <button class="dev-button" onclick="window.location.href = 'developer.html';">Developer</button>
+    
     <script src="script.js"></script>
 </body>
 </html>
