@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAC Update Log</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 20px;
+    }
+    h1 { text-align: center; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 10px 0; }
+    #home-btn {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 10px 20px;
+      background-color: #111;
+      color: #0f0;
+      border: 2px solid #0f0;
+      cursor: pointer;
+      text-decoration: none;
+      font-family: monospace;
+    }
+    #home-btn:hover {
+      background-color: #0f0;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <h1>TAC Update Log</h1>
+  <a id="home-btn" href="index.html">Home</a>
+  <ul id="commit-list"></ul>
+
+  <script>
+    const projectId = '68465013'; // Your GitLab project ID
+    const token = ''; // Optional: add your GitLab personal access token if private
+
+    async function loadCommits() {
+      try {
+        const res = await fetch(`https://gitlab.com/api/v4/projects/${projectId}/repository/commits`, {
+          headers: token ? { 'PRIVATE-TOKEN': token } : {}
+        });
+        const commits = await res.json();
+
+        const list = document.getElementById('commit-list');
+        commits.forEach(c => {
+          const li = document.createElement('li');
+          li.textContent = `${c.created_at.slice(0,10)} — ${c.title}`;
+          list.appendChild(li);
+        });
+      } catch (err) {
+        console.error('Error fetching commits:', err);
+      }
+    }
+
+    loadCommits();
+  </script>
+</body>
+</html>

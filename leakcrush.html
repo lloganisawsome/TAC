@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Leak People's Crush!</title>
+<style>
+:root{
+  --bg:#000; --neon:#0f0; font-family: monospace;
+}
+body{
+  margin:0; min-height:100vh; background:var(--bg); color:var(--neon);
+  display:flex; flex-direction:column; align-items:center; padding:28px; position:relative;
+}
+.wrap{ width:100%; max-width:800px; border-radius:12px; background:#010;
+       border:1px solid rgba(0,255,102,0.12); padding:20px; }
+header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+header h1{ margin:0; font-size:20px; color:var(--neon); }
+.controls{ display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+button{ background:transparent; color:var(--neon); border:1px solid rgba(0,255,102,0.12);
+        padding:8px 12px; border-radius:6px; cursor:pointer; }
+button:hover{background:rgba(0,255,102,0.06);}
+#list{ background:#010; border:1px solid rgba(0,255,102,0.06); padding:12px;
+       border-radius:10px; min-height:180px; max-height:60vh; overflow:auto; }
+.entry{ padding:8px; border-bottom:1px dotted rgba(0,255,102,0.06);
+        display:flex; justify-content:space-between; align-items:center; }
+
+/* Modal */
+.modal{ display:none; position:fixed; inset:0; z-index:50; background:rgba(0,0,0,0.85);
+        align-items:center; justify-content:center; }
+.modal.open{ display:flex; }
+.modal-card{ background:#010; border:1px solid rgba(0,255,102,0.12);
+            padding:18px; border-radius:12px; text-align:center; color:var(--neon); width:90%; max-width:400px; }
+.modal-card input{ width:90%; padding:10px; margin:6px 0; border-radius:6px; border:1px solid rgba(0,255,102,0.08); background:#000; color:var(--neon); }
+.modal-card .row{ display:flex; gap:6px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
+
+/* key icon */
+#keyIcon{
+  position:fixed; bottom:10px; left:10px; font-size:24px; cursor:pointer; user-select:none;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Leak People's Crush!</h1>
+    <a href="index.html"><button>Home</button></a>
+  </header>
+  <div class="controls">
+    <button id="openBtn">Add Entry</button>
+  </div>
+  <div id="list">Loading...</div>
+</div>
+
+<!-- Add Entry Modal -->
+<div id="modal" class="modal">
+  <div class="modal-card">
+    <h2>Add Entry</h2>
+    <input id="from" placeholder="Who likes..." maxlength="40"/>
+    <input id="to" placeholder="Who is liked..." maxlength="40"/>
+    <div class="row">
+      <button id="submitBtn">Submit</button>
+      <button id="cancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dev Modal -->
+<div id="devModal" class="modal">
+  <div class="modal-card">
+    <h2>Dev Menu</h2>
+    <div class="row">
+      <button id="pauseAdds">Pause Adds</button>
+      <button id="resumeAdds">Resume Adds</button>
+      <button id="deleteAll">Delete All Entries</button>
+      <button id="closeDev">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Key icon -->
+<div id="keyIcon">🔑</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const likesRef = ref(db,'likes');
+
+// UI elements
+const modal = document.getElementById('modal');
+const devModal = document.getElementById('devModal');
+const openBtn = document.getElementById('openBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const submitBtn = document.getElementById('submitBtn');
+const fromInput = document.getElementById('from');
+const toInput = document.getElementById('to');
+const listDiv = document.getElementById('list');
+
+// Dev buttons
+const pauseBtn = document.getElementById('pauseAdds');
+const resumeBtn = document.getElementById('resumeAdds');
+const deleteAllBtn = document.getElementById('deleteAll');
+const closeDevBtn = document.getElementById('closeDev');
+
+// Key icon
+const keyIcon = document.getElementById('keyIcon');
+
+let paused = false;
+
+// Open add modal
+openBtn.addEventListener('click', ()=>{ modal.classList.add('open'); fromInput.focus(); });
+cancelBtn.addEventListener('click', ()=>{ closeModal(); });
+function closeModal(){ modal.classList.remove('open'); fromInput.value=''; toInput.value=''; }
+
+// Submit entry
+submitBtn.addEventListener('click', async ()=>{
+  const from = fromInput.value.trim();
+  const to = toInput.value.trim();
+  if(!from || !to) return;
+  if(paused){ alert('Submissions are paused'); return; }
+  try{
+    const newRef = push(likesRef);
+    await set(newRef, {from,to,timestamp:Date.now()});
+    closeModal();
+  } catch(err){ console.error(err); alert('DB error'); }
+});
+
+// Live updates
+onValue(likesRef, snap=>{
+  const data = snap.val();
+  renderList(data);
+}, err=>{ console.error(err); });
+
+function renderList(data){
+  listDiv.innerHTML='';
+  if(!data){ listDiv.textContent='No entries'; return; }
+  Object.entries(data).sort((a,b)=>b[1].timestamp-a[1].timestamp).forEach(([key,val])=>{
+    const div = document.createElement('div');
+    div.className='entry';
+    div.innerHTML = `<div>${escapeHtml(val.from)} likes ${escapeHtml(val.to)}</div>
+                     <div class="meta">${new Date(val.timestamp).toLocaleTimeString()}</div>`;
+    div.dataset.key = key;
+    listDiv.appendChild(div);
+  });
+}
+
+function escapeHtml(str){
+  return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// Dev menu actions
+pauseBtn.addEventListener('click', ()=>{ paused=true; alert('Adds paused'); });
+resumeBtn.addEventListener('click', ()=>{ paused=false; alert('Adds resumed'); });
+deleteAllBtn.addEventListener('click', ()=>{ if(confirm('Delete all entries?')) remove(likesRef); });
+closeDevBtn.addEventListener('click', ()=>{ devModal.classList.remove('open'); });
+
+// Key icon password prompt
+keyIcon.addEventListener('click', ()=>{
+  const pw = prompt("Enter dev password:");
+  if(pw === "developer") devModal.classList.add('open');
+  else alert("Wrong password");
+});
+</script>
+</body>
+</html>

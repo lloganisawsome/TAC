@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>Developer Dashboard — TAC</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <style>
+        :root{
+            --bg:#0f0f10; 
+            --panel:#1e1e1e; 
+            --accent:#4CAF50; 
+            --muted:#9aa0a6; 
+            --danger:#e05555;
+            --warning:#FFD700;
+        }
+        html,body{height:100%;margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#fff}
+        .wrap{
+            padding:28px;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-auto-rows: min-content;
+        }
+        .panel{
+            background:var(--panel);
+            border-radius:10px;
+            padding:18px;
+            box-shadow:0 8px 30px rgba(0,0,0,.5);
+            min-width: 320px;
+            position: relative;
+        }
+        .header{display:flex;gap:16px;align-items:center}
+        .logo{width:120px}
+        h1{margin:0;color:var(--accent);font-size:20px}
+        h2,h3{margin:0;color:#fff;font-size:18px}
+        .meta{color:var(--muted);margin-top:6px;font-size:13px}
+        .stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+        .stat{padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:8px;min-width:140px}
+        .stat b{display:block;font-size:18px}
+        table{border-collapse:collapse;width:100%;font-size:14px}
+        th,td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:left}
+        th{color:var(--muted);font-weight:600;font-size:13px}
+        .btn{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+        .btn.secondary{background:#2b2b2b;color:#fff;border:1px solid rgba(255,255,255,0.04)}
+        .btn.danger{background:var(--danger)}
+        .small{font-size:13px;color:var(--muted)}
+        .actions{display:flex;gap:8px}
+        .panel-lg{min-width:640px;grid-column: span 2;}
+        .search{margin-bottom:12px;display:flex;gap:8px}
+        input[type="search"], input#memberInput, input[type="text"]{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff}
+        a.link{color:var(--accent);text-decoration:none}
+        .nowrap{white-space:nowrap}
+        .muted{color:var(--muted)}
+        .table-wrap{max-height:380px;overflow:auto;border-radius:6px}
+        .help-input-group{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .help-input-group input, .help-input-group textarea {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            color: #fff;
+            padding: 8px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="panel" id="panel-overview">
+            <div class="header">
+                <img src="logo.png" alt="TAC Logo" class="logo"/>
+                <div>
+                    <h1>Developer Dashboard</h1>
+                    <div class="meta">Admin controls & live stats</div>
+                </div>
+            </div>
+            <div class="stats" style="margin-top:16px">
+                <div class="stat"><span class="small">Total Logins</span><b id="totalLogins">—</b></div>
+                <div class="stat"><span class="small">Allowed Users</span><b id="allowedCount">—</b></div>
+                <div class="stat"><span class="small">Pending Accounts</span><b id="pendingCount">—</b></div>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:8px">
+                <a class="btn" id="openFirebase" href="https://console.firebase.google.com/u/0/project/taclogin-ab38e/database/taclogin-ab38e-default-rtdb/data" target="_blank">Open Firebase</a>
+                <a class="btn secondary" href="https://github.com/lloganisawsome/TAC" target="_blank">GitHub Repo</a>
+            </div>
+            <div style="margin-top:12px" class="small muted">Tip: Approve pending accounts to add them to allowedUsers.</div>
+        </div>
+        <div class="panel" id="panel-members">
+            <h3>Members</h3>
+            <div class="small muted">Manage developer, mod, and member accounts.</div>
+            <div style="display:flex;gap:8px;margin-bottom:8px; margin-top: 12px;">
+                <input type="text" id="memberInput" placeholder="Add new member"/>
+                <button class="btn" id="addMemberBtn">Add</button>
+            </div>
+            <div class="table-wrap" style="max-height:250px">
+                <table id="membersTable">
+                    <thead><tr><th>Member</th><th class="nowrap">Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-lg" id="panel-users">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+                <div>
+                    <h2 style="margin:0 0 8px 0">Users & Logins</h2>
+                    <div class="small muted">All users tracked under <code>/logins</code></div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center">
+                    <input id="userSearch" type="search" placeholder="Search username..."/>
+                    <button class="btn" id="exportCsv">Export CSV</button>
+                    <button class="btn secondary" id="refreshBtn">Refresh</button>
+                </div>
+            </div>
+            <div class="table-wrap" style="margin-top:12px">
+                <table id="usersTable">
+                    <thead><tr><th>User</th><th class="nowrap">Logins</th><th>Allowed?</th><th>Pending?</th><th>Failed</th><th class="nowrap">Actions</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-lg" id="panel-games">
+            <h2 style="margin-top:0">Games Manager</h2>
+            <div style="display:flex;gap:8px;margin-bottom:8px; margin-top: 12px;">
+                <input type="text" id="gameTitle" placeholder="Game Title"/>
+                <input type="text" id="gameIframe" placeholder="Iframe URL"/>
+                <input type="text" id="gameLogo" placeholder="Logo filename"/>
+                <button class="btn" id="addGameBtn">Add Game</button>
+            </div>
+            <div class="table-wrap" style="max-height:300px">
+                <table id="gamesTable">
+                    <thead>
+                        <tr><th>Title</th><th>Iframe URL</th><th>Logo</th><th class="nowrap">Actions</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-lg" id="panel-game-counters">
+            <h2 style="margin-top:0">Game Play Counters</h2>
+            <div class="small muted">View the total play count for each game.</div>
+            <div class="table-wrap" style="margin-top:12px">
+                <table id="gameCountersTable">
+                    <thead>
+                        <tr>
+                            <th>Game Title</th>
+                            <th>Play Count</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel" id="panel-help">
+            <h2 style="margin-top:0">Help Responses</h2>
+            <div class="small muted">Manage responses for the Help Page</div>
+            <div style="margin-top:12px">
+                <div class="help-input-group">
+                    <input type="text" id="helpTitleInput" placeholder="Response Title"/>
+                    <textarea id="helpBodyInput" placeholder="Response Body" rows="4"></textarea>
+                </div>
+                <button class="btn" id="addHelpBtn">Add Response</button>
+            </div>
+            <div class="table-wrap" style="max-height:300px; margin-top: 12px;">
+                <table id="helpTable">
+                    <thead>
+                        <tr><th>Title</th><th>Body</th><th class="nowrap">Actions</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-lg" id="panel-applications">
+            <h2 style="margin-top:0">Staff Applications</h2>
+            <div class="small muted">Manage staff applications</div>
+            <div class="table-wrap" style="max-height:380px; margin-top: 12px;">
+                <table id="applicationsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Applied At</th>
+                            <th>Test Result</th>
+                            <th>Details</th>
+                            <th class="nowrap">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+            authDomain: "taclogin-ab38e.firebaseapp.com",
+            databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+            projectId: "taclogin-ab38e",
+            storageBucket: "taclogin-ab38e.appspot.com",
+            messagingSenderId: "937853298051",
+            appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Elements
+        const totalLoginsEl = document.getElementById('totalLogins');
+        const allowedCountEl = document.getElementById('allowedCount');
+        const pendingCountEl = document.getElementById('pendingCount');
+        const usersTbody = document.querySelector('#usersTable tbody');
+        const membersTbody = document.querySelector('#membersTable tbody');
+        const gamesTbody = document.querySelector('#gamesTable tbody');
+        const helpTbody = document.querySelector('#helpTable tbody');
+        const applicationsTbody = document.querySelector('#applicationsTable tbody');
+        const gameCountersTbody = document.querySelector('#gameCountersTable tbody');
+        const userSearch = document.getElementById('userSearch');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const memberInput = document.getElementById('memberInput');
+        const addMemberBtn = document.getElementById('addMemberBtn');
+        const gameTitleInput = document.getElementById('gameTitle');
+        const gameIframeInput = document.getElementById('gameIframe');
+        const gameLogoInput = document.getElementById('gameLogo');
+        const addGameBtn = document.getElementById('addGameBtn');
+        const helpTitleInput = document.getElementById('helpTitleInput');
+        const helpBodyInput = document.getElementById('helpBodyInput');
+        const addHelpBtn = document.getElementById('addHelpBtn');
+
+        let allowedUsers = {}, logins = {}, pending = {}, failed = {}, totalLogins = 0, members = {}, games = {}, helpResponses = {}, applications = {};
+        let gamePlays = {};
+        const sections = ["Developers","Mods","Members"];
+
+        // --- USER / LOGIN FUNCTIONS ---
+        function prettyTime(ts){ try { return new Date(ts).toLocaleString(); } catch(e){ return ts; } }
+        function renderOverview(){ totalLoginsEl.innerText = totalLogins; allowedCountEl.innerText = Object.keys(allowedUsers).length; pendingCountEl.innerText = Object.keys(pending).length; }
+
+        function renderUsers(filter=''){
+            usersTbody.innerHTML = '';
+            const allUsers = new Set([
+                ...Object.keys(logins),
+                ...Object.keys(allowedUsers),
+                ...Object.keys(pending),
+                ...Object.keys(failed)
+            ]);
+
+            const sortedNames = Array.from(allUsers).sort((a, b) => (logins[b] || 0) - (logins[a] || 0));
+            const q = filter.toLowerCase();
+
+            for(const n of sortedNames){
+                if(q && !n.toLowerCase().includes(q)) continue;
+
+                const c = logins[n] || 0;
+                const isAllowed = !!allowedUsers[n];
+                const isPending = !!pending[n];
+                const failedCount = failed[n] ? failed[n].attempted || 0 : 0;
+
+                usersTbody.innerHTML += `
+                    <tr>
+                        <td><b>${n}</b></td>
+                        <td>${c}</td>
+                        <td>${isAllowed ? '<span style="color:#7ef0a7">Yes</span>' : '<span style="color:#f1a1a1">No</span>'}</td>
+                        <td>${isPending ? '<span style="color:#FFD700">Yes</span>' : '<span style="color:#f1a1a1">No</span>'}</td>
+                        <td>${failedCount}</td>
+                        <td>
+                            <div class="actions">
+                                ${isAllowed ? `<button class="btn secondary" onclick="revokeAllowed('${n}')">Revoke</button>` : `<button class="btn" onclick="makeAllowed('${n}')">Approve</button>`}
+                                ${isPending ? `<button class="btn" onclick="approvePending('${n}')">Approve Pending</button>` : ''}
+                                <button class="btn secondary" onclick="resetUserCount('${n}')">Reset Logins</button>
+                                ${failedCount > 0 ? `<button class="btn danger" onclick="deleteFailed('${n}')">Clear Failed</button>` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // New function to render game play counts
+        function renderGameCounters() {
+            gameCountersTbody.innerHTML = '';
+            const combinedData = Object.keys(gamePlays).map(gameId => {
+                const gameTitle = (games[gameId] && games[gameId].title) || 'Unknown Game';
+                return {
+                    id: gameId,
+                    title: gameTitle,
+                    plays: gamePlays[gameId]
+                };
+            }).sort((a, b) => b.plays - a.plays);
+
+            if (combinedData.length === 0) {
+                gameCountersTbody.innerHTML = '<tr><td colspan="2" class="muted">No play data available yet.</td></tr>';
+                return;
+            }
+
+            combinedData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${item.title}</td><td>${item.plays}</td>`;
+                gameCountersTbody.appendChild(row);
+            });
+        }
+
+        function loadData(){
+            // Fetch multiple data points concurrently
+            Promise.all([
+                db.ref('logins').once('value'),
+                db.ref('allowedUsers').once('value'),
+                db.ref('pendingAccounts').once('value'),
+                db.ref('failed').once('value'),
+                db.ref('members').once('value'),
+                db.ref('games').once('value'),
+                db.ref('helpResponses').once('value'),
+                db.ref('artifacts/default_app_id/users').once('value'),
+                db.ref('analytics/gamePlays').once('value')
+            ]).then(snapshots => {
+                const [loginsSnap, allowedSnap, pendingSnap, failedSnap, membersSnap, gamesSnap, helpSnap, appsSnap, gamePlaysSnap] = snapshots;
+
+                logins = loginsSnap.val() || {};
+                totalLogins = Object.values(logins).reduce((a, b) => a + b, 0);
+                allowedUsers = allowedSnap.val() || {};
+                pending = pendingSnap.val() || {};
+                failed = failedSnap.val() || {};
+                members = membersSnap.val() || {};
+                games = gamesSnap.val() || {};
+                helpResponses = helpSnap.val() || {};
+                gamePlays = gamePlaysSnap.val() || {};
+
+                applications = {};
+                const usersData = appsSnap.val() || {};
+                for (const userId in usersData) {
+                    if (usersData[userId].staff_applications) {
+                        applications[userId] = usersData[userId].staff_applications;
+                    }
+                }
+
+                // Render all sections after data is loaded
+                renderOverview();
+                renderUsers(userSearch.value);
+                renderMembers();
+                renderGamesTable();
+                renderHelpResponses();
+                renderApplications();
+                renderGameCounters();
+            }).catch(error => {
+                console.error("Error loading data:", error);
+            });
+
+            // Set up real-time listeners for key data
+            db.ref('games').on('value', snap => { games = snap.val() || {}; renderGamesTable(); renderGameCounters(); });
+            db.ref('analytics/gamePlays').on('value', snap => { gamePlays = snap.val() || {}; renderGameCounters(); });
+        }
+
+        function makeAllowed(u){ allowedUsers[u]=true; db.ref('allowedUsers/'+u).set(true).then(() => { renderUsers(userSearch.value); renderOverview(); }); }
+        function revokeAllowed(u){ db.ref('allowedUsers/'+u).remove().then(() => { delete allowedUsers[u]; renderUsers(userSearch.value); renderOverview(); }); }
+        function resetUserCount(u){ db.ref('logins/'+u).set(0).then(() => { logins[u]=0; renderUsers(userSearch.value); }); }
+        function approvePending(u){ if(!pending[u])return; makeAllowed(u); db.ref('pendingAccounts/'+u).remove().then(() => { delete pending[u]; renderUsers(userSearch.value); renderOverview(); }); }
+        function deleteFailed(u){ db.ref('failed/'+u).remove().then(() => { delete failed[u]; renderUsers(userSearch.value); }); }
+
+        refreshBtn.onclick = () => loadData();
+        userSearch.oninput = () => renderUsers(userSearch.value);
+
+        // --- MEMBERS ---
+        function renderMembers() {
+            membersTbody.innerHTML = '';
+            Object.entries(members).forEach(([key, member]) => {
+                if(typeof member === 'string') member = { name: member, section: 'Members' };
+                members[key] = member;
+                membersTbody.innerHTML += `<tr><td><b>${member.name}</b> (${member.section})</td><td><div class="actions"><button class="btn secondary" onclick="editMember('${key}')">Change</button><button class="btn danger" onclick="deleteMember('${key}')">Delete</button></div></td></tr>`;
+            });
+        }
+        function addMember() {
+            const val = memberInput.value.trim();
+            if (!val) return alert('Enter member name');
+            const section = prompt('Section (Developers, Mods, Members)', 'Members');
+            if (!sections.includes(section)) return alert('Invalid section');
+            const key = db.ref('members').push().key;
+            const memberObj = { name: val, section: section };
+            db.ref('members/' + key).set(memberObj).then(() => { members[key] = memberObj; renderMembers(); memberInput.value = ''; });
+        }
+        function editMember(key) {
+            const member = members[key];
+            if (!member) return;
+            if (typeof member === 'string') members[key] = { name: member, section: 'Members' };
+            const newName = prompt('Edit member name:', members[key].name);
+            if (newName === null) return;
+            const newSection = prompt('Section (Developers, Mods, Members):', members[key].section);
+            if (!sections.includes(newSection)) return alert('Invalid section');
+            const updatedMember = { name: newName, section: newSection };
+            db.ref('members/' + key).set(updatedMember).then(() => { members[key] = updatedMember; renderMembers(); });
+        }
+        function deleteMember(key) { if(!confirm('Delete this member?'))return; db.ref('members/'+key).remove().then(()=>{delete members[key]; renderMembers();}); }
+        addMemberBtn.onclick = addMember;
+
+        // --- GAMES ---
+        function renderGamesTable() {
+            gamesTbody.innerHTML = '';
+            Object.entries(games).forEach(([key, g])=>{
+                const title = g.title||key, iframe = g.iframe||'', logo=g.logo||'';
+                gamesTbody.innerHTML += `<tr>
+                    <td>${title}</td>
+                    <td>${iframe}</td>
+                    <td>${logo}</td>
+                    <td><button class="btn danger" onclick="deleteGame('${key}')">Delete</button></td>
+                </tr>`;
+            });
+        }
+        function addGame() {
+            const title = gameTitleInput.value.trim();
+            const iframe = gameIframeInput.value.trim();
+            const logo = gameLogoInput.value.trim();
+            if(!title||!iframe) return alert('Title & Iframe required');
+            const key = db.ref('games').push().key;
+            db.ref('games/'+key).set({title,iframe,logo}).then(()=>{games[key]={title,iframe,logo}; renderGamesTable(); gameTitleInput.value=''; gameIframeInput.value=''; gameLogoInput.value='';});
+        }
+        function deleteGame(key){if(!confirm('Delete this game?'))return; db.ref('games/'+key).remove().then(()=>{delete games[key]; renderGamesTable();});}
+        addGameBtn.onclick = addGame;
+
+        // --- HELP RESPONSES ---
+        function renderHelpResponses() {
+            helpTbody.innerHTML = '';
+            const sortedKeys = Object.keys(helpResponses).sort();
+            sortedKeys.forEach(key => {
+                const response = helpResponses[key];
+                helpTbody.innerHTML += `
+                    <tr>
+                        <td>${response.title}</td>
+                        <td>${response.body.substring(0, 50)}...</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn secondary" onclick="editHelpResponse('${key}')">Edit</button>
+                                <button class="btn danger" onclick="deleteHelpResponse('${key}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        function addHelpResponse() {
+            const title = helpTitleInput.value.trim();
+            const body = helpBodyInput.value.trim();
+            if (!title || !body) return alert('Title and body are required.');
+            const key = db.ref('helpResponses').push().key;
+            const newResponse = { title, body };
+            db.ref('helpResponses/' + key).set(newResponse).then(() => {
+                helpResponses[key] = newResponse;
+                renderHelpResponses();
+                helpTitleInput.value = '';
+                helpBodyInput.value = '';
+            });
+        }
+        function editHelpResponse(key) {
+            const response = helpResponses[key];
+            const newTitle = prompt('Edit title:', response.title);
+            if (newTitle === null) return;
+            const newBody = prompt('Edit body:', response.body);
+            if (newBody === null) return;
+            const updatedResponse = { title: newTitle, body: newBody };
+            db.ref('helpResponses/' + key).set(updatedResponse).then(() => {
+                helpResponses[key] = updatedResponse;
+                renderHelpResponses();
+            });
+        }
+        function deleteHelpResponse(key) {
+            if (confirm('Delete this help response?')) {
+                db.ref('helpResponses/' + key).remove().then(() => {
+                    delete helpResponses[key];
+                    renderHelpResponses();
+                });
+            }
+        }
+        addHelpBtn.onclick = addHelpResponse;
+
+        // --- STAFF APPLICATIONS ---
+        function renderApplications() {
+            applicationsTbody.innerHTML = '';
+            const allApplications = [];
+            for (const userId in applications) {
+                for (const appId in applications[userId]) {
+                    allApplications.push({ ...applications[userId][appId], userId, appId });
+                }
+            }
+            if (allApplications.length === 0) {
+                applicationsTbody.innerHTML = '<tr><td colspan="6" class="muted">No staff applications yet</td></tr>';
+                return;
+            }
+            
+            allApplications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            allApplications.forEach(app => {
+                let testStatusHTML = '<span class="muted">N/A</span>';
+                if (app.testResult === 'passed') {
+                    testStatusHTML = '<span style="color:var(--accent)">Passed ✅</span>';
+                } else if (app.testResult === 'barely') {
+                    testStatusHTML = '<span style="color:var(--warning)">Passed (Barely) 🟡</span>';
+                } else if (app.testResult === 'failed') {
+                    testStatusHTML = '<span style="color:var(--danger)">Failed ❌</span>';
+                }
+
+                let detailsHTML = '';
+                if (app.role === 'Beta Tester' && app.bugReport) {
+                    detailsHTML = `<div class="small muted">Bug Report: ${app.bugReport}</div>`;
+                } else if (app.role === 'Other' && app.otherRole) {
+                    detailsHTML = `<div class="small muted">Other Role: ${app.otherRole}</div>
+                                  <div class="small muted">Description: ${app.description}</div>`;
+                }
+                
+                const row = `
+                    <tr>
+                        <td>${app.name}</td>
+                        <td>${app.role}</td>
+                        <td class="nowrap">${new Date(app.timestamp).toLocaleString()}</td>
+                        <td>${testStatusHTML}</td>
+                        <td>${detailsHTML}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn danger" onclick="deleteApplication('${app.userId}', '${app.appId}')">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                applicationsTbody.innerHTML += row;
+            });
+        }
+
+        function deleteApplication(userId, appId) {
+            if (confirm('Delete this application?')) {
+                db.ref(`artifacts/default_app_id/users/${userId}/staff_applications/${appId}`).remove().then(() => {
+                    if (applications[userId] && applications[userId][appId]) {
+                        delete applications[userId][appId];
+                        if (Object.keys(applications[userId]).length === 0) {
+                            delete applications[userId];
+                        }
+                    }
+                    renderApplications();
+                });
+            }
+        }
+
+        // --- CSV export ---
+        document.getElementById('exportCsv').onclick = () => {
+            let csv='Username,LoginCount,Allowed,Pending,Failed\n';
+            const allUsers = new Set([...Object.keys(logins),...Object.keys(allowedUsers),...Object.keys(pending),...Object.keys(failed)]);
+            Array.from(allUsers).forEach(u => {
+                const loginCount = logins[u] || 0;
+                const isAllowed = !!allowedUsers[u];
+                const isPending = !!pending[u];
+                const failedCount = failed[u] ? failed[u].attempted || 0 : 0;
+                csv += `${u},${loginCount},${isAllowed},${isPending},${failedCount}\n`;
+            });
+            const blob = new Blob([csv],{type:'text/csv'});
+            const url = URL.createObjectURL(blob);
+            const a=document.createElement('a'); a.href=url; a.download='users.csv'; a.click(); URL.revokeObjectURL(url);
+        };
+
+        // Load initially
+        loadData();
+    </script>
+</body>
+</html>

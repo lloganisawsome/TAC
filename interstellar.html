@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fullscreen Embed</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    iframe {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+
+    .home-button {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1000;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-color: #333333; /* dark gray */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .home-button:hover {
+      background-color: #555555; /* lighter gray on hover */
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="home-button">🏠</a>
+  <iframe src="https://edu-production-b935.up.railway.app"></iframe>
+</body>
+</html>

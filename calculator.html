@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TAC Scientific Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      width: 100vw;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #222;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    header a {
+      color: #0f9d58;
+      text-decoration: none;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      background: #333;
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    header a:hover {
+      background: #444;
+    }
+
+    iframe {
+      flex: 1;
+      border: none;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="index.html">⬅ Home</a>
+  </header>
+  <iframe src="https://ti84calc.com/ti84calc" allow="fullscreen"></iframe>
+</body>
+</html>

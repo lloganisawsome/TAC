@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>WebRTC Voice/Video Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#111; color:#eee; text-align:center; }
+    #lobby, #room { display:none; }
+    button { margin:5px; padding:8px 12px; border:none; border-radius:5px; cursor:pointer; }
+    .video { width:200px; height:150px; background:#333; margin:5px; }
+    #roomName { margin-bottom:10px; }
+  </style>
+</head>
+<body>
+  <h1>🔥 Voice/Video Chat</h1>
+  <div id="lobby">
+    <h2>Lobby</h2>
+    <div id="roomList"></div>
+    <button onclick="createRoom()">Create Room</button>
+  </div>
+
+  <div id="room">
+    <h2 id="roomName"></h2>
+    <button onclick="leaveRoom()">Leave</button>
+    <button onclick="toggleVideo()">Toggle Video</button>
+    <div id="videos"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+    // ===== Firebase config =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+      authDomain: "taclogin-ab38e.firebaseapp.com",
+      databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+      projectId: "taclogin-ab38e",
+      storageBucket: "taclogin-ab38e.firebasestorage.app",
+      messagingSenderId: "937853298051",
+      appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    let userId = Math.random().toString(36).substr(2,9);
+    let currentRoom = null;
+    let localStream = null;
+    let peers = {};
+
+    // --- Lobby ---
+    function showLobby() {
+      document.getElementById("lobby").style.display="block";
+      document.getElementById("room").style.display="none";
+      db.ref("rooms").on("value", snap => {
+        const list = document.getElementById("roomList");
+        list.innerHTML="";
+        snap.forEach(r => {
+          const room = r.val();
+          const users = room.users ? Object.keys(room.users).length : 0;
+          const div = document.createElement("div");
+          div.innerHTML = `${room.name} (${users}/10) <button onclick="joinRoom('${r.key}')">Join</button>`;
+          list.appendChild(div);
+        });
+      });
+    }
+
+    async function createRoom() {
+      const name = prompt("Enter room name:") || "Room "+Date.now();
+      const roomId = "room" + Date.now();
+      await db.ref("rooms/"+roomId).set({ name, users:{}, lastActive: Date.now() });
+      joinRoom(roomId);
+    }
+
+    async function joinRoom(roomId) {
+      const usersSnap = await db.ref(`rooms/${roomId}/users`).get();
+      if(usersSnap.exists() && Object.keys(usersSnap.val()).length >= 10) {
+        alert("Room full!");
+        return;
+      }
+      currentRoom = roomId;
+      document.getElementById("lobby").style.display="none";
+      document.getElementById("room").style.display="block";
+      document.getElementById("roomName").innerText = "Room: " + roomId;
+
+      localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video:false });
+      addVideo(userId, localStream, true);
+
+      // add self to users
+      const userRef = db.ref(`rooms/${roomId}/users/${userId}`);
+      userRef.set(true);
+      userRef.onDisconnect().remove();
+
+      db.ref(`rooms/${roomId}/lastActive`).set(Date.now());
+      setupSignaling();
+    }
+
+    function leaveRoom() {
+      if(!currentRoom) return;
+      db.ref(`rooms/${currentRoom}/users/${userId}`).remove();
+      document.getElementById("videos").innerHTML="";
+      peers = {};
+      if(localStream) localStream.getTracks().forEach(t=>t.stop());
+      localStream = null;
+      currentRoom = null;
+      showLobby();
+    }
+
+    // --- Video toggle with renegotiation ---
+    async function toggleVideo() {
+      if(!localStream) return;
+      const videoEnabled = localStream.getVideoTracks().length > 0;
+      if(videoEnabled) {
+        localStream.getVideoTracks().forEach(t=>{ t.stop(); localStream.removeTrack(t); });
+      } else {
+        const newStream = await navigator.mediaDevices.getUserMedia({ video:true });
+        const track = newStream.getVideoTracks()[0];
+        localStream.addTrack(track);
+        // renegotiate with all peers
+        for(let p in peers) {
+          const pc = peers[p];
+          const sender = pc.getSenders().find(s=>s.track.kind==="video");
+          if(sender) sender.replaceTrack(track);
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          db.ref(`rooms/${currentRoom}/signals`).push({ from: userId, desc: offer });
+        }
+      }
+      addVideo(userId, localStream, true);
+    }
+
+    // --- Signaling ---
+    function setupSignaling() {
+      const roomRef = db.ref(`rooms/${currentRoom}/signals`);
+      roomRef.on("child_added", snap => {
+        const data = snap.val();
+        handleSignal(data);
+        db.ref(`rooms/${currentRoom}/lastActive`).set(Date.now());
+      });
+
+      db.ref(`rooms/${currentRoom}/users`).on("child_added", snap=>{
+        const peerId = snap.key;
+        if(peerId!==userId && !peers[peerId]) createPeer(peerId, true);
+      });
+    }
+
+    async function handleSignal(data) {
+      const { from, desc, candidate } = data;
+      if(from===userId) return;
+      if(!peers[from]) createPeer(from);
+      const pc = peers[from];
+      if(desc) {
+        try {
+          await pc.setRemoteDescription(desc);
+          if(desc.type==="offer") {
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            db.ref(`rooms/${currentRoom}/signals`).push({ from: userId, desc: answer });
+          }
+        } catch(e) {
+          console.warn("SDP error:", e);
+        }
+      } else if(candidate) {
+        try { await pc.addIceCandidate(candidate); } catch(e) {}
+      }
+    }
+
+    function createPeer(peerId, initiator=false) {
+      const pc = new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
+      peers[peerId] = pc;
+      localStream.getTracks().forEach(t=>pc.addTrack(t, localStream));
+      pc.ontrack = e=>addVideo(peerId, e.streams[0]);
+      pc.onicecandidate = e=>{
+        if(e.candidate) db.ref(`rooms/${currentRoom}/signals`).push({ from:userId, candidate:e.candidate.toJSON() });
+      };
+      if(initiator) {
+        pc.createOffer().then(o=>{
+          pc.setLocalDescription(o);
+          db.ref(`rooms/${currentRoom}/signals`).push({ from:userId, desc:o });
+        });
+      }
+    }
+
+    function addVideo(id, stream, isSelf=false) {
+      let el = document.getElementById("vid-"+id);
+      if(!el) {
+        el = document.createElement("video");
+        el.id = "vid-"+id;
+        el.className = "video";
+        el.autoplay = true;
+        el.playsInline = true;
+        if(isSelf) el.muted = true;
+        document.getElementById("videos").appendChild(el);
+      }
+      el.srcObject = stream;
+    }
+
+    // --- Room cleanup (5 min inactivity) ---
+    setInterval(async ()=>{
+      const snap = await db.ref("rooms").get();
+      snap.forEach(r=>{
+        const room = r.val();
+        const now = Date.now();
+        const last = room.lastActive || now;
+        const users = room.users ? Object.keys(room.users).length : 0;
+        if(users===0 && now-last > 5*60*1000) db.ref("rooms/"+r.key).remove();
+      });
+    }, 60*1000);
+
+    // Start lobby
+    showLobby();
+  </script>
+</body>
+</html>

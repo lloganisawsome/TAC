@@ -1,0 +1,58 @@
+body {
+    display: flex;
+    background-color: #000;
+    color: #058b4a;
+    font-family: Arial, sans-serif;
+   
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #1a1a1a !important; /* Dark gray */
+    padding: 20px;
+    height: 100vh;
+}
+
+.logo {
+    max-width: 80%; /* Adjusted size */
+    height: auto; /* Maintain aspect ratio */
+    display: block;
+    margin: 0 auto 20px auto; /* Center it */
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+nav ul li {
+    padding: 10px 0;
+}
+
+nav ul li a {
+    color: #058b4a;
+    text-decoration: none;
+}
+
+.dropdown-menu {
+    display: none;
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+}
+
+body {
+    cursor: url('cursor.png'), auto;
+}
+
+a, button {
+    cursor: url('clicky.png'), pointer;
+}

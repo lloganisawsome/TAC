@@ -1,0 +1,1529 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>TAC Chat — Moderation + DB-driven Profanity</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+<style>
+  :root{
+    --bg:#0e0f12; --panel:#1a1c20; --accent:#4caf50; --muted:#9aa0a6; --danger:#e05555;
+    --msg:#111317; --msgAlt:#14161b;
+  }
+  html,body{height:100%;margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#e8eaed}
+  .layout{display:grid;grid-template-columns:260px 1fr 360px;height:100vh}
+  .sidebar{background:rgb(26,26,26);color:white;display:flex;flex-direction:column}
+  .sidebar img.logo{width:100%;padding:14px;box-sizing:border-box}
+  .sidebar nav ul{list-style:none;margin:0;padding:0}
+  .sidebar nav ul li a{display:block;color:white;padding:12px 16px;text-decoration:none}
+  .sidebar nav ul li a:hover{background:rgba(255,255,255,0.04)}
+  .app{display:grid;grid-template-rows:auto 1fr auto auto;background:transparent}
+  .topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--panel);position:sticky;top:0;z-index:20;box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
+  .topbar .title{font-weight:700}
+  .topbar .me{margin-left:auto;font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:center}
+  .me-avatar{width:32px;height:32px;border-radius:50%;background:#222;display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-weight:700;cursor:pointer;overflow:hidden}
+  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:#2b2f36;color:#c9d1d9;font-size:11px}
+  .tag.dev{background:#243026;color:#9df0ae}
+  .tag.mod{background:#262b3a;color:#b7c8ff}
+  .pinned{background:#132614;padding:8px 12px;border-left:4px solid #058b4a;color:#cfeed0}
+  /* The scroller handles the main chat messages and will automatically create a scrollbar */
+  .scroller{overflow:auto;padding:14px 12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
+  .msg{display:grid;grid-template-columns:48px 1fr;gap:10px;padding:10px 12px;background:var(--msg);border-radius:10px;margin:8px 0}
+  .msg:nth-child(even){background:var(--msgAlt)}
+  .avatar{width:42px;height:42px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;color:#bbb;font-weight:700;overflow:hidden}
+  .avatar img{width:100%;height:100%;object-fit:cover;display:block}
+  .meta{display:flex;gap:10px;align-items:center}
+  .name{font-weight:700}
+  .when{font-size:12px;color:var(--muted)}
+  .text{white-space:pre-wrap;word-break:break-word;margin-top:6px}
+  .bubble-actions{margin-left:auto;display:flex;gap:6px}
+  .btn{background:#2a2d33;border:1px solid rgba(255,255,255,.06);color:#e8eaed;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer}
+  .btn:hover{filter:brightness(1.08)}
+  .btn.danger{background:var(--danger);border-color:#ff8a8a}
+  .composer {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: var(--panel);
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    align-items: center;
+    box-sizing: border-box;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  }
+  .composer input[type="text"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: calc(100% - 160px);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.06);
+    background: #121418;
+    color: #fff;
+    box-sizing: border-box;
+  }
+  .composer .attachBtn,
+  .composer .send,
+  .composer button {
+    flex: 0 0 auto;
+    min-width: 44px;
+    height: auto;
+    padding: 8px 12px;
+    box-sizing: border-box;
+  }
+  .composer input[type="file"]{display:none}
+  .composer .attachBtn{ display:inline-flex; align-items:center; justify-content:center; background:#29363a;border:none;color:#fff;padding:8px 10px;border-radius:8px;cursor:pointer }
+  .composer .send{ background:var(--accent); border:none; color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer }
+  .composer .attachBtn input[type="file"] { display: none; }
+  .composer input[type="text"],
+  .composer .attachBtn,
+  .composer .send {
+    max-width: 100% !important;
+  }
+  .notice{margin:8px 16px;color:#ffb4b4;font-size:13px}
+  .modpanel{background:var(--panel);padding:12px;overflow:auto;border-left:1px solid rgba(255,255,255,0.03);display:none}
+  .modpanel.visible{display:block}
+  .modpanel h3{margin-top:0;color:var(--accent)}
+  .small{font-size:13px;color:var(--muted)}
+  .list{max-height:200px;overflow:auto;padding:6px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  .list div{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center}
+  .poll{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:8px}
+  .attachment{max-width:220px;border-radius:6px;margin-top:8px}
+  .modKeyBtn{position:fixed;left:12px;bottom:12px;width:36px;height:36px;border-radius:8px;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;z-index:9999;border:1px solid rgba(255,255,255,0.04)}
+  .modKeyBtn:hover{background:rgba(0,0,0,0.6)}
+  .badword-list-item{display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.02)}
+  .badword-input{display:flex;gap:6px;margin-top:8px}
+  .badword-input input{flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,.04)}
+  .pending-pic-row{display:flex;gap:8px;align-items:center;padding:8px;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .pending-pic-row img{width:64px;height:64px;border-radius:8px;object-fit:cover}
+  .pending-pic-meta{flex:1}
+  .game-req-item {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .mod-notif-item {
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.02);
+  }
+  .private-chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    overflow-y: auto;
+  }
+  .private-chat-list-item {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .private-chat-list-item.new {
+      animation: highlight 2s ease-out;
+  }
+  @keyframes highlight {
+      0% { background-color: rgba(76, 175, 80, 0); }
+      50% { background-color: rgba(76, 175, 80, 0.2); }
+      100% { background-color: rgba(76, 175, 80, 0); }
+  }
+  .private-chat-list-item:hover {
+    background-color: rgba(255,255,255,0.05);
+  }
+  .private-chat-list-item.active {
+    background-color: rgba(255,255,255,0.1);
+  }
+  .chat-title-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .chat-title-info h4 {
+    margin: 0;
+  }
+  .chat-title-info .small {
+    margin-top: 4px;
+  }
+  .create-chat-btn-wrap {
+    padding: 0 12px;
+    margin-bottom: 8px;
+  }
+  .create-chat-btn-wrap .btn {
+    width: 100%;
+    padding: 12px;
+    background: #3a3f4b;
+    border: none;
+    font-size: 14px;
+  }
+  .create-chat-dropdown {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--panel);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    z-index: 100;
+    width: 300px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .create-chat-dropdown.visible {
+    display: flex;
+  }
+  .create-chat-dropdown input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #121418;
+    color: #fff;
+    border-radius: 6px;
+  }
+  .create-chat-dropdown .user-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+  }
+  .create-chat-dropdown .user-item {
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .create-chat-dropdown .user-item:hover {
+    background: rgba(255,255,255,0.05);
+  }
+  .create-chat-dropdown .user-item.selected {
+    background: rgba(76,175,80,0.2);
+  }
+  .create-chat-dropdown .user-item .avatar {
+    width: 28px;
+    height: 28px;
+  }
+  .mod-chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .mod-chat-item .btn {
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="layout">
+    <div class="sidebar">
+      <img src="logo.png" class="logo" alt="TAC Logo">
+      <nav>
+        <ul>
+          <li><a href="#" id="mainChatLink">Home</a></li>
+          <li><a href="apps.html">Apps</a></li>
+          <li><a href="help.html" target="_blank">Help</a></li>
+          <li><a href="staff.html" target="_blank">Apply for Staff</a></li>
+          <li><a href="members.html">Members</a></li>
+          <li><a href="homework.html">Not Games</a></li>
+        </ul>
+      </nav>
+      <div class="create-chat-btn-wrap">
+        <button class="btn" id="createChatBtn">Create Chat</button>
+      </div>
+      <div class="private-chat-list" id="privateChatsList">
+        <h4>Private Chats</h4>
+        <div class="small muted" id="privateChatsEmpty">No private chats yet.</div>
+      </div>
+    </div>
+
+    <div class="app" role="main">
+      <div class="topbar">
+        <div class="title" id="chatTitle"># general</div>
+        <div class="me">
+          <div id="meAvatar" class="me-avatar" title="Click to upload profile picture"></div>
+          <input id="profilePicInput" type="file" accept="image/*" style="display:none" />
+          <span id="meName">—</span>
+          <span id="meRole" class="tag">Member</span>
+        </div>
+      </div>
+
+      <div id="scroller" class="scroller" aria-live="polite"></div>
+
+      <div id="pinnedSlot" style="display:none;padding:8px 16px;border-top:1px solid rgba(255,255,255,.03);background:var(--panel)">
+        <div id="pinnedBox" class="pinned"></div>
+      </div>
+      
+      <div class="composer">
+        <div class="notice" style="display: none; width: 100%; text-align: center;"></div>
+        <input id="msgInput" type="text" placeholder="Message #general" maxlength="1000" />
+        <label class="attachBtn btn" title="Attach image (small)">
+          📎
+          <input id="fileInput" type="file" accept="image/*">
+        </label>
+        <button class="send btn" id="sendBtn">Send</button>
+      </div>
+    </div>
+
+    <div class="modpanel" id="modPanel">
+      <h3>Moderation</h3>
+      <div class="small">You: <span id="modName">—</span> <span id="modRole" class="tag">Member</span></div>
+      
+      <h4 style="margin-top:12px">Private Chat Monitoring</h4>
+      <div id="modPrivateChatsList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Game Requests</h4>
+      <div id="gameRequestsList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Mod Notifications</h4>
+      <div id="modNotificationsList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Mod Chat</h4>
+      <div id="modChatList" class="list small">loading…</div>
+      <div class="badword-input" style="margin-top:8px">
+        <input id="modChatInput" placeholder="Send a message to mods">
+        <button id="modChatSendBtn" class="btn">Send</button>
+      </div>
+
+      <h4 style="margin-top:12px">Pause / Pins</h4>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <button id="togglePause" class="btn">Toggle Pause</button>
+      </div>
+
+      <h4 style="margin-top:12px">Auto-ban settings</h4>
+      <div class="small">
+        Threshold: <input id="abThreshold" type="number" min="1" value="3" style="width:60px"><br>
+        Window (sec): <input id="abWindow" type="number" min="1" value="60" style="width:60px"><br>
+        Duration (min): <input id="abDuration" type="number" min="1" value="60" style="width:60px"><br>
+        <button id="saveAb" class="btn">Save</button>
+      </div>
+
+      <h4 style="margin-top:12px">Banned users</h4>
+      <div id="bannedList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Timeouts</h4>
+      <div id="timeoutList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Offenses</h4>
+      <div id="offensesList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Profanity list (DB)</h4>
+      <div id="badWordsList" class="list small">loading…</div>
+      <div class="badword-input">
+        <input id="badwordInput" placeholder="Add a bad word (single word only)">
+        <button id="badwordAddBtn" class="btn">Add</button>
+        <button id="resetBadwords" class="btn secondary">Reset to defaults</button>
+      </div>
+      <h4 style="margin-top:12px">Regex Filters (DB)</h4>
+      <div id="regexList" class="list small">loading…</div>
+      <div class="badword-input">
+        <input id="regexInput" placeholder="Add a regex pattern (e.g., /s[h1t]t/i)">
+        <button id="regexAddBtn" class="btn">Add</button>
+      </div>
+
+      <h4 style="margin-top:12px">Custom Bot Responses (DB)</h4>
+      <div id="botResponsesList" class="list small">loading…</div>
+      <div class="badword-input" style="margin-top:8px">
+        <input id="botCommandInput" placeholder="!command">
+        <input id="botResponseInput" placeholder="Bot's response">
+        <button id="botResponseAddBtn" class="btn">Add</button>
+      </div>
+
+      <h4 style="margin-top:12px">Profile Pic Approvals</h4>
+      <div id="pendingPicsList" class="list small">loading…</div>
+
+      <h4 style="margin-top:12px">Create Poll (posts in chat)</h4>
+      <div style="display:flex;gap:6px;margin-bottom:8px">
+        <input id="pollQ" placeholder="Question" style="flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,.04)">
+        <button id="createPoll" class="btn">Create</button>
+      </div>
+      <div class="small muted">Options (comma separated):</div>
+      <input id="pollOptions" placeholder="Yes,No,Maybe" style="width:100%;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,.04);margin-bottom:8px">
+    </div>
+  </div>
+
+  <div class="create-chat-dropdown" id="createChatDropdown">
+    <h4>Create a new chat</h4>
+    <p class="small muted">Select up to 10 users. You can create a 1-on-1 chat or a group chat.</p>
+    <input type="text" id="userSearch" placeholder="Search for users...">
+    <div class="user-list" id="userList"></div>
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button class="btn" id="confirmCreateChatBtn">Create Chat</button>
+      <button class="btn danger" id="cancelCreateChatBtn">Cancel</button>
+    </div>
+  </div>
+
+  <div class="modKeyBtn" id="modKeyBtn" title="Mod access (password) 🔐">🔑</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+/* ================== CONFIG ================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* ================== LOGIN / MOD AUTH ================== */
+let username = (localStorage.getItem('tacUsername') || '').trim();
+while(!username){
+  username = prompt('Enter your chat display name:') || '';
+  username = username.trim();
+}
+localStorage.setItem('tacUsername', username);
+
+const meNameEl = document.getElementById('meName');
+const meRoleEl = document.getElementById('meRole');
+const modName = document.getElementById('modName');
+const modRole = document.getElementById('modRole');
+const meAvatarEl = document.getElementById('meAvatar');
+meNameEl.textContent = username;
+modName.textContent = username;
+
+let myRole = "Member";
+const defaultRoleFor = (n)=>{
+  if(/^logan$/i.test(n)) return "Head Dev";
+  if(/^leonardo$/i.test(n)) return "Head Moderator";
+  return "Member";
+};
+db.ref('users/' + username + '/role').once('value').then(s=>{
+  myRole = s.val() || defaultRoleFor(username);
+  meRoleEl.textContent = myRole;
+  modRole.textContent = myRole;
+  meRoleEl.className = 'tag ' + (myRole === 'Head Dev' ? 'dev' : myRole === 'Head Moderator' ? 'mod' : '');
+  modRole.className = 'tag ' + (myRole === 'Head Dev' ? 'dev' : myRole === 'Head Moderator' ? 'mod' : '');
+  db.ref('users/' + username).update({ name: username, role: myRole }).catch(()=>{});
+});
+
+/* modAuth */
+const modPanel = document.getElementById('modPanel');
+let modAuthenticated = !!localStorage.getItem('modAuth');
+
+function canModerate(role){
+  return role === 'Head Dev' || role === 'Head Moderator' || modAuthenticated;
+}
+function updateModPanelVisibility(){
+  if(canModerate(myRole)){
+    modAuthenticated = true; localStorage.setItem('modAuth','1');
+  }
+  if(canModerate(myRole)){
+    modPanel.classList.add('visible');
+  } else {
+    modPanel.classList.toggle('visible', !!modAuthenticated);
+  }
+}
+setTimeout(updateModPanelVisibility, 300);
+
+document.getElementById('modKeyBtn').addEventListener('click', async ()=>{
+  if(localStorage.getItem('modAuth')){
+    const ok = prompt('Log out of mod access? Type YES to confirm.');
+    if(ok === 'YES'){ localStorage.removeItem('modAuth'); modAuthenticated=false; updateModPanelVisibility(); showNotice('Mod access removed.'); }
+    return;
+  }
+  const snap = await db.ref('moderation/password').once('value');
+  const real = (snap.exists() ? String(snap.val()) : 'developer');
+  const attempt = prompt('Enter moderation password:');
+  if(attempt === null) return;
+  if(attempt === real){
+    modAuthenticated = true; localStorage.setItem('modAuth','1'); updateModPanelVisibility(); showNotice('Mod access granted.');
+  } else showNotice('Wrong password.');
+});
+
+/* ================== DOM refs ================== */
+const scroller = document.getElementById('scroller');
+const input = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const fileInput = document.getElementById('fileInput');
+const profilePicInput = document.getElementById('profilePicInput');
+
+const notice = document.querySelector('.notice');
+
+const bannedListEl = document.getElementById('bannedList');
+const timeoutListEl = document.getElementById('timeoutList');
+const offensesListEl = document.getElementById('offensesList');
+const pendingPicsListEl = document.getElementById('pendingPicsList');
+
+const abThresholdEl = document.getElementById('abThreshold');
+const abWindowEl = document.getElementById('abWindow');
+const abDurationEl = document.getElementById('abDuration');
+const saveAbBtn = document.getElementById('saveAb');
+
+const pollQEl = document.getElementById('pollQ');
+const pollOptionsEl = document.getElementById('pollOptions');
+const createPollBtn = document.getElementById('createPoll');
+const pinnedSlot = document.getElementById('pinnedSlot');
+const pinnedBox = document.getElementById('pinnedBox');
+const togglePauseBtn = document.getElementById('togglePause');
+
+const badWordsListEl = document.getElementById('badWordsList');
+const badwordInput = document.getElementById('badwordInput');
+const badwordAddBtn = document.getElementById('badwordAddBtn');
+const resetBadwordsBtn = document.getElementById('resetBadwords');
+
+// New DOM refs
+const chatTitle = document.getElementById('chatTitle');
+const mainChatLink = document.getElementById('mainChatLink');
+const privateChatsList = document.getElementById('privateChatsList');
+const privateChatsEmpty = document.getElementById('privateChatsEmpty');
+const modPrivateChatsList = document.getElementById('modPrivateChatsList');
+const gameRequestsList = document.getElementById('gameRequestsList');
+const modNotificationsList = document.getElementById('modNotificationsList');
+const modChatList = document.getElementById('modChatList');
+const modChatInput = document.getElementById('modChatInput');
+const modChatSendBtn = document.getElementById('modChatSendBtn');
+const regexList = document.getElementById('regexList');
+const regexInput = document.getElementById('regexInput');
+const regexAddBtn = document.getElementById('regexAddBtn');
+const botResponsesList = document.getElementById('botResponsesList');
+const botCommandInput = document.getElementById('botCommandInput');
+const botResponseInput = document.getElementById('botResponseInput');
+const botResponseAddBtn = document.getElementById('botResponseAddBtn');
+
+// Private chat creation DOM
+const createChatBtn = document.getElementById('createChatBtn');
+const createChatDropdown = document.getElementById('createChatDropdown');
+const userSearch = document.getElementById('userSearch');
+const userListEl = document.getElementById('userList');
+const confirmCreateChatBtn = document.getElementById('confirmCreateChatBtn');
+const cancelCreateChatBtn = document.getElementById('cancelCreateChatBtn');
+
+/* ================== Utilities ================== */
+const showNotice = (txt, ms=3500) => {
+  notice.textContent = txt;
+  notice.style.display = 'block';
+  setTimeout(()=> notice.style.display = 'none', ms);
+};
+const fmtTime = ts => new Date(ts).toLocaleTimeString();
+const avatarLetters = n => (n||'?').trim().slice(0,2).toUpperCase();
+
+/* ================== USER PROFILE PIC STATE ================== */
+let usersProfilePics = {};
+let myProfilePic = null;
+let allUsers = [];
+
+db.ref('users').on('value', snap=>{
+  const all = snap.val() || {};
+  usersProfilePics = {};
+  allUsers = [];
+  Object.entries(all).forEach(([k,v])=>{
+    if(v && v.profilePic) usersProfilePics[k] = v.profilePic;
+    allUsers.push(k);
+  });
+  if(usersProfilePics[username]){
+    myProfilePic = usersProfilePics[username];
+    renderMyAvatar(myProfilePic);
+  } else {
+    renderMyAvatar(null);
+  }
+  renderUserListForDropdown();
+});
+
+function renderMyAvatar(dataUrl){
+  meAvatarEl.innerHTML = '';
+  if(dataUrl){
+    const img = document.createElement('img'); img.src = dataUrl; meAvatarEl.appendChild(img);
+  } else {
+    meAvatarEl.textContent = avatarLetters(username);
+  }
+}
+
+/* ================== PROFANITY (DB-driven) ================== */
+const DEFAULT_BAD_WORDS = ['fuck','shit','bitch','asshole','dick','bastard','slut','whore','cunt','nigger','faggot'];
+let badWordMap = {};
+let PROFANITY_REGEXES = [];
+let customRegexList = {};
+function rebuildProfanityRegexes(){
+  const words = Object.values(badWordMap).length ? Object.values(badWordMap) : DEFAULT_BAD_WORDS;
+  PROFANITY_REGEXES = words.map(wordToRegex);
+  Object.values(customRegexList).forEach(regexStr => {
+    try {
+      const parts = regexStr.match(/^\/(.*?)\/([gimsuy]*)$/);
+      if (parts) {
+        PROFANITY_REGEXES.push(new RegExp(parts[1], parts[2]));
+      }
+    } catch (e) {
+      console.error("Invalid regex:", regexStr, e);
+    }
+  });
+}
+function wordToRegex(word){
+  const chars = word.split('').map(ch => ch.replace(/[-/\\^$*+?.()|[\]{}]/g,'\\$&') + '\\W*').join('');
+  return new RegExp('\\b' + chars + '\\b','i');
+}
+function containsProfanity(text){
+  if(!text) return false;
+  for(const r of PROFANITY_REGEXES) if(r.test(text)) return true;
+  return false;
+}
+db.ref('moderation/badWords').on('value', snap=>{
+  const val = snap.val() || {};
+  if(Array.isArray(val)){
+    badWordMap = {};
+    val.forEach((w,i)=> { if(w) badWordMap['k'+i] = String(w).toLowerCase(); });
+  } else {
+    badWordMap = {};
+    Object.entries(val).forEach(([k,v])=> { badWordMap[k] = String(v).toLowerCase(); });
+  }
+  rebuildProfanityRegexes();
+  renderBadWordsUI();
+});
+function renderBadWordsUI(){
+  badWordsListEl.innerHTML = '';
+  const entries = Object.entries(badWordMap);
+  if(!entries.length){
+    badWordsListEl.innerHTML = '<div class="small muted">No words set — using built-in defaults.</div>';
+    return;
+  }
+  entries.forEach(([k,w])=>{
+    const row = document.createElement('div');
+    row.className = 'badword-list-item';
+    const lbl = document.createElement('div'); lbl.textContent = w;
+    const actions = document.createElement('div');
+    const del = document.createElement('button'); del.className = 'btn danger'; del.textContent = 'Delete';
+    del.onclick = ()=> { db.ref('moderation/badWords/'+k).remove(); };
+    actions.appendChild(del);
+    row.appendChild(lbl); row.appendChild(actions);
+    badWordsListEl.appendChild(row);
+  });
+}
+badwordAddBtn.addEventListener('click', async ()=>{
+  if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
+  const v = (badwordInput.value||'').trim().toLowerCase();
+  if(!v) return;
+  if(/\s/.test(v)){ showNotice('Single word only.'); return; }
+  await db.ref('moderation/badWords').push(v);
+  badwordInput.value = '';
+});
+resetBadwordsBtn.addEventListener('click', async ()=>{
+  if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
+  const ok = prompt('Replace profanity list with built-in defaults? Type YES to confirm.');
+  if (ok !== 'YES') return;
+  const obj = {};
+  DEFAULT_BAD_WORDS.forEach(w=> { const k = db.ref().push().key; obj[k] = w; });
+  await db.ref('moderation/badWords').set(obj);
+  showNotice('Profanity list reset to defaults.');
+});
+
+db.ref('moderation/regex').on('value', snap => {
+  customRegexList = snap.val() || {};
+  rebuildProfanityRegexes();
+  renderRegexUI();
+});
+function renderRegexUI() {
+  regexList.innerHTML = '';
+  const entries = Object.entries(customRegexList);
+  if (!entries.length) {
+    regexList.innerHTML = '<div class="small muted">No regex patterns set.</div>';
+    return;
+  }
+  entries.forEach(([k, w]) => {
+    const row = document.createElement('div');
+    row.className = 'badword-list-item';
+    const lbl = document.createElement('div'); lbl.textContent = w;
+    const actions = document.createElement('div');
+    const del = document.createElement('button'); del.className = 'btn danger'; del.textContent = 'Delete';
+    del.onclick = () => { db.ref('moderation/regex/' + k).remove(); };
+    actions.appendChild(del);
+    row.appendChild(lbl);
+    row.appendChild(actions);
+    regexList.appendChild(row);
+  });
+}
+regexAddBtn.addEventListener('click', async () => {
+  if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
+  const v = (regexInput.value || '').trim();
+  if (!v) return;
+  try {
+    new RegExp(v);
+  } catch (e) {
+    showNotice("Invalid regex pattern.");
+    return;
+  }
+  await db.ref('moderation/regex').push(v);
+  regexInput.value = '';
+});
+
+/* ================== AUTO-BAN SETTINGS (from DB or default) ================== */
+const defaultAutoBan = { threshold: 3, windowMs: 60_000, durationMs: 60*60_1000 };
+let autoBanSettings = { ...defaultAutoBan };
+const loadAutoBan = ()=> db.ref('moderation/settings').once('value').then(s=>{
+  const val = s.val();
+  if(val && val.threshold) autoBanSettings = { ...autoBanSettings, ...val };
+  abThresholdEl.value = autoBanSettings.threshold;
+  abWindowEl.value = Math.round(autoBanSettings.windowMs/1000);
+  abDurationEl.value = Math.round(autoBanSettings.durationMs/60000);
+}).catch(()=>{ abThresholdEl.value = autoBanSettings.threshold; abWindowEl.value = Math.round(autoBanSettings.windowMs/1000); abDurationEl.value = Math.round(autoBanSettings.durationMs/60000); });
+saveAbBtn.addEventListener('click', ()=>{
+  const t = Math.max(1, parseInt(abThresholdEl.value||'3',10));
+  const w = Math.max(1, parseInt(abWindowEl.value||'60',10));
+  const d = Math.max(1, parseInt(abDurationEl.value||'60',10));
+  autoBanSettings = { threshold: t, windowMs: w*1000, durationMs: d*60_000 };
+  db.ref('moderation/settings').set(autoBanSettings);
+  showNotice('Auto-ban settings saved.');
+});
+
+/* ================== OFFENSES & AUTO-BAN ================== */
+async function recordOffense(name){
+  const key = name.toLowerCase();
+  const timesRef = db.ref('offenses/' + key + '/times');
+  const now = Date.now();
+  const pushRef = timesRef.push();
+  await pushRef.set(now);
+  const cutoff = now - autoBanSettings.windowMs;
+  const snap = await timesRef.once('value');
+  const times = snap.exists() ? Object.entries(snap.val()).map(([k,v])=>({k,t:v})) : [];
+  const keep = times.filter(t=>t.t >= cutoff);
+  const updates = {};
+  keep.forEach((t)=> updates[t.k] = t.t);
+  await timesRef.set(updates);
+  const count = keep.length;
+  if(count >= autoBanSettings.threshold){
+    const until = Date.now() + autoBanSettings.durationMs;
+    await db.ref('bans/' + key).set(until);
+    await timesRef.remove();
+    showNotice(`${name} was auto-banned for ${Math.round(autoBanSettings.durationMs/60000)} min (auto-ban).`);
+  }
+}
+
+/* ================== TIMEOUTS & BANS ================== */
+async function isBanned(name){
+  if(!name) return false;
+  const key = name.toLowerCase();
+  const snap = await db.ref('bans/'+key).once('value');
+  const val = snap.val();
+  if(!val) return false;
+  if(val === 'perm') return 'perm';
+  const now = Date.now();
+  if(val > now) return val;
+  await db.ref('bans/'+key).remove();
+  return false;
+}
+async function isTimedOut(name){
+  if(!name) return 0;
+  const snap = await db.ref('timeouts/'+name.toLowerCase()).once('value');
+  const until = snap.val() || 0;
+  if(until && until > Date.now()) return until;
+  if(until) await db.ref('timeouts/'+name.toLowerCase()).remove();
+  return 0;
+}
+function setTimeoutFor(name, msFromNow){
+  const until = Date.now() + msFromNow;
+  return db.ref('timeouts/'+name.toLowerCase()).set(until);
+}
+
+/* ================== SPAM PROTECTION (client side) ================== */
+const MSG_WINDOW_MS = 10_000;
+const MSG_MAX = 5;
+const CLIENT_SENDS = [];
+function recordClientSend(){ const now = Date.now(); CLIENT_SENDS.push(now); while(CLIENT_SENDS.length>MSG_MAX) CLIENT_SENDS.shift(); }
+function checkClientSpam(){ const now = Date.now(); const cutoff = now - MSG_WINDOW_MS; const recent = CLIENT_SENDS.filter(t=>t>=cutoff).length; return recent >= MSG_MAX; }
+
+/* ================== ATTACHMENTS ================== */
+async function uploadAttachment(file){
+  const MAX = 300 * 1024;
+  if(file.size > MAX){ showNotice('File too large. Max ~300KB.'); return null; }
+  return new Promise((res,rej)=>{
+    const fr = new FileReader();
+    fr.onload = async ()=> {
+      const dataUrl = fr.result;
+      const id = db.ref('attachments').push().key;
+      await db.ref('attachments/' + id).set({ uploader: username, name: file.name, dataUrl, createdAt: Date.now() });
+      res({ id, dataUrl });
+    };
+    fr.onerror = e=> { showNotice('Failed reading file'); rej(e); };
+    fr.readAsDataURL(file);
+  });
+}
+
+/* ================== USER PROFILE PIC UPLOAD FLOW (user) ================== */
+meAvatarEl.addEventListener('click', async () => {
+  const snap = await db.ref('users/' + username + '/profilePic').once('value');
+  if(snap.exists() && snap.val()){
+    showNotice('You already set a profile picture. Only mods/devs can change it.');
+    return;
+  }
+  profilePicInput.click();
+});
+
+profilePicInput.addEventListener('change', async (e) => {
+  const file = profilePicInput.files && profilePicInput.files[0];
+  if(!file) return;
+  const MAX = 300 * 1024;
+  if(file.size > MAX){ showNotice('File too large. Max ~300KB.'); profilePicInput.value = ''; return; }
+  const fr = new FileReader();
+  fr.onload = async () => {
+    const dataUrl = fr.result;
+    const id = db.ref('profilePicsPending').push().key;
+    await db.ref('profilePicsPending/' + id).set({ uploader: username, name: file.name, dataUrl, createdAt: Date.mow() });
+    showNotice('Profile picture uploaded and awaiting moderator approval.');
+    profilePicInput.value = '';
+  };
+  fr.onerror = () => { showNotice('Failed reading file'); profilePicInput.value = ''; };
+  fr.readAsDataURL(file);
+});
+
+/* ================== PROFILE PIC APPROVALS (mod) ================== */
+db.ref('profilePicsPending').on('value', snap => {
+  const val = snap.val() || {};
+  pendingPicsListEl.innerHTML = '';
+  const entries = Object.entries(val);
+  if(!entries.length){
+    pendingPicsListEl.innerHTML = '<div class="small muted">No pending profile pictures.</div>';
+    return;
+  }
+  entries.forEach(([id,data])=>{
+    const row = document.createElement('div');
+    row.className = 'pending-pic-row';
+    const img = document.createElement('img'); img.src = data.dataUrl || '';
+    const meta = document.createElement('div'); meta.className = 'pending-pic-meta';
+    meta.innerHTML = `<div style="font-weight:700">${data.uploader}</div><div class="small muted">${new Date(data.createdAt||0).toLocaleString()}</div>`;
+    const actions = document.createElement('div');
+    actions.style.display = 'flex';
+    actions.style.gap = '6px';
+    const approveBtn = document.createElement('button'); approveBtn.className='btn'; approveBtn.textContent='Approve';
+    const rejectBtn = document.createElement('button'); rejectBtn.className='btn danger'; rejectBtn.textContent='Reject';
+    approveBtn.onclick = async () => {
+      if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
+      const userRef = db.ref('users/' + data.uploader + '/profilePic');
+      const existing = (await userRef.once('value')).val();
+      if(existing){
+        const ok = prompt(`${data.uploader} already has a profile picture. Overwrite? Type YES to confirm.`);
+        if (ok !== 'YES') return;
+      }
+      await userRef.set(data.dataUrl);
+      await db.ref('profilePicsPending/' + id).remove();
+      await db.ref('profilePicsApproved/' + data.uploader).set({ approvedBy: username, approvedAt: Date.now() });
+      showNotice('Profile picture approved.');
+    };
+    rejectBtn.onclick = async () => {
+      if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
+      const ok = prompt('Reject and delete this profile picture? Type YES to confirm.');
+      if (ok !== 'YES') return;
+      await db.ref('profilePicsPending/' + id).remove();
+      await db.ref('profilePicsRejected/' + data.uploader + '/' + id).set({ rejectedBy: username, rejectedAt: Date.now() });
+      showNotice('Profile picture rejected.');
+    };
+    actions.appendChild(approveBtn);
+    actions.appendChild(rejectBtn);
+    row.appendChild(img);
+    row.appendChild(meta);
+    row.appendChild(actions);
+    pendingPicsListEl.appendChild(row);
+  });
+});
+
+/* ================== POLLS (also posted to chat) ================== */
+async function createPoll(question, optionsArr){
+  const key = db.ref('polls').push().key;
+  const obj = { question, options: {}, createdBy: username, createdAt: Date.now(), active: true };
+  optionsArr.forEach(o=> obj.options[o] = 0);
+  await db.ref('polls/' + key).set(obj);
+  const chatId = db.ref('chat/messages').push().key;
+  const chatMsg = { id: chatId, type: 'poll', pollId: key, user: username, role: myRole, text: question, timestamp: firebase.database.ServerValue.TIMESTAMP };
+  await db.ref('chat/messages/' + chatId).set(chatMsg);
+}
+
+/* ================== PINNING & PAUSE ================== */
+async function setPinnedMessage(msgId){ await db.ref('moderation/pinned').set(msgId || null); }
+async function setPaused(val){ await db.ref('moderation/paused').set(!!val); }
+
+/* ================== RENDER MESSAGES & POLLS ================== */
+function renderMessageObj(m, id, chatId='main'){
+  const wrap = document.createElement('div'); wrap.className = 'msg'; wrap.id = 'm_' + id;
+  const avatar = document.createElement('div'); avatar.className='avatar';
+  if(usersProfilePics[m.user]){
+    const img = document.createElement('img'); img.src = usersProfilePics[m.user]; avatar.appendChild(img);
+  } else {
+    avatar.textContent = avatarLetters(m.user);
+  }
+  const main = document.createElement('div');
+  const meta = document.createElement('div'); meta.className='meta';
+  const name = document.createElement('span'); name.className='name'; name.textContent = m.user;
+  const role = document.createElement('span'); role.className='tag ' + (m.role === 'Head Dev' ? 'dev' : m.role === 'Head Moderator' ? 'mod' : '');
+  role.textContent = m.role || 'Member';
+  const when = document.createElement('span'); when.className='when'; when.textContent = fmtTime(m.timestamp || Date.now());
+  const actions = document.createElement('div'); actions.className='bubble-actions';
+
+  // Private chat actions for non-mods
+  if(!canModerate(myRole) && chatId !== 'main'){
+    const leaveBtn = document.createElement('button');
+    leaveBtn.className = 'btn danger';
+    leaveBtn.textContent = 'Leave';
+    leaveBtn.onclick = () => {
+      const ok = prompt('Are you sure you want to leave this chat? Type YES to confirm.');
+      if(ok === 'YES'){
+        db.ref('private_chats/' + chatId + '/members/' + username).remove();
+        db.ref('users/' + username + '/private_chats/' + chatId).remove();
+        activeChatId = 'main';
+        loadChat('main');
+        showNotice('You have left the chat.');
+      }
+    };
+    actions.appendChild(leaveBtn);
+  }
+
+  // Mod actions
+  if(canModerate(myRole)){
+    const pin = document.createElement('button');
+    pin.className='btn';
+    pin.textContent = (pinnedId === id) ? 'Unpin' : 'Pin';
+    pin.onclick = async ()=> {
+      if (pinnedId === id) {
+        await setPinnedMessage(null);
+        showNotice('Message unpinned.');
+      } else {
+        await setPinnedMessage(id);
+        showNotice('Message pinned.');
+      }
+    };
+    actions.appendChild(pin);
+    const del = document.createElement('button'); del.className='btn danger'; del.textContent = 'Delete';
+    // The delete button now removes the message without a confirmation dialog.
+    del.onclick = ()=> {
+      db.ref((chatId === 'main' ? 'chat/messages/' : `private_chats/${chatId}/messages/`) + id).remove();
+      showNotice('Message deleted.');
+    };
+    const ban = document.createElement('button'); ban.className='btn'; ban.textContent='Ban';
+    ban.onclick = ()=> banPrompt(m.user);
+    const to = document.createElement('button'); to.className='btn'; to.textContent='Timeout';
+    to.onclick = ()=> { const ok = prompt('Timeout seconds (e.g. 30)'); if(ok) setTimeoutFor(m.user, Math.max(1,parseInt(ok,10))*1000); };
+    actions.appendChild(del); actions.appendChild(ban); actions.appendChild(to);
+  }
+
+  meta.appendChild(name); meta.appendChild(role); meta.appendChild(when); meta.appendChild(actions);
+  const text = document.createElement('div'); text.className='text'; text.textContent = m.text || '';
+  main.appendChild(meta); main.appendChild(text);
+
+  if(m.type === 'poll' && m.pollId){
+    const pollWrap = document.createElement('div'); pollWrap.className='poll'; pollWrap.id = 'poll_' + m.pollId;
+    pollWrap.innerHTML = `<strong>${m.text}</strong><div id="poll_opts_${m.pollId}" style="margin-top:8px"></div>`;
+    main.appendChild(pollWrap);
+    db.ref('polls/' + m.pollId).once('value').then(s=>{
+      const p = s.val();
+      if(!p) return;
+      const optEl = document.getElementById('poll_opts_' + m.pollId); optEl.innerHTML = '';
+      Object.keys(p.options || {}).forEach(opt=>{
+        const row = document.createElement('div'); row.style.display='flex'; row.style.gap='6px'; row.style.alignItems='center';
+        const optBtn = document.createElement('button'); optBtn.className='btn'; optBtn.textContent = opt;
+        optBtn.onclick = ()=> db.ref('polls/' + m.pollId + '/votes/' + username).set(opt);
+        const count = document.createElement('span'); count.className='small muted'; count.textContent = p.options[opt];
+        row.appendChild(optBtn); row.appendChild(count);
+        optEl.appendChild(row);
+      });
+    });
+  }
+
+  if(m.attachmentId){
+    db.ref('attachments/' + m.attachmentId).once('value').then(s=>{
+      const att = s.val();
+      if(!att) return;
+      const img = document.createElement('img'); img.src = att.dataUrl; img.className = 'attachment';
+      main.appendChild(img);
+    });
+  }
+  wrap.appendChild(avatar);
+  wrap.appendChild(main);
+  return wrap;
+}
+
+/* ================== CHAT SWITCHING ================== */
+let activeChatId = 'main';
+let chatListeners = {};
+let previousChats = {};
+
+function detachAllChatListeners() {
+  Object.keys(chatListeners).forEach(ref => {
+    db.ref(ref).off('child_added', chatListeners[ref]);
+    delete chatListeners[ref];
+  });
+}
+
+function loadChat(chatId) {
+  detachAllChatListeners();
+  activeChatId = chatId;
+  scroller.innerHTML = '';
+  
+  // Update active link in sidebar
+  document.querySelectorAll('.sidebar .private-chat-list-item').forEach(a => a.classList.remove('active'));
+  document.getElementById('mainChatLink').classList.remove('active');
+  const activeLink = document.getElementById(`chat_${chatId}`);
+  if(activeLink) activeLink.classList.add('active');
+  if(chatId === 'main') document.getElementById('mainChatLink').classList.add('active');
+
+  let refPath = '';
+  if (chatId === 'main') {
+    chatTitle.textContent = '# general';
+    input.placeholder = 'Message #general';
+    refPath = 'chat/messages';
+  } else {
+    db.ref('private_chats/' + chatId).once('value').then(snap => {
+      const chatData = snap.val();
+      if (!chatData) {
+        showNotice('Chat not found.');
+        loadChat('main');
+        return;
+      }
+      chatTitle.textContent = chatData.members.join(', ');
+      input.placeholder = 'Message ' + chatData.members.join(', ');
+    });
+    refPath = `private_chats/${chatId}/messages`;
+  }
+
+  const chatRef = db.ref(refPath).orderByChild('timestamp').limitToLast(100);
+  chatListeners[refPath] = chatRef.on('child_added', snap => {
+    const m = snap.val();
+    const el = renderMessageObj(m, snap.key, chatId);
+    scroller.appendChild(el);
+    scroller.scrollTop = scroller.scrollHeight;
+  });
+  
+  chatRef.on('child_removed', snap => {
+    const id = snap.key;
+    const el = document.getElementById('m_' + id);
+    if(el) el.remove();
+  });
+}
+
+mainChatLink.addEventListener('click', () => loadChat('main'));
+meAvatarEl.addEventListener('click', () => loadChat('main'));
+
+/* ================== PRIVATE CHAT MANAGEMENT ================== */
+let userChats = {};
+db.ref('users/' + username + '/private_chats').on('value', snap => {
+  const newChats = snap.val() || {};
+  const previousChatIds = Object.keys(userChats);
+  const newChatIds = Object.keys(newChats).filter(id => !previousChatIds.includes(id));
+
+  if(newChatIds.length > 0){
+    newChatIds.forEach(id => {
+      showNotice(`You've been added to a new private chat!`);
+    });
+  }
+
+  userChats = newChats;
+  renderPrivateChats();
+  if (activeChatId !== 'main' && !userChats[activeChatId]) {
+    loadChat('main');
+  }
+});
+
+if (canModerate(myRole)) {
+  db.ref('private_chats').on('value', snap => {
+    const allChats = snap.val() || {};
+    renderModPrivateChats(allChats);
+  });
+}
+
+function renderPrivateChats() {
+  privateChatsList.innerHTML = '';
+  const entries = Object.entries(userChats);
+  if (entries.length === 0) {
+    privateChatsList.innerHTML = '<div class="small muted" id="privateChatsEmpty">No private chats yet.</div>';
+    return;
+  }
+  
+  entries.forEach(([id, members]) => {
+    const el = document.createElement('div');
+    el.className = 'private-chat-list-item';
+    if(id === activeChatId) el.classList.add('active');
+    
+    // Check if it's a new chat from the previous render state
+    const isNew = !previousChats[id];
+    if(isNew) {
+      el.classList.add('new');
+      setTimeout(() => el.classList.remove('new'), 2000);
+    }
+    
+    el.id = 'chat_' + id;
+    el.innerHTML = `<div class="chat-title-info"><h4>${members.join(', ')}</h4><span class="small muted">Private Chat</span></div>`;
+    el.onclick = () => loadChat(id);
+    privateChatsList.appendChild(el);
+  });
+  previousChats = userChats;
+}
+
+function renderModPrivateChats(chats) {
+  modPrivateChatsList.innerHTML = '';
+  const entries = Object.entries(chats);
+  if (entries.length === 0) {
+    modPrivateChatsList.innerHTML = '<div class="small muted">No private chats to monitor.</div>';
+    return;
+  }
+  entries.forEach(([id, data]) => {
+    const el = document.createElement('div');
+    el.className = 'mod-chat-item';
+    el.innerHTML = `<div><strong>${data.members.join(', ')}</strong><br><span class="small muted">Last Msg: ${new Date(data.lastMessageTimestamp).toLocaleString()}</span></div>`;
+    const actions = document.createElement('div');
+    const viewBtn = document.createElement('button');
+    viewBtn.className = 'btn';
+    viewBtn.textContent = 'View';
+    viewBtn.onclick = () => {
+      if(activeChatId === id){
+        loadChat('main');
+        return;
+      }
+      loadChat(id);
+    };
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn danger';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.onclick = () => {
+      const ok = prompt('Are you sure you want to delete this private chat? This cannot be undone. Type YES to confirm.');
+      if(ok === 'YES'){
+        db.ref('private_chats/' + id).remove();
+        data.members.forEach(member => {
+          db.ref('users/' + member + '/private_chats/' + id).remove();
+        });
+        if(activeChatId === id) {
+          loadChat('main');
+        }
+      }
+    };
+    actions.appendChild(viewBtn);
+    actions.appendChild(deleteBtn);
+    el.appendChild(actions);
+    modPrivateChatsList.appendChild(el);
+  });
+}
+
+/* ================== CREATE CHAT DROPDOWN ================== */
+let selectedUsers = [];
+
+createChatBtn.addEventListener('click', () => {
+  createChatDropdown.classList.add('visible');
+  userSearch.focus();
+  userSearch.value = '';
+  selectedUsers = [];
+  renderUserListForDropdown();
+});
+
+cancelCreateChatBtn.addEventListener('click', () => {
+  createChatDropdown.classList.remove('visible');
+});
+
+confirmCreateChatBtn.addEventListener('click', async () => {
+  if (selectedUsers.length === 0) {
+    showNotice('Please select at least one user.');
+    return;
+  }
+  
+  if (selectedUsers.length > 9) {
+    showNotice('You can select a maximum of 9 users.');
+    return;
+  }
+  
+  const members = [...new Set([username.toLowerCase(), ...selectedUsers.map(u => u.toLowerCase())])].sort();
+  
+  const existingChatSnap = await db.ref('private_chats').orderByChild('members_sorted').equalTo(members.join(',')).once('value');
+  if (existingChatSnap.exists()){
+    const chatId = Object.keys(existingChatSnap.val())[0];
+    loadChat(chatId);
+    createChatDropdown.classList.remove('visible');
+    showNotice('You are already in this chat.');
+    return;
+  }
+  
+  const newChatId = db.ref('private_chats').push().key;
+  const chatData = {
+    members: members,
+    members_sorted: members.join(','),
+    createdAt: Date.now()
+  };
+  
+  const updates = {};
+  updates[`private_chats/${newChatId}`] = chatData;
+  members.forEach(m => {
+    updates[`users/${m}/private_chats/${newChatId}`] = members;
+  });
+  
+  await db.ref().update(updates);
+  
+  loadChat(newChatId);
+  createChatDropdown.classList.remove('visible');
+  showNotice('New chat created successfully!');
+});
+
+userSearch.addEventListener('input', () => {
+  renderUserListForDropdown(userSearch.value);
+});
+
+function renderUserListForDropdown(searchTerm = '') {
+  userListEl.innerHTML = '';
+  const filteredUsers = allUsers.filter(u => u.toLowerCase() !== username.toLowerCase() && u.toLowerCase().includes(searchTerm.toLowerCase()));
+  
+  filteredUsers.forEach(user => {
+    const el = document.createElement('div');
+    el.className = 'user-item';
+    el.textContent = user;
+    if (selectedUsers.includes(user)) {
+      el.classList.add('selected');
+    }
+    
+    el.onclick = () => {
+      const index = selectedUsers.indexOf(user);
+      if (index > -1) {
+        selectedUsers.splice(index, 1);
+        el.classList.remove('selected');
+      } else {
+        if (selectedUsers.length < 9) {
+          selectedUsers.push(user);
+          el.classList.add('selected');
+        } else {
+          showNotice('You can select a maximum of 9 users.');
+        }
+      }
+    };
+    userListEl.appendChild(el);
+  });
+}
+
+// REMOVED DUPLICATE MAIN CHAT LISTENER FROM HERE
+// db.ref('chat/messages').on('child_added', snap => { ... });
+
+db.ref('chat/messages').on('child_removed', snap => {
+  const id = snap.key;
+  const el = document.getElementById('m_' + id);
+  if(el) el.remove();
+});
+
+// Pinned message watcher
+let pinnedId = null;
+db.ref('moderation/pinned').on('value', async snap=>{
+  pinnedId = snap.val();
+  if(!pinnedId) { pinnedSlot.style.display = 'none'; return; }
+  const pinnedMsg = (await db.ref('chat/messages/' + pinnedId).once('value')).val();
+  if(!pinnedMsg) { pinnedSlot.style.display = 'none'; return; }
+  pinnedBox.innerHTML = '';
+  pinnedBox.appendChild(renderMessageObj(pinnedMsg, pinnedId));
+  pinnedSlot.style.display = 'block';
+});
+
+// Pause watcher
+let isPaused = false;
+db.ref('moderation/paused').on('value', snap=>{
+  isPaused = snap.val();
+  input.placeholder = isPaused ? 'Chat is paused by a moderator.' : 'Message #general';
+  sendBtn.disabled = isPaused;
+  input.disabled = isPaused;
+  fileInput.disabled = isPaused;
+});
+
+/* ================== SEND MESSAGE / COMMAND ================== */
+sendBtn.addEventListener('click', async ()=>{
+  if(isPaused && activeChatId === 'main'){ showNotice('Main chat is currently paused.'); return; }
+  let text = input.value.trim();
+  if(!text && !fileInput.files.length) return;
+  
+  if(checkClientSpam()){ showNotice('Sending messages too quickly. Please wait.'); return; }
+  if(containsProfanity(text)){ showNotice('Your message contains profanity.'); recordOffense(username); return; }
+  if(await isBanned(username)){ showNotice('You are banned from chat.'); return; }
+  if(await isTimedOut(username)){ showNotice('You are timed out from chat.'); return; }
+  
+  recordClientSend();
+  
+  // Handle Commands
+  const parts = text.split(/\s+/);
+  const cmd = parts[0].toLowerCase();
+
+  // !game command
+  if(cmd === '!game' && activeChatId === 'main'){
+    await db.ref('moderation/gameRequests').push({ user: username, timestamp: Date.now() });
+    input.value = '';
+    showNotice('Game request sent to the moderation menu.');
+    return;
+  }
+
+  // !mod command
+  if(cmd === '!mod' && activeChatId === 'main'){
+    const message = parts.slice(1).join(' ').trim() || 'No message provided.';
+    await db.ref('moderation/modNotifications').push({ user: username, message: message, timestamp: Date.mow() });
+    input.value = '';
+    showNotice('Mod notification sent successfully.');
+    return;
+  }
+
+  // Custom bot commands
+  const botResponsesRef = db.ref('moderation/customBotResponses');
+  const snap = await botResponsesRef.once('value');
+  const responses = snap.val() || {};
+  const botResponse = Object.values(responses).find(res => res.command.toLowerCase() === cmd);
+  if(botResponse && activeChatId === 'main'){
+    const botMessage = {
+      user: 'Bot',
+      text: botResponse.text,
+      role: 'Head Dev',
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+    await db.ref('chat/messages').push(botMessage);
+    input.value = '';
+    return;
+  }
+
+  // Handle regular messages and attachments
+  if(activeChatId === 'main'){
+    try {
+      if(fileInput.files.length){
+        const file = fileInput.files[0];
+        const upload = await uploadAttachment(file);
+        if(upload){
+          await db.ref('chat/messages').push({
+            user: username,
+            text: text,
+            role: myRole,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            attachmentId: upload.id
+          });
+          input.value = '';
+          fileInput.value = '';
+        }
+      } else if(text){
+        await db.ref('chat/messages').push({
+          user: username,
+          text: text,
+          role: myRole,
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        });
+        input.value = '';
+      }
+    } catch(e) {
+      showNotice('Failed to send message: ' + e.message, true);
+    }
+  } else {
+    // Private chat message logic
+    try {
+      const chatRef = db.ref('private_chats/' + activeChatId);
+      const messageRef = chatRef.child('messages').push();
+      await messageRef.set({
+        user: username,
+        text: text,
+        role: myRole,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        id: messageRef.key
+      });
+      await chatRef.update({ lastMessageTimestamp: Date.now() });
+      input.value = '';
+    } catch(e) {
+      showNotice('Failed to send message: ' + e.message, true);
+    }
+  }
+});
+input.addEventListener('keyup', (e)=>{ if(e.key==='Enter') sendBtn.click(); });
+
+/* ================== MODERATION PANEL LISTENERS ================== */
+function renderUserList(container, data, actionBtnText, onActionClick){
+  container.innerHTML = '';
+  const entries = Object.entries(data);
+  if(!entries.length){ container.innerHTML = '<div class="small muted">None.</div>'; return; }
+  entries.forEach(([name, val])=>{
+    const el = document.createElement('div');
+    el.innerHTML = `<span>${name}</span>`;
+    const actions = document.createElement('div');
+    const btn = document.createElement('button');
+    btn.className = 'btn danger';
+    btn.textContent = actionBtnText;
+    btn.onclick = () => onActionClick(name);
+    actions.appendChild(btn);
+    el.appendChild(actions);
+    container.appendChild(el);
+  });
+}
+
+db.ref('bans').on('value', s=> renderUserList(bannedListEl, s.val()||{}, 'Unban', (name) => db.ref('bans/'+name).remove()));
+db.ref('timeouts').on('value', s=>{
+  timeoutListEl.innerHTML = '';
+  const entries = Object.entries(s.val()||{});
+  if(!entries.length){ timeoutListEl.innerHTML = '<div class="small muted">None.</div>'; return; }
+  entries.forEach(([name, until])=>{
+    const el = document.createElement('div');
+    const timeLeft = Math.round((until - Date.now())/1000);
+    el.innerHTML = `<span>${name}</span> <span class="small muted">${timeLeft}s</span>`;
+    const actions = document.createElement('div');
+    const del = document.createElement('button'); del.className='btn danger'; del.textContent='Untimeout';
+    del.onclick = ()=> db.ref('timeouts/'+name).remove();
+    actions.appendChild(del);
+    el.appendChild(actions);
+    timeoutListEl.appendChild(el);
+  });
+});
+
+db.ref('offenses').on('value', s=>{
+  offensesListEl.innerHTML = '';
+  const entries = Object.entries(s.val()||{});
+  if(!entries.length){ offensesListEl.innerHTML = '<div class="small muted">None.</div>'; return; }
+  entries.forEach(([name, data])=>{
+    const el = document.createElement('div');
+    el.innerHTML = `<span>${name}</span> <span class="small muted">${Object.values(data.times||{}).length} offenses</span>`;
+    offensesListEl.appendChild(el);
+  });
+});
+
+function banPrompt(user){
+  if(!canModerate(myRole)) return;
+  const dur = prompt('Ban user ' + user + ' for how many minutes? (type "perm" for permanent)');
+  if(dur === null) return;
+  if(dur.toLowerCase() === 'perm'){ db.ref('bans/'+user.toLowerCase()).set('perm'); showNotice(user + ' permanently banned.'); return; }
+  const mins = parseInt(dur, 10);
+  if(mins > 0){
+    const until = Date.now() + mins * 60_000;
+    db.ref('bans/'+user.toLowerCase()).set(until);
+    showNotice(user + ' banned for ' + mins + ' minutes.');
+  }
+}
+
+togglePauseBtn.addEventListener('click', async()=>{
+  if(!canModerate(myRole)) return;
+  await setPaused(!isPaused);
+  showNotice('Main chat is now ' + (isPaused ? 'paused' : 'unpaused'));
+});
+
+createPollBtn.addEventListener('click', async ()=>{
+  if(!canModerate(myRole)) return;
+  const q = pollQEl.value.trim();
+  const opts = pollOptionsEl.value.split(',').map(s=>s.trim()).filter(s=>s);
+  if(!q || opts.length < 2){ showNotice('Need a question and at least 2 options.'); return; }
+  await createPoll(q, opts);
+  pollQEl.value = '';
+  pollOptionsEl.value = '';
+  showNotice('Poll created.');
+});
+
+db.ref('moderation/gameRequests').on('value', snap => {
+  const reqs = snap.val() || {};
+  gameRequestsList.innerHTML = '';
+  const entries = Object.entries(reqs);
+  if (!entries.length) {
+    gameRequestsList.innerHTML = '<div class="small muted">No game requests.</div>';
+    return;
+  }
+  entries.forEach(([k, req]) => {
+    const row = document.createElement('div');
+    row.className = 'game-req-item';
+    const content = document.createElement('div');
+    content.innerHTML = `<span>${req.user}</span> <span class="small muted">${new Date(req.timestamp).toLocaleTimeString()}</span>`;
+    const actions = document.createElement('div');
+    const dismissBtn = document.createElement('button');
+    dismissBtn.className = 'btn danger';
+    dismissBtn.textContent = 'Dismiss';
+    dismissBtn.onclick = () => db.ref('moderation/gameRequests/' + k).remove();
+    actions.appendChild(dismissBtn);
+    row.appendChild(content);
+    row.appendChild(actions);
+    gameRequestsList.appendChild(row);
+  });
+});
+
+db.ref('moderation/modNotifications').on('value', snap => {
+  const notifs = snap.val() || {};
+  modNotificationsList.innerHTML = '';
+  const entries = Object.entries(notifs);
+  if (!entries.length) {
+    modNotificationsList.innerHTML = '<div class="small muted">No new notifications.</div>';
+    return;
+  }
+  entries.forEach(([k, notif]) => {
+    const row = document.createElement('div');
+    row.className = 'mod-notif-item';
+    const content = document.createElement('div');
+    content.innerHTML = `<strong>${notif.user}</strong> <span class="small muted">${new Date(notif.timestamp).toLocaleTimeString()}</span>`;
+    const msg = document.createElement('div');
+    msg.textContent = notif.message;
+    const actions = document.createElement('div');
+    actions.style.marginTop = '6px';
+    const dismissBtn = document.createElement('button');
+    dismissBtn.className = 'btn danger';
+    dismissBtn.textContent = 'Dismiss';
+    dismissBtn.onclick = () => db.ref('moderation/modNotifications/' + k).remove();
+    actions.appendChild(dismissBtn);
+    row.appendChild(content);
+    row.appendChild(msg);
+    row.appendChild(actions);
+    modNotificationsList.appendChild(row);
+  });
+});
+
+modChatSendBtn.addEventListener('click', async () => {
+  if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
+  const text = modChatInput.value.trim();
+  if (!text) return;
+  await db.ref('moderation/modChat').push({
+    user: username,
+    text: text,
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  });
+  modChatInput.value = '';
+});
+
+db.ref('moderation/modChat').orderByChild('timestamp').on('child_added', snap => {
+  const m = snap.val();
+  const el = document.createElement('div');
+  el.innerHTML = `<div><strong>${m.user}</strong> <span class="small muted">${fmtTime(m.timestamp)}</span></div><div style="margin-top:4px">${m.text}</div>`;
+  el.style.padding = '8px';
+  el.style.borderBottom = '1px solid rgba(255,255,255,0.02)';
+  modChatList.appendChild(el);
+  modChatList.scrollTop = modChatList.scrollHeight;
+});
+
+db.ref('moderation/customBotResponses').on('value', snap => {
+  const responses = snap.val() || {};
+  botResponsesList.innerHTML = '';
+  const entries = Object.entries(responses);
+  if (!entries.length) {
+    botResponsesList.innerHTML = '<div class="small muted">No custom bot responses.</div>';
+    return;
+  }
+  entries.forEach(([k, response]) => {
+    const row = document.createElement('div');
+    row.className = 'badword-list-item';
+    const lbl = document.createElement('div');
+    lbl.innerHTML = `<strong>${response.command}</strong>: ${response.text}`;
+    const actions = document.createElement('div');
+    const del = document.createElement('button');
+    del.className = 'btn danger';
+    del.textContent = 'Delete';
+    del.onclick = () => { db.ref('moderation/customBotResponses/' + k).remove(); };
+    actions.appendChild(del);
+    row.appendChild(lbl);
+    row.appendChild(actions);
+    botResponsesList.appendChild(row);
+  });
+});
+
+botResponseAddBtn.addEventListener('click', async () => {
+  if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
+  const command = (botCommandInput.value || '').trim().toLowerCase();
+  const response = (botResponseInput.value || '').trim();
+  if (!command.startsWith('!') || !response) {
+    showNotice('Command must start with "!" and response cannot be empty.');
+    return;
+  }
+  await db.ref('moderation/customBotResponses').push({ command, text: response });
+  botCommandInput.value = '';
+  botResponseInput.value = '';
+});
+
+/* ================== INIT ================== */
+loadAutoBan();
+loadChat('main');
+</script>
+</body>
+</html>

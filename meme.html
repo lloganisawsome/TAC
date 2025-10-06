@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TACTube Memes</title>
+<style>
+body {margin:0; font-family: Arial, sans-serif; background:#0d0d0d; color:#c7f0d4;}
+header {display:flex; justify-content:space-between; align-items:center; padding:10px; background:#111; border-bottom:2px solid #1ec97e;}
+header h1 {color:#1ec97e;}
+header button {cursor:pointer; padding:5px 10px; border:2px solid #1ec97e; border-radius:5px; background:#0d0d0d; color:#1ec97e; font-weight:bold;}
+main {padding:10px; display:flex; overflow-x:auto; gap:10px; scroll-behavior:smooth;}
+main.grid {flex-wrap:wrap; justify-content:flex-start; overflow-x:hidden;}
+.meme-container {min-width:250px; max-width:250px; border:2px solid #1ec97e; border-radius:8px; background:#111; padding:5px; flex-shrink:0;}
+.meme-container img {width:100%; border-radius:5px;}
+.reactions {display:flex; justify-content:space-between; margin-top:5px; flex-wrap:wrap; gap:5px;}
+.reaction-btn {padding:5px; border-radius:5px; background:#0d0d0d; border:1px solid #1ec97e; color:#1ec97e; cursor:pointer; flex:1; text-align:center;}
+.reaction-btn:hover {background:#1ec97e; color:#0d0d0d;}
+/* Floating home button */
+.home-btn {
+  position: fixed;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgb(25, 255, 160);
+  color: black;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  transition: background-color 0.2s;
+  z-index: 1000;
+}
+.home-btn:hover {
+  background-color: rgb(20, 220, 140);
+}
+}
+</style>
+</head>
+<body>
+
+<!-- Home Button -->
+<a href="index.html" class="home-btn">🏠 Home</a>
+
+<header>
+<h1>TACTube Memes</h1>
+<div>
+  <button id="viewToggle">Switch View</button>
+  <button id="addMeme">Add Meme</button>
+</div>
+</header>
+
+<main id="memesContainer"></main>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// Username
+function setUsername(name){document.cookie=`username=${name}; path=/; max-age=31536000`;}
+function getUsername(){const m=document.cookie.match(/username=([^;]+)/); return m?m[1]:null;}
+let username=getUsername(); if(!username){username=prompt("What's your name?"); setUsername(username);}
+let userId=username;
+
+const memesContainer = document.getElementById('memesContainer');
+const viewToggle = document.getElementById('viewToggle');
+const addMemeBtn = document.getElementById('addMeme');
+let isGrid=false;
+
+// Emoji map
+const reactionTypes = {
+  like:'👍',
+  dislike:'👎',
+  laughing:'😂',
+  fire:'🔥',
+  smile:'😬',
+  crying:'😢',
+  skull:'💀'
+};
+
+// Load memes
+function loadMemes(){
+  db.ref('memes/').on('value', snapshot=>{
+    memesContainer.innerHTML='';
+    const memes = snapshot.val() || {};
+    Object.keys(memes).forEach(key=>{
+      const meme = memes[key];
+      const memeDiv = document.createElement('div');
+      memeDiv.classList.add('meme-container');
+
+      const img = document.createElement('img');
+      img.src = meme.url || '';
+      memeDiv.appendChild(img);
+
+      const reactionsDiv = document.createElement('div');
+      reactionsDiv.classList.add('reactions');
+
+      for(const r in reactionTypes){
+        const btn = document.createElement('button');
+        btn.classList.add('reaction-btn');
+        const count = meme.reactions?.[r] ? Object.keys(meme.reactions[r]).length : 0;
+        btn.innerText = `${reactionTypes[r]} ${count}`;
+        btn.onclick = ()=>{
+          const path = `memes/${key}/reactions/${r}/${userId}`;
+          db.ref(path).once('value').then(snap=>{
+            if(snap.exists()){ db.ref(path).remove(); }
+            else{ db.ref(path).set(true); }
+          });
+        };
+        reactionsDiv.appendChild(btn);
+      }
+
+      memeDiv.appendChild(reactionsDiv);
+      memesContainer.appendChild(memeDiv);
+    });
+  });
+}
+
+// Switch view
+viewToggle.onclick = ()=>{
+  isGrid = !isGrid;
+  if(isGrid) memesContainer.classList.add('grid');
+  else memesContainer.classList.remove('grid');
+};
+
+// Add meme
+addMemeBtn.onclick = ()=>{
+  const url = prompt("Enter meme image URL:");
+  if(!url) return;
+  db.ref('memes/').push({url, reactions:{}});
+};
+
+loadMemes();
+</script>
+</body>
+</html>

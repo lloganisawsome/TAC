@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TACTube</title>
+<style>
+body {margin:0; font-family: Arial, sans-serif; background-color:#0d0d0d; color:#c7f0d4;}
+header {display:flex; justify-content: space-between; align-items:center; padding:10px; background-color:#111; border-bottom:2px solid #1ec97e;}
+#searchBar {flex:1; margin-left:10px; padding:6px 10px; border-radius:5px; border:none; background-color:#1a1a1a; color:#c7f0d4;}
+#searchBar::placeholder {color:#5fbd8f;}
+main {padding:10px;}
+.video-container {margin-bottom:20px;}
+.video-container img {
+    width:320px;        /* limit width like YouTube thumbnails */
+    height:auto;        /* keep aspect ratio */
+    border-radius:5px;
+    border:2px solid #1ec97e;
+    cursor:pointer;
+    display:block;
+    margin-bottom:5px;
+}
+.video-container h3 {margin:5px 0; color:#1ec97e;}
+.bottom-bar {position:fixed; bottom:0; width:100%; display:flex; justify-content:space-around; padding:10px 0; background-color:#111; border-top:2px solid #1ec97e;}
+.bottom-bar button {padding:10px 20px; border:2px solid #1ec97e; border-radius:5px; background-color:#0d0d0d; color:#1ec97e; font-weight:bold; transition:all 0.2s ease;}
+.bottom-bar button:hover {background-color:#1ec97e; color:#0d0d0d;}
+
+/* Popup */
+#videoPopup {display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.95); z-index:9999; flex-direction: column; justify-content:center; align-items:center; padding:20px;}
+#popupHeader {text-align:center; margin-bottom:10px;}
+#popupFrame {
+    width:90vw;
+    height:50vw;
+    max-height:80vh;
+    border:2px solid #1ec97e;
+    border-radius:10px;
+    box-shadow:0 0 30px #1ec97e;
+}
+#videoPopup h1 {color:#1ec97e; margin:0;}
+#videoPopup h2 {color:#1ec97e; margin:5px 0;}
+#popupControls {margin-top:10px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+.popupBtn {padding:10px 20px; border:2px solid #1ec97e; border-radius:8px; background-color:#0d0d0d; color:#1ec97e; font-weight:bold; cursor:pointer; transition:all 0.2s ease;}
+.popupBtn:hover {background-color:#1ec97e; color:#0d0d0d;}
+.likesDislikes {margin-top:10px; display:flex; gap:20px; justify-content:center; font-weight:bold;}
+#commentsSection {margin-top:15px; width:90%; max-height:200px; overflow-y:auto; border-top:2px solid #1ec97e; padding-top:10px;}
+.comment {margin-bottom:5px; padding:5px; border-bottom:1px solid #1ec97e;}
+.comment span {font-weight:bold;}
+#newComment {width:80%; padding:6px; margin-top:5px; border-radius:5px; border:none; background-color:#1a1a1a; color:#c7f0d4;}
+#addCommentBtn {margin-top:5px;}
+#adminControls {display:none; margin-top:10px; gap:10px; flex-wrap:wrap;}
+.adminBtn {background-color:red; border-color:#ff5555;}
+.adminBtn:hover {background-color:#ff5555; color:#0d0d0d;}
+</style>
+</head>
+<body>
+
+<header>
+<h1 style="color:#1ec97e;">TACTube</h1>
+<input type="text" id="searchBar" placeholder="Search...">
+</header>
+
+<main id="content"><p>Welcome! Loading videos...</p></main>
+
+<div class="bottom-bar">
+<button onclick="showHome()">Home</button>
+<button onclick="showAdd()">Add</button>
+<button onclick="showProfile()">Profile</button>
+</div>
+
+<div id="videoPopup">
+    <div id="popupHeader">
+        <h1>TACTube</h1>
+        <h2 id="popupTitle"></h2>
+        <p id="viewCount" style="color:#5fbd8f;">Views: 0</p>
+    </div>
+    <iframe id="popupFrame" src="" frameborder="0" allowfullscreen></iframe>
+    <div class="likesDislikes">
+        <span id="likeCount" class="popupBtn">👍 0</span>
+        <span id="dislikeCount" class="popupBtn">👎 0</span>
+    </div>
+    <div id="commentsSection"></div>
+    <input type="text" id="newComment" placeholder="Add a comment...">
+    <button class="popupBtn" id="addCommentBtn">Comment</button>
+    <div id="adminControls">
+        <button class="popupBtn adminBtn" id="resetLikesBtn">Reset Likes/Dislikes</button>
+        <button class="popupBtn adminBtn" id="toggleCommentsBtn">Toggle Comments</button>
+        <button class="popupBtn adminBtn" id="deleteVideoBtn">Delete Video</button>
+    </div>
+    <button class="popupBtn" id="closePopup">Close</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+<script>
+// Firebase
+const firebaseConfig = {
+  apiKey:"AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain:"taclogin-ab38e.firebaseapp.com",
+  databaseURL:"https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId:"taclogin-ab38e",
+  storageBucket:"taclogin-ab38e.firebasestorage.app",
+  messagingSenderId:"937853298051",
+  appId:"1:937853298051:web:119ccc7b5499514bd442b6"
+};
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database();
+
+// Username
+function setUsername(name){document.cookie=`username=${name}; path=/; max-age=31536000`;}
+function getUsername(){const m=document.cookie.match(/username=([^;]+)/); return m?m[1]:null;}
+let username=getUsername(); if(!username){username=prompt("What's your name?"); setUsername(username);}
+let userId=username;
+
+let adminMode=false;
+let currentVideoId=null;
+let userVote='none';
+let commentsEnabled=true;
+
+// Convert YouTube URL to embed
+function toYouTubeEmbed(url){
+  const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  if(match){return "https://www.youtube.com/embed/" + match[1];}
+  return url;
+}
+
+// Load videos
+function loadVideos(){
+  const content=document.getElementById('content'); content.innerHTML='';
+  db.ref('videos/').on('value',snapshot=>{
+    content.innerHTML='';
+    snapshot.forEach(child=>{
+      const data=child.val(); const key=child.key;
+      const container=document.createElement('div'); container.classList.add('video-container');
+      const thumb=document.createElement('img'); thumb.src=data.thumbnail;
+      thumb.onclick=()=>openPopup(key,data.title,data.video);
+      const title=document.createElement('h3');
+      title.textContent=data.title+" (Views: "+(data.views||0)+")";
+      container.appendChild(thumb); container.appendChild(title);
+      content.appendChild(container);
+    });
+  });
+}
+
+// Popup & controls
+const popup=document.getElementById('videoPopup');
+const popupFrame=document.getElementById('popupFrame');
+const popupTitle=document.getElementById('popupTitle');
+const closePopupBtn=document.getElementById('closePopup');
+const likeCount=document.getElementById('likeCount');
+const dislikeCount=document.getElementById('dislikeCount');
+const commentsSection=document.getElementById('commentsSection');
+const newComment=document.getElementById('newComment');
+const addCommentBtn=document.getElementById('addCommentBtn');
+const viewCount=document.getElementById('viewCount');
+const adminControls=document.getElementById('adminControls');
+const resetLikesBtn=document.getElementById('resetLikesBtn');
+const toggleCommentsBtn=document.getElementById('toggleCommentsBtn');
+const deleteVideoBtn=document.getElementById('deleteVideoBtn');
+
+function updateVoteButtons(){
+  if(userVote==='like'){likeCount.style.backgroundColor='#1ec97e'; dislikeCount.style.backgroundColor='#0d0d0d';}
+  else if(userVote==='dislike'){dislikeCount.style.backgroundColor='#1ec97e'; likeCount.style.backgroundColor='#0d0d0d';}
+  else{likeCount.style.backgroundColor='#0d0d0d'; dislikeCount.style.backgroundColor='#0d0d0d';}
+}
+
+function openPopup(videoId,title,videoSrc){
+  currentVideoId=videoId;
+  popup.style.display='flex';
+  popupTitle.textContent=title;
+  popupFrame.src=toYouTubeEmbed(videoSrc);
+
+  db.ref('videos/'+videoId+'/views').transaction(v=>v?v+1:1);
+  db.ref('videos/'+videoId+'/views').once('value',snap=>{viewCount.textContent='Views: '+snap.val();});
+
+  db.ref('videos/'+videoId+'/likes').on('value',snap=>{likeCount.textContent='👍 '+(snap.val()||0);});
+  db.ref('videos/'+videoId+'/dislikes').on('value',snap=>{dislikeCount.textContent='👎 '+(snap.val()||0);});
+
+  db.ref('videos/'+videoId+'/userVotes/'+userId).once('value',snap=>{userVote=snap.val()||'none'; updateVoteButtons();});
+
+  if(commentsEnabled){
+    db.ref('videos/'+videoId+'/comments').on('value',snap=>{
+      commentsSection.innerHTML='';
+      snap.forEach(c=>{
+        const cData=c.val(); const cKey=c.key;
+        const div=document.createElement('div'); div.classList.add('comment');
+        div.innerHTML=`<span>${cData.user}:</span> ${cData.text}`;
+        if(adminMode){
+          const delBtn=document.createElement('button'); delBtn.textContent='Delete'; delBtn.classList.add('popupBtn','adminBtn');
+          delBtn.onclick=()=>db.ref('videos/'+videoId+'/comments/'+cKey).remove(); div.appendChild(delBtn);
+        }
+        commentsSection.appendChild(div);
+      });
+    });
+  } else {commentsSection.innerHTML='<i>Comments disabled by admin</i>';}
+
+  adminControls.style.display=adminMode?'flex':'none';
+}
+
+closePopupBtn.onclick=()=>{popup.style.display='none'; popupFrame.src=''; currentVideoId=null;};
+
+// Likes/Dislikes
+likeCount.onclick=()=>{
+  if(!currentVideoId) return;
+  const votesRef=db.ref('videos/'+currentVideoId+'/userVotes/'+userId);
+  votesRef.once('value',snap=>{
+    const prev=snap.val()||'none';
+    if(prev==='like') return;
+    const deltaLike=1; const deltaDislike=prev==='dislike'?-1:0;
+    db.ref('videos/'+currentVideoId+'/likes').transaction(v=>v?v+deltaLike:1);
+    db.ref('videos/'+currentVideoId+'/dislikes').transaction(v=>v+deltaDislike);
+    votesRef.set('like'); userVote='like'; updateVoteButtons();
+  });
+};
+dislikeCount.onclick=()=>{
+  if(!currentVideoId) return;
+  const votesRef=db.ref('videos/'+currentVideoId+'/userVotes/'+userId);
+  votesRef.once('value',snap=>{
+    const prev=snap.val()||'none';
+    if(prev==='dislike') return;
+    const deltaDislike=1; const deltaLike=prev==='like'?-1:0;
+    db.ref('videos/'+currentVideoId+'/dislikes').transaction(v=>v?v+deltaDislike:1);
+    db.ref('videos/'+currentVideoId+'/likes').transaction(v=>v+deltaLike);
+    votesRef.set('dislike'); userVote='dislike'; updateVoteButtons();
+  });
+};
+
+// Comments
+addCommentBtn.onclick=()=>{
+  if(!currentVideoId || !commentsEnabled) return;
+  const text=newComment.value.trim(); if(!text) return;
+  db.ref('videos/'+currentVideoId+'/comments').push({user:username,text});
+  newComment.value='';
+};
+
+// Admin buttons
+resetLikesBtn.onclick=()=>{
+  if(currentVideoId){db.ref('videos/'+currentVideoId+'/likes').set(0); db.ref('videos/'+currentVideoId+'/dislikes').set(0);}
+};
+toggleCommentsBtn.onclick=()=>{
+  commentsEnabled=!commentsEnabled;
+  openPopup(currentVideoId,popupTitle.textContent,popupFrame.src);
+};
+deleteVideoBtn.onclick=()=>{
+  if(currentVideoId){db.ref('videos/'+currentVideoId).remove(); popup.style.display='none';}
+};
+
+// Bottom bar
+window.showHome=loadVideos;
+window.showAdd=function(){
+  const title=prompt("Enter video title:"); if(!title)return;
+  const thumb=prompt("Enter thumbnail link:"); if(!thumb)return;
+  const video=prompt("Enter YouTube link:"); if(!video)return;
+  db.ref('videos/').push({title,thumbnail:thumb,video,likes:0,dislikes:0,views:0});
+};
+window.showProfile=function(){alert('Logged in as '+username);};
+
+// Admin mode
+document.getElementById('searchBar').addEventListener('keypress',e=>{
+  if(e.key==='Enter'){
+    const query=e.target.value;
+    if(query==='tacdev1234'){adminMode=true; alert('Admin mode activated!'); adminControls.style.display='flex';} 
+    else alert('Search for: '+query);
+  }
+});
+
+loadVideos();
+</script>
+</body>
+</html>

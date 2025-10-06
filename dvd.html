@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Multi DVD Logos</title>
+<style>
+  body { margin:0; overflow:hidden; background:#000; }
+  #settings { 
+    position:absolute; top:10px; left:10px; background:#222; color:#fff; 
+    padding:10px; border-radius:5px; display:none;
+  }
+  #settings input { width:60px; margin-left:5px; }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<div id="settings">
+  <label>Speed: <input id="speed" type="number" value="5"></label><br><br>
+  <label>Size: <input id="size" type="number" value="150"></label><br><br>
+  <label>Logos: <input id="numLogos" type="number" value="5" min="1" max="10"></label><br><br>
+  <button id="applySettings">Apply</button>
+  <button id="closeSettings">Close</button>
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => { width=canvas.width=window.innerWidth; height=canvas.height=window.innerHeight; });
+
+// Load DVD images
+const dvdFolder = "dvd/";
+const logoCount = 7;
+let images = [];
+for(let i=1;i<=logoCount;i++){
+  let img = new Image();
+  img.src = dvdFolder + i + ".png";
+  images.push(img);
+}
+
+// Shuffle helper
+function shuffle(array) {
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i], array[j]]=[array[j], array[i]];
+  }
+  return array;
+}
+
+// Logo objects
+let logos = [];
+
+function initLogos(num) {
+  logos = [];
+  let queue = shuffle([...images]);
+  for(let i=0;i<num;i++){
+    let img = queue.shift();
+    if(!img) img = images[Math.floor(Math.random()*images.length)];
+    logos.push({
+      img: img,
+      x: Math.random()*(width-150),
+      y: Math.random()*(height-150),
+      dx: Number(document.getElementById('speed').value)*(Math.random()<0.5?-1:1),
+      dy: Number(document.getElementById('speed').value)*(Math.random()<0.5?-1:1),
+      size: Number(document.getElementById('size').value)
+    });
+  }
+}
+
+initLogos(Number(document.getElementById('numLogos').value));
+
+// Click to open settings
+canvas.addEventListener('click', e=>{
+  for(let logo of logos){
+    if(e.offsetX>logo.x && e.offsetX<logo.x+logo.size && e.offsetY>logo.y && e.offsetY<logo.y+logo.size){
+      document.getElementById('settings').style.display='block';
+      break;
+    }
+  }
+});
+
+document.getElementById('applySettings').onclick = ()=>{
+  const speed = Number(document.getElementById('speed').value);
+  const size = Number(document.getElementById('size').value);
+  const numLogos = Number(document.getElementById('numLogos').value);
+  initLogos(numLogos);
+};
+
+document.getElementById('closeSettings').onclick = ()=>{
+  document.getElementById('settings').style.display='none';
+};
+
+// Animate
+function animate(){
+  ctx.clearRect(0,0,width,height);
+  for(let logo of logos){
+    logo.x += logo.dx;
+    logo.y += logo.dy;
+
+    if(logo.x + logo.size > width || logo.x < 0){
+      logo.dx = -logo.dx;
+      pickNextLogo(logo);
+    }
+    if(logo.y + logo.size > height || logo.y < 0){
+      logo.dy = -logo.dy;
+      pickNextLogo(logo);
+    }
+
+    ctx.drawImage(logo.img, logo.x, logo.y, logo.size, logo.size);
+  }
+  requestAnimationFrame(animate);
+}
+
+function pickNextLogo(logoObj){
+  // pick random logo from images
+  let next = images[Math.floor(Math.random()*images.length)];
+  logoObj.img = next;
+}
+
+animate();
+</script>
+</body>
+</html>

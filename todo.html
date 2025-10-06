@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC To-Do</title>
+<style>
+  body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
+  header { width:100%; text-align:center; padding:15px; font-size:1.5em; border-bottom:2px solid #19FFA0; }
+  .section { max-width:400px; width:100%; margin-top:20px; display:flex; flex-direction:column; align-items:center; }
+  input, button { margin:5px 0; padding:10px; border:none; border-radius:8px; width:100%; }
+  button { background:#19FFA0; color:black; font-weight:bold; cursor:pointer; }
+  button:hover { background:#13CCA0; }
+  ul { list-style:none; padding:0; width:100%; }
+  li { background:#111; padding:8px; margin:4px 0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; }
+  li.completed { text-decoration: line-through; opacity:0.7; }
+  /* Home button */
+  #homeBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    border-radius:50%;
+    width:50px;
+    height:50px;
+    font-weight:bold;
+    font-size:1em;
+    background:#19FFA0;
+    color:black;
+    cursor:pointer;
+  }
+  #homeBtn:hover { background:#13CCA0; }
+</style>
+</head>
+<body>
+
+<!-- Home Button -->
+<button id="homeBtn" onclick="location.href='index.html'">🏠</button>
+
+<header>TAC To-Do</header>
+
+<div class="section">
+  <input type="text" id="username" placeholder="Enter your name">
+  <button id="loadBtn">Load My To-Do List</button>
+</div>
+
+<div class="section" id="todoSection" style="display:none;">
+  <input type="text" id="taskInput" placeholder="New task">
+  <button id="addBtn">Add Task</button>
+  <ul id="taskList"></ul>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let username = "";
+let tasks = {};
+
+const loadBtn = document.getElementById("loadBtn");
+const addBtn = document.getElementById("addBtn");
+
+loadBtn.addEventListener("click", async ()=>{
+  username = document.getElementById("username").value.trim();
+  if(!username) return;
+  document.getElementById("todoSection").style.display="flex";
+  const snapshot = await get(ref(db, "todos/"+username));
+  tasks = snapshot.val() || {};
+  renderTasks();
+});
+
+addBtn.addEventListener("click", async ()=>{
+  const taskText = document.getElementById("taskInput").value.trim();
+  if(!taskText) return;
+  const key = Date.now().toString();
+  tasks[key] = {text: taskText, completed:false};
+  await update(ref(db, "todos/"+username), tasks);
+  renderTasks();
+  document.getElementById("taskInput").value="";
+});
+
+function renderTasks(){
+  const list = document.getElementById("taskList");
+  list.innerHTML="";
+  Object.keys(tasks).forEach(key=>{
+    const t = tasks[key];
+    const li = document.createElement("li");
+    li.className = t.completed ? "completed" : "";
+    li.innerHTML = `
+      <span onclick="toggleTask('${key}')" style="flex:1; cursor:pointer;">${t.text}</span>
+      <button onclick="deleteTask('${key}')">Delete</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+window.toggleTask = async function(key){
+  tasks[key].completed = !tasks[key].completed;
+  await update(ref(db, "todos/"+username), tasks);
+  renderTasks();
+}
+
+window.deleteTask = async function(key){
+  delete tasks[key];
+  await update(ref(db, "todos/"+username), tasks);
+  renderTasks();
+}
+</script>
+
+</body>
+</html>

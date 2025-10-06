@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Ultimate Spacebar Clicker + Dev/Admin</title>
+<style>
+:root { --bg: #0b0b0b; --accent: #00ff88; --text: #e0e0e0; }
+body { margin:0; font-family: monospace; background: var(--bg); color: var(--text); text-align:center; }
+h1 { margin-top:20px; color: var(--accent); }
+button { background:#111; color: var(--accent); border:2px solid var(--accent); padding:10px 20px; margin:10px; cursor:pointer; }
+#clickBtn { font-size:24px; padding:20px 40px; }
+#powerupPopup { display:none; padding:10px; border:2px solid var(--accent); margin:10px auto; width:220px; font-size:16px; cursor:pointer; }
+#tabs { margin-top:20px; }
+.tabBtn { padding:10px 20px; margin:5px; border:2px solid var(--accent); cursor:pointer; }
+.tabBtn.active { background: var(--accent); color:black; }
+.tabContent { display:none; margin-top:20px; }
+#leaderboard { max-width:400px; margin:20px auto; text-align:left; border:1px solid var(--accent); padding:10px; }
+.themeBtn { margin:5px; padding:5px 10px; border:1px solid var(--accent); cursor:pointer; }
+#devMenu { position:fixed; top:10px; right:10px; background:#111; border:2px solid var(--accent); padding:10px; display:none; z-index:999; max-width:250px; text-align:left; }
+#searchLeaderboard { width:90%; margin:5px 0; padding:5px; background:#111; color: var(--accent); border:1px solid var(--accent); }
+#homeBtn { position:fixed; top:10px; left:10px; }
+.releaseBtn { background:#222; border:1px solid #ff4444; color:#ff4444; padding:2px 5px; margin-left:5px; cursor:pointer; font-size:10px; }
+</style>
+</head>
+<body>
+
+<h1>🚀 Ultimate Spacebar Clicker</h1>
+
+<button id="homeBtn" onclick="location.href='index.html'">🏠 Home</button>
+
+<div id="tabs">
+  <button class="tabBtn active" data-tab="gameTab">Game</button>
+  <button class="tabBtn" data-tab="shopTab">Shop</button>
+  <button class="tabBtn" data-tab="themeTab">Themes</button>
+</div>
+
+<div id="gameTab" class="tabContent" style="display:block;">
+  <p id="stats">Clicks: 0 | CPS: 0 | AutoClicker: 0</p>
+  <button id="clickBtn">CLICK</button>
+  <div id="powerupPopup"></div>
+  <button id="saveBtn">💾 Save</button>
+  <div id="eventPopup" style="display:none; font-size:18px; color:#ff0; margin-top:10px;"></div>
+</div>
+
+<div id="shopTab" class="tabContent">
+  <h2>Autoclicker Shop</h2>
+  <p id="autoLevel">Level 0 (CPS 0) | Cost: 50</p>
+  <button id="buyAuto">Buy Autoclicker</button>
+</div>
+
+<div id="themeTab" class="tabContent">
+  <h2>Themes</h2>
+  <button class="themeBtn" data-bg="#0b0b0b" data-accent="#00ff88">Default</button>
+  <button class="themeBtn" data-bg="#fff" data-accent="#000">White/Black</button>
+  <button class="themeBtn" data-bg="#000" data-accent="#f0f">Rainbow</button>
+</div>
+
+<div id="leaderboard">
+  <h2>Leaderboard</h2>
+  <input type="text" id="searchLeaderboard" placeholder="Search players...">
+  <ol id="lbList"></ol>
+</div>
+
+<div id="devMenu">
+  <h3>DEV MENU</h3>
+  <button id="spawnAll">Spawn All Powerups</button><br>
+  <button id="forceFrenzy">Force Frenzy</button>
+  <button id="forceDouble">Force DoubleClicks</button>
+  <button id="forceLucky">Force LuckyBoost</button>
+  <button id="forceTime">Force TimeWarp</button>
+  <button id="triggerRare">Trigger Super Rare Event</button>
+  <button id="resetGame">Reset Game</button>
+  <button id="devSave">Save Game</button>
+  <hr>
+  <h4>Player Accounts</h4>
+  <div id="devPlayersList">Loading...</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+function setCookie(name,value,days=365){ const d=new Date(); d.setTime(d.getTime()+days*24*60*60*1000); document.cookie=`${name}=${value};expires=${d.toUTCString()};path=/;SameSite=Strict`; }
+function getCookie(name){ const m=document.cookie.match(new RegExp("(^| )"+name+"=([^;]+)")); return m?m[2]:null; }
+function uuid(){ return crypto.randomUUID(); }
+
+let username, token;
+let clicks=0, bestCPS=0, autoClickerLevel=0;
+let frenzyActive=false, doubleClicks=false;
+let clicksThisSecond=0;
+
+async function loginFlow() {
+    // ask for username every login
+    username = prompt("Enter your name:") || "Player";
+    token = uuid();
+
+    const playerRef = ref(db, `clickerGame/players/${username}`);
+    const snap = await get(playerRef);
+
+    if(snap.exists()) {
+        // overwrite token to allow login from any device
+        await update(playerRef, { token });
+    } else {
+        // create new account
+        await set(playerRef, {
+            name: username,
+            token,
+            totalClicks: 0,
+            bestCPS: 0,
+            autoClickerLevel: 0
+        });
+    }
+
+    setCookie("clickerToken", token);
+    setCookie("clickerName", username);
+
+    if(username === "Logan") document.getElementById("devMenu").style.display = "block";
+    loadState(snap.exists() ? snap.val() : { totalClicks:0, bestCPS:0, autoClickerLevel:0 });
+}
+
+// -------------------- rest of game logic --------------------
+function loadState(data){
+    clicks = data.totalClicks || 0;
+    bestCPS = data.bestCPS || 0;
+    autoClickerLevel = data.autoClickerLevel || 0;
+    updateStats();
+    updateShop();
+}
+
+document.querySelectorAll(".tabBtn").forEach(btn=>btn.onclick=()=>{
+    document.querySelectorAll(".tabContent").forEach(tc=>tc.style.display="none");
+    document.querySelectorAll(".tabBtn").forEach(b=>b.classList.remove("active"));
+    document.getElementById(btn.dataset.tab).style.display="block";
+    btn.classList.add("active");
+});
+
+function updateStats(){ document.getElementById("stats").textContent=`Clicks: ${Math.floor(clicks)} | CPS: ${bestCPS} | AutoClicker: ${autoClickerLevel}`; }
+function autoCPS(level){ return Math.floor(Math.pow(level,2.15)); }
+function autoCost(level){ return Math.floor(50*Math.pow(1.1,level)); }
+function updateShop(){ document.getElementById("autoLevel").textContent=`Level ${autoClickerLevel} (CPS ${autoCPS(autoClickerLevel)}) | Cost: ${autoCost(autoClickerLevel)}`; }
+
+document.getElementById("buyAuto").onclick=()=>{
+  let cost=autoCost(autoClickerLevel);
+  if(clicks>=cost && autoClickerLevel<100){ clicks-=cost; autoClickerLevel++; updateStats(); updateShop(); }
+};
+
+document.getElementById("clickBtn").onclick=()=>handleClick();
+document.body.onkeydown=(e)=>{ if(e.code==="Space") handleClick(); };
+function handleClick(){ let add=1; if(doubleClicks) add*=2; if(frenzyActive) add*=10; clicks+=add; clicksThisSecond+=add; updateStats(); }
+
+setInterval(()=>{
+  if(autoClickerLevel>0){
+    let add=autoCPS(autoClickerLevel); if(frenzyActive) add*=10; clicks+=add; clicksThisSecond+=add; updateStats();
+  }
+},1000);
+
+setInterval(()=>{
+  if(clicksThisSecond>bestCPS) bestCPS=clicksThisSecond;
+  clicksThisSecond=0; updateStats();
+},1000);
+
+async function saveGame(){ await update(ref(db,`clickerGame/players/${username}`),{totalClicks:clicks,bestCPS,autoClickerLevel,token}); console.log("💾 Game saved!"); }
+document.getElementById("saveBtn").onclick=saveGame;
+setInterval(saveGame,5*60*1000);
+
+const powerups=[
+  {name:"Frenzy",type:"good",effect:()=>{frenzyActive=true; setTimeout(()=>frenzyActive=false,10000);}},
+  {name:"DoubleClicks",type:"good",effect:()=>{doubleClicks=true; setTimeout(()=>doubleClicks=false,20000);}},
+  {name:"LuckyBoost",type:"good",effect:()=>{clicks+=50; updateStats();}},
+  {name:"TimeWarp",type:"good",effect:()=>{autoClickerLevel+=1; updateShop(); setTimeout(()=>{autoClickerLevel-=1; updateShop();},15000);}},
+  {name:"HalfClicks",type:"bad",effect:()=>{autoClickerLevel=Math.max(1,Math.floor(autoClickerLevel/2)); updateShop();}},
+  {name:"NegativeClicks",type:"bad",effect:()=>{clicks=Math.max(0,clicks-50); updateStats();}},
+  {name:"Sluggish",type:"bad",effect:()=>{doubleClicks=false; frenzyActive=false;}}
+];
+function spawnPowerup(){ 
+  let rare=Math.random()<0.005;
+  if(rare){ superRareEvent(); return; }
+  let p=powerups[Math.floor(Math.random()*powerups.length)]; 
+  const popup=document.getElementById("powerupPopup"); 
+  popup.textContent=`Powerup: ${p.name}`; 
+  popup.style.display="block"; 
+  popup.onclick=()=>{p.effect(); popup.style.display="none";}; 
+  setTimeout(()=>{popup.style.display="none";},20000); 
+}
+setInterval(spawnPowerup,300000);
+
+function superRareEvent(){
+  const popup=document.getElementById("eventPopup");
+  popup.textContent="🌟 Lucky Event! All good powerups activated! 🌟";
+  popup.style.display="block";
+  [0,1,2,3].forEach(i=>powerups[i].effect());
+  setTimeout(()=>{popup.style.display="none";},20000);
+}
+
+document.getElementById("spawnAll").onclick=()=>{powerups.forEach(p=>p.effect());};
+document.getElementById("forceFrenzy").onclick=()=>{frenzyActive=true; setTimeout(()=>frenzyActive=false,10000);};
+document.getElementById("forceDouble").onclick=()=>{doubleClicks=true; setTimeout(()=>doubleClicks=false,20000);};
+document.getElementById("forceLucky").onclick=()=>{clicks+=50; updateStats();};
+document.getElementById("forceTime").onclick=()=>{autoClickerLevel+=1; updateShop(); setTimeout(()=>{autoClickerLevel-=1; updateShop();},15000);};
+document.getElementById("triggerRare").onclick=superRareEvent;
+document.getElementById("devSave").onclick=saveGame;
+document.getElementById("resetGame").onclick=()=>{ clicks=0; autoClickerLevel=0; bestCPS=0; updateStats(); updateShop(); saveGame(); };
+
+const lbList=document.getElementById("lbList");
+const searchInput=document.getElementById("searchLeaderboard");
+function updateLeaderboard(filter=""){
+  get(ref(db,"clickerGame/players")).then(snap=>{
+    lbList.innerHTML="";
+    const players=[];
+    snap.forEach(child => players.push(child.val()));
+    players.sort((a,b)=>b.totalClicks-b.totalClicks);
+    players.filter(p=>p.name.toLowerCase().includes(filter.toLowerCase())).forEach(p=>{
+      const li=document.createElement("li");
+      li.textContent=`${p.name}: ${Math.floor(p.totalClicks)} clicks (CPS ${p.bestCPS})`;
+      lbList.appendChild(li);
+    });
+  });
+}
+updateLeaderboard();
+searchInput.addEventListener("input",()=>{
+  const val=searchInput.value.trim().toLowerCase();
+  if(val==="developer" && username!=="Logan") document.getElementById("devMenu").style.display="block";
+  else if(username!=="Logan") document.getElementById("devMenu").style.display="none";
+  updateLeaderboard(val);
+});
+setInterval(()=>updateLeaderboard(searchInput.value.trim()),10000);
+
+let hue=0;
+let rainbowTheme=false;
+document.querySelectorAll(".themeBtn").forEach(btn=>btn.onclick=()=>{
+  if(btn.textContent==="Rainbow"){ rainbowTheme=true; } 
+  else{ rainbowTheme=false; document.documentElement.style.setProperty("--bg",btn.dataset.bg); document.documentElement.style.setProperty("--accent",btn.dataset.accent); }
+});
+setInterval(()=>{ if(rainbowTheme){ hue=(hue+1)%360; document.documentElement.style.setProperty("--accent", `hsl(${hue},100%,50%)`); } },100);
+
+async function loadDevPlayers(){
+  const container=document.getElementById("devPlayersList");
+  const snap=await get(ref(db,"clickerGame/players"));
+  container.innerHTML="";
+  snap.forEach(child=>{
+    const p=child.val();
+    const div=document.createElement("div");
+    div.textContent=p.name;
+    const btn=document.createElement("button");
+    btn.textContent="Release";
+    btn.className="releaseBtn";
+    btn.onclick=async ()=>{
+      if(confirm(`Release ${p.name}?`)){
+        await update(ref(db,`clickerGame/players/${p.name}`),{token:""});
+        alert(`${p.name} has been released.`);
+      }
+    };
+    div.appendChild(btn);
+    container.appendChild(div);
+  });
+}
+
+loginFlow();
+</script>
+
+</body>
+</html>

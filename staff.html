@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #222; color: #e2e8f0; }
+        .theme-btn { background-color: rgb(103,173,91); transition: background-color 0.3s ease; }
+        .theme-btn:hover { background-color: rgb(93,155,81); }
+        .test-container { background-color: #1a1a1a; padding: 1rem; border-radius: 8px; }
+
+        /* Chat-specific styles */
+        .chat-container {
+            width: 100%;
+            background-color: #111;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #1a1a1a;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        .chat-log {
+            flex-grow: 1;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            border-bottom: 1px solid #333;
+            background-color: #1a1a1a;
+        }
+        .message {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .message-content {
+            flex-grow: 1;
+        }
+        .message-actions {
+            display: flex;
+            gap: 5px;
+            margin-top: 5px;
+        }
+        .message-actions button {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .message-actions button:hover {
+            background-color: #6a6a6a;
+        }
+        .message-actions button.ban { background-color: #e05555; }
+        .message-actions button.ban:hover { background-color: #c04545; }
+
+        .username {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .username.mod { color: #b7c8ff; }
+        .username.bot { color: #e05555; }
+        
+        .status-message {
+            text-align: center;
+            padding: 8px;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        .input-container {
+            display: flex;
+            padding: 10px;
+            background-color: #1a1a1a;
+        }
+        .command-input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #222;
+            color: #e2e8f0;
+            outline: none;
+        }
+        .command-input::placeholder { color: #999; }
+
+        /* Beta Tester Test Styles */
+        .beta-test-site {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        .beta-test-site h3 {
+            color: #111;
+        }
+        .beta-test-site button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+<div class="w-full max-w-2xl bg-[#111] rounded-lg shadow-xl p-8 space-y-8">
+    <div class="text-center mb-6">
+        <img src="https://placehold.co/140x140/4CAF50/fff?text=TAC" alt="TAC Logo" class="w-24 h-24 mx-auto rounded-full mb-4">
+        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Staff Application</h1>
+        <p id="user-id-display" class="text-sm text-gray-400"></p>
+    </div>
+
+    <form id="application-form" class="space-y-6">
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Your Name</label>
+            <input type="text" id="name" name="name" required class="w-full px-4 py-2 bg-[#222] border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition-colors duration-200">
+        </div>
+
+        <div>
+            <label for="role" class="block text-sm font-medium text-gray-300 mb-1">What role are you applying for?</label>
+            <select id="role" name="role" required class="w-full px-4 py-2 bg-[#222] border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
+                <option value="" disabled selected>Select a role...</option>
+                <option value="Mod">Mod</option>
+                <option value="Dev">Dev</option>
+                <option value="Game Finder">Game Finder</option>
+                <option value="Beta Tester">Beta Tester</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div id="mod-section" class="hidden space-y-4">
+            <div>
+                <p class="block text-sm font-medium text-gray-300 mb-2">Do you work well under stress?</p>
+                <label class="flex items-center text-sm text-gray-300 cursor-pointer">
+                    <input type="checkbox" id="can-stress" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
+                    <span class="ml-2">Yes, I can.</span>
+                </label>
+                <p id="mod-warning" class="mt-2 text-sm text-red-400 hidden">You must be able to work well under stress to apply as a Mod.</p>
+            </div>
+            <div id="mod-test-container" class="test-container">
+                <p class="text-sm font-semibold text-gray-300 mb-2">Mod Test: A bot is spamming the chat. Address the issue using the buttons. Choose wisely.</p>
+                <div class="chat-container">
+                    <div class="chat-header">Moderator Test Chat</div>
+                    <div class="chat-log" id="mod-chat-log">
+                        <div class="message">
+                            <div class="message-content">
+                                <span class="username mod">You</span>: Welcome to the chat. Your goal is to moderate a spam bot.
+                            </div>
+                        </div>
+                        <div class="message">
+                            <div class="message-content">
+                                <span class="username">User1</span>: hey everyone, how's it going?
+                            </div>
+                        </div>
+                        <div class="message bot-message" id="spambot-message">
+                            <div class="message-content">
+                                <span class="username bot">SpamBot</span>: Get free games and V-Bucks! Visit our shady website now!
+                            </div>
+                            <div class="message-actions">
+                                <button class="btn delete" data-action="delete">Delete</button>
+                                <button class="btn timeout" data-action="timeout">Timeout</button>
+                                <button class="btn ban" data-action="ban">Ban</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="status-message" id="mod-status-message"></div>
+                </div>
+                <p id="mod-test-warning" class="mt-2 text-sm text-red-400 hidden">You must pass the mod test to apply. Try again.</p>
+            </div>
+        </div>
+
+        <div id="dev-section" class="hidden space-y-4">
+            <div>
+                <p class="block text-sm font-medium text-gray-300 mb-2">Can you code in HTML, CSS, or JS?</p>
+                <label class="flex items-center text-sm text-gray-300 cursor-pointer">
+                    <input type="checkbox" id="can-code" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
+                    <span class="ml-2">Yes, I can.</span>
+                </label>
+                <p id="dev-warning" class="mt-2 text-sm text-red-400 hidden">You must be able to code to apply as Dev.</p>
+            </div>
+            <div class="test-container">
+                <p class="text-sm font-semibold text-gray-300 mb-2">Dev Test: There is a typo in this HTML snippet. Correct it below.</p>
+                <pre class="bg-[#222] p-4 rounded-md text-sm font-mono text-gray-400 mb-2"><code>&lt;p&gt;This is a parograph.&lt;/p&gt;</code></pre>
+                <textarea id="dev-test-input" rows="2" class="w-full px-3 py-2 bg-[#222] border border-gray-600 rounded-md text-sm font-mono"></textarea>
+                <p id="dev-test-warning" class="mt-2 text-sm text-red-400 hidden">Incorrect code. Please correct the typo to `paragraph`.</p>
+            </div>
+        </div>
+
+        <div id="game-finder-section" class="hidden">
+            <p class="block text-sm font-medium text-gray-300 mb-2">Do you know a lot of game sites?</p>
+            <label class="flex items-center text-sm text-gray-300 cursor-pointer">
+                <input type="checkbox" id="knows-sites" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
+                <span class="ml-2">Yes, I do.</span>
+            </label>
+            <p id="game-finder-warning" class="mt-2 text-sm text-red-400 hidden">You must know a lot of game sites to apply as Game Finder.</p>
+        </div>
+        
+        <div id="beta-tester-section" class="hidden space-y-4">
+            <div>
+                <p class="block text-sm font-medium text-gray-300 mb-2">Please confirm your skills below to apply as a Beta Tester.</p>
+                <div class="space-y-2">
+                    <label class="flex items-center text-sm text-gray-300 cursor-pointer">
+                        <input type="checkbox" id="find-errors" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
+                        <span class="ml-2">I am skilled at finding and reporting errors.</span>
+                    </label>
+                    <label class="flex items-center text-sm text-gray-300 cursor-pointer">
+                        <input type="checkbox" id="detailed-feedback" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
+                        <span class="ml-2">I can provide detailed feedback on user experience.</span>
+                    </label>
+                </div>
+                <p id="beta-tester-warning" class="mt-2 text-sm text-red-400 hidden">You must select both options to apply as a Beta Tester.</p>
+            </div>
+            <div class="test-container">
+                <p class="text-sm font-semibold text-gray-300 mb-2">Beta Tester Test: Find and report all 3 errors on the test site below.</p>
+                <div class="beta-test-site">
+                    <h3>Welcoome to our site!</h3>
+                    <img src="non-existent-image.png" alt="broken image">
+                    <p>We are excited to have you here. Please click the botton below to continue.</p>
+                    <button>Go Home</button>
+                </div>
+                <textarea id="beta-tester-test-input" rows="5" placeholder="List the errors you found here (e.g., '1. Typos...', '2. Broken images...', '3. Non-functional buttons...')" class="mt-2 w-full px-3 py-2 bg-[#222] border border-gray-600 rounded-md text-sm"></textarea>
+                <p id="beta-tester-test-warning" class="mt-2 text-sm text-red-400 hidden">You must report all three errors to pass the test.</p>
+            </div>
+        </div>
+
+        <div id="other-section" class="hidden space-y-4">
+            <p class="block text-sm font-medium text-gray-300 mb-2">What is the other role you would like to apply for?</p>
+            <input type="text" id="other-role-input" placeholder="e.g., Artist, Community Manager" class="w-full px-4 py-2 bg-[#222] border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition-colors duration-200">
+            <p class="block text-sm font-medium text-gray-300 mb-2">Please describe your relevant skills and experience.</p>
+            <textarea id="other-description-input" rows="4" placeholder="Describe your skills here..." class="w-full px-3 py-2 bg-[#222] border border-gray-600 rounded-md text-sm"></textarea>
+            <p id="other-warning" class="mt-2 text-sm text-red-400 hidden">Please provide a role and a description.</p>
+        </div>
+
+        <button type="submit" class="w-full py-2 px-4 theme-btn text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4CAF50] transition-all duration-300 transform hover:scale-105">
+            Submit Application
+        </button>
+    </form>
+
+    <div id="message-box" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-sm p-6 bg-gray-700 rounded-lg shadow-xl text-center z-50 hidden">
+        <p id="message-text" class="text-white font-semibold mb-4"></p>
+        <button id="close-message" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md">OK</button>
+    </div>
+
+    <div class="mt-8 pt-6 border-t border-gray-700">
+        <h2 class="text-xl font-bold text-gray-200 mb-4 text-center">Your Past Applications</h2>
+        <div id="applications-list" class="space-y-4">
+            <p class="text-center text-gray-400">Loading your applications...</p>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+    authDomain: "taclogin-ab38e.firebaseapp.com",
+    databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+    projectId: "taclogin-ab38e",
+    storageBucket: "taclogin-ab38e.firebasestorage.app",
+    messagingSenderId: "937853298051",
+    appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
+const sanitizedAppId = 'default_app_id'.replace(/[\.\-\[\]\#\$]/g, '_');
+
+const userId = 'user_' + Date.now() + '_' + Math.floor(Math.random()*1000);
+document.getElementById('user-id-display').textContent = `Your User ID: ${userId}`;
+
+const form = document.getElementById('application-form');
+const roleSelect = document.getElementById('role');
+const nameInput = document.getElementById('name');
+const applicationsList = document.getElementById('applications-list');
+const messageBox = document.getElementById('message-box');
+const messageText = document.getElementById('message-text');
+const closeMessageButton = document.getElementById('close-message');
+
+const devSection = document.getElementById('dev-section');
+const canCode = document.getElementById('can-code');
+const devTestInput = document.getElementById('dev-test-input');
+const devWarning = document.getElementById('dev-warning');
+const devTestWarning = document.getElementById('dev-test-warning');
+
+const modSection = document.getElementById('mod-section');
+const canStress = document.getElementById('can-stress');
+const modWarning = document.getElementById('mod-warning');
+const modTestWarning = document.getElementById('mod-test-warning');
+const modStatusMessage = document.getElementById('mod-status-message');
+const spambotMessage = document.getElementById('spambot-message');
+let modTestResult = null; // null, 'passed', 'barely', 'failed'
+
+const gameFinderSection = document.getElementById('game-finder-section');
+const knowsSites = document.getElementById('knows-sites');
+const gameFinderWarning = document.getElementById('game-finder-warning');
+
+const betaTesterSection = document.getElementById('beta-tester-section');
+const findErrors = document.getElementById('find-errors');
+const detailedFeedback = document.getElementById('detailed-feedback');
+const betaTesterTestInput = document.getElementById('beta-tester-test-input');
+const betaTesterWarning = document.getElementById('beta-tester-warning');
+const betaTesterTestWarning = document.getElementById('beta-tester-test-warning');
+
+const otherSection = document.getElementById('other-section');
+const otherRoleInput = document.getElementById('other-role-input');
+const otherDescriptionInput = document.getElementById('other-description-input');
+const otherWarning = document.getElementById('other-warning');
+
+const allSections = [devSection, modSection, gameFinderSection, betaTesterSection, otherSection];
+const allWarnings = [devWarning, modWarning, gameFinderWarning, betaTesterWarning, devTestWarning, modTestWarning, betaTesterTestWarning, otherWarning];
+
+function hideAllSections() {
+    allSections.forEach(section => section.classList.add('hidden'));
+    allWarnings.forEach(warning => warning.classList.add('hidden'));
+}
+
+roleSelect.addEventListener('change', () => {
+    hideAllSections();
+    const selectedRole = roleSelect.value;
+    if (selectedRole === 'Dev') {
+        devSection.classList.remove('hidden');
+    } else if (selectedRole === 'Mod') {
+        modSection.classList.remove('hidden');
+        modTestResult = null; // Reset test state
+        modStatusMessage.textContent = '';
+        spambotMessage.style.display = 'flex';
+    } else if (selectedRole === 'Game Finder') {
+        gameFinderSection.classList.remove('hidden');
+    } else if (selectedRole === 'Beta Tester') {
+        betaTesterSection.classList.remove('hidden');
+    } else if (selectedRole === 'Other') {
+        otherSection.classList.remove('hidden');
+    }
+});
+
+// Mod test button logic
+spambotMessage.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+        const action = e.target.dataset.action;
+        const modChatLog = document.getElementById('mod-chat-log');
+
+        const systemMessage = (msg) => {
+            const el = document.createElement('div');
+            el.className = 'message';
+            el.innerHTML = `<div class="message-content"><span class="username mod">Mod System</span>: ${msg}</div>`;
+            modChatLog.appendChild(el);
+            modChatLog.scrollTop = modChatLog.scrollHeight;
+        };
+
+        if (action === 'delete') {
+            modTestResult = 'failed';
+            modStatusMessage.textContent = '❌ Test Failed: The bot keeps spamming. Deleting a message does not remove the user.';
+            modStatusMessage.style.color = '#e05555';
+            systemMessage('The message was deleted, but a new one from SpamBot appears.');
+            const newSpam = document.createElement('div');
+            newSpam.className = 'message bot-message';
+            newSpam.innerHTML = `<div class="message-content"><span class="username bot">SpamBot</span>: More shady links! Get your free stuff now!</div><div class="message-actions"><button class="btn delete" data-action="delete">Delete</button><button class="btn timeout" data-action="timeout">Timeout</button><button class="btn ban" data-action="ban">Ban</button></div>`;
+            modChatLog.appendChild(newSpam);
+        } else if (action === 'timeout') {
+            modTestResult = 'barely';
+            modStatusMessage.textContent = '✅ Test Passed: A timeout is a temporary fix. Better than deleting, but not the best option for a repeat offender.';
+            modStatusMessage.style.color = '#4CAF50';
+            systemMessage('SpamBot has been timed out.');
+            spambotMessage.style.display = 'none';
+        } else if (action === 'ban') {
+            modTestResult = 'passed';
+            modStatusMessage.textContent = '✅ Test Passed: A permanent ban is the correct action for a spambot. Great job!';
+            modStatusMessage.style.color = '#4CAF50';
+            systemMessage('SpamBot has been banned.');
+            spambotMessage.style.display = 'none';
+        }
+
+        // Hide buttons after a choice is made
+        spambotMessage.querySelectorAll('button').forEach(btn => btn.disabled = true);
+    }
+});
+
+form.addEventListener('submit', async e => {
+    e.preventDefault();
+    hideAllWarnings();
+
+    const selectedRole = roleSelect.value;
+    let applicationData = {
+        name: nameInput.value,
+        role: selectedRole,
+        timestamp: new Date().toISOString(),
+        testResult: 'N/A' // Default for roles without a test
+    };
+    
+    let hasError = false;
+
+    if (selectedRole === 'Dev') {
+        if (!canCode.checked) {
+            devWarning.classList.remove('hidden');
+            hasError = true;
+        }
+        const devTestResult = devTestInput.value.trim();
+        if (devTestResult === '<p>This is a paragraph.</p>') {
+            applicationData.testResult = 'Passed';
+        } else {
+            devTestWarning.classList.remove('hidden');
+            applicationData.testResult = 'Failed';
+        }
+    } else if (selectedRole === 'Mod') {
+        if (!canStress.checked) {
+            modWarning.classList.remove('hidden');
+            hasError = true;
+        }
+        if (modTestResult === null) {
+            modTestWarning.classList.remove('hidden');
+            hasError = true;
+        } else {
+            applicationData.testResult = modTestResult;
+        }
+    } else if (selectedRole === 'Game Finder') {
+        if (!knowsSites.checked) {
+            gameFinderWarning.classList.remove('hidden');
+            hasError = true;
+        }
+    } else if (selectedRole === 'Beta Tester') {
+        if (!findErrors.checked || !detailedFeedback.checked) {
+            betaTesterWarning.classList.remove('hidden');
+            hasError = true;
+        }
+        const betaTestResult = betaTesterTestInput.value.trim().toLowerCase();
+        
+        // Define the keywords for the three bugs
+        const typoReported = betaTestResult.includes('welcoome') || betaTestResult.includes('botton');
+        const brokenImageReported = betaTestResult.includes('image') || betaTestResult.includes('broken');
+        const brokenButtonReported = betaTestResult.includes('button') || betaTestResult.includes('non-functional');
+
+        if (typoReported && brokenImageReported && brokenButtonReported) {
+            applicationData.testResult = 'Passed';
+            applicationData.bugReport = betaTestResult;
+        } else {
+            betaTesterTestWarning.classList.remove('hidden');
+            applicationData.testResult = 'Failed';
+        }
+    } else if (selectedRole === 'Other') {
+        const otherRole = otherRoleInput.value.trim();
+        const otherDescription = otherDescriptionInput.value.trim();
+        if (!otherRole || !otherDescription) {
+            otherWarning.classList.remove('hidden');
+            hasError = true;
+        } else {
+            applicationData.otherRole = otherRole;
+            applicationData.description = otherDescription;
+        }
+    }
+
+    if (hasError) {
+        return;
+    }
+
+    try {
+        const applicationsRef = ref(db, `artifacts/${sanitizedAppId}/users/${userId}/staff_applications`);
+        await push(applicationsRef, applicationData);
+        showMessage('Your application has been submitted!');
+        form.reset();
+        hideAllSections();
+    } catch(err) {
+        console.error("Firebase submission error:", err);
+        showMessage('Error submitting application. Please try again.');
+    }
+});
+
+function hideAllWarnings() {
+    allWarnings.forEach(warning => warning.classList.add('hidden'));
+}
+
+const showMessage = msg => {
+    messageText.textContent = msg;
+    messageBox.classList.remove('hidden');
+};
+
+closeMessageButton.addEventListener('click', () => messageBox.classList.add('hidden'));
+
+const applicationsRef = ref(db, `artifacts/${sanitizedAppId}/users/${userId}/staff_applications`);
+onValue(applicationsRef, snapshot => {
+    applicationsList.innerHTML = '';
+    if (!snapshot.exists()) {
+        applicationsList.innerHTML = `<p class="text-center text-gray-400">No applications yet.</p>`;
+        return;
+    }
+    const apps = snapshot.val();
+    Object.values(apps).forEach(data => {
+        const el = document.createElement('div');
+        el.className = 'bg-gray-700 p-4 rounded-lg shadow-md';
+        let testStatus = '';
+        if (data.role === 'Dev' || data.role === 'Mod' || data.role === 'Beta Tester') {
+            const result = data.testResult;
+            if (result === 'passed') {
+                testStatus = '<span class="text-green-400">✅ Test Passed</span>';
+            } else if (result === 'barely') {
+                testStatus = '<span class="text-yellow-400">🟡 Test Passed (Barely)</span>';
+            } else {
+                testStatus = '<span class="text-red-400">❌ Test Failed</span>';
+            }
+        }
+
+        el.innerHTML = `
+            <p class="font-bold text-lg text-white">${data.name}</p>
+            <p class="text-gray-300">Role: ${data.role}</p>
+            <p class="text-gray-300">Applied: ${new Date(data.timestamp).toLocaleString()}</p>
+            ${data.canCode !== undefined ? `<p class="text-gray-300">Can Code: ${data.canCode ? 'Yes' : 'No'}</p>` : ''}
+            ${data.canStress !== undefined ? `<p class="text-gray-300">Works well under stress: ${data.canStress ? 'Yes' : 'No'}</p>` : ''}
+            ${data.knowsSites !== undefined ? `<p class="text-gray-300">Knows game sites: ${data.knowsSites ? 'Yes' : 'No'}</p>` : ''}
+            ${data.findErrors !== undefined ? `<p class="text-gray-300">Finds and reports errors: ${data.findErrors ? 'Yes' : 'No'}</p>` : ''}
+            ${data.detailedFeedback !== undefined ? `<p class="text-gray-300">Provides detailed feedback: ${data.detailedFeedback ? 'Yes' : 'No'}</p>` : ''}
+            ${data.otherRole ? `<p class="text-gray-300">Other Role: ${data.otherRole}</p>` : ''}
+            ${data.description ? `<p class="text-gray-300">Description: ${data.description}</p>` : ''}
+            ${testStatus ? `<p class="mt-2 font-semibold">${testStatus}</p>` : ''}
+        `;
+        applicationsList.appendChild(el);
+    });
+});
+</script>
+
+</body>
+</html>

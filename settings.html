@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apps Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #1e1e1e;
+      border-radius: 8px;
+      display: none;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+    }
+    input {
+      width: calc(100% - 20px);
+    }
+    button {
+      cursor: pointer;
+      background: #007bff;
+      color: white;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="passwordPrompt" class="container" style="display:block;">
+  <h2>Enter Password</h2>
+  <input type="password" id="passwordInput" placeholder="Enter password">
+  <button onclick="checkPassword()">Submit</button>
+  <p id="errorMsg" style="color:red; display:none;">Wrong password.</p>
+</div>
+
+<div id="appsManager" class="container">
+  <h2>Apps Manager</h2>
+  <input type="text" id="appName" placeholder="App Name">
+  <input type="text" id="appUrl" placeholder="App URL">
+  <input type="text" id="appLogo" placeholder="App Logo (optional)">
+  <button onclick="addApp()">Add App</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>URL</th>
+        <th>Logo</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="appsTableBody"></tbody>
+  </table>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+
+  // 🔹 Firebase config (replace with yours if needed)
+  const firebaseConfig = {
+    apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+    authDomain: "taclogin-ab38e.firebaseapp.com",
+    databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+    projectId: "taclogin-ab38e",
+    storageBucket: "taclogin-ab38e.appspot.com",
+    messagingSenderId: "951295890925",
+    appId: "1:951295890925:web:ae399f5f2931f2c69b9b5a"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+
+  // 🔑 Password Lock
+  function checkPassword() {
+    const input = document.getElementById("passwordInput").value;
+    if (input === "tacapps1234") {
+      document.getElementById("passwordPrompt").style.display = "none";
+      document.getElementById("appsManager").style.display = "block";
+    } else {
+      document.getElementById("errorMsg").style.display = "block";
+    }
+  }
+  window.checkPassword = checkPassword;
+
+  // 🔐 Auth
+  signInAnonymously(auth).catch(err => {
+    console.error("Auth failed:", err);
+  });
+
+  // 📦 Add App
+  function addApp() {
+    const name = document.getElementById("appName").value.trim();
+    const url = document.getElementById("appUrl").value.trim();
+    const logo = document.getElementById("appLogo").value.trim();
+    if (!name || !url) return alert("Name and URL required");
+
+    const appsRef = ref(db, "apps");
+    const newAppRef = push(appsRef);
+    set(newAppRef, { name, url, logo });
+
+    document.getElementById("appName").value = "";
+    document.getElementById("appUrl").value = "";
+    document.getElementById("appLogo").value = "";
+  }
+  window.addApp = addApp;
+
+  // ✏️ Edit App
+  function editApp(id, current) {
+    const newName = prompt("Edit name:", current.name);
+    const newUrl = prompt("Edit URL:", current.url);
+    const newLogo = prompt("Edit logo:", current.logo || "");
+    if (!newName || !newUrl) return;
+    update(ref(db, "apps/" + id), {
+      name: newName,
+      url: newUrl,
+      logo: newLogo
+    });
+  }
+  window.editApp = editApp;
+
+  // 🗑️ Delete App
+  function deleteApp(id) {
+    if (confirm("Delete this app?")) {
+      remove(ref(db, "apps/" + id));
+    }
+  }
+  window.deleteApp = deleteApp;
+
+  // 🔄 Display Apps
+  const appsRef = ref(db, "apps");
+  onValue(appsRef, (snapshot) => {
+    const tbody = document.getElementById("appsTableBody");
+    tbody.innerHTML = "";
+    snapshot.forEach(child => {
+      const app = child.val();
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${app.name}</td>
+        <td><a href="${app.url}" target="_blank">${app.url}</a></td>
+        <td>${app.logo || ""}</td>
+        <td>
+          <button onclick='editApp("${child.key}", ${JSON.stringify(app)})'>Edit</button>
+          <button onclick='deleteApp("${child.key}")'>Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC Clock</title>
+<style>
+  body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
+  header { width:100%; text-align:center; padding:15px; font-size:1.5em; border-bottom:2px solid #19FFA0; }
+  .tabs { display:flex; width:100%; max-width:400px; }
+  .tab { flex:1; padding:10px; text-align:center; cursor:pointer; border-bottom:3px solid transparent; }
+  .tab.active { border-bottom:3px solid #19FFA0; }
+  .app-content { display:none; flex-direction:column; align-items:center; padding:20px; width:100%; max-width:400px; }
+  .app-content.active { display:flex; }
+  #liveClock { font-size:3em; margin:30px 0; }
+  button,input { margin:5px 0; padding:10px; border:none; border-radius:8px; }
+  button { background:#19FFA0; color:black; font-weight:bold; cursor:pointer; }
+  button:hover { background:#13CCA0; }
+  ul { list-style:none; padding:0; width:100%; }
+  li { background:#111; padding:8px; margin:4px 0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; }
+  /* Home button */
+  #homeBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    border-radius:50%;
+    width:50px;
+    height:50px;
+    font-weight:bold;
+    font-size:1em;
+    background:#19FFA0;
+    color:black;
+    cursor:pointer;
+  }
+  #homeBtn:hover { background:#13CCA0; }
+</style>
+</head>
+<body>
+
+<!-- Home Button -->
+<button id="homeBtn" onclick="location.href='index.html'">🏠</button>
+
+<header>TAC Clock</header>
+
+<div class="tabs">
+  <div class="tab active" data-target="clockTab">Clock</div>
+  <div class="tab" data-target="timerTab">Timers</div>
+  <div class="tab" data-target="stopwatchTab">Stopwatch</div>
+  <div class="tab" data-target="alarmsTab">Alarms</div>
+</div>
+
+<!-- Clock -->
+<div id="clockTab" class="app-content active">
+  <p id="liveClock">12:00:00 AM</p>
+</div>
+
+<!-- Timers -->
+<div id="timerTab" class="app-content">
+  <input type="number" id="timerMinutes" placeholder="Minutes">
+  <button onclick="addTimer()">Add Timer</button>
+  <ul id="timerList"></ul>
+</div>
+
+<!-- Stopwatch -->
+<div id="stopwatchTab" class="app-content">
+  <p id="stopwatchDisplay">00:00:00.000</p>
+  <button onclick="startStopwatch()">Start</button>
+  <button onclick="stopStopwatch()">Stop</button>
+  <button onclick="resetStopwatch()">Reset</button>
+</div>
+
+<!-- Alarms -->
+<div id="alarmsTab" class="app-content">
+  <input type="time" id="alarmTime">
+  <button onclick="addAlarm()">Add Alarm</button>
+  <ul id="alarmList"></ul>
+</div>
+
+<script>
+if(Notification.permission !== "granted") Notification.requestPermission();
+
+// Tabs
+const tabs = document.querySelectorAll(".tab");
+const contents = document.querySelectorAll(".app-content");
+tabs.forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    tabs.forEach(t=>t.classList.remove("active"));
+    tab.classList.add("active");
+    contents.forEach(c=>c.classList.remove("active"));
+    document.getElementById(tab.dataset.target).classList.add("active");
+  });
+});
+
+// Clock
+function updateClock(){
+  const now = new Date();
+  let h = now.getHours();
+  const ampm = h>=12?'PM':'AM';
+  h = h%12||12;
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const s = now.getSeconds().toString().padStart(2,'0');
+  document.getElementById("liveClock").innerText = `${h}:${m}:${s} ${ampm}`;
+
+  const current = `${h.toString().padStart(2,'0')}:${m} ${ampm}`;
+  alarms.forEach(a=>{
+    if(a.time===current && !a.notified){
+      notify("Alarm", "Alarm: "+current);
+      a.notified=true;
+    }
+  });
+}
+setInterval(updateClock,1000);
+
+// Stopwatch
+let stopwatch, swStart=0, swElapsed=0;
+function startStopwatch(){
+  if(stopwatch) return;
+  swStart = performance.now()-swElapsed;
+  stopwatch = requestAnimationFrame(updateStopwatch);
+}
+function stopStopwatch(){
+  if(stopwatch){ cancelAnimationFrame(stopwatch); stopwatch=null; swElapsed=performance.now()-swStart; }
+}
+function resetStopwatch(){ cancelAnimationFrame(stopwatch); stopwatch=null; swElapsed=0; document.getElementById("stopwatchDisplay").innerText="00:00:00.000"; }
+function updateStopwatch(){
+  const diff = performance.now()-swStart;
+  swElapsed = diff;
+  const h = Math.floor(diff/3600000).toString().padStart(2,'0');
+  const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
+  const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
+  const ms = Math.floor(diff%1000).toString().padStart(3,'0');
+  document.getElementById("stopwatchDisplay").innerText=`${h}:${m}:${s}.${ms}`;
+  stopwatch = requestAnimationFrame(updateStopwatch);
+}
+
+// Timers
+let timers=[];
+function addTimer(){
+  const minutes=parseFloat(document.getElementById("timerMinutes").value);
+  if(isNaN(minutes)) return;
+  const endTime=Date.now()+minutes*60000;
+  const timerObj={end:endTime, notified:false};
+  timers.push(timerObj);
+  renderTimers();
+}
+function renderTimers(){
+  const list=document.getElementById("timerList");
+  list.innerHTML="";
+  timers.forEach((t,i)=>{
+    const li=document.createElement("li");
+    const remaining=Math.max(0,t.end-Date.now());
+    const m=Math.floor(remaining/60000).toString().padStart(2,'0');
+    const s=Math.floor((remaining%60000)/1000).toString().padStart(2,'0');
+    li.textContent=`${m}:${s}`;
+    list.appendChild(li);
+
+    if(remaining<=0 && !t.notified){ notify("Timer","Time's up!"); t.notified=true; }
+  });
+}
+setInterval(renderTimers,250);
+
+// Alarms
+let alarms=[];
+function addAlarm(){
+  const timeInput=document.getElementById("alarmTime").value;
+  if(!timeInput) return;
+  let [hour,min]=timeInput.split(":").map(Number);
+  const ampm=hour>=12?'PM':'AM';
+  hour=hour%12||12;
+  const formatted=`${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')} ${ampm}`;
+  alarms.push({time:formatted, notified:false});
+  renderAlarms();
+}
+function renderAlarms(){
+  const list=document.getElementById("alarmList");
+  list.innerHTML="";
+  alarms.forEach(a=>{
+    const li=document.createElement("li"); li.textContent=a.time; list.appendChild(li);
+  });
+}
+
+// Notifications
+function notify(title,msg){ 
+  if(Notification.permission==="granted"){ new Notification(title,{body:msg}); }
+}
+</script>
+</body>
+</html>

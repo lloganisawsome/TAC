@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC Notes</title>
+<style>
+  body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
+  header { width:100%; text-align:center; padding:15px; font-size:1.5em; border-bottom:2px solid #19FFA0; }
+  .section { max-width:800px; width:100%; margin-top:20px; display:flex; flex-direction:column; align-items:center; }
+  input, button, textarea { margin:5px 0; padding:8px 12px; border:none; border-radius:8px; }
+  button { background:#19FFA0; color:black; font-weight:bold; cursor:pointer; }
+  button:hover { background:#13CCA0; }
+  #notesList { width:100%; list-style:none; padding:0; max-height:300px; overflow:auto; }
+  #notesList li { background:#111; padding:8px; margin:4px 0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; cursor:pointer; }
+  #notesList li.active { border:2px solid #19FFA0; }
+  #editor { width:100%; min-height:300px; background:#111; color:#19FFA0; padding:15px; border-radius:8px; outline:none; margin-top:10px; font-family: monospace; }
+  #homeBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    border-radius:50%;
+    width:50px;
+    height:50px;
+    font-weight:bold;
+    font-size:1em;
+    background:#19FFA0;
+    color:black;
+    cursor:pointer;
+  }
+  #homeBtn:hover { background:#13CCA0; }
+</style>
+</head>
+<body>
+
+<button id="homeBtn" onclick="location.href='index.html'">🏠</button>
+<header>TAC Notes</header>
+
+<div class="section" id="loginSection">
+  <input type="text" id="usernameInput" placeholder="Enter your name">
+  <button id="loginBtn">Login</button>
+</div>
+
+<div class="section" id="notesSection" style="display:none;">
+  <ul id="notesList"></ul>
+  <button id="newNoteBtn">New Note</button>
+  <button id="deleteNoteBtn">Delete Note</button>
+  <textarea id="editor" placeholder="Start typing..."></textarea>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let username = "";
+let notes = {};
+let activeNoteKey = null;
+
+const editor = document.getElementById("editor");
+const notesList = document.getElementById("notesList");
+
+document.getElementById("loginBtn").addEventListener("click", async ()=>{
+  username = document.getElementById("usernameInput").value.trim();
+  if(!username) return;
+  document.getElementById("loginSection").style.display="none";
+  document.getElementById("notesSection").style.display="flex";
+  await loadNotes();
+  if(Object.keys(notes).length===0){
+    createNewNote();
+  }
+});
+
+document.getElementById("newNoteBtn").addEventListener("click", createNewNote);
+document.getElementById("deleteNoteBtn").addEventListener("click", deleteNote);
+
+function createNewNote(){
+  const key = Date.now().toString();
+  notes[key] = {title:"New Note", content:""};
+  activeNoteKey = key;
+  renderNotes();
+  loadNoteIntoEditor(key);
+}
+
+async function loadNotes(){
+  const snapshot = await get(ref(db, "notes/"+username));
+  notes = snapshot.val() || {};
+  if(Object.keys(notes).length>0){
+    activeNoteKey = Object.keys(notes)[0];
+    loadNoteIntoEditor(activeNoteKey);
+  }
+  renderNotes();
+}
+
+function renderNotes(){
+  notesList.innerHTML="";
+  Object.keys(notes).forEach(key=>{
+    const li = document.createElement("li");
+    li.className = key===activeNoteKey ? "active" : "";
+    li.textContent = notes[key].title;
+    li.onclick = ()=>{ activeNoteKey=key; loadNoteIntoEditor(key); renderNotes(); }
+    notesList.appendChild(li);
+  });
+}
+
+function loadNoteIntoEditor(key){
+  editor.value = notes[key].content;
+}
+
+async function saveNote(){
+  if(!activeNoteKey) return;
+  notes[activeNoteKey].content = editor.value;
+  notes[activeNoteKey].title = editor.value.split("\n")[0] || "Untitled";
+  await update(ref(db, "notes/"+username), notes);
+  renderNotes();
+}
+
+// Autosave after typing
+let saveTimeout;
+editor.addEventListener("input", ()=>{
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(saveNote, 500); // save 0.5s after last input
+});
+
+async function deleteNote(){
+  if(!activeNoteKey) return;
+  delete notes[activeNoteKey];
+  activeNoteKey = Object.keys(notes)[0] || null;
+  await update(ref(db, "notes/"+username), notes);
+  renderNotes();
+  if(activeNoteKey) loadNoteIntoEditor(activeNoteKey);
+  else editor.value = "";
+}
+</script>
+
+</body>
+</html>

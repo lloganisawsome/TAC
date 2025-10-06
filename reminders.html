@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC Reminders</title>
+<style>
+  body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
+  header { width:100%; text-align:center; padding:15px; font-size:1.5em; border-bottom:2px solid #19FFA0; }
+  .section { max-width:400px; width:100%; margin-top:20px; display:flex; flex-direction:column; align-items:center; }
+  input, button { margin:5px 0; padding:10px; border:none; border-radius:8px; width:100%; }
+  button { background:#19FFA0; color:black; font-weight:bold; cursor:pointer; }
+  button:hover { background:#13cca0; }
+  ul { list-style:none; padding:0; width:100%; }
+  li { background:#111; padding:8px; margin:4px 0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; }
+  /* Home button */
+  #homeBtn {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 100;
+    border-radius:50%;
+    width:50px;
+    height:50px;
+    font-weight:bold;
+    font-size:1em;
+    background:#19FFA0;
+    color:black;
+    cursor:pointer;
+  }
+  #homeBtn:hover { background:#13cca0; }
+</style>
+</head>
+<body>
+
+<!-- Home Button -->
+<button id="homeBtn" onclick="location.href='index.html'">🏠</button>
+
+<header>TAC Reminders</header>
+
+<div class="section">
+  <input type="text" id="username" placeholder="Enter your name">
+  <button id="loadBtn">Load My Reminders</button>
+</div>
+
+<div class="section" id="reminderSection" style="display:none;">
+  <input type="text" id="reminderText" placeholder="Reminder description">
+  <input type="datetime-local" id="reminderTime">
+  <button id="addBtn">Add Reminder</button>
+  <ul id="reminderList"></ul>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let username = "";
+let reminders = {};
+
+if(Notification.permission!=="granted") Notification.requestPermission();
+
+const loadBtn = document.getElementById("loadBtn");
+const addBtn = document.getElementById("addBtn");
+
+loadBtn.addEventListener("click", async ()=>{
+  username = document.getElementById("username").value.trim();
+  if(!username) return;
+  document.getElementById("reminderSection").style.display="flex";
+  const snapshot = await get(ref(db, "reminders/"+username));
+  reminders = snapshot.val() || {};
+  renderReminders();
+});
+
+addBtn.addEventListener("click", async ()=>{
+  const text = document.getElementById("reminderText").value.trim();
+  const time = document.getElementById("reminderTime").value;
+  if(!text || !time) return;
+  const key = Date.now().toString();
+  reminders[key]={text,time,notified:false};
+  await update(ref(db, "reminders/"+username), reminders);
+  renderReminders();
+  document.getElementById("reminderText").value="";
+  document.getElementById("reminderTime").value="";
+});
+
+function renderReminders(){
+  const list = document.getElementById("reminderList");
+  list.innerHTML="";
+  Object.keys(reminders).forEach(key=>{
+    const r = reminders[key];
+    const li = document.createElement("li");
+    li.innerHTML = `${r.text} - ${new Date(r.time).toLocaleString()} <button onclick="deleteReminder('${key}')">Delete</button>`;
+    list.appendChild(li);
+  });
+}
+
+window.deleteReminder = async function(key){
+  delete reminders[key];
+  await update(ref(db, "reminders/"+username), reminders);
+  renderReminders();
+}
+
+setInterval(()=>{
+  const now = new Date();
+  Object.keys(reminders).forEach(key=>{
+    const r = reminders[key];
+    if(!r.notified && new Date(r.time)<=now){
+      notify("Reminder", r.text);
+      reminders[key].notified=true;
+      update(ref(db, "reminders/"+username), reminders);
+    }
+  });
+},1000);
+
+function notify(title,msg){
+  if(Notification.permission==="granted") new Notification(title,{body:msg});
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>TAC Launcher</title>
+<style>
+  /* Base */
+  * { margin:0; padding:0; box-sizing:border-box; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+  body {
+    background: transparent;
+    color: #ffffff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  .frosted-background {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.20);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: -1;
+  }
+
+  .message-box {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.14);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 12px 22px;
+    color: #fff;
+    font-size: 1rem;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease, visibility .25s ease;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  }
+  .message-box.show { opacity:1; visibility: visible; }
+
+  header { padding: 2rem 1rem 1rem; text-align:center; width:100%; }
+  .header-content { display:flex; flex-direction:column; align-items:center; gap:.5rem; }
+  .date-time { font-size: 1.15rem; font-weight:500; color: rgba(255,255,255,0.85); }
+  h1 { font-size: clamp(1.4rem, 4.5vw, 2.2rem); letter-spacing:2px; color:#fff; text-shadow: 1px 1px 4px rgba(0,0,0,0.5); }
+
+  .app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr));
+    gap: 2.5rem 4rem;
+    justify-content: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 2rem;
+  }
+
+  .app {
+    display:flex; flex-direction:column; align-items:center;
+    cursor:pointer; transition: transform .16s ease, filter .16s ease;
+    text-decoration: none;
+  }
+  .app:hover { transform: scale(1.08); filter: brightness(1.15); }
+
+  .app-icon {
+    width: 6rem; height: 6rem;
+    border-radius: 1.25rem;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom:.5rem; position:relative;
+    background: rgba(255,255,255,0.10);
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.12);
+    overflow:hidden;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+  }
+  .app-icon img { width:60%; height:60%; }
+
+  .app-icon::before {
+    content:'';
+    position:absolute;
+    top:50%; left:50%;
+    width:160%; height:160%;
+    background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 60%);
+    transform: translate(-50%, -50%);
+    opacity:0.6;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+
+  .app-label { font-size:1rem; color:#fff; text-align:center; font-weight:500; text-shadow: 1px 1px 3px rgba(0,0,0,0.45); }
+
+  footer { padding:1.2rem; font-size:.85rem; color: rgba(255,255,255,0.68); text-align:center; }
+
+  @media (max-width:600px) {
+    .app-grid { gap: 1.25rem 2rem; padding:1.2rem; }
+    .app-icon { width:5rem; height:5rem; }
+    .app-label { font-size:.9rem; }
+  }
+</style>
+</head>
+<body>
+<div class="frosted-background"></div>
+
+<header>
+  <div class="header-content">
+    <div id="date-time" class="date-time"></div>
+    <h1>TAC Launcher</h1>
+  </div>
+</header>
+
+<div id="app-grid" class="app-grid"></div>
+
+<footer>Made for TAC Ecosystem Sample</footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.appspot.com",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+let app, auth, db;
+try {
+  app = initializeApp(firebaseConfig);
+  auth = getAuth(app);
+  db = getDatabase(app);
+} catch (err) {
+  console.error("Firebase init error:", err);
+  document.getElementById('app-grid').innerHTML = '<p style="color:tomato;text-align:center;">Firebase init failed.</p>';
+}
+
+function showMessage(msg='') {
+  const box = document.createElement('div');
+  box.className='message-box';
+  box.innerText = msg;
+  document.body.appendChild(box);
+  setTimeout(()=> box.classList.add('show'),8);
+  setTimeout(()=> { box.classList.remove('show'); setTimeout(()=> box.remove(),260); },2100);
+}
+
+const dateTimeEl = document.getElementById('date-time');
+function updateTime() {
+  const now = new Date();
+  const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit' };
+  dateTimeEl.innerText = now.toLocaleString('en-US',opts);
+}
+updateTime();
+setInterval(updateTime,1000);
+
+function createAppElement(appData={}) {
+  const a = document.createElement('a');
+  a.className='app';
+  a.href = appData.link || '#';
+  a.onclick = e => { if(appData.message){ e.preventDefault(); showMessage(appData.message); } }
+
+  const icon = document.createElement('div');
+  icon.className='app-icon';
+  if(appData.svgFile){
+    const img = document.createElement('img');
+    img.src = appData.svgFile;
+    icon.appendChild(img);
+  } else {
+    icon.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                      <path d="M4 4h16v16H4z"/>
+                    </svg>`;
+  }
+
+  const label = document.createElement('div');
+  label.className='app-label';
+  label.innerText = appData.name || 'App';
+
+  a.appendChild(icon);
+  a.appendChild(label);
+  return a;
+}
+
+function fetchApps() {
+  if(!db) return;
+  const appsRef = ref(db,'apps');
+  onValue(appsRef, snap=>{
+    const grid=document.getElementById('app-grid');
+    grid.innerHTML='';
+    const data=snap.val();
+    if(!data) return;
+    Object.keys(data).forEach(k=>grid.appendChild(createAppElement(data[k])));
+  }, err=>{
+    console.error('DB error:',err);
+    document.getElementById('app-grid').innerHTML='<p style="color:tomato;text-align:center;">Failed to load apps.</p>';
+  });
+}
+
+if(auth){
+  onAuthStateChanged(auth, async user=>{
+    if(user) fetchApps();
+    else try{ await signInAnonymously(auth); } catch(e){ console.error('Auth error:',e); fetchApps(); }
+  });
+}
+</script>
+</body>
+</html>
