@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Decked Forum — Full App</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root { --bg:#0f1113; --panel:#121416; --muted:#9aa0a6; --accent:#7bd389; --danger:#ff6b6b; }
+  body { margin:0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background:var(--bg); color:#e6eef3; }
+  header{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:#0b0d0f;border-bottom:1px solid #0e1113}
+  .btn{background:#181a1c;border:1px solid #222;padding:6px 8px;margin:0 4px;border-radius:6px;cursor:pointer}
+  .danger{background:linear-gradient(90deg,#ff6b6b,#ff4d4d);color:#050505}
+  main{display:flex;gap:12px;padding:12px}
+  aside{width:320px}
+  .panel{background:var(--panel);padding:10px;border-radius:8px;border:1px solid #222;margin-bottom:12px}
+  .post,.subforum,.comment{background:#0e1113;border:1px solid #202428;padding:10px;border-radius:6px;margin-bottom:8px}
+  pre{white-space:pre-wrap;font-family:inherit}
+  .admin-panel{background:#151718;padding:6px;border-radius:6px;margin-top:6px;display:flex;flex-wrap:wrap;gap:6px}
+  input,select,textarea{width:100%;padding:8px;margin:6px 0;border-radius:6px;background:#0b0d0f;border:1px solid #222;color:#eee}
+  .muted{color:var(--muted)}
+  .small{font-size:12px}
+  .hidden{display:none}
+  .pill{background:#162126;padding:4px 8px;border-radius:999px;border:1px solid #21303a}
+  .modal{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--panel);padding:16px;border-radius:8px;border:1px solid #222;z-index:999;width:90%;max-width:920px;box-shadow:0 6px 30px rgba(0,0,0,0.6)}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:990}
+  #keyIcon { position:fixed; right:18px; bottom:18px; width:56px; height:56px; border-radius:999px; background:linear-gradient(180deg,#222,#151515); border:1px solid #2b2b2b; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:1000; }
+  #keyIcon span { font-size:22px; }
+  .badge { background:#1b2b2b; padding:4px 8px; border-radius:999px; border:1px solid #25333a; display:inline-block; margin:3px; }
+  .flex{display:flex;gap:8px;align-items:center}
+  .smallGray{font-size:12px;color:var(--muted)}
+  a.linklike{color:var(--accent);text-decoration:none;cursor:pointer}
+</style>
+</head>
+<body>
+
+<header>
+  <div style="display:flex;gap:12px;align-items:center">
+    <strong>TAC Forum</strong>
+    <span id="currentSubforumLabel" class="muted small"></span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center">
+    <span id="welcomeText" class="muted small">Not signed in</span>
+    <button id="openLoginBtn" class="btn">Login</button>
+    <button id="openSignupBtn" class="btn">Signup</button>
+    <button id="logoutBtn" class="btn hidden">Logout</button>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <div class="panel">
+      <h3>Quick Actions</h3>
+      <div class="flex">
+        <button id="createSubBtn" class="btn">Create Subforum</button>
+        <button id="createPostBtn" class="btn">Create Post</button>
+      </div>
+      <div class="muted small" style="margin-top:8px">Welcome to TAC forums!</div>
+    </div>
+
+    <div id="subforumList" class="panel">
+      <h3>Subforums</h3>
+      <div id="subforumItems"></div>
+      <hr/>
+      <div class="muted small">Click a subforum to view filtered posts. Creators become moderators.</div>
+    </div>
+
+    <div id="userPanel" class="panel hidden">
+      <h3>User</h3>
+      <div id="userMeta"></div>
+      <div id="userActions" style="margin-top:8px"></div>
+    </div>
+
+  </aside>
+
+  <section style="flex:1;">
+    <div id="postArea" class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3>Posts</h3>
+        <div>
+          <select id="sortSelect">
+            <option value="new">Newest</option>
+            <option value="top">Top</option>
+            <option value="pinned">Pinned</option>
+          </select>
+          <label class="muted small"><input id="showPinnedOnly" type="checkbox"/> Pinned only</label>
+        </div>
+      </div>
+      <div id="postsFeed"></div>
+    </div>
+  </section>
+
+  <aside style="width:320px;">
+    <div id="modPanel" class="panel hidden">
+      <h3>Mod/Admin Tools</h3>
+      <div id="modQueue"></div>
+      <div id="auditLog" style="margin-top:8px"></div>
+      <hr/>
+      <div>
+        <strong>Global Admins</strong>
+        <div id="adminList" class="muted small"></div>
+        <div class="muted small">Only <strong>logan</strong> can add/remove global admins.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Blacklist</h3>
+      <div id="blacklistView" class="muted small" style="margin-top:6px"></div>
+    </div>
+  </aside>
+</main>
+
+<!-- Key icon -->
+<div id="keyIcon" title="Admin / Mod Panel"><span>🔑</span></div>
+
+<!-- Overlay -->
+<div id="overlay" class="overlay hidden"></div>
+
+<!-- Modals -->
+<!-- Login -->
+<div id="loginModal" class="modal hidden" role="dialog">
+  <h3>Login</h3>
+  <label>Username</label>
+  <input id="loginUsername" />
+  <label>Password</label>
+  <input id="loginPassword" type="password" />
+  <div style="text-align:right;margin-top:8px">
+    <button id="doLoginBtn" class="btn">Login</button>
+    <button id="closeLoginBtn" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Signup -->
+<div id="signupModal" class="modal hidden" role="dialog">
+  <h3>Signup</h3>
+  <label>Username</label>
+  <input id="signupUsername" />
+  <label>Password</label>
+  <input id="signupPassword" type="password" />
+  <div style="text-align:right;margin-top:8px">
+    <button id="doSignupBtn" class="btn">Create</button>
+    <button id="closeSignupBtn" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Create Subforum -->
+<div id="createSubModal" class="modal hidden">
+  <h3>Create Subforum</h3>
+  <label>ID (single word)</label><input id="newSubId" />
+  <label>Display name</label><input id="newSubName" />
+  <label>Description</label><input id="newSubDesc" />
+  <div style="text-align:right;margin-top:8px">
+    <button id="doCreateSubBtn" class="btn">Create</button>
+    <button id="closeCreateSubBtn" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Create Post -->
+<div id="createPostModal" class="modal hidden">
+  <h3>Create Post</h3>
+  <label>Subforum</label><input id="postSubId" placeholder="e.g. tech" />
+  <label>Type</label>
+  <select id="postTypeSelect"><option>text</option><option>poll</option><option>announcement</option></select>
+  <label>Title</label><input id="postTitleInput" />
+  <label>Content</label><textarea id="postContentInput" rows="6"></textarea>
+  <div id="pollBlock" class="hidden">
+    <label>Poll question</label><input id="pollQuestion" />
+    <label>Options (one per line)</label><textarea id="pollOptions" rows="3"></textarea>
+  </div>
+  <div style="text-align:right;margin-top:8px">
+    <button id="doCreatePostBtn" class="btn">Post</button>
+    <button id="closeCreatePostBtn" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Reports modal -->
+<div id="reportModal" class="modal hidden">
+  <h3>Submit Report</h3>
+  <label>Type (post/comment)</label><input id="reportTypeInput" />
+  <label>Target ID (postId or postId/commentId)</label><input id="reportTargetInput" />
+  <label>Reason</label><textarea id="reportReasonInput" rows="3"></textarea>
+  <div style="text-align:right;margin-top:8px">
+    <button id="doReportBtn" class="btn">Send</button>
+    <button id="closeReportBtn" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Admin modal -->
+<div id="adminModal" class="modal hidden" style="max-width:1000px;">
+  <h3>Admin / Mod Panel</h3>
+  <div style="display:flex;gap:12px">
+    <div style="flex:1;min-width:300px">
+      <div class="panel">
+        <strong>User Lookup & Quick Actions</strong>
+        <label>Username</label><input id="lookupUsername" />
+        <div class="flex" style="margin-top:6px">
+          <button id="doLookupBtn" class="btn">Lookup</button>
+          <button id="warnUserBtn" class="btn">Warn</button>
+          <button id="clearUserOffensesBtn" class="btn">Clear Offenses</button>
+        </div>
+        <div id="lookupResult" class="muted small" style="margin-top:8px"></div>
+      </div>
+
+      <div class="panel">
+        <strong>Promote / Demote Admins (logan only)</strong>
+        <label>Username</label><input id="adminTargetInput" />
+        <div style="margin-top:6px">
+          <button id="promoteAdminBtn" class="btn">Promote</button>
+          <button id="demoteAdminBtn" class="btn">Demote</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <strong>Blacklist Management</strong>
+        <label>Word</label><input id="blackInput" />
+        <div style="margin-top:6px">
+          <button id="addBlackBtn" class="btn">Add</button>
+          <button id="removeBlackBtn" class="btn">Remove</button>
+        </div>
+        <div id="blackAdminView" class="muted small" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div style="flex:1;min-width:300px">
+      <div class="panel">
+        <strong>Reports</strong>
+        <input id="reportFilterInput" placeholder="filter by type or username" />
+        <div id="adminReportsList" style="max-height:260px;overflow:auto" class="muted small"></div>
+      </div>
+
+      <div class="panel">
+        <strong>Audit Log</strong>
+        <input id="auditFilterInput" placeholder="filter action or username" />
+        <div style="margin-top:6px">
+          <button id="exportAuditBtn" class="btn">Export JSON</button>
+        </div>
+        <div id="adminAuditList" style="max-height:240px;overflow:auto" class="muted small"></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:right;margin-top:8px">
+    <button id="closeAdminBtn" class="btn">Close</button>
+  </div>
+</div>
+
+<!-- Firebase + App -->
+<script type="module">
+/* =========================================================
+   Full single-file Forum app
+   - Firebase Realtime DB (client)
+   - username+password auth (SHA-256 hashed client-side)
+   - Subforums, posts, comments, polls, votes
+   - Blacklist censoring + offense tracking + auto restrictions
+   - Hidden admin key icon -> Admin modal
+   - Subforum creators auto become moderators
+   - Only username "logan" can promote/demote global admins in UI
+   - All data under "forum/" in your Realtime DB
+   - **FIXED**: Implemented "Lock-on-Failure" for client-side evasion lock.
+   - **FIXED**: Removed duplicate declaration of renderAdminBlacklistView function.
+   - **FIXED**: Removed duplicate declarations of utility functions.
+   ========================================================= */
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, push, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+/* -------------------------
+   FIREBASE CONFIG (your provided)
+   ------------------------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebaseapp.com",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+/* -------------------------
+   CONSTANTS & STATE
+   ------------------------- */
+const FORUM_ROOT = "forum";
+const SESSION_KEY = "forumUserSession";
+
+let CURRENT_USER = null;
+let ALL_SUBFORUMS = {};
+let ALL_POSTS = {};
+let ALL_COMMENTS = {};
+let BLACKLIST = [];
+let ALL_REPORTS = {};
+let ALL_AUDIT = {};
+let ALL_ADMINS = {};
+let ALL_OFFENSES = {};
+
+/* -------------------------
+   UI refs
+   ------------------------- */
+const openLoginBtn = document.getElementById('openLoginBtn');
+const openSignupBtn = document.getElementById('openSignupBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const welcomeText = document.getElementById('welcomeText');
+const subforumItems = document.getElementById('subforumItems');
+const postsFeed = document.getElementById('postsFeed');
+const createSubBtn = document.getElementById('createSubBtn');
+const createPostBtn = document.getElementById('createPostBtn');
+const modPanel = document.getElementById('modPanel');
+const modQueue = document.getElementById('modQueue');
+const auditLog = document.getElementById('auditLog');
+const adminList = document.getElementById('adminList');
+const blacklistView = document.getElementById('blacklistView');
+
+const overlay = document.getElementById('overlay');
+const loginModal = document.getElementById('loginModal');
+const signupModal = document.getElementById('signupModal');
+const createSubModal = document.getElementById('createSubModal');
+const createPostModal = document.getElementById('createPostModal');
+const reportModal = document.getElementById('reportModal');
+const adminModal = document.getElementById('adminModal');
+
+/* login inputs */
+const loginUsername = document.getElementById('loginUsername');
+const loginPassword = document.getElementById('loginPassword');
+const doLoginBtn = document.getElementById('doLoginBtn');
+const closeLoginBtn = document.getElementById('closeLoginBtn');
+
+/* signup inputs */
+const signupUsername = document.getElementById('signupUsername');
+const signupPassword = document.getElementById('signupPassword');
+const doSignupBtn = document.getElementById('doSignupBtn');
+const closeSignupBtn = document.getElementById('closeSignupBtn');
+
+/* create sub inputs */
+const newSubId = document.getElementById('newSubId');
+const newSubName = document.getElementById('newSubName');
+const newSubDesc = document.getElementById('newSubDesc');
+const doCreateSubBtn = document.getElementById('doCreateSubBtn');
+const closeCreateSubBtn = document.getElementById('closeCreateSubBtn');
+
+/* create post */
+const postSubId = document.getElementById('postSubId');
+const postTypeSelect = document.getElementById('postTypeSelect');
+const postTitleInput = document.getElementById('postTitleInput');
+const postContentInput = document.getElementById('postContentInput');
+const pollBlock = document.getElementById('pollBlock');
+const pollQuestion = document.getElementById('pollQuestion');
+const pollOptions = document.getElementById('pollOptions');
+const doCreatePostBtn = document.getElementById('doCreatePostBtn');
+const closeCreatePostBtn = document.getElementById('closeCreatePostBtn');
+
+/* report modal */
+const reportTypeInput = document.getElementById('reportTypeInput');
+const reportTargetInput = document.getElementById('reportTargetInput');
+const reportReasonInput = document.getElementById('reportReasonInput');
+const doReportBtn = document.getElementById('doReportBtn');
+const closeReportBtn = document.getElementById('closeReportBtn');
+
+/* admin modal refs */
+const keyIcon = document.getElementById('keyIcon');
+const lookupUsername = document.getElementById('lookupUsername');
+const doLookupBtn = document.getElementById('doLookupBtn');
+const lookupResult = document.getElementById('lookupResult');
+const warnUserBtn = document.getElementById('warnUserBtn');
+const clearUserOffensesBtn = document.getElementById('clearUserOffensesBtn');
+
+const adminTargetInput = document.getElementById('adminTargetInput');
+const promoteAdminBtn = document.getElementById('promoteAdminBtn');
+const demoteAdminBtn = document.getElementById('demoteAdminBtn');
+
+const blackInput = document.getElementById('blackInput');
+const addBlackBtn = document.getElementById('addBlackBtn');
+const removeBlackBtn = document.getElementById('removeBlackBtn');
+const blackAdminView = document.getElementById('blackAdminView');
+
+const reportFilterInput = document.getElementById('reportFilterInput');
+const adminReportsList = document.getElementById('adminReportsList');
+
+const auditFilterInput = document.getElementById('auditFilterInput');
+const exportAuditBtn = document.getElementById('exportAuditBtn');
+const adminAuditList = document.getElementById('adminAuditList');
+
+const closeAdminBtn = document.getElementById('closeAdminBtn');
+
+/* -------------------------
+   Utilities: session + sha256 + evasion lock
+   ------------------------- */
+function setSession(uid){ localStorage.setItem(SESSION_KEY, uid); }
+function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+function getSession(){ return localStorage.getItem(SESSION_KEY); }
+async function sha256Hex(str){ const enc = new TextEncoder().encode(str); const h = await crypto.subtle.digest('SHA-256', enc); return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+
+function showModal(el){ overlay.classList.remove('hidden'); el.classList.remove('hidden'); }
+function hideModal(el){ overlay.classList.add('hidden'); el.classList.add('hidden'); }
+
+// Evasion Lock (uses localStorage as persistent client-side storage, like a cookie)
+function getEvasionLock(){ return localStorage.getItem(`${FORUM_ROOT}evasionLock`); }
+function clearEvasionLock(){ localStorage.removeItem(`${FORUM_ROOT}evasionLock`); }
+// Sets a lock for 10 years by default (315360000000ms) for permanent ban, or a custom duration
+function setEvasionLock(durationMs = 315360000000){
+  localStorage.setItem(`${FORUM_ROOT}evasionLock`, Date.now() + durationMs);
+}
+function isEvasionLocked(){
+  const until = getEvasionLock();
+  if(!until) return false;
+  const expiryTime = parseInt(until);
+  if(Date.now() > expiryTime) {
+    clearEvasionLock();
+    return false;
+  }
+  return true;
+}
+
+
+/* -------------------------
+   UI wiring
+   ------------------------- */
+openLoginBtn.onclick = ()=> showModal(loginModal);
+openSignupBtn.onclick = ()=> showModal(signupModal);
+closeLoginBtn.onclick = ()=> hideModal(loginModal);
+closeSignupBtn.onclick = ()=> hideModal(loginModal);
+
+createSubBtn.onclick = ()=> { if(!CURRENT_USER) return alert('Sign in first'); newSubId.value=''; newSubName.value=''; newSubDesc.value=''; showModal(createSubModal); };
+closeCreateSubBtn.onclick = ()=> hideModal(createSubModal);
+
+createPostBtn.onclick = ()=> { if(!CURRENT_USER) return alert('Sign in first'); postSubId.value=''; postTypeSelect.value='text'; postTitleInput.value=''; postContentInput.value=''; pollQuestion.value=''; pollOptions.value=''; pollBlock.classList.add('hidden'); showModal(createPostModal); };
+closeCreatePostBtn.onclick = ()=> hideModal(createPostModal);
+postTypeSelect.onchange = ()=> pollBlock.classList.toggle('hidden', postTypeSelect.value!=='poll');
+
+doLoginBtn.onclick = async ()=>{
+  if(isEvasionLocked()) return alert('Access is restricted from this device.'); // Evasion check
+
+  const username = loginUsername.value?.trim()?.toLowerCase();
+  const pass = loginPassword.value;
+  if(!username||!pass) return alert('enter username+password');
+  
+  const map = await get(ref(db, `${FORUM_ROOT}/usersByName/${username}`));
+  if(!map.exists()) return alert('no such user');
+  const uid = map.val();
+  
+  const snap = await get(ref(db, `${FORUM_ROOT}/users/${uid}`));
+  if(!snap.exists()) return alert('user record missing');
+  
+  const ph = await sha256Hex(pass);
+  if(snap.val().passwordHash !== ph) return alert('wrong password');
+  
+  // --- New Lock-on-Failure Check ---
+  const r = await get(ref(db, `${FORUM_ROOT}/restrictions/${uid}`));
+  if(r.exists()){
+      const restriction = r.val();
+      
+      // Check for permanent ban (restrictLogin=true) or active temporary restriction (until > now)
+      const isPermanentlyBanned = restriction.restrictLogin;
+      const isTemporarilyRestricted = restriction.until && restriction.until > Date.now();
+      
+      if (isPermanentlyBanned || isTemporarilyRestricted) {
+          
+          if (isPermanentlyBanned) {
+              setEvasionLock(); // Permanent 10-year lock
+          } else if (isTemporarilyRestricted) {
+              const remainingMs = restriction.until - Date.now();
+              setEvasionLock(remainingMs); // Lock for remaining time
+          }
+
+          if (isPermanentlyBanned && restriction.restrictLogin) {
+              return alert('Your account is permanently restricted from logging in. Contact an admin.'); 
+          } else {
+              // This handles temporary login/post/comment restrictions, preventing login
+              return alert('Your account is currently restricted. Please wait for the restriction to expire.');
+          }
+      }
+  }
+  // --- End Lock-on-Failure Check ---
+
+  // If we reach here, restriction is absent or expired. 
+  clearEvasionLock(); // Ensure any old local lock is cleared now that login is successful
+
+  setSession(uid);
+  await refreshCurrentUser();
+  hideModal(loginModal);
+};
+
+doSignupBtn.onclick = async ()=>{
+  if(isEvasionLocked()) return alert('Access is restricted from this device.'); // Evasion check
+  const username = signupUsername.value?.trim()?.toLowerCase();
+  const pass = signupPassword.value;
+  if(!username||!pass) return alert('enter username+password');
+  const exists = await get(ref(db, `${FORUM_ROOT}/usersByName/${username}`));
+  if(exists.exists()) return alert('username taken');
+  const newRef = push(ref(db, `${FORUM_ROOT}/_userIds`));
+  const uid = newRef.key;
+  const ph = await sha256Hex(pass);
+  const userObj = { username, isAdmin:false, moderatedSubforums:[], karma:0, badges:[], passwordHash:ph, createdAt:Date.now() };
+  await set(ref(db, `${FORUM_ROOT}/users/${uid}`), userObj);
+  await set(ref(db, `${FORUM_ROOT}/usersByName/${username}`), uid);
+  setSession(uid);
+  await refreshCurrentUser();
+  hideModal(signupModal);
+};
+
+logoutBtn.onclick = ()=>{ clearSession(); location.reload(); };
+
+/* -------------------------
+   Core listeners (realtime)
+   ------------------------- */
+function startListeners(){
+  onValue(ref(db, `${FORUM_ROOT}/subforums`), snap=>{ ALL_SUBFORUMS = snap.val() || {}; renderSubforums(); });
+  onValue(ref(db, `${FORUM_ROOT}/posts`), snap=>{ ALL_POSTS = snap.val() || {}; renderPostsFeed(); });
+  onValue(ref(db, `${FORUM_ROOT}/comments`), snap=>{ ALL_COMMENTS = snap.val() || {}; renderPostsFeed(); });
+  onValue(ref(db, `${FORUM_ROOT}/blacklist`), snap=>{ BLACKLIST = Object.values(snap.val()||{}); renderBlacklist(); renderAdminBlacklistView(); });
+  onValue(ref(db, `${FORUM_ROOT}/reports`), snap=>{ ALL_REPORTS = snap.val() || {}; renderModQueue(); renderAdminReportsList(); });
+  onValue(ref(db, `${FORUM_ROOT}/auditLogs`), snap=>{ ALL_AUDIT = snap.val() || {}; renderAuditLog(); renderAdminAuditList(); });
+  onValue(ref(db, `${FORUM_ROOT}/admins`), snap=>{ ALL_ADMINS = snap.val() || {}; renderAdminList(); });
+  onValue(ref(db, `${FORUM_ROOT}/offenses`), snap=>{ ALL_OFFENSES = snap.val() || {}; renderOffensesList(); });
+}
+
+/* -------------------------
+   Render Subforums
+   ------------------------- */
+function renderSubforums(){
+  subforumItems.innerHTML = "";
+  for(const id in ALL_SUBFORUMS){
+    const sf = ALL_SUBFORUMS[id];
+    const el = document.createElement("div"); el.className="subforum";
+    el.innerHTML = `<strong>${sf.name}</strong> <span class="muted small">(${id})</span><div class="muted small">${sf.description||""}</div>`;
+    el.onclick = ()=> { FILTER_SUBFORUM = id; document.getElementById('currentSubforumLabel').textContent = ` / ${sf.name}`; renderPostsFeed(); };
+    if(CURRENT_USER && sf.moderators && sf.moderators[CURRENT_USER.uid]) {
+      const b = document.createElement("div"); b.className="badge"; b.textContent="MOD";
+      el.appendChild(b);
+    }
+    subforumItems.appendChild(el);
+  }
+}
+
+/* -------------------------
+   Render Posts & components
+   ------------------------- */
+let FILTER_SUBFORUM = null;
+
+function renderPostsFeed(){
+  postsFeed.innerHTML = "";
+  const arr = [];
+  const now = Date.now();
+  for(const id in ALL_POSTS){
+    const p = ALL_POSTS[id];
+    const pub = p.publishAt || p.createdAt || 0;
+    if(pub > now) continue;
+    if(FILTER_SUBFORUM && p.subforum !== FILTER_SUBFORUM) continue;
+    if(document.getElementById('showPinnedOnly').checked && !(p.settings && p.settings.isPinned)) continue;
+    arr.push({ id, ...p });
+  }
+  const sort = document.getElementById('sortSelect').value;
+  if(sort === "new") arr.sort((a,b)=> (b.createdAt||0) - (a.createdAt||0));
+  if(sort === "top") arr.sort((a,b)=> postScore(b) - postScore(a));
+  if(sort === "pinned") arr.sort((a,b)=> (b.settings?.isPinned?1:0) - (a.settings?.isPinned?1:0));
+
+  for(const post of arr){
+    const card = document.createElement("div"); card.className="post";
+    const pinnedTag = post.settings?.isPinned ? `<span class="pill">PINNED</span>` : "";
+    const lockedTag = post.settings?.isLocked ? `<span class="pill">LOCKED</span>` : "";
+    card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+      <div><strong>${escapeHtml(post.title)}</strong> ${pinnedTag} ${lockedTag}</div>
+      <div class="muted small">sub:${post.subforum} • ${new Date(post.createdAt).toLocaleString()}</div>
+    </div>
+    <pre>${renderText(post.content)}</pre>`;
+
+    const meta = document.createElement("div"); meta.className="muted small"; meta.textContent = `Score: ${postScore(post)} • Type: ${post.type||"text"}`;
+    card.appendChild(meta);
+
+    // voting
+    const votesAllowed = !(post.settings?.disableVotes) && !(ALL_SUBFORUMS[post.subforum]?.settings?.disableVotes);
+    const voteRow = document.createElement("div"); voteRow.style.marginTop="6px";
+    if(votesAllowed){
+      const up = document.createElement("button"); up.className="btn"; up.textContent="▲";
+      const down = document.createElement("button"); down.className="btn"; down.textContent="▼";
+      up.onclick = async ()=>{ if(!CURRENT_USER) return alert("Sign in"); await set(ref(db, `${FORUM_ROOT}/posts/${post.id}/votes/${CURRENT_USER.uid}`), 1); await audit('votePost', post.id, CURRENT_USER.uid); await updateKarmaForVote(post.id); };
+      down.onclick = async ()=>{ if(!CURRENT_USER) return alert("Sign in"); await set(ref(db, `${FORUM_ROOT}/posts/${post.id}/votes/${CURRENT_USER.uid}`), -1); await audit('votePost', post.id, CURRENT_USER.uid); await updateKarmaForVote(post.id); };
+      voteRow.append(up, down);
+    } else { voteRow.innerHTML = `<span class="muted small">Voting disabled</span>`; }
+    card.appendChild(voteRow);
+
+    // poll
+    if(post.type === "poll" && post.poll && !(post.settings?.disablePolls) && !(ALL_SUBFORUMS[post.subforum]?.settings?.disablePolls)){
+      const pdiv = document.createElement("div"); pdiv.style.marginTop="8px";
+      pdiv.innerHTML = `<div><strong>${escapeHtml(post.poll.question||"")}</strong></div>`;
+      post.poll.options.forEach((opt,i)=>{
+        const votes = countPollVotes(post.id, i);
+        const optBtn = document.createElement("button"); optBtn.className="btn"; optBtn.textContent = `${opt} (${votes})`;
+        optBtn.onclick = async ()=>{ if(!CURRENT_USER) return alert("Sign in"); await set(ref(db, `${FORUM_ROOT}/posts/${post.id}/poll/votes/${CURRENT_USER.uid}`), i); await set(ref(db, `${FORUM_ROOT}/pollVotes/${post.id}/${CURRENT_USER.uid}`), i); await audit("pollVote", `${post.id}:${i}`, CURRENT_USER.uid); };
+        pdiv.appendChild(optBtn);
+      });
+      card.appendChild(pdiv);
+    }
+
+    // comments
+    const commentsDisabled = post.settings?.disableComments || ALL_SUBFORUMS[post.subforum]?.settings?.disableComments;
+    if(!commentsDisabled){
+      const commentBox = document.createElement("div"); commentBox.style.marginTop="8px";
+      const ta = document.createElement("textarea"); ta.rows=3; ta.placeholder="Write a comment..."; ta.style.width="100%";
+      const btn = document.createElement("button"); btn.className="btn"; btn.textContent="Post Comment";
+      btn.onclick = async ()=>{
+        if(!CURRENT_USER) return alert("Sign in");
+        const txt = ta.value.trim(); if(!txt) return;
+        const rSnap = await get(ref(db, `${FORUM_ROOT}/restrictions/${CURRENT_USER.uid}`));
+        if(rSnap.exists() && rSnap.val().restrictComment) return alert("You are restricted from commenting.");
+        if(containsBlacklisted(txt)){ const cens = censorText(txt); const n = push(ref(db, `${FORUM_ROOT}/offenses`)); await set(n, { by: CURRENT_USER.uid, type:"comment", content: txt, createdAt: Date.now(), reason:"blacklistMatch" }); await incrementOffense(CURRENT_USER.uid); await push(ref(db, `${FORUM_ROOT}/comments/${post.id}`)).then(async rr=> await set(rr, { author: CURRENT_USER.uid, content:cens, votes:{}, settings:{disabled:false}, createdAt:Date.now(), replies:{} })); } else {
+          const newRef = push(ref(db, `${FORUM_ROOT}/comments/${post.id}`)); await set(newRef, { author: CURRENT_USER.uid, content: txt, votes:{}, settings:{disabled:false}, createdAt: Date.now(), replies:{} });
+        }
+        await audit("createComment", post.id, CURRENT_USER.uid);
+        ta.value="";
+      };
+      commentBox.appendChild(ta); commentBox.appendChild(btn); card.appendChild(commentBox);
+    } else {
+      const dn = document.createElement("div"); dn.className="muted small"; dn.textContent="Comments disabled for this post/subforum"; card.appendChild(dn);
+    }
+
+    // admin/mod controls
+    let isGlobalAdmin = (ALL_ADMINS && ALL_ADMINS[CURRENT_USER?.uid]);
+    let isSubMod = (ALL_SUBFORUMS[post.subforum] && ALL_SUBFORUMS[post.subforum].moderators && ALL_SUBFORUMS[post.subforum].moderators[CURRENT_USER?.uid]);
+    if(CURRENT_USER && (isGlobalAdmin || isSubMod)){
+      const ap = document.createElement("div"); ap.className="admin-panel";
+      ap.innerHTML = `
+        <button class="btn" id="del_${post.id}">Delete</button>
+        <button class="btn" id="pin_${post.id}">Pin</button>
+        <button class="btn" id="lock_${post.id}">Lock</button>
+        <button class="btn" id="disableVotes_${post.id}">Disable Votes</button>
+        <button class="btn" id="disablePolls_${post.id}">Disable Polls</button>
+        <button class="btn" id="disableComments_${post.id}">Disable Comments</button>
+        <button class="btn" id="modNote_${post.id}">Mod Note</button>
+      `;
+      card.appendChild(ap);
+      ap.querySelector(`#del_${post.id}`).onclick = async ()=>{ if(confirm("Delete post?")){ await remove(ref(db, `${FORUM_ROOT}/posts/${post.id}`)); await audit("deletePost", post.id, CURRENT_USER.uid); } };
+      ap.querySelector(`#pin_${post.id}`).onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/posts/${post.id}/settings`), { isPinned:true }); await audit("pinPost", post.id, CURRENT_USER.uid); };
+      ap.querySelector(`#lock_${post.id}`).onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/posts/${post.id}/settings`), { isLocked:true }); await audit("lockPost", post.id, CURRENT_USER.uid); };
+      ap.querySelector(`#disableVotes_${post.id}`).onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/posts/${post.id}/settings`), { disableVotes:true }); await audit("disableVotesPost", post.id, CURRENT_USER.uid); };
+      ap.querySelector(`#disablePolls_${post.id}`).onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/posts/${post.id}/settings`), { disablePolls:true }); await audit("disablePollsPost", post.id, CURRENT_USER.uid); };
+      ap.querySelector(`#disableComments_${post.id}`).onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/posts/${post.id}/settings`), { disableComments:true }); await audit("disableCommentsPost", post.id, CURRENT_USER.uid); };
+      ap.querySelector(`#modNote_${post.id}`).onclick = async ()=>{ const note = prompt("Mod note:",""); if(note!==null) { await update(ref(db, `${FORUM_ROOT}/posts/${post.id}/settings`), { modNote: note }); await audit("modNotePost", post.id, CURRENT_USER.uid); } };
+    }
+
+    // comments rendering
+    const commentTree = ALL_COMMENTS[post.id] || {};
+    const croot = document.createElement("div"); croot.style.marginTop="8px"; croot.innerHTML = "<strong>Comments</strong>";
+    for(const cid in commentTree){
+      croot.appendChild(renderCommentBlock(post.id, cid, commentTree[cid]));
+    }
+    card.appendChild(croot);
+
+    postsFeed.appendChild(card);
+  }
+}
+
+/* -------------------------
+   Comment renderer (recursive)
+   ------------------------- */
+function renderCommentBlock(postId, commentId, commentObj, depth=0){
+  const wrap = document.createElement("div"); wrap.style.marginLeft = `${depth*14}px`;
+  const el = document.createElement("div"); el.className="comment";
+  el.innerHTML = `<div style="display:flex;justify-content:space-between">
+    <div><strong>${escapeHtml(commentObj.author||"unknown")}</strong> <span class="muted small">${new Date(commentObj.createdAt||0).toLocaleString()}</span></div>
+    <div class="muted small">Score: ${commentScore(commentObj)}</div>
+  </div>
+  <pre>${renderText(commentObj.content)}</pre>`;
+  if(!(commentObj.settings?.disabled)){
+    const up = document.createElement("button"); up.className="btn"; up.textContent="▲";
+    const down = document.createElement("button"); down.className="btn"; down.textContent="▼";
+    up.onclick = async ()=>{ if(!CURRENT_USER) return alert("Sign in"); await set(ref(db, `${FORUM_ROOT}/comments/${postId}/${commentId}/votes/${CURRENT_USER.uid}`), 1); await audit("voteComment", `${postId}:${commentId}`, CURRENT_USER.uid); };
+    down.onclick = async ()=>{ if(!CURRENT_USER) return alert("Sign in"); await set(ref(db, `${FORUM_ROOT}/comments/${postId}/${commentId}/votes/${CURRENT_USER.uid}`), -1); await audit("voteComment", `${postId}:${commentId}`, CURRENT_USER.uid); };
+    el.appendChild(up); el.appendChild(down);
+  } else {
+    const dn = document.createElement("div"); dn.className="muted small"; dn.textContent="Comment disabled"; el.appendChild(dn);
+  }
+
+  const replyBox = document.createElement("div"); replyBox.style.marginTop="6px";
+  const ta = document.createElement("textarea"); ta.rows=2; ta.placeholder="Reply..."; ta.style.width="100%";
+  const btn = document.createElement("button"); btn.className="btn"; btn.textContent="Reply";
+  btn.onclick = async ()=>{
+    if(!CURRENT_USER) return alert("Sign in");
+    const text = ta.value.trim(); if(!text) return;
+    const rSnap = await get(ref(db, `${FORUM_ROOT}/restrictions/${CURRENT_USER.uid}`));
+    if(rSnap.exists() && rSnap.val().restrictComment) return alert("You are restricted from commenting.");
+    if(containsBlacklisted(text)){ const cens = censorText(text); const n = push(ref(db, `${FORUM_ROOT}/offenses`)); await set(n, { by: CURRENT_USER.uid, type:"reply", content: text, createdAt: Date.now(), reason:"blacklistMatch" }); await incrementOffense(CURRENT_USER.uid); await push(ref(db, `${FORUM_ROOT}/comments/${postId}/${commentId}/replies`)).then(async rr=> await set(rr, { author: CURRENT_USER.uid, content: cens, votes:{}, settings:{disabled:false}, createdAt: Date.now(), replies:{} })); } else {
+      const newRef = push(ref(db, `${FORUM_ROOT}/comments/${postId}/${commentId}/replies`)); await set(newRef, { author: CURRENT_USER.uid, content: text, votes:{}, settings:{disabled:false}, createdAt: Date.now(), replies:{} });
+    }
+    await audit("createReply", `${postId}:${commentId}`, CURRENT_USER.uid);
+    ta.value="";
+  };
+  replyBox.appendChild(ta); replyBox.appendChild(btn); el.appendChild(replyBox);
+
+  // mod actions
+  const isGlobalAdmin = (ALL_ADMINS && ALL_ADMINS[CURRENT_USER?.uid]);
+  const postSub = ALL_POSTS[postId]?.subforum;
+  const isSubMod = (ALL_SUBFORUMS[postSub] && ALL_SUBFORUMS[postSub].moderators && ALL_SUBFORUMS[postSub].moderators[CURRENT_USER?.uid]);
+  if(CURRENT_USER && (isGlobalAdmin || isSubMod)){
+    const m = document.createElement("div"); m.className="admin-panel";
+    const del = document.createElement("button"); del.className="btn"; del.textContent="Delete Comment";
+    del.onclick = async ()=>{ if(confirm("Delete comment?")){ await remove(ref(db, `${FORUM_ROOT}/comments/${postId}/${commentId}`)); await audit("deleteComment", `${postId}:${commentId}`, CURRENT_USER.uid); } };
+    const disable = document.createElement("button"); disable.className="btn"; disable.textContent="Disable";
+    disable.onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/comments/${postId}/${commentId}/settings`), { disabled:true }); await audit("disableComment", `${postId}:${commentId}`, CURRENT_USER.uid); };
+    m.appendChild(del); m.appendChild(disable); el.appendChild(m);
+  }
+
+  wrap.appendChild(el);
+
+  const replies = commentObj.replies || {};
+  for(const rid in replies){
+    wrap.appendChild(renderCommentBlock(postId, `${commentId}/replies/${rid}`, replies[rid], depth+1));
+  }
+  return wrap;
+}
+
+/* -------------------------
+   Moderation UI: reports & audit & blacklist
+   ------------------------- */
+function renderModQueue(){
+  modQueue.innerHTML = "<strong>Reports</strong>";
+  let count = 0;
+  for(const key in ALL_REPORTS){
+    for(const rid in ALL_REPORTS[key]){
+      const r = ALL_REPORTS[key][rid];
+      if(r.handled) continue;
+      count++;
+      const card = document.createElement("div"); card.style.borderTop="1px solid #202428"; card.style.paddingTop="8px"; card.style.marginTop="8px";
+      card.innerHTML = `<div class="muted small">${key} • ${new Date(r.createdAt).toLocaleString()}</div><div>${escapeHtml(r.reporter)} reported: ${escapeHtml(r.reason)}</div>`;
+      const btn = document.createElement("button"); btn.className="btn"; btn.textContent="Mark Handled";
+      btn.onclick = async ()=>{ await update(ref(db, `${FORUM_ROOT}/reports/${key}/${rid}`), { handled:true, handledBy: CURRENT_USER.uid, handledAt: Date.now() }); await audit("handleReport", `${key}:${rid}`, CURRENT_USER.uid); card.remove(); };
+      card.appendChild(btn); modQueue.appendChild(card);
+    }
+  }
+  if(count===0) modQueue.innerHTML += "<div class='muted small'>No pending reports</div>";
+}
+
+function renderAuditLog(){
+  auditLog.innerHTML = "<strong>Audit</strong>";
+  const rows = [];
+  for(const id in ALL_AUDIT) rows.push(ALL_AUDIT[id]);
+  rows.sort((a,b)=> (b.timestamp||0) - (a.timestamp||0));
+  rows.slice(0,30).forEach(r=>{
+    const div = document.createElement("div"); div.className="muted small"; div.style.borderTop="1px solid #202428"; div.style.paddingTop="6px";
+    div.textContent = `${new Date(r.timestamp).toLocaleString()} • ${r.action} • target:${r.target} • by:${r.by}`;
+    auditLog.appendChild(div);
+  });
+}
+
+function renderBlacklist(){
+  blacklistView.innerHTML = BLACKLIST.length ? BLACKLIST.map(w=>escapeHtml(w)).join(", ") : "<span class='muted small'>No blacklisted words</span>";
+}
+
+function renderAdminList(){
+  const arr = Object.keys(ALL_ADMINS || {});
+  adminList.textContent = arr.length ? arr.join(", ") : "none";
+}
+
+/* -------------------------
+   Admin modal rendering + actions
+   ------------------------- */
+function renderAdminModal(){
+  // admin reports list
+  renderAdminReportsList();
+  // audit list
+  renderAdminAuditList();
+  // blacklist admin view
+  renderAdminBlacklistView();
+  // admin summary
+  renderAdminList();
+  // offenses
+  renderOffensesList();
+}
+
+function renderAdminReportsList(){
+  adminReportsList.innerHTML = "";
+  const filter = reportFilterInput.value?.trim().toLowerCase();
+  for(const k in ALL_REPORTS){
+    for(const rid in ALL_REPORTS[k]){
+      const r = ALL_REPORTS[k][rid];
+      if(filter && !(k.includes(filter) || (r.reporter||"").includes(filter) || (r.reason||"").toLowerCase().includes(filter))) continue;
+      const d = document.createElement("div"); d.className="muted small"; d.style.borderTop="1px solid #202428"; d.style.paddingTop="6px";
+      d.innerHTML = `<strong>${k}</strong> • ${new Date(r.createdAt).toLocaleString()} • ${escapeHtml(r.reporter)}: ${escapeHtml(r.reason)}`;
+      adminReportsList.appendChild(d);
+    }
+  }
+}
+
+function renderAdminAuditList(){
+  adminAuditList.innerHTML = "";
+  const rows = [];
+  for(const id in ALL_AUDIT) rows.push(ALL_AUDIT[id]);
+  rows.sort((a,b)=> (b.timestamp||0) - (a.timestamp||0));
+  const filter = auditFilterInput.value?.trim().toLowerCase();
+  for(const r of rows.slice(0,200)){
+    if(filter && !(r.action.toLowerCase().includes(filter) || (r.by||"").toLowerCase().includes(filter) || (r.target||"").toLowerCase().includes(filter))) continue;
+    const d = document.createElement("div"); d.className="muted small"; d.style.borderTop="1px solid #202428"; d.style.paddingTop="6px";
+    d.textContent = `${new Date(r.timestamp).toLocaleString()} • ${r.action} • ${r.target} • by:${r.by}`;
+    adminAuditList.appendChild(d);
+  }
+}
+
+/* admin blacklist view */
+function renderAdminBlacklistView(){
+  blackAdminView.innerHTML = BLACKLIST.length ? BLACKLIST.map(w=>escapeHtml(w)).join(", ") : "<span class='muted small'>none</span>";
+}
+
+/* offenses */
+function renderOffensesList(){
+  // show count in admin modal? we show in adminReports area if needed
+  // simple placeholder for now (modQueue already shows)
+}
+
+/* -------------------------
+   Admin controls (promote/demote, blacklist)
+   ------------------------- */
+promoteAdminBtn.onclick = async ()=>{
+  if(!CURRENT_USER || CURRENT_USER.username !== "logan") return alert("Only logan can promote admins.");
+  const uname = adminTargetInput.value?.trim().toLowerCase(); if(!uname) return alert("enter username");
+  const map = await get(ref(db, `${FORUM_ROOT}/usersByName/${uname}`)); if(!map.exists()) return alert("user not found");
+  const uid = map.val();
+  await set(ref(db, `${FORUM_ROOT}/admins/${uid}`), true);
+  await update(ref(db, `${FORUM_ROOT}/users/${uid}`), { isAdmin:true });
+  await audit("promoteAdmin", uid, CURRENT_USER.uid);
+  renderAdminList();
+};
+demoteAdminBtn.onclick = async ()=>{
+  if(!CURRENT_USER || CURRENT_USER.username !== "logan") return alert("Only logan can demote admins.");
+  const uname = adminTargetInput.value?.trim().toLowerCase(); if(!uname) return alert("enter username");
+  const map = await get(ref(db, `${FORUM_ROOT}/usersByName/${uname}`)); if(!map.exists()) return alert("user not found");
+  const uid = map.val();
+  await remove(ref(db, `${FORUM_ROOT}/admins/${uid}`));
+  await update(ref(db, `${FORUM_ROOT}/users/${uid}`), { isAdmin:false });
+  await audit("demoteAdmin", uid, CURRENT_USER.uid);
+  renderAdminList();
+};
+
+addBlackBtn.onclick = async ()=>{ if(!CURRENT_USER || !(CURRENT_USER.isAdmin || CURRENT_USER.username==="logan")) return alert("Admins only"); const w = blackInput.value?.trim().toLowerCase(); if(!w) return; const bref = push(ref(db, `${FORUM_ROOT}/blacklist`)); await set(bref, w); await audit("addBlacklist", w, CURRENT_USER.uid); blackInput.value=''; };
+removeBlackBtn.onclick = async ()=>{ if(!CURRENT_USER || !(CURRENT_USER.isAdmin || CURRENT_USER.username==="logan")) return alert("Admins only"); const w = blackInput.value?.trim().toLowerCase(); if(!w) return; const snap = await get(ref(db, `${FORUM_ROOT}/blacklist`)); if(!snap.exists()) return alert("empty"); const obj = snap.val(); for(const k in obj) if(obj[k] === w) { await remove(ref(db, `${FORUM_ROOT}/blacklist/${k}`)); await audit("removeBlacklist", w, CURRENT_USER.uid); break; } blackInput.value=''; };
+
+/* -------------------------
+   Lookup & quick actions
+   ------------------------- */
+doLookupBtn.onclick = async ()=>{
+  const uname = lookupUsername.value?.trim().toLowerCase(); if(!uname) return alert("enter username");
+  const map = await get(ref(db, `${FORUM_ROOT}/usersByName/${uname}`)); if(!map.exists()) return alert("not found");
+  const uid = map.val();
+  const snap = await get(ref(db, `${FORUM_ROOT}/users/${uid}`));
+  if(!snap.exists()) return alert("no record");
+  const user = snap.val();
+  lookupResult.innerHTML = `<div><strong>${escapeHtml(user.username)}</strong> • karma:${user.karma||0} • admin:${user.isAdmin? "yes":"no"}</div><div class="muted small">UID: ${uid}</div>`;
+  const actions = document.createElement("div"); actions.style.marginTop="6px";
+  
+  const warnBtn = document.createElement("button"); warnBtn.className="btn"; warnBtn.textContent="Warn";
+  warnBtn.onclick = async ()=>{ const n = push(ref(db, `${FORUM_ROOT}/offenses`)); await set(n, { by: uid, reason:'warned by admin', createdAt: Date.now() }); await audit("warnUser", uid, CURRENT_USER.uid); alert("user warned"); };
+  
+  const muteBtn = document.createElement("button"); muteBtn.className="btn"; muteBtn.textContent="Mute 24h";
+  muteBtn.onclick = async ()=>{ 
+    const muteDuration = 24*3600*1000;
+    // Set server-side restriction
+    await set(ref(db, `${FORUM_ROOT}/restrictions/${uid}`), { restrictPost:true, restrictComment:true, restrictLogin:false, until: Date.now()+muteDuration }); 
+    // Removed setEvasionLock() logic here as it's handled by Lock-on-Failure in doLoginBtn
+    await audit("muteUser", uid, CURRENT_USER.uid); 
+    alert("muted 24h"); 
+  };
+  
+  const banBtn = document.createElement("button"); banBtn.className="btn danger"; banBtn.textContent="Ban (login block)";
+  banBtn.onclick = async ()=>{ 
+    if(!confirm("Ban user (block login)?")) return; 
+    // Set server-side restriction
+    await set(ref(db, `${FORUM_ROOT}/restrictions/${uid}`), { restrictPost:true, restrictComment:true, restrictLogin:true, until:null }); 
+    // Removed setEvasionLock() logic here as it's handled by Lock-on-Failure in doLoginBtn
+    await audit("banUser", uid, CURRENT_USER.uid); 
+    alert("banned"); 
+  };
+  
+  const unbanBtn = document.createElement("button"); unbanBtn.className="btn"; unbanBtn.textContent="Unban";
+  unbanBtn.onclick = async ()=>{ 
+    await remove(ref(db, `${FORUM_ROOT}/restrictions/${uid}`)); 
+    // Removed clearEvasionLock() logic here as it's not needed for the admin's device
+    await audit("unbanUser", uid, CURRENT_USER.uid); 
+    alert("unbanned"); 
+  };
+  
+  const clearOffBtn = document.createElement("button"); clearOffBtn.className="btn"; clearOffBtn.textContent="Clear Offenses";
+  clearOffBtn.onclick = async ()=>{ const snap = await get(ref(db, `${FORUM_ROOT}/offenses`)); if(!snap.exists()) return alert("no offenses"); const obj = snap.val(); for(const k in obj) if(obj[k].by === uid) await remove(ref(db, `${FORUM_ROOT}/offenses/${k}`)); await audit("clearOffenses", uid, CURRENT_USER.uid); alert("cleared"); };
+  actions.appendChild(warnBtn); actions.appendChild(muteBtn); actions.appendChild(banBtn); actions.appendChild(unbanBtn); actions.appendChild(clearOffBtn);
+  lookupResult.appendChild(actions);
+};
+
+warnUserBtn.onclick = async ()=> doLookupBtn.onclick();
+clearUserOffensesBtn.onclick = async ()=> doLookupBtn.onclick();
+
+/* -------------------------
+   Reports modal actions
+   ------------------------- */
+doReportBtn.onclick = async ()=>{
+  if(!CURRENT_USER) return alert("sign in");
+  const type = reportTypeInput.value?.trim();
+  const target = reportTargetInput.value?.trim();
+  const reason = reportReasonInput.value?.trim();
+  if(!type||!target||!reason) return alert("fill fields");
+  const rref = push(ref(db, `${FORUM_ROOT}/reports/${type}_${target.replace("/","_")}`));
+  await set(rref, { reporter: CURRENT_USER.uid, reason, createdAt: Date.now(), handled:false });
+  await audit("createReport", `${type}:${target}`, CURRENT_USER.uid);
+  hideModal(reportModal);
+};
+
+/* -------------------------
+   Create sub/post actions
+   ------------------------- */
+doCreateSubBtn.onclick = async ()=>{
+  if(!CURRENT_USER) return alert("sign in");
+  const id = newSubId.value?.trim().toLowerCase(); if(!id) return alert("id required");
+  const snap = await get(ref(db, `${FORUM_ROOT}/subforums/${id}`)); if(snap.exists()) return alert("exists");
+  const display = newSubName.value?.trim() || id; const desc = newSubDesc.value?.trim() || "";
+  await set(ref(db, `${FORUM_ROOT}/subforums/${id}`), { name: display, description: desc, creator: CURRENT_USER.uid, createdAt: Date.now(), settings:{ disablePolls:false, disableVotes:false, disableComments:false }, moderators: { [CURRENT_USER.uid]: true }});
+  const userSnap = await get(ref(db, `${FORUM_ROOT}/users/${CURRENT_USER.uid}`));
+  const msubs = userSnap.exists() ? (userSnap.val().moderatedSubforums || []) : [];
+  if(!msubs.includes(id)){ msubs.push(id); await update(ref(db, `${FORUM_ROOT}/users/${CURRENT_USER.uid}`), { moderatedSubforums: msubs }); }
+  await audit("createSubforum", id, CURRENT_USER.uid);
+  hideModal(createSubModal);
+};
+
+doCreatePostBtn.onclick = async ()=>{
+  if(!CURRENT_USER) return alert("sign in");
+  const sub = postSubId.value?.trim(); if(!sub) return alert("sub required");
+  const sSnap = await get(ref(db, `${FORUM_ROOT}/subforums/${sub}`)); if(!sSnap.exists()) return alert("sub not found");
+  const r = await get(ref(db, `${FORUM_ROOT}/restrictions/${CURRENT_USER.uid}`)); if(r.exists() && r.val().restrictPost) return alert("you are restricted from posting");
+  let title = postTitleInput.value || ""; let content = postContentInput.value || "";
+  const wasBlack = containsBlacklisted(title) || containsBlacklisted(content);
+  const ct = censorText(content); const tt = censorText(title);
+  if(wasBlack){ const o = push(ref(db, `${FORUM_ROOT}/offenses`)); await set(o, { by: CURRENT_USER.uid, reason:"blacklistMatch", createdAt: Date.now() }); await incrementOffense(CURRENT_USER.uid); }
+  let poll = null;
+  if(postTypeSelect.value==='poll'){ const q = pollQuestion.value || title; const opts = (pollOptions.value||"").split("\n").map(x=>x.trim()).filter(Boolean); poll = { question: censorText(q), options: opts.map(o=>censorText(o)), votes:{} }; }
+  const postObj = {
+    title: tt, content: ct, type: postTypeSelect.value, author: CURRENT_USER.uid, subforum: sub,
+    votes:{}, poll, settings:{ disablePolls:false, disableVotes:false, disableComments:false, isPinned:false, isLocked:false }, createdAt: Date.now(), publishAt: Date.now()
+  };
+  const newRef = push(ref(db, `${FORUM_ROOT}/posts`)); await set(newRef, postObj);
+  await audit("createPost", newRef.key, CURRENT_USER.uid);
+  hideModal(createPostModal);
+};
+
+/* -------------------------
+   Offense count -> automatic restrictions
+   ------------------------- */
+async function incrementOffense(uid){
+  if(!uid) return;
+  const snap = await get(ref(db, `${FORUM_ROOT}/userOffenseCounts/${uid}`));
+  const cur = snap.exists()? (snap.val().count||0) : 0;
+  const next = cur + 1;
+  await set(ref(db, `${FORUM_ROOT}/userOffenseCounts/${uid}`), { count: next, last: Date.now() });
+  const restrict24h = 24*3600*1000;
+  if(next === 3){ await set(ref(db, `${FORUM_ROOT}/restrictions/${uid}`), { restrictPost:true, restrictComment:false, restrictLogin:false, until: Date.now()+restrict24h }); await audit("autoRestrict_posts_24h", uid, "system"); }
+  else if(next === 5){ await set(ref(db, `${FORUM_ROOT}/restrictions/${uid}`), { restrictPost:true, restrictComment:true, restrictLogin:false, until: Date.now()+restrict24h }); await audit("autoRestrict_comments_24h", uid, "system"); }
+  else if(next >= 7){ 
+    await set(ref(db, `${FORUM_ROOT}/restrictions/${uid}`), { restrictPost:true, restrictComment:true, restrictLogin:true, until: null }); 
+    // Client-side lock handled by doLoginBtn check
+    await audit("autoBan_login", uid, "system"); 
+  }
+}
+
+/* -------------------------
+   Karma update on votes (simple)
+   ------------------------- */
+async function updateKarmaForVote(postId){
+  const snap = await get(ref(db, `${FORUM_ROOT}/posts/${postId}`));
+  if(!snap.exists()) return;
+  const post = snap.val(); const votes = post.votes || {}; let net = 0; for(const u in votes) net += (votes[u]||0);
+  const author = post.author; if(author){
+    const s = await get(ref(db, `${FORUM_ROOT}/users/${author}`));
+    const curr = s.exists()? (s.val().karma||0) : 0;
+    await update(ref(db, `${FORUM_ROOT}/users/${author}`), { karma: curr + net });
+  }
+}
+
+/* -------------------------
+   Audit helper
+   ------------------------- */
+async function audit(action, target, by){
+  const r = push(ref(db, `${FORUM_ROOT}/auditLogs`));
+  await set(r, { action, target, by, timestamp: Date.now() });
+}
+
+/* -------------------------
+   Helpers: text render, escapes, blacklist
+   ------------------------- */
+function escapeHtml(s){ if(!s) return ""; return String(s).replace(/[&<>"']/g, c=> ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function renderText(s){ if(!s) return ""; let out = escapeHtml(s); out = out.replace(/`([^`]+)`/g, "<code>$1</code>"); out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>"); return out; }
+function containsBlacklisted(text){ if(!text) return false; const t = text.toLowerCase(); for(const w of BLACKLIST){ if(!w) continue; if(t.includes(w.toLowerCase())) return true; } return false; }
+function censorText(text){ if(!text) return ""; let out = text; for(const w of BLACKLIST){ if(!w) continue; const re = new RegExp(w, 'ig'); out = out.replace(re, match => '*'.repeat(match.length)); } return out; }
+
+/* -------------------------
+   Poll counts, scores
+   ------------------------- */
+function countPollVotes(postId, optionIndex){ const post = ALL_POSTS[postId]; if(!post || !post.poll) return 0; const votes = post.poll.votes || {}; let c = 0; for(const uid in votes) if(votes[uid] === optionIndex) c++; return c; }
+function scoreObj(o){ const v = o.votes || {}; let s=0; for(const k in v) s += (v[k]||0); return s; }
+function postScore(p){ return scoreObj(p); }
+function commentScore(c){ return scoreObj(c); }
+
+/* -------------------------
+   Username lookup helper
+   ------------------------- */
+const USER_CACHE = {};
+async function usernameFromUid(uid){
+  if(!uid) return "unknown";
+  if(USER_CACHE[uid]) return USER_CACHE[uid];
+  const snap = await get(ref(db, `${FORUM_ROOT}/users/${uid}`));
+  const name = snap.exists()? snap.val().username : uid.substring(0,7);
+  USER_CACHE[uid] = name;
+  return name;
+}
+
+/* -------------------------
+   Auto-login on page load
+   ------------------------- */
+(async ()=>{
+  startListeners();
+  const saved = getSession();
+  if(saved){
+    const s = await get(ref(db, `${FORUM_ROOT}/users/${saved}`));
+    if(s.exists()) await refreshCurrentUser();
+    else clearSession();
+  }
+})();
+
+/* -------------------------
+   Refresh current user
+   ------------------------- */
+async function refreshCurrentUser(){
+  const uid = getSession();
+  if(!uid) return;
+  const snap = await get(ref(db, `${FORUM_ROOT}/users/${uid}`));
+  if(!snap.exists()){ clearSession(); return; }
+  CURRENT_USER = { uid, ...snap.val() };
+  welcomeText.textContent = `Signed in as ${CURRENT_USER.username}`;
+  openLoginBtn.classList.add("hidden");
+  openSignupBtn.classList.add("hidden");
+  logoutBtn.classList.remove("hidden");
+  document.getElementById('userPanel').classList.remove('hidden');
+  renderUserPanel();
+  // show mod panel if admin or moderator
+  const isAdminSnap = await get(ref(db, `${FORUM_ROOT}/admins/${uid}`));
+  if(isAdminSnap.exists() || (CURRENT_USER.moderatedSubforums && CURRENT_USER.moderatedSubforums.length>0)) modPanel.classList.remove('hidden');
+}
+
+/* -------------------------
+   Render user panel
+   ------------------------- */
+function renderUserPanel(){
+  userMeta.innerHTML = `<div><strong>${escapeHtml(CURRENT_USER.username)}</strong></div><div class="muted small">karma: ${CURRENT_USER.karma||0} • badges: ${(CURRENT_USER.badges||[]).join(", ")}</div><div class="muted small">admin: ${CURRENT_USER.isAdmin? "yes":"no"}</div>`;
+  userActions.innerHTML = "";
+  const editBtn = document.createElement("button"); editBtn.className="btn"; editBtn.textContent="Edit Username";
+  editBtn.onclick = async ()=>{ const newName = prompt("New username:", CURRENT_USER.username); if(!newName) return; const nn = newName.trim().toLowerCase(); const exists = await get(ref(db, `${FORUM_ROOT}/usersByName/${nn}`)); if(exists.exists()) return alert("name taken"); await remove(ref(db, `${FORUM_ROOT}/usersByName/${CURRENT_USER.username}`)); await set(ref(db, `${FORUM_ROOT}/usersByName/${nn}`), CURRENT_USER.uid); await update(ref(db, `${FORUM_ROOT}/users/${CURRENT_USER.uid}`), { username: nn }); await audit("editProfile", CURRENT_USER.uid, CURRENT_USER.uid); await refreshCurrentUser(); };
+  userActions.appendChild(editBtn);
+  const reqModBtn = document.createElement("button"); reqModBtn.className="btn"; reqModBtn.textContent="Request Mod";
+  reqModBtn.onclick = ()=> alert("Request sent (demo)");
+  userActions.appendChild(reqModBtn);
+}
+
+/* -------------------------
+   Export audit JSON (admin)
+   ------------------------- */
+exportAuditBtn.onclick = ()=>{
+  const data = JSON.stringify(ALL_AUDIT || {}, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'audit.json'; a.click();
+  URL.revokeObjectURL(url);
+};
+
+/* -------------------------
+   Admin key icon & admin modal events
+   ------------------------- */
+keyIcon.onclick = ()=> {
+  if(!CURRENT_USER) { showModal(loginModal); return; }
+  renderAdminModal();
+  showModal(adminModal);
+};
+closeAdminBtn.onclick = ()=> hideModal(adminModal);
+
+/* -------------------------
+   Event: mod/admin search filters
+   ------------------------- */
+reportFilterInput?.addEventListener('input', ()=> renderAdminReportsList());
+auditFilterInput?.addEventListener('input', ()=> renderAdminAuditList());
+
+/* -------------------------
+   START
+   ------------------------- */
+console.log("Decked Forum client loaded.");
+</script>
+</body>
+</html>
