@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Leak People's Crush!</title>
 <style>
 :root{
   --bg:#000; --neon:#0f0; font-family: monospace;
 }
+*{box-sizing:border-box}
 body{
   margin:0; min-height:100vh; background:var(--bg); color:var(--neon);
   display:flex; flex-direction:column; align-items:center; padding:28px; position:relative;
 }
-.wrap{ width:100%; max-width:800px; border-radius:12px; background:#010;
-       border:1px solid rgba(0,255,102,0.12); padding:20px; }
+/* wrapper and main */
+.wrap{ width:100%; max-width:900px; border-radius:12px; background:#010;
+       border:1px solid rgba(0,255,102,0.12); padding:20px; position:relative; }
 header{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
 header h1{ margin:0; font-size:20px; color:var(--neon); }
 .controls{ display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
@@ -23,38 +25,71 @@ button:hover{background:rgba(0,255,102,0.06);}
 #list{ background:#010; border:1px solid rgba(0,255,102,0.06); padding:12px;
        border-radius:10px; min-height:180px; max-height:60vh; overflow:auto; }
 .entry{ padding:8px; border-bottom:1px dotted rgba(0,255,102,0.06);
-        display:flex; justify-content:space-between; align-items:center; }
+        display:flex; justify-content:space-between; align-items:center; gap:10px; }
+
+/* Admin sidebar */
+#adminSidebar{
+  position:fixed; left:-340px; top:0; height:100vh; width:320px; background:#020;
+  border-right:1px solid rgba(0,255,102,0.08); padding:16px; transition:left .22s ease;
+  z-index:999;
+  overflow:auto;
+}
+#adminSidebar.open{ left:0; }
+#adminSidebar h3{ margin-top:0; color:var(--neon); font-size:16px; }
+.admin-entry{ padding:8px; border-bottom:1px dashed rgba(0,255,102,0.06); display:flex; justify-content:space-between; gap:8px; align-items:center; }
+.admin-meta{ font-size:12px; color: rgba(0,255,102,0.7); }
 
 /* Modal */
 .modal{ display:none; position:fixed; inset:0; z-index:50; background:rgba(0,0,0,0.85);
         align-items:center; justify-content:center; }
 .modal.open{ display:flex; }
 .modal-card{ background:#010; border:1px solid rgba(0,255,102,0.12);
-            padding:18px; border-radius:12px; text-align:center; color:var(--neon); width:90%; max-width:400px; }
+            padding:18px; border-radius:12px; text-align:center; color:var(--neon); width:90%; max-width:420px; }
 .modal-card input{ width:90%; padding:10px; margin:6px 0; border-radius:6px; border:1px solid rgba(0,255,102,0.08); background:#000; color:var(--neon); }
 .modal-card .row{ display:flex; gap:6px; justify-content:center; margin-top:8px; flex-wrap:wrap; }
 
 /* key icon */
 #keyIcon{
   position:fixed; bottom:10px; left:10px; font-size:24px; cursor:pointer; user-select:none;
+  z-index:1000;
+}
+
+/* small responsive tweak */
+@media (max-width:820px){
+  #adminSidebar{ width:260px; left:-280px; }
+  #adminSidebar.open{ left:0; }
 }
 </style>
 </head>
 <body>
 
-<div class="wrap">
+<!-- Admin Sidebar (hidden until admin logs in) -->
+<div id="adminSidebar" aria-hidden="true">
+  <h3>Admin Panel</h3>
+  <p id="adminInfo">Loading...</p>
+  <div style="margin:8px 0;">
+    <button id="closeSidebar">Close Sidebar</button>
+    <button id="deleteAllBtn" style="margin-left:8px">Delete All</button>
+  </div>
+  <div id="adminList">Loading entries...</div>
+</div>
+
+<!-- Main app -->
+<div class="wrap" id="mainWrap">
   <header>
-    <h1>Leak People's Crush!</h1>
+    <h1 id="title">Leak People's Crush!</h1>
     <a href="index.html"><button>Home</button></a>
   </header>
+
   <div class="controls">
     <button id="openBtn">Add Entry</button>
   </div>
+
   <div id="list">Loading...</div>
 </div>
 
 <!-- Add Entry Modal -->
-<div id="modal" class="modal">
+<div id="modal" class="modal" aria-hidden="true">
   <div class="modal-card">
     <h2>Add Entry</h2>
     <input id="from" placeholder="Who likes..." maxlength="40"/>
@@ -66,27 +101,14 @@ button:hover{background:rgba(0,255,102,0.06);}
   </div>
 </div>
 
-<!-- Dev Modal -->
-<div id="devModal" class="modal">
-  <div class="modal-card">
-    <h2>Dev Menu</h2>
-    <div class="row">
-      <button id="pauseAdds">Pause Adds</button>
-      <button id="resumeAdds">Resume Adds</button>
-      <button id="deleteAll">Delete All Entries</button>
-      <button id="closeDev">Close</button>
-    </div>
-  </div>
-</div>
-
 <!-- Key icon -->
-<div id="keyIcon">🔑</div>
+<div id="keyIcon" title="Admin login">🔑</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
-// Firebase config
+// ---------- Firebase config ----------
 const firebaseConfig = {
   apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
   authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -98,11 +120,10 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const likesRef = ref(db,'likes');
+const likesRef = ref(db, 'likes');
 
-// UI elements
+// ---------- UI refs ----------
 const modal = document.getElementById('modal');
-const devModal = document.getElementById('devModal');
 const openBtn = document.getElementById('openBtn');
 const cancelBtn = document.getElementById('cancelBtn');
 const submitBtn = document.getElementById('submitBtn');
@@ -110,70 +131,154 @@ const fromInput = document.getElementById('from');
 const toInput = document.getElementById('to');
 const listDiv = document.getElementById('list');
 
-// Dev buttons
-const pauseBtn = document.getElementById('pauseAdds');
-const resumeBtn = document.getElementById('resumeAdds');
-const deleteAllBtn = document.getElementById('deleteAll');
-const closeDevBtn = document.getElementById('closeDev');
-
-// Key icon
 const keyIcon = document.getElementById('keyIcon');
+const adminSidebar = document.getElementById('adminSidebar');
+const adminList = document.getElementById('adminList');
+const adminInfo = document.getElementById('adminInfo');
+const closeSidebar = document.getElementById('closeSidebar');
+const deleteAllBtn = document.getElementById('deleteAllBtn');
+const title = document.getElementById('title');
 
 let paused = false;
+let isAdmin = false;
 
-// Open add modal
-openBtn.addEventListener('click', ()=>{ modal.classList.add('open'); fromInput.focus(); });
-cancelBtn.addEventListener('click', ()=>{ closeModal(); });
-function closeModal(){ modal.classList.remove('open'); fromInput.value=''; toInput.value=''; }
+// username from sessionStorage (you said it's already set)
+const sessionName = sessionStorage.getItem('username') || sessionStorage.getItem('loggedInUser') || 'anonymous';
 
-// Submit entry
+// show a tiny hint in console (dev)
+console.log('session username:', sessionName);
+
+// ---------- modal open/close ----------
+openBtn.addEventListener('click', ()=> { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); fromInput.focus(); });
+cancelBtn.addEventListener('click', closeModal);
+function closeModal(){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); fromInput.value=''; toInput.value=''; }
+
+// ---------- submit entry (stores postedBy silently) ----------
 submitBtn.addEventListener('click', async ()=>{
   const from = fromInput.value.trim();
   const to = toInput.value.trim();
   if(!from || !to) return;
   if(paused){ alert('Submissions are paused'); return; }
+
   try{
     const newRef = push(likesRef);
-    await set(newRef, {from,to,timestamp:Date.now()});
+    // store postedBy using the session username (secret to non-admins)
+    await set(newRef, { from, to, timestamp: Date.now(), postedBy: sessionName });
     closeModal();
-  } catch(err){ console.error(err); alert('DB error'); }
+  } catch(err){
+    console.error(err);
+    alert('DB error');
+  }
 });
 
-// Live updates
+// ---------- render public list (no postedBy shown) ----------
+function renderPublicList(data){
+  listDiv.innerHTML = '';
+  if(!data){ listDiv.textContent = 'No entries'; return; }
+  Object.entries(data)
+    .sort((a,b)=>b[1].timestamp - a[1].timestamp)
+    .forEach(([key, val])=>{
+      const div = document.createElement('div');
+      div.className = 'entry';
+      // public: only show who likes who and time
+      div.innerHTML = `<div>${escapeHtml(val.from)} likes ${escapeHtml(val.to)}</div>
+                       <div class="meta">${new Date(val.timestamp).toLocaleString()}</div>`;
+      div.dataset.key = key;
+      listDiv.appendChild(div);
+    });
+}
+
+// ---------- render admin list (shows postedBy and delete buttons) ----------
+function renderAdminList(data){
+  adminList.innerHTML = '';
+  if(!data){ adminList.textContent = 'No entries'; return; }
+  Object.entries(data)
+    .sort((a,b)=>b[1].timestamp - a[1].timestamp)
+    .forEach(([key, val])=>{
+      const row = document.createElement('div');
+      row.className = 'admin-entry';
+      const left = document.createElement('div');
+      left.innerHTML = `<strong>${escapeHtml(val.from)}</strong> → ${escapeHtml(val.to)}<div class="admin-meta">posted by: ${escapeHtml(val.postedBy||'unknown')} • ${new Date(val.timestamp).toLocaleString()}</div>`;
+      const right = document.createElement('div');
+      // delete button
+      const del = document.createElement('button');
+      del.textContent = 'Delete';
+      del.style.borderColor = 'rgba(255,0,0,0.25)';
+      del.style.color = '#f55';
+      del.addEventListener('click', async ()=>{
+        if(confirm('Delete this entry?')){
+          try{ await remove(ref(db, `likes/${key}`)); }
+          catch(e){ console.error(e); alert('Delete failed'); }
+        }
+      });
+      right.appendChild(del);
+      row.appendChild(left);
+      row.appendChild(right);
+      adminList.appendChild(row);
+    });
+}
+
+// ---------- escape helper ----------
+function escapeHtml(str){
+  if(!str && str !== 0) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ---------- DB listener (keeps both views synced) ----------
 onValue(likesRef, snap=>{
   const data = snap.val();
-  renderList(data);
-}, err=>{ console.error(err); });
+  // update public list
+  renderPublicList(data);
+  // update admin list if admin is active
+  if(isAdmin) renderAdminList(data);
+}, err => console.error(err));
 
-function renderList(data){
-  listDiv.innerHTML='';
-  if(!data){ listDiv.textContent='No entries'; return; }
-  Object.entries(data).sort((a,b)=>b[1].timestamp-a[1].timestamp).forEach(([key,val])=>{
-    const div = document.createElement('div');
-    div.className='entry';
-    div.innerHTML = `<div>${escapeHtml(val.from)} likes ${escapeHtml(val.to)}</div>
-                     <div class="meta">${new Date(val.timestamp).toLocaleTimeString()}</div>`;
-    div.dataset.key = key;
-    listDiv.appendChild(div);
-  });
-}
-
-function escapeHtml(str){
-  return str.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// Dev menu actions
-pauseBtn.addEventListener('click', ()=>{ paused=true; alert('Adds paused'); });
-resumeBtn.addEventListener('click', ()=>{ paused=false; alert('Adds resumed'); });
-deleteAllBtn.addEventListener('click', ()=>{ if(confirm('Delete all entries?')) remove(likesRef); });
-closeDevBtn.addEventListener('click', ()=>{ devModal.classList.remove('open'); });
-
-// Key icon password prompt
-keyIcon.addEventListener('click', ()=>{
-  const pw = prompt("Enter dev password:");
-  if(pw === "developer") devModal.classList.add('open');
-  else alert("Wrong password");
+// ---------- admin controls ----------
+closeSidebar.addEventListener('click', ()=> {
+  adminSidebar.classList.remove('open');
+  adminSidebar.setAttribute('aria-hidden','true');
 });
+
+deleteAllBtn.addEventListener('click', ()=> {
+  if(!isAdmin) return alert('Not authorized');
+  if(confirm('Delete all entries?')) remove(likesRef);
+});
+
+// ---------- key icon: admin password prompt ----------
+keyIcon.addEventListener('click', ()=>{
+  // delay tiny bit to avoid blocking UI interactions
+  setTimeout(()=>{
+    const pw = prompt('Enter admin password:');
+    if(pw === 'developer'){
+      // set admin mode
+      isAdmin = true;
+      adminSidebar.classList.add('open');
+      adminSidebar.setAttribute('aria-hidden','false');
+      adminInfo.textContent = `You are admin — viewing entries. Signed in as: ${sessionName}`;
+      title.textContent = "Leak People's Crush! (Admin)";
+      // render admin list using latest snapshot (onValue will keep it updated)
+      // (we re-render below to be immediate)
+      onValue(likesRef, snap => {
+        const data = snap.val();
+        renderAdminList(data);
+      }, err => console.error(err));
+    } else if(pw){
+      alert('Wrong password');
+    }
+  }, 50);
+});
+
+// optional: close admin mode when page unloads (not required, but cleans state)
+window.addEventListener('beforeunload', ()=>{
+  // don't persist anything special
+});
+
+// ---------- small UX: if sessionName is missing, show small hint in UI ----------
+if(!sessionName || sessionName === 'anonymous'){
+  // not required — but we can prompt once to set a transient name if you want
+  console.log('No session username found. Admins will show "unknown" as postedBy for new entries.');
+}
+
 </script>
 </body>
 </html>
