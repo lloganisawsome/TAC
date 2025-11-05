@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +17,7 @@
   --notif-red:#e05555;
 }
 
-body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;color:#fff;transition:margin-left 0.3s;overflow:hidden;}
+body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;color:#fff;transition:margin-left 0.3s;}
 
 .user-sidebar{
   width:220px;
@@ -128,20 +132,6 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
 .carousel-control:hover {opacity: 1;}
 .prev {left: 10px;border-radius: 50%;}
 .next {right: 10px;border-radius: 50%;}
-
-/* Halloween decorations for whole screen */
-.floating-decor {
-  position: absolute;
-  font-size: 20px;
-  pointer-events: none;
-  animation-name: bounceDecor;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-}
-@keyframes bounceDecor {
-  0% { transform: translate(0,0) rotate(0deg);}
-  100% { transform: translate(0,-10px) rotate(15deg);}
-}
 </style>
 </head>
 <body>
@@ -243,40 +233,6 @@ function showPrevImage(){
 prevBtn.addEventListener('click', showPrevImage);
 nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
-
-// --- Floating Halloween decorations ---
-const decorEmojis = ["🎃","🧙‍♀️"];
-const numDecor = 15;
-const decorElements = [];
-
-for(let i=0;i<numDecor;i++){
-  const d = document.createElement('div');
-  d.className = 'floating-decor';
-  d.textContent = decorEmojis[Math.floor(Math.random()*decorEmojis.length)];
-  d.style.top = Math.random()*window.innerHeight + 'px';
-  d.style.left = Math.random()*window.innerWidth + 'px';
-  d.speedX = (Math.random()*2+0.5) * (Math.random()<0.5?-1:1);
-  d.speedY = (Math.random()*2+0.5) * (Math.random()<0.5?-1:1);
-  d.style.animationDuration = (1+Math.random()*2)+'s';
-  document.body.appendChild(d);
-  decorElements.push(d);
-}
-
-function moveDecor(){
-  decorElements.forEach(d=>{
-    let x = parseFloat(d.style.left);
-    let y = parseFloat(d.style.top);
-    x += d.speedX;
-    y += d.speedY;
-    // bounce off edges
-    if(x<0 || x>window.innerWidth-20) d.speedX *= -1;
-    if(y<0 || y>window.innerHeight-20) d.speedY *= -1;
-    d.style.left = x+'px';
-    d.style.top = y+'px';
-  });
-  requestAnimationFrame(moveDecor);
-}
-moveDecor();
 </script>
 </body>
 </html>
