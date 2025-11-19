@@ -1,0 +1,874 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Greenline Mega Casino — Single File</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#06210c; --panel:#0e341c; --card:#153e24; --accent:#13ff78; --muted:#9fcfb0; --glass:rgba(255,255,255,0.03);
+    --shadow:0 8px 30px rgba(2,20,10,0.6);
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,Segoe UI,Roboto,Arial;}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,#03230a 0%,#06210c 100%);color:#eaffef}
+  .app{max-width:1100px;margin:18px auto;padding:18px}
+  header{display:flex;align-items:center;gap:14px}
+  .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#08b55a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#022}
+  h1{margin:0;font-size:20px}
+  .status {margin-left:auto;text-align:right}
+  .chips {background:var(--panel);padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03)}
+  nav{display:flex;gap:8px;margin:14px 0;flex-wrap:wrap}
+  .tab{background:var(--card);padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;color:var(--accent);font-weight:700}
+  .tab.inactive{opacity:0.6;color:var(--muted);font-weight:600}
+  .container{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:16px;box-shadow:var(--shadow);min-height:520px}
+  .screen{display:none;opacity:0;transition:opacity .35s ease;min-height:420px}
+  .screen.active{display:block;opacity:1}
+  .row{display:flex;gap:12px}
+  .card{flex:1;background:var(--panel);padding:12px;border-radius:12px;border:1px solid var(--glass)}
+  .controls{display:flex;gap:8px;flex-wrap:wrap}
+  button{background:linear-gradient(180deg,var(--accent),#08b55a);border:none;padding:10px 14px;border-radius:10px;font-weight:700;color:#042;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.3)}
+  button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted);box-shadow:none}
+  input[type=number]{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  select{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  .small{font-size:13px;color:var(--muted)}
+  .game-title{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .reel{width:86px;height:86px;border-radius:10px;background:#071b12;display:flex;align-items:center;justify-content:center;font-size:34px;border:1px solid rgba(255,255,255,0.03)}
+  .slot-row{display:flex;gap:8px}
+  .message{margin-top:8px;color:var(--muted)}
+  .bets{display:flex;gap:6px;align-items:center}
+  .bar{height:10px;background:#042412;border-radius:10px;overflow:hidden}
+  .bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#04d480);width:0%}
+  .footer{margin-top:10px;color:var(--muted);font-size:13px;text-align:center}
+  /* horse race track */
+  .track{height:120px;position:relative;background:linear-gradient(90deg,#0e341c,#063217);border-radius:8px;overflow:hidden;padding:8px}
+  .horse{position:absolute;left:8px;top:8px;height:28px;display:flex;align-items:center;gap:8px}
+  .horse .name{font-weight:700;color:#042}
+  /* poker / holdem */
+  .cards{display:flex;gap:6px;align-items:center}
+  .card-face{width:56px;height:80px;border-radius:6px;background:#072218;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid rgba(255,255,255,0.03)}
+  .hud{display:flex;gap:12px;align-items:center}
+  .tiny{font-size:12px;color:var(--muted)}
+  /* responsive */
+  @media (max-width:900px){
+    .row{flex-direction:column}
+    .track{height:220px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">TG</div>
+    <div>
+      <h1>TAC Gambling</h1>
+      <div class="small">Good luck.</div>
+    </div>
+    <div class="status">
+      <div class="chips">Chips: <strong id="uiChips">0</strong></div>
+      <div class="small">High: <span id="uiHigh">0</span></div>
+    </div>
+  </header>
+
+  <nav id="tabs">
+    <div class="tab" data-screen="slots">Slots</div>
+    <div class="tab inactive" data-screen="coins">Coin & Dice</div>
+    <div class="tab inactive" data-screen="wheel">Wheel of Misfortune</div>
+    <div class="tab inactive" data-screen="blackjack">Blackjack</div>
+    <div class="tab inactive" data-screen="roulette">Roulette</div>
+    <div class="tab inactive" data-screen="horses">Horse Racing</div>
+    <div class="tab inactive" data-screen="texas">Texas Hold'em</div>
+    <div class="tab inactive" data-screen="poker">5-card Poker</div>
+  </nav>
+
+  <div class="container">
+    <!-- shared controls -->
+    <div class="row" style="margin-bottom:12px;align-items:center">
+      <div style="flex:1" class="card">
+        <div class="hud">
+          <div class="small">Bet amount</div>
+          <input id="betAmount" type="number" min="1" value="10" style="width:120px" />
+          <div class="bets">
+            <button id="bet10" class="secondary">+10</button>
+            <button id="bet50" class="secondary">+50</button>
+            <button id="bet100" class="secondary">+100</button>
+            <button id="addChips" class="secondary">Add 100 (demo)</button>
+          </div>
+        </div>
+        <div class="small" style="margin-top:6px">Difficulty: <select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Impossible</option></select></div>
+      </div>
+
+      <div style="width:260px" class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div class="small">Pot Progress (shared)</div>
+            <div class="bar" style="width:180px"><div id="potFill" class="bar-fill"></div></div>
+            <div class="small">Pot: <span id="pot">0</span></div>
+          </div>
+          <div style="text-align:right">
+            <div class="small">Cooldown</div>
+            <div id="cooldown" class="small">Ready</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREENS -->
+    <section id="screens">
+      <!-- SLOTS -->
+      <div id="slots" class="screen active">
+        <div class="game-title"><h2>Slots Hub</h2><div class="small">Multiple machines — different payouts & styles.</div></div>
+        <div class="row">
+          <div class="card">
+            <h3 class="small">Classic 3-reel</h3>
+            <div class="slot-row" id="classicReels">
+              <div class="reel" id="c1">🍒</div>
+              <div class="reel" id="c2">🍋</div>
+              <div class="reel" id="c3">🔔</div>
+            </div>
+            <div style="margin-top:10px">
+              <button id="spinClassic">Spin Classic</button>
+              <div class="message small" id="classicMsg">—</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="small">High Roller 5x3</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <div style="display:flex;gap:6px">
+                <div class="reel" id="h1">🍒</div>
+                <div class="reel" id="h2">🍋</div>
+                <div class="reel" id="h3">🔔</div>
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <button id="spinHigh">Spin High Roller</button>
+              <div class="message small" id="highMsg">—</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="small">Mega Jackpot (risky)</h3>
+            <div style="display:flex;justify-content:center;margin-top:8px">
+              <div class="reel" id="m1">💎</div>
+              <div class="reel" id="m2">7️⃣</div>
+              <div class="reel" id="m3">⭐</div>
+            </div>
+            <div style="margin-top:10px">
+              <button id="spinMega">Spin Mega</button>
+              <div class="message small" id="megaMsg">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COIN & DICE -->
+      <div id="coins" class="screen">
+        <div class="game-title"><h2>Coin Flip & Dice</h2><div class="small">Simple, fast, fair.</div></div>
+        <div class="row">
+          <div class="card">
+            <h3 class="small">Coin Flip</h3>
+            <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+              <button id="coinFlip">Flip Coin</button><div class="small">Last: <span id="coinLast">—</span></div>
+            </div>
+            <div class="message small" id="coinMsg">—</div>
+          </div>
+
+          <div class="card">
+            <h3 class="small">Dice (Higher / Lower)</h3>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+              <button id="rollHigh">Bet High (4-6)</button>
+              <button id="rollLow">Bet Low (1-3)</button>
+            </div>
+            <div class="message small" id="diceMsg">—</div>
+          </div>
+
+          <div class="card">
+            <h3 class="small">Quick Bets</h3>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="betAllIn" class="secondary">All In (demo)</button>
+              <button id="half" class="secondary">Half Bet</button>
+            </div>
+            <div class="message small" id="qbMsg">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHEEL -->
+      <div id="wheel" class="screen">
+        <div class="game-title"><h2>Wheel of Misfortune</h2><div class="small">Lots of LOSSES, some wins, and a few ad stops.</div></div>
+        <div class="row">
+          <div class="card" style="text-align:center">
+            <canvas id="wheelCanvas" width="400" height="400" style="max-width:100%"></canvas>
+            <div style="margin-top:12px">
+              <button id="spinWheel">Spin Wheel</button>
+              <div class="message small" id="wheelMsg">—</div>
+            </div>
+          </div>
+          <div class="card">
+            <h3 class="small">Wheel Config</h3>
+            <div class="small">Difficulty modifies chance of landing on LOSS vs WIN.</div>
+            <div style="margin-top:10px" class="small">Slots include: LOSE, WINx2, WINx10, JACKPOT, AD (fake)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLACKJACK -->
+      <div id="blackjack" class="screen">
+        <div class="game-title"><h2>Blackjack</h2><div class="small">Simple Hit/Stand with difficulty affecting dealer behavior.</div></div>
+        <div class="row">
+          <div class="card" id="bjTable">
+            <div><strong>Your Hand</strong></div>
+            <div class="cards" id="bjPlayerCards"></div>
+            <div class="small">Player total: <span id="bjPlayerTotal">0</span></div>
+            <hr>
+            <div><strong>Dealer</strong></div>
+            <div class="cards" id="bjDealerCards"></div>
+            <div class="small">Dealer total: <span id="bjDealerTotal">0</span></div>
+            <div style="margin-top:8px">
+              <button id="bjDeal">Deal</button>
+              <button id="bjHit" class="secondary">Hit</button>
+              <button id="bjStand" class="secondary">Stand</button>
+              <div class="message small" id="bjMsg">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROULETTE -->
+      <div id="roulette" class="screen">
+        <div class="game-title"><h2>Roulette</h2><div class="small">Bet on numbers, red/black, odd/even.</div></div>
+        <div class="row">
+          <div class="card">
+            <div class="small">Pick type</div>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button id="betRed">Red</button>
+              <button id="betBlack">Black</button>
+              <button id="betEven">Even</button>
+              <button id="betOdd">Odd</button>
+            </div>
+            <div style="margin-top:12px">
+              <div class="small">Or pick a number (0-36)</div>
+              <input id="rouletteNumber" type="number" min="0" max="36" value="7"/>
+              <button id="betNumber">Bet Number</button>
+            </div>
+            <div class="message small" id="rouletteMsg">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HORSE RACING -->
+      <div id="horses" class="screen">
+        <div class="game-title"><h2>Horse Racing</h2><div class="small">Pick a horse, watch the race, payouts depend on odds.</div></div>
+        <div class="row">
+          <div class="card" style="flex:1">
+            <div style="display:flex;gap:8px;align-items:center">
+              <div class="small">Pick Horse</div>
+              <select id="horsePick"></select>
+              <button id="startRace">Start Race</button>
+            </div>
+            <div style="margin-top:12px" class="track" id="track"></div>
+            <div class="message small" id="horseMsg">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEXAS HOLD'EM -->
+      <div id="texas" class="screen">
+        <div class="game-title"><h2>Texas Hold'em (Heads-up vs AI)</h2><div class="small">Simplified but real-ish: preflop, flop, turn, river. Difficulty affects AI.</div></div>
+        <div class="row">
+          <div class="card">
+            <div class="small">Your hole cards</div>
+            <div class="cards" id="thPlayerCards"></div>
+            <div class="small">Community</div>
+            <div class="cards" id="thCommunity"></div>
+            <div style="margin-top:8px">
+              <button id="thDeal">Deal Hand</button>
+              <button id="thNext" class="secondary">Next Stage</button>
+              <div class="message small" id="thMsg">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-CARD POKER -->
+      <div id="poker" class="screen">
+        <div class="game-title"><h2>5-Card Poker (Draw)</h2><div class="small">Draw up to 3 cards. Best hand wins vs dealer AI.</div></div>
+        <div class="row">
+          <div class="card">
+            <div class="small">Your hand</div>
+            <div class="cards" id="pokerPlayer"></div>
+            <div style="margin-top:8px">
+              <button id="pokerDeal">Deal</button>
+              <button id="pokerDraw" class="secondary">Draw Selected</button>
+              <div class="message small" id="pokerMsg">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <div class="footer">Copyright 2025 TAC</div>
+  </div>
+</div>
+
+<script>
+/* ---------------------------------------------------------
+   Mega Casino — Single File
+   - State & persistence
+   - Tab switching with fade
+   - Crypto RNG
+   - Multiple games simplified but functional
+   - Difficulty levels affect odds/AI
+   --------------------------------------------------------- */
+
+const STATE_KEY = 'mega_casino_state_v1';
+let state = { chips: 500, high: 500, pot: 0 };
+const POT_MAX = 1000;
+const COOLDOWN_MS = 600;
+let cooldown = false;
+
+// RNG
+function rngInt(max){ const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max; }
+
+// load/save
+function loadState(){ try{ const s=JSON.parse(localStorage.getItem(STATE_KEY)); if(s && typeof s.chips==='number'){ state = s; } }catch(e){} enforceMin(); updateUI(); }
+function saveState(){ localStorage.setItem(STATE_KEY, JSON.stringify(state)); updateUI(); }
+function enforceMin(){ if(state.chips <= 0) state.chips = 1; saveState(); }
+function award(n){ state.chips += n; if(state.chips > state.high) state.high = state.chips; saveState(); }
+function spend(n){ if(state.chips < n) return false; state.chips -= n; state.pot = Math.min(POT_MAX, state.pot + Math.min(n,50)); saveState(); return true; }
+function updateUI(){ document.getElementById('uiChips').textContent = state.chips; document.getElementById('uiHigh').textContent = state.high; document.getElementById('pot').textContent = state.pot; const pct = Math.round(100*(state.pot/POT_MAX)); document.getElementById('potFill').style.width = pct + '%'; }
+
+// cooldown wrapper
+async function actionWithCooldown(fn){
+  if(cooldown){ document.getElementById('cooldown').textContent = 'Wait'; return; }
+  cooldown = true; document.getElementById('cooldown').textContent = 'Busy';
+  try{ await fn(); }catch(e){ console.error(e); }
+  setTimeout(()=>{ cooldown=false; document.getElementById('cooldown').textContent = 'Ready'; }, COOLDOWN_MS);
+}
+
+// difficulty multiplier helpers
+function diffFactor(){
+  const d = document.getElementById('difficulty').value;
+  if(d==='Easy') return 1.25;
+  if(d==='Medium') return 1.0;
+  if(d==='Hard') return 0.8;
+  if(d==='Impossible') return 0.5;
+  return 1;
+}
+function aiAggression(){
+  const d = document.getElementById('difficulty').value;
+  if(d==='Easy') return 0.25;
+  if(d==='Medium') return 0.5;
+  if(d==='Hard') return 0.75;
+  if(d==='Impossible') return 0.95;
+  return 0.5;
+}
+
+// small UI helpers
+function setMsg(id,txt){ const el = document.getElementById(id); if(el) el.textContent = txt; }
+
+// TAB switching with fade
+document.querySelectorAll('#tabs .tab').forEach(t=>{
+  t.addEventListener('click', ()=> {
+    document.querySelectorAll('#tabs .tab').forEach(x=>x.classList.add('inactive'));
+    t.classList.remove('inactive');
+    const screen = t.dataset.screen;
+    document.querySelectorAll('.screen').forEach(s=> s.classList.remove('active'));
+    const el = document.getElementById(screen);
+    el.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+});
+
+// shared bet buttons
+document.getElementById('bet10').addEventListener('click', ()=> { document.getElementById('betAmount').value = Math.max(1, Number(document.getElementById('betAmount').value||1)+10); });
+document.getElementById('bet50').addEventListener('click', ()=> { document.getElementById('betAmount').value = Math.max(1, Number(document.getElementById('betAmount').value||1)+50); });
+document.getElementById('bet100').addEventListener('click', ()=> { document.getElementById('betAmount').value = Math.max(1, Number(document.getElementById('betAmount').value||1)+100); });
+document.getElementById('addChips').addEventListener('click', ()=>{ award(100); setMsg('classicMsg','Added 100 chips (demo)'); });
+
+// ------------------ SLOTS ------------------
+const SYMBOLS = ['🍒','🍋','🔔','⭐','7️⃣','💎'];
+function pickSymbol(){ return SYMBOLS[rngInt(SYMBOLS.length)]; }
+
+// Classic 3-reel
+document.getElementById('spinClassic').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('classicMsg','Not enough chips'); return; }
+  setMsg('classicMsg','Spinning...');
+  // animation
+  for(let i=0;i<8;i++){
+    document.getElementById('c1').textContent = pickSymbol();
+    document.getElementById('c2').textContent = pickSymbol();
+    document.getElementById('c3').textContent = pickSymbol();
+    await new Promise(r=>setTimeout(r,60 + i*20));
+  }
+  const s1=pickSymbol(), s2=pickSymbol(), s3=pickSymbol();
+  document.getElementById('c1').textContent=s1; document.getElementById('c2').textContent=s2; document.getElementById('c3').textContent=s3;
+  // payout depending on difficulty
+  const df = diffFactor();
+  let win = 0;
+  if(s1===s2 && s2===s3){ win = Math.floor(bet * (6 * df)); }
+  else if(s1===s2 || s2===s3 || s1===s3){ win = Math.floor(bet * (1.5 * df)); }
+  if(win>0){ award(win); setMsg('classicMsg',`Triple! +${win}`); state.pot = Math.max(0, state.pot - Math.floor(win/10)); saveState(); }
+  else setMsg('classicMsg','No match.');
+}));
+
+// High Roller
+document.getElementById('spinHigh').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(5,Math.floor(Number(document.getElementById('betAmount').value)||5));
+  if(!spend(bet)){ setMsg('highMsg','Not enough chips'); return; }
+  setMsg('highMsg','Spinning...');
+  for(let i=0;i<10;i++){
+    document.getElementById('h1').textContent = pickSymbol();
+    document.getElementById('h2').textContent = pickSymbol();
+    document.getElementById('h3').textContent = pickSymbol();
+    await new Promise(r=>setTimeout(r,50 + i*18));
+  }
+  const s1=pickSymbol(), s2=pickSymbol(), s3=pickSymbol();
+  document.getElementById('h1').textContent=s1; document.getElementById('h2').textContent=s2; document.getElementById('h3').textContent=s3;
+  const df = diffFactor();
+  let win = 0;
+  if(s1===s2 && s2===s3){ win = Math.floor(bet * (10 * df)); }
+  else if(s1===s2 || s2===s3 || s1===s3){ win = Math.floor(bet * (2.2 * df)); }
+  if(win>0){ award(win); setMsg('highMsg',`Win ${win}!`); state.pot = Math.max(0, state.pot - Math.floor(win/8)); saveState(); }
+  else setMsg('highMsg','Tough luck.');
+}));
+
+// Mega Jackpot
+document.getElementById('spinMega').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(20,Math.floor(Number(document.getElementById('betAmount').value)||20));
+  if(!spend(bet)){ setMsg('megaMsg','Not enough chips'); return; }
+  setMsg('megaMsg','Spinning mega...');
+  for(let i=0;i<12;i++){
+    document.getElementById('m1').textContent = pickSymbol();
+    document.getElementById('m2').textContent = pickSymbol();
+    document.getElementById('m3').textContent = pickSymbol();
+    await new Promise(r=>setTimeout(r,60 + i*22));
+  }
+  const s1=pickSymbol(), s2=pickSymbol(), s3=pickSymbol();
+  document.getElementById('m1').textContent=s1; document.getElementById('m2').textContent=s2; document.getElementById('m3').textContent=s3;
+  const df = diffFactor();
+  let win = 0;
+  if(s1===s2 && s2===s3){ win = Math.floor(bet * (40 * df)); }
+  else if(s1===s2 || s2===s3 || s1===s3){ win = Math.floor(bet * (3 * df)); }
+  if(win>0){ award(win); setMsg('megaMsg',`Mega Win ${win}!`); state.pot = Math.max(0, state.pot - Math.floor(win/6)); saveState(); }
+  else setMsg('megaMsg','Mega lost.');
+}));
+
+// ------------------ COIN & DICE ------------------
+document.getElementById('coinFlip').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('coinMsg','Not enough chips'); return; }
+  setMsg('coinMsg','Flipping...');
+  await new Promise(r=>setTimeout(r,350));
+  const df = diffFactor();
+  const win = rngInt(100) < (50 * df) ? bet * 2 : 0;
+  if(win>0){ award(win); setMsg('coinMsg',`Heads! +${win}`); document.getElementById('coinLast').textContent = `Win +${win}`;}
+  else { setMsg('coinMsg','Tails.'); document.getElementById('coinLast').textContent = `Lose -${bet}`; }
+}));
+
+document.getElementById('rollHigh').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('diceMsg','Not enough chips'); return; }
+  setMsg('diceMsg','Rolling...');
+  await new Promise(r=>setTimeout(r,300));
+  const roll = rngInt(6)+1;
+  const df = diffFactor();
+  if(roll >= 4 && rngInt(100) < 50*df){ const win = Math.floor(bet * (2*df)); award(win); setMsg('diceMsg',`Rolled ${roll}. You win ${win}`); }
+  else setMsg('diceMsg',`Rolled ${roll}. You lost.`)
+}));
+
+document.getElementById('rollLow').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('diceMsg','Not enough chips'); return; }
+  setMsg('diceMsg','Rolling...');
+  await new Promise(r=>setTimeout(r,300));
+  const roll = rngInt(6)+1;
+  const df = diffFactor();
+  if(roll <= 3 && rngInt(100) < 50*df){ const win = Math.floor(bet * (2*df)); award(win); setMsg('diceMsg',`Rolled ${roll}. You win ${win}`); }
+  else setMsg('diceMsg',`Rolled ${roll}. You lost.`)
+}));
+
+// quick bets
+document.getElementById('betAllIn').addEventListener('click', ()=> {
+  const all = state.chips;
+  document.getElementById('betAmount').value = all;
+  setMsg('qbMsg','Bet set to all-in.');
+});
+document.getElementById('half').addEventListener('click', ()=> {
+  document.getElementById('betAmount').value = Math.max(1,Math.floor(state.chips/2));
+  setMsg('qbMsg','Bet set to half.');
+});
+
+// ------------------ WHEEL ------------------
+const wheelCanvas = document.getElementById('wheelCanvas');
+const wctx = wheelCanvas.getContext('2d');
+const wheelSlices = []; // will be filled based on difficulty
+function drawWheel(slices, angle=0){
+  const cx = wheelCanvas.width/2, cy = wheelCanvas.height/2, r = Math.min(cx,cy)-10;
+  wctx.clearRect(0,0,wheelCanvas.width,wheelCanvas.height);
+  const n = slices.length;
+  for(let i=0;i<n;i++){
+    const a1 = (i/n)*Math.PI*2 + angle;
+    const a2 = ((i+1)/n)*Math.PI*2 + angle;
+    wctx.beginPath();
+    wctx.moveTo(cx,cy);
+    wctx.arc(cx,cy,r,a1,a2);
+    wctx.closePath();
+    wctx.fillStyle = (i%2===0)?'#0f3d1a':'#0b2f14';
+    wctx.fill();
+    // text
+    wctx.save();
+    wctx.translate(cx,cy);
+    const mid = (a1+a2)/2;
+    wctx.rotate(mid);
+    wctx.fillStyle = '#d9ffea';
+    wctx.font = '16px Inter';
+    wctx.textAlign = 'right';
+    wctx.fillText(slices[i].label, r-10, 6);
+    wctx.restore();
+  }
+  // center
+  wctx.beginPath(); wctx.arc(cx,cy,34,0,Math.PI*2); wctx.fillStyle='#03220d'; wctx.fill();
+  wctx.fillStyle='#13ff78'; wctx.font='18px Inter'; wctx.textAlign='center'; wctx.fillText('SPIN',cx,cy+6);
+}
+function buildWheel(){
+  const diff = document.getElementById('difficulty').value;
+  wheelSlices.length = 0;
+  // Base distribution
+  const entries = [];
+  if(diff==='Easy'){
+    entries.push(...Array(8).fill({label:'LOSE',type:'lose'}));
+    entries.push({label:'WIN x2',type:'win2'});
+    entries.push({label:'WIN x5',type:'win5'});
+    entries.push({label:'AD',type:'ad'});
+  } else if(diff==='Medium'){
+    entries.push(...Array(12).fill({label:'LOSE',type:'lose'}));
+    entries.push({label:'WIN x2',type:'win2'});
+    entries.push({label:'WIN x10',type:'win10'});
+    entries.push({label:'AD',type:'ad'}); 
+  } else if(diff==='Hard'){
+    entries.push(...Array(18).fill({label:'LOSE',type:'lose'}));
+    entries.push({label:'WIN x2',type:'win2'});
+    entries.push({label:'WIN x10',type:'win10'});
+    entries.push({label:'JACKPOT',type:'jackpot'});
+    entries.push({label:'AD',type:'ad'});
+  } else { // Impossible
+    entries.push(...Array(28).fill({label:'LOSE',type:'lose'}));
+    entries.push({label:'WIN x2',type:'win2'});
+    entries.push({label:'WIN x10',type:'win10'});
+    entries.push({label:'JACKPOT',type:'jackpot'});
+    entries.push({label:'AD',type:'ad'});
+  }
+  // copy into wheelSlices (create unique objects)
+  for(const e of entries) wheelSlices.push({...e});
+  drawWheel(wheelSlices);
+}
+buildWheel();
+document.getElementById('difficulty').addEventListener('change', buildWheel);
+
+document.getElementById('spinWheel').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('wheelMsg','Not enough chips'); return; }
+  setMsg('wheelMsg','Spinning the wheel...');
+  // animate spin
+  const slices = wheelSlices.slice();
+  let angle = 0; const rounds = 5 + rngInt(4);
+  const targetIndex = rngInt(slices.length);
+  const sliceAngle = (2*Math.PI)/slices.length;
+  // spin towards target with easing
+  const totalSteps = 60;
+  for(let i=0;i<totalSteps;i++){
+    const t = i/totalSteps;
+    angle = (rounds*2*Math.PI + (targetIndex * sliceAngle) + sliceAngle/2) * (1 - easeOutCubic(t));
+    drawWheel(slices, angle);
+    await new Promise(r=>setTimeout(r,10 + Math.floor(i*2)));
+  }
+  // land
+  const res = slices[targetIndex];
+  let resultText = '';
+  if(res.type==='lose'){ resultText = 'LOSE'; setMsg('wheelMsg','You lost.'); }
+  else if(res.type==='win2'){ const win=Math.floor(bet*2*diffFactor()); award(win); resultText=`WIN x2 +${win}`; setMsg('wheelMsg',`You won ${win}!`); }
+  else if(res.type==='win5' || res.type==='win10'){ const mult = res.type==='win5'?5:10; const win=Math.floor(bet*mult*diffFactor()); award(win); resultText=`WIN x${mult} +${win}`; setMsg('wheelMsg',`You won ${win}!`); }
+  else if(res.type==='jackpot'){ const win=Math.floor(POT_MAX * 1.5); award(win); state.pot=0; saveState(); resultText=`JACKPOT +${win}`; setMsg('wheelMsg',`JACKPOT! You won ${win}!`); }
+  else if(res.type==='ad'){ resultText='AD: Sponsored'; setMsg('wheelMsg','Ad spot — thanks to LuckyCoin+!'); }
+  else setMsg('wheelMsg','Result: ' + res.label);
+}));
+
+function easeOutCubic(x){ return 1 - Math.pow(1-x,3); }
+
+// ------------------ BLACKJACK ------------------
+function makeDeck(){
+  const suits = ['♠','♥','♦','♣']; const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  const deck=[];
+  for(const s of suits) for(const r of ranks) deck.push({suit:s,rank:r});
+  return deck;
+}
+function cardValue(card, currentTotals){
+  if(!card) return 0;
+  const r = card.rank;
+  if(r==='A') return 11;
+  if(['J','Q','K'].includes(r)) return 10;
+  return Number(r);
+}
+function handTotals(hand){
+  let total=0, aces=0;
+  for(const c of hand){ if(c.rank==='A') aces++; total += cardValue(c); }
+  while(total>21 && aces>0){ total -= 10; aces--; }
+  return total;
+}
+let bjDeck=[], bjPlayer=[], bjDealer=[];
+function shuffleDeck(d){ for(let i=d.length-1;i>0;i--){ const j=rngInt(i+1); [d[i],d[j]]=[d[j],d[i]]; } }
+document.getElementById('bjDeal').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  // start new hand
+  bjDeck = makeDeck(); shuffleDeck(bjDeck);
+  bjPlayer=[]; bjDealer=[];
+  bjPlayer.push(bjDeck.pop(), bjDeck.pop());
+  bjDealer.push(bjDeck.pop(), bjDeck.pop());
+  renderBJ();
+  setMsg('bjMsg','In play — Hit or Stand.');
+}));
+document.getElementById('bjHit').addEventListener('click', ()=> {
+  if(!bjDeck.length) return;
+  bjPlayer.push(bjDeck.pop()); renderBJ();
+  const t = handTotals(bjPlayer);
+  if(t>21){ setMsg('bjMsg','Busted!'); }
+});
+document.getElementById('bjStand').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  // dealer plays based on difficulty
+  const ag = aiAggression(); // higher => dealer hits more aggressively?
+  while(true){
+    const dt = handTotals(bjDealer);
+    if(dt < 17 + Math.floor((1-ag)*4)){ bjDealer.push(bjDeck.pop()); renderBJ(); await new Promise(r=>setTimeout(r,400)); continue; }
+    break;
+  }
+  // compare
+  const pt = handTotals(bjPlayer); const dt = handTotals(bjDealer);
+  if(pt>21){ setMsg('bjMsg','You busted.'); }
+  else if(dt>21 || pt>dt){ const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1)); const win = Math.floor(bet*2*diffFactor()); award(win); setMsg('bjMsg',`You win ${win}!`); state.pot = Math.max(0,state.pot - Math.floor(win/8)); saveState(); }
+  else if(pt===dt){ setMsg('bjMsg','Push.'); award(Math.floor((Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1)))/1)); } // give back small
+  else setMsg('bjMsg','Dealer wins.');
+}));
+
+function renderBJ(){
+  const pc = document.getElementById('bjPlayerCards'); const dc = document.getElementById('bjDealerCards');
+  pc.innerHTML=''; dc.innerHTML='';
+  bjPlayer.forEach(c=>{ const el=document.createElement('div'); el.className='card-face'; el.textContent = c.rank + c.suit; pc.appendChild(el); });
+  bjDealer.forEach(c=>{ const el=document.createElement('div'); el.className='card-face'; el.textContent = c.rank + c.suit; dc.appendChild(el); });
+  document.getElementById('bjPlayerTotal').textContent = handTotals(bjPlayer);
+  document.getElementById('bjDealerTotal').textContent = handTotals(bjDealer);
+}
+
+// ------------------ ROULETTE ------------------
+const redSet = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+document.getElementById('betRed').addEventListener('click', ()=> rouletteBet('red'));
+document.getElementById('betBlack').addEventListener('click', ()=> rouletteBet('black'));
+document.getElementById('betEven').addEventListener('click', ()=> rouletteBet('even'));
+document.getElementById('betOdd').addEventListener('click', ()=> rouletteBet('odd'));
+document.getElementById('betNumber').addEventListener('click', ()=> rouletteBet('number'));
+function rouletteBet(type){
+  actionWithCooldown(async ()=>{
+    const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+    if(!spend(bet)){ setMsg('rouletteMsg','Not enough chips'); return; }
+    setMsg('rouletteMsg','Spinning...');
+    await new Promise(r=>setTimeout(r,400));
+    const num = rngInt(37); // 0..36
+    let win = 0;
+    if(type==='red' && redSet.has(num)) win = Math.floor(bet * 2 * diffFactor());
+    if(type==='black' && !redSet.has(num) && num!==0) win = Math.floor(bet * 2 * diffFactor());
+    if(type==='even' && num!==0 && num%2===0) win = Math.floor(bet * 2 * diffFactor());
+    if(type==='odd' && num%2===1) win = Math.floor(bet * 2 * diffFactor());
+    if(type==='number'){ const pick = Math.max(0,Math.min(36,Math.floor(Number(document.getElementById('rouletteNumber').value)||0))); if(pick===num) win = Math.floor(bet * 36 * diffFactor()); }
+    if(win>0){ award(win); setMsg('rouletteMsg',`Number ${num}. You win ${win}!`); state.pot = Math.max(0,state.pot - Math.floor(win/10)); saveState(); }
+    else setMsg('rouletteMsg',`Number ${num}. You lost.`);
+  });
+}
+
+// ------------------ HORSE RACING ------------------
+function buildHorses(){
+  const select = document.getElementById('horsePick'); select.innerHTML='';
+  // 6 horses with odds based on difficulty
+  const diff = document.getElementById('difficulty').value;
+  const baseOdds = diff==='Easy' ? [2,3,4,5,6,8] : diff==='Medium' ? [3,4,5,6,8,10] : diff==='Hard' ? [4,5,6,8,10,15] : [6,8,10,12,15,25];
+  for(let i=0;i<6;i++){
+    const opt = document.createElement('option'); opt.value = i; opt.textContent = `#${i+1} — ${baseOdds[i]}:1`;
+    opt.dataset.odds = baseOdds[i];
+    select.appendChild(opt);
+  }
+  // render track horses
+  const track = document.getElementById('track'); track.innerHTML='';
+  for(let i=0;i<6;i++){
+    const h = document.createElement('div'); h.className='horse'; h.style.top = `${8 + i*18}px`;
+    h.style.left = '8px';
+    h.innerHTML = `<div style="background:#13ff78;padding:4px 8px;border-radius:6px;font-weight:800;color:#022">#${i+1}</div><div class="small">Odds ${baseOdds[i]}:1</div>`;
+    track.appendChild(h);
+  }
+}
+buildHorses();
+document.getElementById('difficulty').addEventListener('change', buildHorses);
+
+document.getElementById('startRace').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  const pickIdx = Number(document.getElementById('horsePick').value||0);
+  if(!spend(bet)){ setMsg('horseMsg','Not enough chips'); return; }
+  setMsg('horseMsg','Racing...');
+  const track = document.getElementById('track');
+  const horses = Array.from(track.children);
+  // determine finish speeds based on odds (lower odds -> faster)
+  const odds = Array.from(document.getElementById('horsePick').options).map(o=>Number(o.dataset.odds));
+  const speeds = horses.map((h,i)=> (1 / odds[i]) * (1 + rngInt(100)/200) * (1 + (Math.random()?0:0))); // random factor
+  // animate until someone reaches finish
+  const finishPx = track.clientWidth - 120;
+  let finished=false; let winner=-1;
+  while(!finished){
+    for(let i=0;i<horses.length;i++){
+      const el = horses[i];
+      const left = parseFloat(el.style.left) || 8;
+      const inc = 1 + speeds[i]*4;
+      el.style.left = Math.min(finishPx, left + inc) + 'px';
+      if(parseFloat(el.style.left) >= finishPx && !finished){ finished=true; winner=i; break; }
+    }
+    await new Promise(r=>setTimeout(r,40));
+  }
+  // payout
+  const pickOdds = Number(document.getElementById('horsePick').options[pickIdx].dataset.odds);
+  if(winner===pickIdx){ const win = Math.floor(bet * pickOdds * diffFactor()); award(win); setMsg('horseMsg',`Horse #${winner+1} wins! You get ${win}`); state.pot = Math.max(0,state.pot - Math.floor(win/5)); saveState(); }
+  else setMsg('horseMsg',`Horse #${winner+1} wins. You lost.`);
+  // reset positions after delay
+  setTimeout(()=>{ for(const h of horses) h.style.left='8px'; }, 1200);
+}));
+
+// ------------------ TEXAS HOLD'EM (simplified heads-up) ------------------
+function deckAll(){ return makeDeck(); }
+function drawCard(d){ return d.pop(); }
+function handToText(hand){ return hand.map(c=>c.rank + c.suit).join(' '); }
+
+// Evaluate best five-card hand — simplified ranking function for speed (not exhaustive but ok)
+function rankHand(cards){
+  // cards: array of objects {rank,suit}
+  // return [score, name] higher score better
+  const vals = cards.map(c=>{ if(c.rank==='A') return 14; if(c.rank==='K') return 13; if(c.rank==='Q') return 12; if(c.rank==='J') return 11; return Number(c.rank); });
+  vals.sort((a,b)=>b-a);
+  // counts
+  const counts = {}; for(const v of vals) counts[v]=(counts[v]||0)+1;
+  const countValues = Object.values(counts).sort((a,b)=>b-a);
+  // flush
+  const suits = {};
+  for(const c of cards) suits[c.suit]=(suits[c.suit]||0)+1;
+  const isFlush = Object.values(suits).some(v=>v>=5);
+  // straight check (simple)
+  const unique = Array.from(new Set(vals)).sort((a,b)=>a-b);
+  let straight=false;
+  for(let i=0;i+4<unique.length;i++){ if(unique[i]+1===unique[i+1] && unique[i]+2===unique[i+2] && unique[i]+3===unique[i+3] && unique[i]+4===unique[i+4]) straight=true; }
+  // high card
+  const high = vals[0];
+  // scoring
+  if(countValues[0]===4) return [8000 + high, 'Four of a Kind'];
+  if(countValues[0]===3 && countValues[1]===2) return [7000 + high, 'Full House'];
+  if(isFlush) return [6000 + high, 'Flush'];
+  if(straight) return [5000 + high, 'Straight'];
+  if(countValues[0]===3) return [4000 + high, 'Three of a Kind'];
+  if(countValues[0]===2 && countValues[1]===2) return [3000 + high, 'Two Pair'];
+  if(countValues[0]===2) return [2000 + high, 'One Pair'];
+  return [high, 'High Card'];
+}
+
+// Texas hold'em state
+let thDeck=[], thPlayer=[], thAI=[], thCommunity=[], thStage=0;
+document.getElementById('thDeal').addEventListener('click', ()=> {
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('thMsg','Not enough chips'); return; }
+  thDeck = deckAll(); shuffleDeck(thDeck);
+  thPlayer = [drawCard(thDeck), drawCard(thDeck)];
+  thAI = [drawCard(thDeck), drawCard(thDeck)];
+  thCommunity = []; thStage=1; renderTH(); setMsg('thMsg','Preflop dealt. Click Next Stage to continue.');
+});
+document.getElementById('thNext').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  if(!thDeck.length) { setMsg('thMsg','Deal first.'); return; }
+  if(thStage===1){ // flop
+    thCommunity.push(drawCard(thDeck), drawCard(thDeck), drawCard(thDeck)); thStage=2; renderTH(); setMsg('thMsg','Flop.'); return;
+  }
+  if(thStage===2){ thCommunity.push(drawCard(thDeck)); thStage=3; renderTH(); setMsg('thMsg','Turn.'); return; }
+  if(thStage===3){ thCommunity.push(drawCard(thDeck)); thStage=4; renderTH(); // river done -> showdown
+    // showdown
+    const playerBest = rankHand(thPlayer.concat(thCommunity));
+    const aiBest = rankHand(thAI.concat(thCommunity));
+    if(playerBest[0] > aiBest[0]){ const win = Math.floor((Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1))*4)*diffFactor()); award(win); setMsg('thMsg',`You win (${playerBest[1]} > ${aiBest[1]}). +${win}`); state.pot = Math.max(0,state.pot - Math.floor(win/5)); saveState(); }
+    else if(playerBest[0] === aiBest[0]) setMsg('thMsg',`Push (${playerBest[1]} = ${aiBest[1]}).`);
+    else setMsg('thMsg',`AI wins (${aiBest[1]} > ${playerBest[1]}).`);
+    thStage=0; return;
+  }
+}));
+
+function renderTH(){
+  const ph = document.getElementById('thPlayerCards'); const ch = document.getElementById('thCommunity');
+  ph.innerHTML=''; ch.innerHTML='';
+  for(const c of thPlayer){ const e=document.createElement('div'); e.className='card-face'; e.textContent = c.rank + c.suit; ph.appendChild(e); }
+  for(const c of thCommunity){ const e=document.createElement('div'); e.className='card-face'; e.textContent = c.rank + c.suit; ch.appendChild(e); }
+}
+
+// ------------------ 5-CARD POKER ------------------
+let pDeck=[], pPlayer=[], pDealer=[];
+document.getElementById('pokerDeal').addEventListener('click', ()=> {
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('pokerMsg','Not enough chips'); return; }
+  pDeck = makeDeck(); shuffleDeck(pDeck);
+  pPlayer = [pDeck.pop(),pDeck.pop(),pDeck.pop(),pDeck.pop(),pDeck.pop()];
+  pDealer = [pDeck.pop(),pDeck.pop(),pDeck.pop(),pDeck.pop(),pDeck.pop()];
+  renderPoker();
+  setMsg('pokerMsg','Select cards to discard (click) then Draw.');
+});
+document.getElementById('pokerDraw').addEventListener('click', ()=> {
+  // simple: replace any selected card (toggle class 'selected')
+  const slots = document.querySelectorAll('#pokerPlayer .card-face');
+  const toReplace = [];
+  slots.forEach((el,i)=>{ if(el.classList.contains('selected')) toReplace.push(i); });
+  for(const idx of toReplace){ pPlayer[idx] = pDeck.pop(); }
+  renderPoker();
+  // showdown simplified with rankHand using 5 cards
+  const playerRank = rankHand(pPlayer)[0]; const dealerRank = rankHand(pDealer)[0];
+  if(playerRank > dealerRank){ const win = Math.floor((Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1))*3)*diffFactor()); award(win); setMsg('pokerMsg',`You win! +${win}`); state.pot = Math.max(0,state.pot - Math.floor(win/6)); saveState(); }
+  else if(playerRank===dealerRank) setMsg('pokerMsg','Push.');
+  else setMsg('pokerMsg','Dealer wins.');
+});
+
+function renderPoker(){
+  const wrap = document.getElementById('pokerPlayer'); wrap.innerHTML='';
+  pPlayer.forEach((c,i)=>{ const e=document.createElement('div'); e.className='card-face'; e.textContent = c.rank + c.suit; e.addEventListener('click', ()=> e.classList.toggle('selected')); wrap.appendChild(e); });
+}
+
+// ------------------ INIT ------------------
+loadState();
+
+// bind clicks that rely on DOM ready for elements
+// roulette number input sanitation
+document.getElementById('rouletteNumber').addEventListener('change', ()=> {
+  const v = Math.max(0, Math.min(36, Math.floor(Number(document.getElementById('rouletteNumber').value)||0)));
+  document.getElementById('rouletteNumber').value = v;
+});
+
+// render wheel on load
+buildWheel();
+
+// allow pressing Enter to set bet to a sensible number
+document.getElementById('betAmount').addEventListener('change', ()=> {
+  const v = Math.max(1, Math.floor(Number(document.getElementById('betAmount').value)||1));
+  document.getElementById('betAmount').value = v;
+});
+
+// simple card-face styling interactivity (poker)
+document.addEventListener('click', (e)=> {
+  if(e.target && e.target.classList && e.target.classList.contains('card-face')){
+    // toggle selected for poker only (already bound)
+  }
+});
+
+// ensure UI updates periodically (in case other pages change state)
+setInterval(()=>{ updateUI(); }, 1200);
+
+</script>
+</body>
+</html>
