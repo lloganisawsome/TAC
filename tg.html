@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -50,6 +49,24 @@
   .card-face{width:56px;height:80px;border-radius:6px;background:#072218;display:flex;align-items:center;justify-content:center;font-size:20px;border:1px solid rgba(255,255,255,0.03)}
   .hud{display:flex;gap:12px;align-items:center}
   .tiny{font-size:12px;color:var(--muted)}
+  /* Chess Board Styles */
+  .board-container{max-width:400px;margin:10px auto;}
+  .chessboard{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);aspect-ratio:1/1;border:2px solid #000;box-shadow:0 0 10px rgba(0,0,0,0.5)}
+  .square{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:30px;cursor:pointer;user-select:none;transition:background-color 0.1s}
+  .light{background-color:#d4e0d7}
+  .dark{background-color:#4a6851}
+  .light, .dark{color:#000;}
+  .square.dark.selected{background-color:#5c8766;box-shadow:inset 0 0 0 4px var(--accent)}
+  .square.light.selected{background-color:#a1b4a6;box-shadow:inset 0 0 0 4px var(--accent)}
+  .square.can-move{box-shadow:inset 0 0 0 4px var(--accent); opacity:0.8}
+  .piece{cursor:grab; font-size:32px; filter:drop-shadow(1px 1px 2px rgba(0,0,0,0.5))}
+  /* Piece colors for contrast */
+  .piece.white{color:#eee;}
+  .piece.black{color:#333;}
+  /* Sports */
+  .sports-matchup{padding:10px;border:1px solid rgba(255,255,255,0.05);border-radius:8px;margin-bottom:10px}
+  .sports-matchup button{margin-right:4px}
+
   /* responsive */
   @media (max-width:900px){
     .row{flex-direction:column}
@@ -80,10 +97,11 @@
     <div class="tab inactive" data-screen="horses">Horse Racing</div>
     <div class="tab inactive" data-screen="texas">Texas Hold'em</div>
     <div class="tab inactive" data-screen="poker">5-card Poker</div>
+    <div class="tab inactive" data-screen="sports">Sports Hub</div>
+    <div class="tab inactive" data-screen="chess">Chess Battle</div>
   </nav>
 
   <div class="container">
-    <!-- shared controls -->
     <div class="row" style="margin-bottom:12px;align-items:center">
       <div style="flex:1" class="card">
         <div class="hud">
@@ -114,9 +132,7 @@
       </div>
     </div>
 
-    <!-- SCREENS -->
     <section id="screens">
-      <!-- SLOTS -->
       <div id="slots" class="screen active">
         <div class="game-title"><h2>Slots Hub</h2><div class="small">Multiple machines — different payouts & styles.</div></div>
         <div class="row">
@@ -163,7 +179,6 @@
         </div>
       </div>
 
-      <!-- COIN & DICE -->
       <div id="coins" class="screen">
         <div class="game-title"><h2>Coin Flip & Dice</h2><div class="small">Simple, fast, fair.</div></div>
         <div class="row">
@@ -195,7 +210,6 @@
         </div>
       </div>
 
-      <!-- WHEEL -->
       <div id="wheel" class="screen">
         <div class="game-title"><h2>Wheel of Misfortune</h2><div class="small">Lots of LOSSES, some wins, and a few ad stops.</div></div>
         <div class="row">
@@ -214,7 +228,6 @@
         </div>
       </div>
 
-      <!-- BLACKJACK -->
       <div id="blackjack" class="screen">
         <div class="game-title"><h2>Blackjack</h2><div class="small">Simple Hit/Stand with difficulty affecting dealer behavior.</div></div>
         <div class="row">
@@ -236,7 +249,6 @@
         </div>
       </div>
 
-      <!-- ROULETTE -->
       <div id="roulette" class="screen">
         <div class="game-title"><h2>Roulette</h2><div class="small">Bet on numbers, red/black, odd/even.</div></div>
         <div class="row">
@@ -258,23 +270,27 @@
         </div>
       </div>
 
-      <!-- HORSE RACING -->
       <div id="horses" class="screen">
-        <div class="game-title"><h2>Horse Racing</h2><div class="small">Pick a horse, watch the race, payouts depend on odds.</div></div>
-        <div class="row">
-          <div class="card" style="flex:1">
-            <div style="display:flex;gap:8px;align-items:center">
-              <div class="small">Pick Horse</div>
-              <select id="horsePick"></select>
-              <button id="startRace">Start Race</button>
-            </div>
-            <div style="margin-top:12px" class="track" id="track"></div>
-            <div class="message small" id="horseMsg">—</div>
-          </div>
-        </div>
+  <div class="game-title"><h2>Horse Racing</h2><div class="small">Pick a horse, watch the race, payouts depend on odds.</div></div>
+  <div class="row">
+    <div class="card" style="flex:1">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+        <div class="small">Pick Horse</div>
+        <select id="horsePick"></select>
+        <div class="small">Race Mode</div>
+        <select id="raceMode">
+          <option value="sprint">Sprint (Short)</option>
+          <option value="lap" selected>Lap (Mid)</option>
+          <option value="long">Long Distance</option>
+        </select>
+        <button id="startRace">Start Race</button>
       </div>
+      <div style="margin-top:12px" class="track" id="track"></div>
+      <div class="message small" id="horseMsg">—</div>
+    </div>
+  </div>
+</div>
 
-      <!-- TEXAS HOLD'EM -->
       <div id="texas" class="screen">
         <div class="game-title"><h2>Texas Hold'em (Heads-up vs AI)</h2><div class="small">Simplified but real-ish: preflop, flop, turn, river. Difficulty affects AI.</div></div>
         <div class="row">
@@ -292,7 +308,6 @@
         </div>
       </div>
 
-      <!-- 5-CARD POKER -->
       <div id="poker" class="screen">
         <div class="game-title"><h2>5-Card Poker (Draw)</h2><div class="small">Draw up to 3 cards. Best hand wins vs dealer AI.</div></div>
         <div class="row">
@@ -303,6 +318,53 @@
               <button id="pokerDeal">Deal</button>
               <button id="pokerDraw" class="secondary">Draw Selected</button>
               <div class="message small" id="pokerMsg">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sports" class="screen">
+        <div class="game-title"><h2>Sports Betting Hub</h2><div class="small">Simulated Matches - Choose your league and outcome.</div></div>
+        <div class="row">
+          <div class="card">
+            <div class="sports-matchup">
+              <h3 class="small">NFL: Phoenix Firebirds (2.1x) vs. Seattle Slayers (1.7x)</h3>
+              <button data-sport="nfl" data-team="Firebirds" data-odds="2.1">Bet Firebirds</button>
+              <button data-sport="nfl" data-team="Slayers" data-odds="1.7">Bet Slayers</button>
+            </div>
+            <div class="sports-matchup">
+              <h3 class="small">NBA: LA Lakers (1.5x) vs. Boston Celtics (2.5x)</h3>
+              <button data-sport="nba" data-team="Lakers" data-odds="1.5">Bet Lakers</button>
+              <button data-sport="nba" data-team="Celtics" data-odds="2.5">Bet Celtics</button>
+            </div>
+            <div class="sports-matchup">
+              <h3 class="small">NCAAF: Ohio State Buckeyes (1.3x) vs. Michigan Wolverines (3.0x)</h3>
+              <button data-sport="ncaaf" data-team="Buckeyes" data-odds="1.3">Bet Buckeyes</button>
+              <button data-sport="ncaaf" data-team="Wolverines" data-odds="3.0">Bet Wolverines</button>
+            </div>
+            <div class="message small" id="sportsMsg">Select a match and team to place your bet. Difficulty affects true odds.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chess" class="screen">
+        <div class="game-title"><h2>Chess Battle: Human vs. AI</h2><div class="small">Bet on the outcome, then play. You are White.</div></div>
+        <div class="row">
+          <div class="card">
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+              <button id="chessStart" style="flex:1">Place Bet & Start Game</button>
+              <button id="chessResign" class="secondary" style="flex:1">Resign</button>
+            </div>
+            <div class="board-container">
+              <div id="chessboard" class="chessboard">
+                </div>
+            </div>
+            <div class="message small" id="chessMsg">Click Start to bet and begin.</div>
+            <div class="small" style="margin-top:10px">Current Bet: <span id="chessCurrentBet">0</span> | Result: <span id="chessResult">-</span></div>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button id="betChessWin">Bet Player Win</button>
+              <button id="betChessDraw">Bet Draw (High Payout)</button>
+              <button id="betChessLose">Bet Player Loss (AI Win)</button>
             </div>
           </div>
         </div>
@@ -322,6 +384,8 @@
    - Crypto RNG
    - Multiple games simplified but functional
    - Difficulty levels affect odds/AI
+   - UPDATED SPORTS HUB, IMPLEMENTED PLAYABLE CHESS
+   - FIXED HORSE RACING
    --------------------------------------------------------- */
 
 const STATE_KEY = 'mega_casino_state_v1';
@@ -332,6 +396,7 @@ let cooldown = false;
 
 // RNG
 function rngInt(max){ const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % max; }
+function randomItem(arr){ return arr[rngInt(arr.length)]; }
 
 // load/save
 function loadState(){ try{ const s=JSON.parse(localStorage.getItem(STATE_KEY)); if(s && typeof s.chips==='number'){ state = s; } }catch(e){} enforceMin(); updateUI(); }
@@ -380,6 +445,9 @@ document.querySelectorAll('#tabs .tab').forEach(t=>{
     const el = document.getElementById(screen);
     el.classList.add('active');
     window.scrollTo({top:0,behavior:'smooth'});
+
+    // Special init for games that need it on tab switch
+    if(screen === 'chess' && isGameOver) { initChess(); }
   });
 });
 
@@ -506,7 +574,7 @@ document.getElementById('half').addEventListener('click', ()=> {
 // ------------------ WHEEL ------------------
 const wheelCanvas = document.getElementById('wheelCanvas');
 const wctx = wheelCanvas.getContext('2d');
-const wheelSlices = []; // will be filled based on difficulty
+const wheelSlices = []; 
 function drawWheel(slices, angle=0){
   const cx = wheelCanvas.width/2, cy = wheelCanvas.height/2, r = Math.min(cx,cy)-10;
   wctx.clearRect(0,0,wheelCanvas.width,wheelCanvas.height);
@@ -579,14 +647,18 @@ document.getElementById('spinWheel').addEventListener('click', ()=> actionWithCo
   let angle = 0; const rounds = 5 + rngInt(4);
   const targetIndex = rngInt(slices.length);
   const sliceAngle = (2*Math.PI)/slices.length;
+  
+  let lastAngle = 0;
   // spin towards target with easing
   const totalSteps = 60;
   for(let i=0;i<totalSteps;i++){
     const t = i/totalSteps;
-    angle = (rounds*2*Math.PI + (targetIndex * sliceAngle) + sliceAngle/2) * (1 - easeOutCubic(t));
-    drawWheel(slices, angle);
+    lastAngle = (rounds*2*Math.PI + (targetIndex * sliceAngle) + sliceAngle/2) * (1 - easeOutCubic(t));
+    drawWheel(slices, lastAngle);
     await new Promise(r=>setTimeout(r,10 + Math.floor(i*2)));
   }
+  drawWheel(slices, lastAngle); // Final draw to show the result position
+
   // land
   const res = slices[targetIndex];
   let resultText = '';
@@ -621,8 +693,15 @@ function handTotals(hand){
   return total;
 }
 let bjDeck=[], bjPlayer=[], bjDealer=[];
+let bjBetAmount = 0;
+
 function shuffleDeck(d){ for(let i=d.length-1;i>0;i--){ const j=rngInt(i+1); [d[i],d[j]]=[d[j],d[i]]; } }
 document.getElementById('bjDeal').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  if(bjPlayer.length > 0){ setMsg('bjMsg','Finish current hand or click Deal for a new one.'); return; }
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!spend(bet)){ setMsg('bjMsg','Not enough chips'); return; }
+  bjBetAmount = bet;
+
   // start new hand
   bjDeck = makeDeck(); shuffleDeck(bjDeck);
   bjPlayer=[]; bjDealer=[];
@@ -631,15 +710,25 @@ document.getElementById('bjDeal').addEventListener('click', ()=> actionWithCoold
   renderBJ();
   setMsg('bjMsg','In play — Hit or Stand.');
 }));
+
 document.getElementById('bjHit').addEventListener('click', ()=> {
-  if(!bjDeck.length) return;
+  if(bjPlayer.length === 0){ setMsg('bjMsg','Deal a hand first.'); return; }
   bjPlayer.push(bjDeck.pop()); renderBJ();
   const t = handTotals(bjPlayer);
-  if(t>21){ setMsg('bjMsg','Busted!'); }
+  if(t>21){ 
+    setMsg('bjMsg','Busted!'); 
+    bjPlayer = []; bjDealer = []; bjBetAmount = 0;
+    renderBJ();
+  }
 });
+
 document.getElementById('bjStand').addEventListener('click', ()=> actionWithCooldown(async ()=>{
+  if(bjPlayer.length === 0){ setMsg('bjMsg','Deal a hand first.'); return; }
+  const bet = bjBetAmount;
+  if(bet === 0) { setMsg('bjMsg','No bet was placed for this hand.'); return; }
+
   // dealer plays based on difficulty
-  const ag = aiAggression(); // higher => dealer hits more aggressively?
+  const ag = aiAggression();
   while(true){
     const dt = handTotals(bjDealer);
     if(dt < 17 + Math.floor((1-ag)*4)){ bjDealer.push(bjDeck.pop()); renderBJ(); await new Promise(r=>setTimeout(r,400)); continue; }
@@ -647,10 +736,29 @@ document.getElementById('bjStand').addEventListener('click', ()=> actionWithCool
   }
   // compare
   const pt = handTotals(bjPlayer); const dt = handTotals(bjDealer);
-  if(pt>21){ setMsg('bjMsg','You busted.'); }
-  else if(dt>21 || pt>dt){ const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1)); const win = Math.floor(bet*2*diffFactor()); award(win); setMsg('bjMsg',`You win ${win}!`); state.pot = Math.max(0,state.pot - Math.floor(win/8)); saveState(); }
-  else if(pt===dt){ setMsg('bjMsg','Push.'); award(Math.floor((Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1)))/1)); } // give back small
-  else setMsg('bjMsg','Dealer wins.');
+  
+  if(pt>21){ 
+    setMsg('bjMsg','You busted.'); 
+  }
+  else if(dt>21 || pt>dt){ 
+    // Player wins (Dealer bust OR Player > Dealer)
+    const win = Math.floor(bet*2*diffFactor());
+    award(win); 
+    setMsg('bjMsg',`You win ${win}!`); 
+    state.pot = Math.max(0,state.pot - Math.floor(win/8)); saveState(); 
+  }
+  else if(pt===dt){ 
+    // Push (tie) - return the original bet
+    setMsg('bjMsg','Push. Bet returned.'); 
+    award(bet);
+  } 
+  else {
+    // Dealer wins (Dealer > Player)
+    setMsg('bjMsg','Dealer wins.');
+  }
+  
+  // Clear hand and bet state after resolution
+  bjPlayer = []; bjDealer = []; bjBetAmount = 0; renderBJ();
 }));
 
 function renderBJ(){
@@ -692,6 +800,7 @@ function buildHorses(){
   const select = document.getElementById('horsePick'); select.innerHTML='';
   // 6 horses with odds based on difficulty
   const diff = document.getElementById('difficulty').value;
+  // Adjusted base odds for variety
   const baseOdds = diff==='Easy' ? [2,3,4,5,6,8] : diff==='Medium' ? [3,4,5,6,8,10] : diff==='Hard' ? [4,5,6,8,10,15] : [6,8,10,12,15,25];
   for(let i=0;i<6;i++){
     const opt = document.createElement('option'); opt.value = i; opt.textContent = `#${i+1} — ${baseOdds[i]}:1`;
@@ -713,59 +822,94 @@ document.getElementById('difficulty').addEventListener('change', buildHorses);
 document.getElementById('startRace').addEventListener('click', ()=> actionWithCooldown(async ()=>{
   const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
   const pickIdx = Number(document.getElementById('horsePick').value||0);
+  const mode = document.getElementById('raceMode').value;
   if(!spend(bet)){ setMsg('horseMsg','Not enough chips'); return; }
-  setMsg('horseMsg','Racing...');
+  setMsg('horseMsg',`Starting ${mode.toUpperCase()} Race...`);
   const track = document.getElementById('track');
   const horses = Array.from(track.children);
-  // determine finish speeds based on odds (lower odds -> faster)
+  
   const odds = Array.from(document.getElementById('horsePick').options).map(o=>Number(o.dataset.odds));
-  const speeds = horses.map((h,i)=> (1 / odds[i]) * (1 + rngInt(100)/200) * (1 + (Math.random()?0:0))); // random factor
-  // animate until someone reaches finish
-  const finishPx = track.clientWidth - 120;
+  if(odds.length === 0) { setMsg('horseMsg','Error: Horse data missing. Try reloading the page.'); return; }
+
+  // 1. Define Track Length & Speed Modifier based on Mode
+  const HORSE_WIDTH = 100; 
+  let distanceFactor, speedFactor;
+  if(mode === 'sprint'){
+    distanceFactor = 0.5; // Short race
+    speedFactor = 1.2; // High importance of base speed
+  } else if(mode === 'long'){
+    distanceFactor = 1.5; // Long race
+    speedFactor = 0.8; // Reduced importance of base speed, higher randomness
+  } else { // 'lap' (default/mid)
+    distanceFactor = 1.0;
+    speedFactor = 1.0;
+  }
+  
+  const finishPx = track.clientWidth * distanceFactor - HORSE_WIDTH;
+  
+  // 2. Recalculate Speeds just before the race starts
+  const speeds = horses.map((h,i)=> {
+    // Base speed: (1 / odds) * speedFactor
+    let baseSpeed = (1 / odds[i]) * speedFactor;
+    // Randomness: + (1 + rngInt(100)/200) - provides minor random deviation
+    let randomBoost = (1 + rngInt(100)/200);
+    // Stamina Factor (only for long distance): slight random penalty for high odds horses
+    let staminaPenalty = (mode === 'long' && odds[i] > 5) ? (1 - Math.random() * 0.15) : 1;
+    
+    return baseSpeed * randomBoost * staminaPenalty;
+  });
+  
   let finished=false; let winner=-1;
+  const positions = horses.map(()=>8); // Start position
+
   while(!finished){
     for(let i=0;i<horses.length;i++){
       const el = horses[i];
-      const left = parseFloat(el.style.left) || 8;
-      const inc = 1 + speeds[i]*4;
-      el.style.left = Math.min(finishPx, left + inc) + 'px';
-      if(parseFloat(el.style.left) >= finishPx && !finished){ finished=true; winner=i; break; }
+      const inc = 1 + speeds[i]*5; // Base increment + mode-adjusted speed
+      
+      const newLeft = Math.min(finishPx, positions[i] + inc);
+      positions[i] = newLeft;
+      el.style.left = newLeft + 'px';
+      
+      if(newLeft >= finishPx && !finished){ finished=true; winner=i; break; }
     }
-    await new Promise(r=>setTimeout(r,40));
+    await new Promise(r=>setTimeout(r,40)); // Animation frame delay
   }
-  // payout
+
+  // Payout logic
   const pickOdds = Number(document.getElementById('horsePick').options[pickIdx].dataset.odds);
-  if(winner===pickIdx){ const win = Math.floor(bet * pickOdds * diffFactor()); award(win); setMsg('horseMsg',`Horse #${winner+1} wins! You get ${win}`); state.pot = Math.max(0,state.pot - Math.floor(win/5)); saveState(); }
-  else setMsg('horseMsg',`Horse #${winner+1} wins. You lost.`);
-  // reset positions after delay
+  if(winner===pickIdx){ 
+    const win = Math.floor(bet * pickOdds * diffFactor()); 
+    award(win); 
+    setMsg('horseMsg',`Horse #${winner+1} wins the ${mode}! You get ${win}`); 
+    state.pot = Math.max(0,state.pot - Math.floor(win/5)); saveState(); 
+  }
+  else setMsg('horseMsg',`Horse #${winner+1} wins the ${mode}. You lost.`);
+
+  // Reset positions after delay
   setTimeout(()=>{ for(const h of horses) h.style.left='8px'; }, 1200);
 }));
 
-// ------------------ TEXAS HOLD'EM (simplified heads-up) ------------------
+// Add an event listener for the new race mode selector
+document.getElementById('raceMode').addEventListener('change', ()=> setMsg('horseMsg', 'Race mode changed. Select your horse and start!'));
+
+// ------------------ TEXAS HOLD'EM ------------------
 function deckAll(){ return makeDeck(); }
 function drawCard(d){ return d.pop(); }
 function handToText(hand){ return hand.map(c=>c.rank + c.suit).join(' '); }
 
-// Evaluate best five-card hand — simplified ranking function for speed (not exhaustive but ok)
 function rankHand(cards){
-  // cards: array of objects {rank,suit}
-  // return [score, name] higher score better
   const vals = cards.map(c=>{ if(c.rank==='A') return 14; if(c.rank==='K') return 13; if(c.rank==='Q') return 12; if(c.rank==='J') return 11; return Number(c.rank); });
   vals.sort((a,b)=>b-a);
-  // counts
   const counts = {}; for(const v of vals) counts[v]=(counts[v]||0)+1;
   const countValues = Object.values(counts).sort((a,b)=>b-a);
-  // flush
   const suits = {};
   for(const c of cards) suits[c.suit]=(suits[c.suit]||0)+1;
   const isFlush = Object.values(suits).some(v=>v>=5);
-  // straight check (simple)
   const unique = Array.from(new Set(vals)).sort((a,b)=>a-b);
   let straight=false;
   for(let i=0;i+4<unique.length;i++){ if(unique[i]+1===unique[i+1] && unique[i]+2===unique[i+2] && unique[i]+3===unique[i+3] && unique[i]+4===unique[i+4]) straight=true; }
-  // high card
   const high = vals[0];
-  // scoring
   if(countValues[0]===4) return [8000 + high, 'Four of a Kind'];
   if(countValues[0]===3 && countValues[1]===2) return [7000 + high, 'Full House'];
   if(isFlush) return [6000 + high, 'Flush'];
@@ -776,7 +920,6 @@ function rankHand(cards){
   return [high, 'High Card'];
 }
 
-// Texas hold'em state
 let thDeck=[], thPlayer=[], thAI=[], thCommunity=[], thStage=0;
 document.getElementById('thDeal').addEventListener('click', ()=> {
   const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
@@ -792,7 +935,7 @@ document.getElementById('thNext').addEventListener('click', ()=> actionWithCoold
     thCommunity.push(drawCard(thDeck), drawCard(thDeck), drawCard(thDeck)); thStage=2; renderTH(); setMsg('thMsg','Flop.'); return;
   }
   if(thStage===2){ thCommunity.push(drawCard(thDeck)); thStage=3; renderTH(); setMsg('thMsg','Turn.'); return; }
-  if(thStage===3){ thCommunity.push(drawCard(thDeck)); thStage=4; renderTH(); // river done -> showdown
+  if(thStage===3){ thCommunity.push(drawCard(thDeck)); thStage=4; renderTH();
     // showdown
     const playerBest = rankHand(thPlayer.concat(thCommunity));
     const aiBest = rankHand(thAI.concat(thCommunity));
@@ -822,16 +965,15 @@ document.getElementById('pokerDeal').addEventListener('click', ()=> {
   setMsg('pokerMsg','Select cards to discard (click) then Draw.');
 });
 document.getElementById('pokerDraw').addEventListener('click', ()=> {
-  // simple: replace any selected card (toggle class 'selected')
   const slots = document.querySelectorAll('#pokerPlayer .card-face');
   const toReplace = [];
   slots.forEach((el,i)=>{ if(el.classList.contains('selected')) toReplace.push(i); });
   for(const idx of toReplace){ pPlayer[idx] = pDeck.pop(); }
   renderPoker();
-  // showdown simplified with rankHand using 5 cards
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
   const playerRank = rankHand(pPlayer)[0]; const dealerRank = rankHand(pDealer)[0];
-  if(playerRank > dealerRank){ const win = Math.floor((Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1))*3)*diffFactor()); award(win); setMsg('pokerMsg',`You win! +${win}`); state.pot = Math.max(0,state.pot - Math.floor(win/6)); saveState(); }
-  else if(playerRank===dealerRank) setMsg('pokerMsg','Push.');
+  if(playerRank > dealerRank){ const win = Math.floor(bet*3*diffFactor()); award(win); setMsg('pokerMsg',`You win! +${win}`); state.pot = Math.max(0,state.pot - Math.floor(win/6)); saveState(); }
+  else if(playerRank===dealerRank){ setMsg('pokerMsg','Push.'); award(bet); }
   else setMsg('pokerMsg','Dealer wins.');
 });
 
@@ -840,11 +982,341 @@ function renderPoker(){
   pPlayer.forEach((c,i)=>{ const e=document.createElement('div'); e.className='card-face'; e.textContent = c.rank + c.suit; e.addEventListener('click', ()=> e.classList.toggle('selected')); wrap.appendChild(e); });
 }
 
+// ------------------ SPORTS BETTING HUB (NEW LOGIC) ------------------
+document.querySelectorAll('#sports button[data-sport]').forEach(btn => {
+  btn.addEventListener('click', ()=> sportsBetHub(btn.dataset.sport, btn.dataset.team, Number(btn.dataset.odds)));
+});
+
+function sportsBetHub(sport, team, odds){
+  actionWithCooldown(async ()=>{
+    const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+    if(!spend(bet)){ setMsg('sportsMsg','Not enough chips'); return; }
+
+    setMsg('sportsMsg',`Betting ${bet} chips on the ${team} in the ${sport.toUpperCase()} match... Simulating game!`);
+    await new Promise(r=>setTimeout(r,800));
+
+    // True odds modifier based on difficulty
+    const df = diffFactor();
+    
+    // Determine winner based on odds and difficulty
+    let baseWinChance = 1 / odds;
+    let finalWinChance = baseWinChance * df;
+    if (finalWinChance > 0.9) finalWinChance = 0.9;
+    if (finalWinChance < 0.1) finalWinChance = 0.1;
+    
+    const isWin = Math.random() < finalWinChance;
+
+    let finalScore = { home: 0, away: 0 };
+    let winner, loser, homeTeam, awayTeam;
+    
+    switch(sport){
+      case 'nfl':
+        homeTeam = 'Firebirds'; awayTeam = 'Slayers';
+        finalScore.home = rngInt(5) * 3 + rngInt(4) * 7 + 10;
+        finalScore.away = rngInt(5) * 3 + rngInt(4) * 7 + 10;
+        if(finalScore.home === finalScore.away) finalScore.home += 3; // Overtime
+        break;
+      case 'nba':
+        homeTeam = 'Lakers'; awayTeam = 'Celtics';
+        finalScore.home = rngInt(20) + 100;
+        finalScore.away = rngInt(20) + 100;
+        if(finalScore.home === finalScore.away) finalScore.home += 1;
+        break;
+      case 'ncaaf':
+        homeTeam = 'Buckeyes'; awayTeam = 'Wolverines';
+        finalScore.home = rngInt(6) * 3 + rngInt(5) * 7 + 7;
+        finalScore.away = rngInt(6) * 3 + rngInt(5) * 7 + 7;
+        if(finalScore.home === finalScore.away) finalScore.home += 2;
+        break;
+    }
+    
+    if(finalScore.home > finalScore.away){
+        winner = homeTeam;
+        loser = awayTeam;
+    } else {
+        winner = awayTeam;
+        loser = homeTeam;
+    }
+
+    let message = '';
+    
+    if(winner === team){
+      const winMult = odds * diffFactor();
+      const win = Math.floor(bet * winMult);
+      award(win);
+      const margin = Math.abs(finalScore.home - finalScore.away);
+      const scoreStr = (winner === homeTeam) ? `${finalScore.home}-${finalScore.away}` : `${finalScore.away}-${finalScore.home}`;
+      
+      message = `**The ${team} win!** Final Score: ${winner} ${scoreStr}. This was a tight one, finishing by ${margin} points. You won ${win} chips! (Payout: ${winMult.toFixed(2)}x)`;
+      state.pot = Math.max(0, state.pot - Math.floor(win/10)); saveState();
+    } else {
+      const scoreStr = (winner === homeTeam) ? `${finalScore.home}-${finalScore.away}` : `${finalScore.away}-${finalScore.home}`;
+      message = `**The ${winner} take the victory.** Final Score: ${winner} ${scoreStr}. Your team, the ${team}, couldn't close the gap. You lost ${bet} chips.`;
+    }
+    setMsg('sportsMsg', message);
+  });
+}
+
+// ------------------ CHESS BATTLE (PLAYABLE) ------------------
+const PIECES = {
+  'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', 'p': '♟',
+  'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔', 'P': '♙'
+};
+// Simplified Starting FEN-like state (8x8 array with piece chars or null)
+let chessBoard, chessTurn, selectedSquare, chessBetAmount, chessBetOutcome;
+const START_BOARD = [
+  ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+  ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, null, null],
+  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+  ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+];
+let isGameOver = true;
+
+function initChess(){
+  chessBoard = START_BOARD.map(row => [...row]);
+  chessTurn = 'white';
+  selectedSquare = null;
+  isGameOver = false;
+  document.getElementById('chessResult').textContent = '-';
+  setMsg('chessMsg', 'Game ready. Place your bet, then click Start.');
+  renderChess();
+}
+
+function createChessBoardHTML(){
+  const boardEl = document.getElementById('chessboard');
+  boardEl.innerHTML = '';
+  for(let r=0; r<8; r++){
+    for(let c=0; c<8; c++){
+      const sq = document.createElement('div');
+      sq.dataset.row = r; sq.dataset.col = c;
+      sq.className = 'square ' + ((r+c)%2 === 0 ? 'light' : 'dark');
+      sq.addEventListener('click', handleSquareClick);
+      boardEl.appendChild(sq);
+    }
+  }
+}
+
+function renderChess(){
+  const boardEl = document.getElementById('chessboard');
+  boardEl.querySelectorAll('.square').forEach(sq => {
+    sq.innerHTML = '';
+    sq.classList.remove('selected', 'can-move');
+    const r = Number(sq.dataset.row); const c = Number(sq.dataset.col);
+    const pieceChar = chessBoard[r][c];
+    if(pieceChar){
+      const piece = document.createElement('span');
+      piece.className = 'piece ' + (pieceChar.toUpperCase() === pieceChar ? 'white' : 'black');
+      piece.textContent = PIECES[pieceChar];
+      sq.appendChild(piece);
+    }
+    if(selectedSquare && selectedSquare.r === r && selectedSquare.c === c){
+      sq.classList.add('selected');
+    }
+  });
+
+  if(selectedSquare && !isGameOver){
+    const moves = getLegalMoves(selectedSquare.r, selectedSquare.c);
+    moves.forEach(move => {
+      boardEl.querySelector(`[data-row="${move.r}"][data-col="${move.c}"]`).classList.add('can-move');
+    });
+  }
+}
+
+function handleSquareClick(e){
+  if(isGameOver || chessTurn === 'black'){ return; }
+  const r = Number(e.currentTarget.dataset.row);
+  const c = Number(e.currentTarget.dataset.col);
+  const pieceChar = chessBoard[r][c];
+
+  if(selectedSquare){
+    const moves = getLegalMoves(selectedSquare.r, selectedSquare.c);
+    const isValidMove = moves.some(m => m.r === r && m.c === c);
+    
+    if(isValidMove){
+      executeMove(selectedSquare.r, selectedSquare.c, r, c);
+      selectedSquare = null;
+      renderChess();
+      if(checkForWin('black')){ gameOver('Player Win'); return; }
+      setMsg('chessMsg', 'AI thinking...');
+      setTimeout(aiMove, 500);
+
+    } else if(pieceChar && pieceChar.toUpperCase() === pieceChar) {
+      selectedSquare = {r, c};
+      renderChess();
+    } else {
+      selectedSquare = null;
+      renderChess();
+    }
+  } else {
+    if(pieceChar && pieceChar.toUpperCase() === pieceChar){
+      selectedSquare = {r, c};
+      renderChess();
+    }
+  }
+}
+
+function aiMove(){
+  if(isGameOver || chessTurn !== 'black'){ return; }
+  const blackPieces = [];
+  for(let r=0; r<8; r++){ for(let c=0; c<8; c++){
+    const piece = chessBoard[r][c];
+    if(piece && piece.toLowerCase() === piece){
+      const moves = getLegalMoves(r, c);
+      if(moves.length > 0){ blackPieces.push({r, c, moves}); }
+    }
+  }}
+
+  if(blackPieces.length === 0){ gameOver('Draw'); return; }
+
+  const moveAttempt = randomItem(blackPieces);
+  const targetMove = randomItem(moveAttempt.moves);
+  
+  executeMove(moveAttempt.r, moveAttempt.c, targetMove.r, targetMove.c);
+  chessTurn = 'white';
+  renderChess();
+
+  if(checkForWin('white')){ gameOver('Player Loss'); } 
+  else { setMsg('chessMsg', "Your turn (White)."); }
+}
+
+function executeMove(fromR, fromC, toR, toC){
+  const pieceChar = chessBoard[fromR][fromC];
+  chessBoard[toR][toC] = pieceChar;
+  chessBoard[fromR][fromC] = null;
+  // Simplified promotion to Queen if pawn reaches end row (r=0 for white, r=7 for black)
+  if(pieceChar === 'P' && toR === 0) chessBoard[toR][toC] = 'Q';
+  if(pieceChar === 'p' && toR === 7) chessBoard[toR][toC] = 'q';
+}
+
+function isOpponent(r, c, color){
+  const piece = chessBoard[r][c];
+  if(!piece) return false;
+  return (color === 'white' && piece.toLowerCase() === piece) || (color === 'black' && piece.toUpperCase() === piece);
+}
+function isOutOfBounds(r, c){ return r < 0 || r > 7 || c < 0 || c > 7; }
+
+function getLegalMoves(r, c){
+  const pieceChar = chessBoard[r][c]; if(!pieceChar) return [];
+  const color = (pieceChar.toUpperCase() === pieceChar) ? 'white' : 'black';
+  const type = pieceChar.toUpperCase();
+  const moves = [];
+
+  const directions = [];
+  if(type === 'R' || type === 'Q') directions.push({dr:1,dc:0},{dr:-1,dc:0},{dr:0,dc:1},{dr:0,dc:-1});
+  if(type === 'B' || type === 'Q') directions.push({dr:1,dc:1},{dr:1,dc:-1},{dr:-1,dc:1},{dr:-1,dc:-1});
+  
+  for(const {dr, dc} of directions){
+    for(let i=1; i<8; i++){
+      const nr = r + dr*i; const nc = c + dc*i;
+      if(isOutOfBounds(nr, nc)) break;
+      const targetPiece = chessBoard[nr][nc];
+      if(!targetPiece){ moves.push({r:nr, c:nc}); }
+      else if(isOpponent(nr, nc, color)){ moves.push({r:nr, c:nc}); break; }
+      else break;
+    }
+  }
+
+  if(type === 'N'){
+    const L = [{dr:2,dc:1},{dr:2,dc:-1},{dr:-2,dc:1},{dr:-2,dc:-1},{dr:1,dc:2},{dr:1,dc:-2},{dr:-1,dc:2},{dr:-1,dc:-2}];
+    for(const {dr, dc} of L){
+      const nr = r + dr; const nc = c + dc;
+      if(!isOutOfBounds(nr, nc) && (!chessBoard[nr][nc] || isOpponent(nr, nc, color))) moves.push({r:nr, c:nc});
+    }
+  }
+
+  if(type === 'K'){
+    for(let dr=-1; dr<=1; dr++){ for(let dc=-1; dc<=1; dc++){
+      if(dr===0 && dc===0) continue;
+      const nr = r + dr; const nc = c + dc;
+      if(!isOutOfBounds(nr, nc) && (!chessBoard[nr][nc] || isOpponent(nr, nc, color))) moves.push({r:nr, c:nc});
+    }}
+  }
+
+  if(type === 'P'){
+    const dir = (color === 'white') ? -1 : 1;
+    const startRow = (color === 'white') ? 6 : 1;
+    const nr = r + dir;
+    
+    if(!isOutOfBounds(nr, c) && !chessBoard[nr][c]) {
+      moves.push({r:nr, c:c});
+      const nr2 = r + dir*2;
+      if(r === startRow && !chessBoard[nr2][c] && moves.some(m => m.r === nr && m.c === c)) moves.push({r:nr2, c:c});
+    }
+
+    for(const dc of [-1, 1]){
+      const nc = c + dc;
+      if(!isOutOfBounds(nr, nc) && isOpponent(nr, nc, color)) moves.push({r:nr, c:nc});
+    }
+  }
+
+  return moves;
+}
+
+function checkForWin(opponentColor){
+  const kingChar = (opponentColor === 'white') ? 'K' : 'k';
+  for(let r=0; r<8; r++){ for(let c=0; c<8; c++){
+    if(chessBoard[r][c] === kingChar) return false;
+  }}
+  return true; // King is missing (Checkmate/Captured)
+}
+
+function gameOver(result){
+  isGameOver = true;
+  setMsg('chessMsg', `Game Over: ${result}!`);
+  document.getElementById('chessResult').textContent = result;
+  selectedSquare = null;
+  renderChess(); // Remove move highlights
+  
+  if(chessBetAmount > 0){
+    let winMult = 0;
+    if(result === chessBetOutcome){
+      if(result === 'Player Win') winMult = 3 * diffFactor();
+      else if(result === 'Draw') winMult = 5 * (2-diffFactor());
+      else if(result === 'Player Loss') winMult = 1.5 * (2-diffFactor());
+      
+      const win = Math.floor(chessBetAmount * winMult);
+      award(win);
+      setMsg('chessMsg', `Game Over: ${result}! You won ${win} chips!`);
+      state.pot = Math.max(0, state.pot - Math.floor(win/10)); saveState();
+    } else {
+      setMsg('chessMsg', `Game Over: ${result}. You bet on ${chessBetOutcome}. You lost ${chessBetAmount} chips.`);
+    }
+  }
+  document.getElementById('chessCurrentBet').textContent = '0 (Game Ended)';
+  chessBetAmount = 0;
+}
+
+document.getElementById('chessStart').addEventListener('click', ()=> {
+  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
+  if(!chessBetOutcome){ setMsg('chessMsg','Select a bet outcome first!'); return; }
+  if(!spend(bet)){ setMsg('chessMsg','Not enough chips to place bet.'); return; }
+  
+  chessBetAmount = bet;
+  document.getElementById('chessCurrentBet').textContent = bet;
+  initChess();
+  setMsg('chessMsg', 'Game started. It is your turn (White).');
+});
+document.getElementById('chessResign').addEventListener('click', ()=> {
+  if(!isGameOver && chessBetAmount > 0){ gameOver('Player Loss'); }
+});
+document.getElementById('betChessWin').addEventListener('click', ()=> { chessBetOutcome = 'Player Win'; setMsg('chessMsg', 'Bet on Player Win (3x). Click Start.'); });
+document.getElementById('betChessDraw').addEventListener('click', ()=> { chessBetOutcome = 'Draw'; setMsg('chessMsg', 'Bet on Draw (5x). Click Start.'); });
+document.getElementById('betChessLose').addEventListener('click', ()=> { chessBetOutcome = 'Player Loss'; setMsg('chessMsg', 'Bet on Player Loss (1.5x). Click Start.'); });
+
+
 // ------------------ INIT ------------------
 loadState();
 
+// Initialize Chess on load
+createChessBoardHTML();
+initChess();
+
+
 // bind clicks that rely on DOM ready for elements
-// roulette number input sanitation
 document.getElementById('rouletteNumber').addEventListener('change', ()=> {
   const v = Math.max(0, Math.min(36, Math.floor(Number(document.getElementById('rouletteNumber').value)||0)));
   document.getElementById('rouletteNumber').value = v;
@@ -853,20 +1325,11 @@ document.getElementById('rouletteNumber').addEventListener('change', ()=> {
 // render wheel on load
 buildWheel();
 
-// allow pressing Enter to set bet to a sensible number
 document.getElementById('betAmount').addEventListener('change', ()=> {
   const v = Math.max(1, Math.floor(Number(document.getElementById('betAmount').value)||1));
   document.getElementById('betAmount').value = v;
 });
 
-// simple card-face styling interactivity (poker)
-document.addEventListener('click', (e)=> {
-  if(e.target && e.target.classList && e.target.classList.contains('card-face')){
-    // toggle selected for poker only (already bound)
-  }
-});
-
-// ensure UI updates periodically (in case other pages change state)
 setInterval(()=>{ updateUI(); }, 1200);
 
 </script>
