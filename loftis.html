@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loftis Button</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    body {
+      background-color: #1b1b1b;
+      color: white;
+      font-family: "Comic Sans MS", sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      margin: 0;
+      gap: 25px;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      font-size: 3rem;
+      color: #ff4747;
+      text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    .title img {
+      width: 150px;
+      height: auto;
+      border-radius: 0; /* removed outline */
+      box-shadow: none; /* removed shadow */
+      animation: floaty 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #ff4747; }
+      to { text-shadow: 0 0 30px #ff4747; }
+    }
+
+    @keyframes floaty {
+      from { transform: translateY(0px); }
+      to { transform: translateY(-10px); }
+    }
+
+    .emoji-board {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    .emoji-board button {
+      font-size: 3rem;
+      background: #333;
+      border: none;
+      border-radius: 15px;
+      padding: 15px;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .emoji-board button:hover {
+      background: #555;
+      transform: scale(1.1);
+    }
+
+    #loftisBtn {
+      background: red;
+      color: white;
+      font-size: 1.5rem;
+      padding: 20px 40px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(255,0,0,0.5);
+    }
+
+    #inputArea {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input {
+      background: #222;
+      border: 2px solid #555;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      width: 250px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    #sayBtn {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #sayBtn:hover {
+      background: #45a049;
+    }
+
+    .float-img {
+      position: absolute;
+      width: 80px;
+      height: auto;
+      pointer-events: none;
+      animation: float 2s ease-out forwards;
+    }
+
+    @keyframes float {
+      0% { transform: scale(0) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1.2) rotate(720deg); opacity: 0; top: -100px; }
+    }
+
+    .hiller-emoji img {
+      width: 60px;
+      height: auto;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">
+    <img src="loftis.png" alt="Loftis">
+    <span>Loftis Button</span>
+    <img src="loftis.png" alt="Loftis">
+  </div>
+
+  <div class="emoji-board">
+    <button data-text="lizard">🦎</button>
+    <button data-text="stop">⛔</button>
+    <button data-text="skull">💀</button>
+    <button data-text="cool">😎</button>
+    <button data-text="mic drop 1 2 1 2 loftis!">🎤</button>
+
+  </div>
+
+  <div id="inputArea">
+    <input type="text" id="sayInput" placeholder="Type something...">
+    <button id="sayBtn">Say it</button>
+  </div>
+
+  <button id="loftisBtn">LOFTIS</button>
+
+  <script>
+    const emojis = document.querySelectorAll('.emoji-board button');
+    const loftisBtn = document.getElementById('loftisBtn');
+    const sayBtn = document.getElementById('sayBtn');
+    const sayInput = document.getElementById('sayInput');
+
+    function speak(text) {
+      const msg = new SpeechSynthesisUtterance(text);
+      msg.lang = 'en-US';
+      msg.pitch = 1;
+      msg.rate = 1;
+      window.speechSynthesis.speak(msg);
+    }
+
+    function spawnImage(src, count = 20) {
+      for (let i = 0; i < count; i++) {
+        const img = document.createElement('img');
+        img.src = src;
+        img.className = 'float-img';
+        img.style.left = `${Math.random() * window.innerWidth}px`;
+        img.style.top = `${Math.random() * window.innerHeight}px`;
+        document.body.appendChild(img);
+        setTimeout(() => img.remove(), 2000);
+      }
+    }
+
+    emojis.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const text = btn.dataset.text;
+        speak(text);
+
+        if (text.toLowerCase().includes('loftis')) {
+          spawnImage('loftis.png', 20);
+        } else if (text.toLowerCase().includes('hiller') || text.toLowerCase().includes('smile')) {
+          spawnImage('hiller.png', 20);
+        }
+      });
+    });
+
+    sayBtn.addEventListener('click', () => {
+      const text = sayInput.value.trim();
+      if (text !== "") speak(text);
+    });
+
+    loftisBtn.addEventListener('click', () => {
+      speak("Loftis");
+      spawnImage('loftis.png', 20);
+    });
+
+    // Removed keyboard listener
+  </script>
+</body>
+</html>
