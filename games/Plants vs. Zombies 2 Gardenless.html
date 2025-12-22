@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">  
+  <title>PvZ2 Gardendless Online | 0.4.2</title>
+  
+  <meta name="viewport"
+    content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="format-detection" content="telephone=no">
+  
+  <base href="https://cdn.jsdelivr.net/gh/Gzh0821/pvzge_web@master/docs/">
+
+  <link rel="stylesheet" type="text/css" href="style.f76d1.css" />
+</head>
+
+<body>
+
+  <div id="GameDiv" cc_exact_fit_screen="true">
+    <div id="Cocos3dGameContainer">
+      <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99"></canvas>
+    </div>
+  </div>
+<script> alert("port by arandomiperson") </script>
+  <!-- Polyfills bundle -->
+  <script src="src/polyfills.bundle.5adbf.js" charset="utf-8"></script>
+
+  <!-- SystemJS support -->
+  <script src="src/system.bundle.543e6.js" charset="utf-8"></script>
+
+  <!-- Import map -->
+  <script src="src/import-map.e4194.json" type="systemjs-importmap" charset="utf-8"></script>
+
+  <script>
+    // Check if System loaded
+    if (typeof System === 'undefined') {
+      document.body.innerHTML = '<div style="padding:50px;font-family:Arial;"><h1>⚠️ Failed to Load</h1><p>The game files are being blocked. This could be:</p><ul><li><strong>Ad blocker</strong> - Disable it for this page</li><li><strong>Browser extension</strong> - Try in incognito/private mode</li><li><strong>Network issue</strong> - Check your internet connection</li></ul><p>Open the browser console (F12) to see detailed errors.</p></div>';
+    } else {
+      System.import('./index.23ad0.js').catch(function (err) { 
+        console.error('Failed to load game:', err);
+        document.body.innerHTML = '<div style="padding:50px;font-family:Arial;"><h1>⚠️ Game Load Error</h1><p>Error: ' + err.message + '</p><p>Check the browser console (F12) for more details.</p></div>';
+      });
+    }
+  </script>
+  
+  <script src="tmpPatch.js"></script>
+</body>
+</html>
