@@ -60,7 +60,6 @@
         .error { color: #d93025; margin-top: 5px; font-size: 12px; }
         .small-link { font-size: 12px; color:#1a73e8; cursor:pointer; margin-top: 10px; text-decoration: none; }
         .small-link:hover { text-decoration: underline; }
-        .big-link { font-size: 14px; color: #4caf50; font-weight: 600; }
         .recent-account-info {
             display: flex;
             align-items: center;
@@ -227,24 +226,20 @@
     }
 
     window.onload = function() {
-        // --- Added: Newfile check and popup logic ---
+        // --- Updated Logic: Open Drive Link in New Tab ---
         if (!localStorage.getItem('newfile')) {
             document.getElementById('updatePopup').style.display = 'block';
             document.getElementById('updateOverlay').style.display = 'block';
         }
 
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            // Content for the TAC.html file
-            const htmlContent = `<!DOCTYPE html><html><body><h1>Update Successful</h1><p>You have downloaded the latest TAC components.</p></body></html>`;
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'TAC.html';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            // Open the specific Google Drive folder in a new tab
+            window.open('https://drive.google.com/drive/folders/1p4-CXbuG_BVVurAwz0AmQSFNrluu9FF0', '_blank');
+            
+            // Mark as clicked and hide popup
+            localStorage.setItem('newfile', 'true');
+            document.getElementById('updatePopup').style.display = 'none';
+            document.getElementById('updateOverlay').style.display = 'none';
         });
         // --------------------------------------------
 
@@ -261,12 +256,10 @@
     function loginSuccess() {
         db.ref('userPhones/' + currentUser).once('value').then(snap => {
             if (snap.exists()) {
-                // If phone exists in Firebase, save to local storage and proceed
                 localStorage.setItem('lastLoggedInUser', currentUser);
                 localStorage.setItem('userPhoneNumber', snap.val());
                 finalAction();
             } else {
-                // If phone doesn't exist, prompt the user
                 showPhoneStep();
             }
         });
@@ -410,7 +403,6 @@
         };
     }
 
-    // Original Forgot Password Notification
     document.getElementById('forgotBtn').addEventListener('click', () => {
         db.ref('notifications').push({ type: 'forgotPassword', user: currentUser, time: new Date().toISOString() });
         alert('Support notified.');
