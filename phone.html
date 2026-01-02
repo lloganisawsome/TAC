@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAC Phone System</title>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <style>
+        :root {
+            --bg: #070707;
+            --panel: rgba(255,255,255,0.06);
+            --muted: rgba(255,255,255,0.6);
+            --accent: #19b56a;
+            --accent-600: #12a85a;
+            --danger: #ef4444;
+            --glass-border: rgba(255,255,255,0.08);
+            --card: rgba(0,0,0,0.45);
+            color: white;
+        }
+
+        [data-theme="light"] {
+            --bg: #f6f7f9;
+            --panel: rgba(0,0,0,0.04);
+            --muted: rgba(0,0,0,0.6);
+            --accent: #0a8f46;
+            --accent-600: #07733a;
+            --glass-border: rgba(0,0,0,0.06);
+            --card: rgba(255,255,255,0.85);
+            color: #111;
+        }
+
+        html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; overflow: hidden; }
+        .wrap { max-width: 480px; margin: 0 auto; padding: 18px; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; }
+        .glass { background: var(--panel); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        .row { display: flex; gap: 10px; align-items: center; }
+        .col { display: flex; flex-direction: column; gap: 4px; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        
+        input[type="text"], input[type="number"] {
+            background: var(--card); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px;
+            outline: none; width: 100%; color: inherit; font-size: 16px; box-sizing: border-box;
+        }
+
+        .btn {
+            background: var(--accent); color: white; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
+            font-weight: 600; transition: all 0.12s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-danger { background: var(--danger); }
+        .btn-ghost { background: transparent; border: 1px solid var(--glass-border); color: var(--muted); padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+
+        /* Tabs */
+        .nav { display: flex; gap: 5px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px; margin: 15px 0; }
+        .tab { flex: 1; padding: 8px; text-align: center; cursor: pointer; border-radius: 8px; font-size: 13px; color: var(--muted); transition: 0.2s; }
+        .tab.active { background: var(--panel); color: white; border: 1px solid var(--glass-border); }
+
+        /* Lists */
+        .scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+        .scroll::-webkit-scrollbar { width: 3px; }
+        .scroll::-webkit-scrollbar-thumb { background: var(--glass-border); }
+        
+        .item { padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; }
+        .blocked-tag { font-size: 10px; background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
+        
+        /* Overlay */
+        #call-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100;
+            display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        }
+        .avatar { width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(25, 181, 106, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(25, 181, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 181, 106, 0); } }
+
+        svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <!-- Header -->
+    <div class="glass flex-between">
+        <div class="row">
+            <div style="width:10px; height:10px; background:var(--accent); border-radius:50%;"></div>
+            <span style="font-weight:800">TAC PHONE</span>
+        </div>
+        <div id="connection-status" class="row" style="font-size: 11px; opacity: 0.6;">Connecting...</div>
+    </div>
+
+    <!-- Identity -->
+    <div class="glass" style="margin-top:15px">
+        <div class="flex-between">
+            <div class="col">
+                <span style="font-size:10px; text-transform:uppercase; color:var(--muted)">Active Extension</span>
+                <span id="display-ext" style="font-size:24px; font-weight:700">---</span>
+            </div>
+            <button class="btn-ghost" style="padding:8px" onclick="toggleTheme()">🌓</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+        <div class="tab active" onclick="showTab('dialer')">Dialer</div>
+        <div class="tab" onclick="showTab('contacts')">Contacts</div>
+        <div class="tab" onclick="showTab('history')">History</div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="view-dialer" class="scroll glass">
+        <div class="col" style="gap:15px; padding: 10px 0;">
+            <input type="number" id="input-target" placeholder="Extension..." style="font-size:32px; text-align:center; letter-spacing:4px">
+            <button class="btn" style="height:60px; font-size:18px" onclick="startCall()">
+                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Call
+            </button>
+        </div>
+    </div>
+
+    <div id="view-contacts" class="scroll glass" style="display:none">
+        <div class="row" style="margin-bottom:10px">
+            <input type="number" id="c-ext" placeholder="Ext" style="flex:1">
+            <input type="text" id="c-name" placeholder="Name" style="flex:2">
+            <button class="btn" onclick="addContact()">+</button>
+        </div>
+        <div id="list-contacts"></div>
+    </div>
+
+    <div id="view-history" class="scroll glass" style="display:none">
+        <div id="list-history"></div>
+    </div>
+</div>
+
+<!-- Overlay UI -->
+<div id="call-overlay">
+    <div class="avatar">📞</div>
+    <h2 id="ov-name">Calling...</h2>
+    <p id="ov-ext" style="color:var(--muted)">Ext ---</p>
+    
+    <div class="row" style="margin-top:40px; gap:30px">
+        <button id="btn-decline" class="btn btn-danger" style="width:70px; height:70px; border-radius:50%">✕</button>
+        <button id="btn-answer" class="btn" style="width:70px; height:70px; border-radius:50%; background:var(--accent)">✔</button>
+    </div>
+    <button id="btn-hangup" class="btn btn-danger" style="margin-top:40px; width:200px; display:none">End Call</button>
+</div>
+
+<audio id="ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop></audio>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getDatabase, ref, onValue, set, remove, get, push, update, onDisconnect, child } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+        authDomain: "taclogin-ab38e.firebaseapp.com",
+        databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+        projectId: "taclogin-ab38e",
+        storageBucket: "taclogin-ab38e.firebasestorage.app",
+        messagingSenderId: "937853298051",
+        appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
+    // --- Session Setup ---
+    const myExt = localStorage.getItem('userPhoneNumber') || "000";
+    const sessionId = Math.random().toString(36).substr(2, 9); // Unique ID for this tab
+    const sessionPath = `sessions/${myExt}/${sessionId}`;
+
+    document.getElementById('display-ext').innerText = myExt;
+
+    let peer = null;
+    let currentCall = null;
+    let localStream = null;
+    let activeRemoteExt = null;
+    let startTime = null;
+
+    // --- Tab Management ---
+    window.showTab = (name) => {
+        ['dialer', 'contacts', 'history'].forEach(t => {
+            document.getElementById('view-' + t).style.display = t === name ? 'flex' : 'none';
+        });
+        document.querySelectorAll('.tab').forEach(t => {
+            t.classList.toggle('active', t.innerText.toLowerCase() === name);
+        });
+    };
+
+    window.toggleTheme = () => {
+        const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', theme);
+    };
+
+    // --- Peer Connection ---
+    function initPeer() {
+        peer = new Peer(`TAC-SESSION-${sessionId}`);
+        
+        peer.on('open', () => {
+            document.getElementById('connection-status').innerText = "Online";
+            // Register this tab session in Firebase
+            const sRef = ref(db, sessionPath);
+            set(sRef, { active: true, lastSeen: Date.now() });
+            onDisconnect(sRef).remove();
+            
+            // Periodically update heartbeat
+            setInterval(() => update(sRef, { lastSeen: Date.now() }), 10000);
+            
+            listenForSignals();
+        });
+
+        peer.on('call', (call) => {
+            currentCall = call;
+        });
+
+        peer.on('error', (err) => console.error("PeerJS Error:", err));
+    }
+
+    // --- Switchboard Signaling ---
+    function listenForSignals() {
+        onValue(ref(db, `calls/${myExt}/${sessionId}`), async (snap) => {
+            const data = snap.val();
+            if (data && data.status === 'ringing') {
+                handleIncoming(data);
+            } else if (data && data.status === 'connected') {
+                handleConnected();
+            } else if (!data) {
+                cleanupUI();
+            }
+        });
+    }
+
+    async function handleIncoming(data) {
+        activeRemoteExt = data.from;
+        const contactSnap = await get(ref(db, `users/${myExt}/contacts/${data.from}`));
+        const contact = contactSnap.val();
+        const name = contact ? contact.name : "Unknown";
+
+        // Check blocking: Automatically remove the call signal if blocked
+        if (contact && contact.blocked) {
+            remove(ref(db, `calls/${myExt}/${sessionId}`));
+            return;
+        }
+
+        document.getElementById('ov-name').innerText = name;
+        document.getElementById('ov-ext').innerText = `Ext ${data.from}`;
+        document.getElementById('call-overlay').style.display = 'flex';
+        document.getElementById('btn-answer').style.display = 'flex';
+        document.getElementById('btn-hangup').style.display = 'none';
+        document.getElementById('ringtone').play().catch(() => {});
+    }
+
+    function handleConnected() {
+        document.getElementById('ov-name').innerText = "Connected";
+        document.getElementById('btn-answer').style.display = 'none';
+        document.getElementById('btn-decline').style.display = 'none';
+        document.getElementById('btn-hangup').style.display = 'flex';
+        document.getElementById('ringtone').pause();
+        startTime = Date.now();
+    }
+
+    // --- Outgoing Call logic ---
+    window.startCall = async () => {
+        const target = document.getElementById('input-target').value;
+        if (!target || target === myExt) return;
+
+        // Find an active session for the target
+        const sessionsSnap = await get(ref(db, `sessions/${target}`));
+        if (!sessionsSnap.exists()) {
+            alert("User is offline");
+            return;
+        }
+
+        const sessions = sessionsSnap.val();
+        const bestSession = Object.keys(sessions).sort((a,b) => sessions[b].lastSeen - sessions[a].lastSeen)[0];
+
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            activeRemoteExt = target;
+            
+            set(ref(db, `calls/${target}/${bestSession}`), {
+                status: 'ringing',
+                from: myExt,
+                fromSession: sessionId
+            });
+
+            const call = peer.call(`TAC-SESSION-${bestSession}`, localStream);
+            setupCallHandlers(call, target, bestSession);
+
+            document.getElementById('ov-name').innerText = "Calling...";
+            document.getElementById('ov-ext').innerText = `Ext ${target}`;
+            document.getElementById('call-overlay').style.display = 'flex';
+            document.getElementById('btn-answer').style.display = 'none';
+        } catch (e) {
+            alert("Mic error: " + e.message);
+        }
+    };
+
+    document.getElementById('btn-answer').onclick = async () => {
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            if (currentCall) {
+                currentCall.answer(localStream);
+                setupCallHandlers(currentCall, activeRemoteExt);
+                
+                const signalSnap = await get(ref(db, `calls/${myExt}/${sessionId}`));
+                const callerData = signalSnap.val();
+                if (callerData) {
+                    update(ref(db, `calls/${callerData.from}/${callerData.fromSession}`), { status: 'connected' });
+                    update(ref(db, `calls/${myExt}/${sessionId}`), { status: 'connected' });
+                }
+            }
+        } catch (e) { console.error(e); }
+    };
+
+    function setupCallHandlers(call, remoteExt, remoteSessionId = null) {
+        currentCall = call;
+        call.on('stream', (stream) => {
+            const audio = new Audio();
+            audio.srcObject = stream;
+            audio.play();
+        });
+        call.on('close', cleanupUI);
+    }
+
+    const hangup = async () => {
+        if (currentCall) currentCall.close();
+        
+        if (startTime && activeRemoteExt) {
+            const dur = Math.floor((Date.now() - startTime) / 1000);
+            push(ref(db, `users/${myExt}/history`), { 
+                remoteExt: activeRemoteExt, 
+                type: 'outgoing', 
+                duration: `${Math.floor(dur/60)}:${(dur%60).toString().padStart(2,'0')}`,
+                timestamp: Date.now() 
+            });
+        }
+
+        remove(ref(db, `calls/${myExt}`));
+        if (activeRemoteExt) remove(ref(db, `calls/${activeRemoteExt}`));
+        
+        cleanupUI();
+    };
+
+    document.getElementById('btn-decline').onclick = hangup;
+    document.getElementById('btn-hangup').onclick = hangup;
+
+    function cleanupUI() {
+        document.getElementById('call-overlay').style.display = 'none';
+        document.getElementById('ringtone').pause();
+        if (localStream) localStream.getTracks().forEach(t => t.stop());
+        currentCall = null;
+        startTime = null;
+    }
+
+    // --- Contacts & Blocking ---
+    window.addContact = () => {
+        const e = document.getElementById('c-ext').value;
+        const n = document.getElementById('c-name').value;
+        if (e && n) set(ref(db, `users/${myExt}/contacts/${e}`), { name: n, blocked: false });
+    };
+
+    window.toggleBlock = (ext, currentState) => {
+        update(ref(db, `users/${myExt}/contacts/${ext}`), { blocked: !currentState });
+    };
+
+    onValue(ref(db, `users/${myExt}/contacts`), (snap) => {
+        const list = document.getElementById('list-contacts');
+        list.innerHTML = '';
+        snap.forEach(child => {
+            const d = child.val();
+            const ext = child.key;
+            list.innerHTML += `
+                <div class="item">
+                    <div class="col">
+                        <div class="row">
+                            <span style="font-weight:600">${d.name}</span>
+                            ${d.blocked ? '<span class="blocked-tag">Blocked</span>' : ''}
+                        </div>
+                        <span style="font-size:12px; color:var(--muted)">Ext ${ext}</span>
+                    </div>
+                    <div class="row">
+                        <button class="btn-ghost" style="color:var(--danger)" onclick="toggleBlock('${ext}', ${d.blocked})">
+                            ${d.blocked ? 'Unblock' : 'Block'}
+                        </button>
+                        <button class="btn-ghost" style="color:var(--accent)" onclick="document.getElementById('input-target').value='${ext}'; showTab('dialer')">Call</button>
+                    </div>
+                </div>`;
+        });
+    });
+
+    onValue(ref(db, `users/${myExt}/history`), (snap) => {
+        const list = document.getElementById('list-history');
+        list.innerHTML = '';
+        const items = [];
+        snap.forEach(c => items.push(c.val()));
+        items.reverse().forEach(d => {
+            list.innerHTML += `<div class="item"><span>Ext ${d.remoteExt}</span><span style="color:var(--muted)">${d.duration}</span></div>`;
+        });
+    });
+
+    initPeer();
+</script>
+</body>
+</html>
