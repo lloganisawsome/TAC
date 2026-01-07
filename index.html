@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -139,18 +138,9 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
 .carousel-control:hover {opacity: 1;}
 .prev {left: 10px;border-radius: 50%;}
 .next {right: 10px;border-radius: 50%;}
-
-/* ❄ Snow */
-#snowCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-}
-
+</style>
+</head>
+<body>
 
 <!-- Sidebar -->
 <div class="user-sidebar collapsed" id="sidebar">
@@ -175,15 +165,6 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
         <button class="carousel-control prev" id="prevBtn">‹</button>
         <button class="carousel-control next" id="nextBtn">›</button>
     </div>
-</div>
-
-<!-- Snow -->
-<canvas id="snowCanvas"></canvas>
-
-<!-- Christmas corner -->
-<div class="christmas-corner">
-  <img src="tree.gif" alt="Christmas Tree" class="tree">
-  <img src="fireplace.gif" alt="Fireplace" class="fireplace">
 </div>
 
 <script>
@@ -240,7 +221,7 @@ function renderCarousel(){
 }
 
 function updateCarousel(){
-  if (images.length===0) return;
+  if (images.length===0 || !carouselImages.children[0]) return;
   const imageWidth = carouselImages.children[0].clientWidth;
   carouselImages.style.transform=`translateX(${-currentImageIndex*imageWidth}px)`;
 }
@@ -259,55 +240,6 @@ function showPrevImage(){
 prevBtn.addEventListener('click', showPrevImage);
 nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
-
-// ❄ Snow
-const snowCanvas = document.getElementById('snowCanvas');
-const ctx = snowCanvas.getContext('2d');
-let snowflakes = [];
-
-function resizeCanvas() {
-  snowCanvas.width = window.innerWidth;
-  snowCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-function createSnowflakes(count=100){
-  snowflakes = [];
-  for(let i=0;i<count;i++){
-    snowflakes.push({
-      x: Math.random()*window.innerWidth,
-      y: Math.random()*window.innerHeight,
-      radius: Math.random()*3+1,
-      speed: Math.random()*1+0.5
-    });
-  }
-}
-createSnowflakes();
-
-function drawSnow(){
-  ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
-  ctx.fillStyle = 'white';
-  ctx.beginPath();
-  snowflakes.forEach(f => {
-    ctx.moveTo(f.x,f.y);
-    ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);
-  });
-  ctx.fill();
-  updateSnow();
-}
-
-function updateSnow(){
-  snowflakes.forEach(f => {
-    f.y += f.speed;
-    if(f.y>window.innerHeight){
-      f.y=0;
-      f.x=Math.random()*window.innerWidth;
-    }
-  });
-}
-
-setInterval(drawSnow, 30);
 </script>
 </body>
 </html>
