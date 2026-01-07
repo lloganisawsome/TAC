@@ -30,7 +30,6 @@
 
 body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;color:#fff;transition:margin-left 0.3s;}
 
-/* Sidebar */
 .user-sidebar{
   width:220px;
   height:100vh;
@@ -44,6 +43,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
   overflow:hidden;
   transition:width 0.4s cubic-bezier(.77,0,.175,1);
 }
+
 .user-sidebar.collapsed{width:47px;padding:12px 4px;}
 .logo-section{text-align:center;transition:all 0.4s;}
 .logo{width:140px;transition:width 0.4s;}
@@ -67,6 +67,13 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
 }
 .user-sidebar:not(.collapsed) .nav-item:nth-child(1){animation-delay:0s;}
 .user-sidebar:not(.collapsed) .nav-item:nth-child(2){animation-delay:0.05s;}
+.user-sidebar:not(.collapsed) .nav-item:nth-child(3){animation-delay:0.1s;}
+.user-sidebar:not(.collapsed) .nav-item:nth-child(4){animation-delay:0.15s;}
+.user-sidebar:not(.collapsed) .nav-item:nth-child(5){animation-delay:0.2s;}
+.user-sidebar:not(.collapsed) .nav-item:nth-child(6){animation-delay:0.25s;}
+.user-sidebar:not(.collapsed) .nav-item:nth-child(7){animation-delay:0.3s;}
+.user-sidebar:not(.collapsed) .nav-item:nth-child(8){animation-delay:0.35s;}
+
 @keyframes slideIn{to {transform: translateX(0); opacity:1;}}
 .nav-item:hover{color:#000;background:var(--sidebar-hover);}
 .nav-text{opacity:1;transition:opacity 0.3s, transform 0.3s; margin-left:0;}
@@ -109,13 +116,11 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
 }
 #collapseBtn.rotated{transform:rotate(180deg);}
 
-/* Content */
 .content{margin-left:220px;padding:20px;flex:1;transition:margin-left 0.4s cubic-bezier(.77,0,.175,1);position:relative;}
 .collapsed ~ .content{margin-left:47px;}
 
 #datetime {font-size: 1.2rem;font-weight: bold;text-align: center;margin-bottom: 20px;color: #ddd;}
 
-/* Carousel */
 .image-carousel {
   position: relative;
   width: 100%;
@@ -138,50 +143,25 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
 .carousel-control:hover {opacity: 1;}
 .prev {left: 10px;border-radius: 50%;}
 .next {right: 10px;border-radius: 50%;}
-
-/* ❄ Snow */
-#snowCanvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* 🎄 Christmas tree + fireplace corner */
-.christmas-corner {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: -10px;
-  z-index: 1000;
-}
-.tree { width: 80px; height: auto; }
-.fireplace { width: 100px; height: auto; }
 </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="user-sidebar collapsed" id="sidebar">
   <div class="logo-section collapsed" id="logoSection">
     <img src="tac-logo.png" alt="TAC Logo" class="logo">
   </div>
+
   <ul class="user-nav">
     <li class="nav-item" data-href="home.html"><span class="nav-text">Home</span></li>
     <li class="nav-item" data-href="apps.html"><span class="nav-text">👀 Apps 👀</span></li>
   </ul>
+
   <div class="action-buttons">
     <button id="collapseBtn">☰</button>
   </div>
 </div>
 
-<!-- Main Content -->
 <div class="content">
     <h1>Welcome to TAC</h1>
     <div id="datetime"></div>
@@ -192,17 +172,7 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
     </div>
 </div>
 
-<!-- Snow -->
-<canvas id="snowCanvas"></canvas>
-
-<!-- Christmas corner -->
-<div class="christmas-corner">
-  <img src="tree.gif" alt="Christmas Tree" class="tree">
-  <img src="fireplace.gif" alt="Fireplace" class="fireplace">
-</div>
-
 <script>
-// Sidebar logic
 const sidebar = document.getElementById('sidebar');
 const logoSection = document.getElementById('logoSection');
 const collapseBtn = document.getElementById('collapseBtn');
@@ -225,7 +195,7 @@ function toggleSidebar(){
   collapseBtn.classList.toggle('rotated');
 }
 
-// Clock
+// --- Clock ---
 function updateDateTime() {
   const now = new Date();
   const options = { weekday:'long',year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit' };
@@ -234,7 +204,7 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// Carousel
+// --- Carousel ---
 let images = [];
 for (let i=1;i<=12;i++){
   let img = new Image();
@@ -274,55 +244,6 @@ function showPrevImage(){
 prevBtn.addEventListener('click', showPrevImage);
 nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
-
-// ❄ Snow
-const snowCanvas = document.getElementById('snowCanvas');
-const ctx = snowCanvas.getContext('2d');
-let snowflakes = [];
-
-function resizeCanvas() {
-  snowCanvas.width = window.innerWidth;
-  snowCanvas.height = window.innerHeight;
-}
-window.addEventListener('resize', resizeCanvas);
-resizeCanvas();
-
-function createSnowflakes(count=100){
-  snowflakes = [];
-  for(let i=0;i<count;i++){
-    snowflakes.push({
-      x: Math.random()*window.innerWidth,
-      y: Math.random()*window.innerHeight,
-      radius: Math.random()*3+1,
-      speed: Math.random()*1+0.5
-    });
-  }
-}
-createSnowflakes();
-
-function drawSnow(){
-  ctx.clearRect(0,0,window.innerWidth, window.innerHeight);
-  ctx.fillStyle = 'white';
-  ctx.beginPath();
-  snowflakes.forEach(f => {
-    ctx.moveTo(f.x,f.y);
-    ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);
-  });
-  ctx.fill();
-  updateSnow();
-}
-
-function updateSnow(){
-  snowflakes.forEach(f => {
-    f.y += f.speed;
-    if(f.y>window.innerHeight){
-      f.y=0;
-      f.x=Math.random()*window.innerWidth;
-    }
-  });
-}
-
-setInterval(drawSnow, 30);
 </script>
 </body>
 </html>
