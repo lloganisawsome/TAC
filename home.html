@@ -9,6 +9,7 @@
         /* General Setup */
         html,body { height: 100%; margin: 0; font-family: 'Inter', Arial, Helvetica, sans-serif; }
         body { background: #f1f1f1; display: flex; justify-content: center; align-items: center; }
+
         /* Container Styling */
         .container {
             width: 360px;
@@ -21,6 +22,7 @@
         }
         .google-logo { width: 75px; margin-bottom: 20px; }
         h2 { font-size: 24px; font-weight: 400; margin-bottom: 24px; }
+
         /* Form Elements */
         input {
             width: 100%;
@@ -32,6 +34,7 @@
             transition: border-color 0.3s;
         }
         input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 1px #1a73e8; }
+        
         /* PIN Input specific styling (to center text) */
         .pin-input { text-align: center; font-size: 24px; letter-spacing: 5px; }
 
@@ -49,6 +52,7 @@
             transition: background 0.3s;
         }
         button:hover { background: #0c5adb; }
+        
         .secondary-button {
             background: #f0f0f0;
             color: #3c4043;
@@ -60,6 +64,7 @@
         .error { color: #d93025; margin-top: 5px; font-size: 12px; }
         .small-link { font-size: 12px; color:#1a73e8; cursor:pointer; margin-top: 10px; text-decoration: none; }
         .small-link:hover { text-decoration: underline; }
+
         .recent-account-info {
             display: flex;
             align-items: center;
@@ -179,7 +184,6 @@
     </div>
 </div>
 
-<!-- Popup Elements -->
 <div id="updateOverlay"></div>
 <div id="updatePopup">
     <p style="font-size: 16px; margin-bottom: 20px;">You need to update to continue silly!</p>
@@ -226,22 +230,17 @@
     }
 
     window.onload = function() {
-        // --- Updated Logic: Open Drive Link in New Tab ---
         if (!localStorage.getItem('newfile')) {
             document.getElementById('updatePopup').style.display = 'block';
             document.getElementById('updateOverlay').style.display = 'block';
         }
 
         document.getElementById('downloadBtn').addEventListener('click', function() {
-            // Open the specific Google Drive folder in a new tab
             window.open('https://drive.google.com/drive/folders/1p4-CXbuG_BVVurAwz0AmQSFNrluu9FF0', '_blank');
-            
-            // Mark as clicked and hide popup
             localStorage.setItem('newfile', 'true');
             document.getElementById('updatePopup').style.display = 'none';
             document.getElementById('updateOverlay').style.display = 'none';
         });
-        // --------------------------------------------
 
         const lastUser = localStorage.getItem('lastLoggedInUser');
         if (lastUser) {
@@ -252,13 +251,34 @@
         }
     }
 
-    // This handles the logic for both PIN and Password successes
+    // --- LOGIC UPDATE: Check for duplicates on login ---
     function loginSuccess() {
-        db.ref('userPhones/' + currentUser).once('value').then(snap => {
-            if (snap.exists()) {
-                localStorage.setItem('lastLoggedInUser', currentUser);
-                localStorage.setItem('userPhoneNumber', snap.val());
-                finalAction();
+        db.ref('userPhones/' + currentUser).once('value').then(userSnap => {
+            if (userSnap.exists()) {
+                const myPhone = userSnap.val();
+                
+                // We have a phone number, but let's check if it's unique
+                db.ref('userPhones').once('value').then(allSnaps => {
+                    let isDuplicate = false;
+                    allSnaps.forEach(child => {
+                        // If value matches mine, but the key (username) is NOT me
+                        if (child.val() === myPhone && child.key !== currentUser) {
+                            isDuplicate = true;
+                        }
+                    });
+
+                    if (isDuplicate) {
+                        // Force them to change it
+                        alert("Conflict detected: Your extension ("+myPhone+") is claimed by another user. Please set a new one.");
+                        showPhoneStep(); 
+                    } else {
+                        // Unique - Login success
+                        localStorage.setItem('lastLoggedInUser', currentUser);
+                        localStorage.setItem('userPhoneNumber', myPhone);
+                        finalAction();
+                    }
+                });
+
             } else {
                 showPhoneStep();
             }
@@ -270,6 +290,7 @@
         document.getElementById('step-phone').style.display = 'block';
     }
 
+    // --- LOGIC UPDATE: Check for duplicates when saving ---
     function savePhoneNumber() {
         resetErrors();
         const phone = document.getElementById('phone-input').value.trim();
@@ -278,10 +299,26 @@
             return;
         }
 
-        db.ref('userPhones/' + currentUser).set(phone).then(() => {
-            localStorage.setItem('lastLoggedInUser', currentUser);
-            localStorage.setItem('userPhoneNumber', phone);
-            finalAction();
+        // Scan Firebase for this number
+        db.ref('userPhones').once('value').then(snapshot => {
+            let isTaken = false;
+            snapshot.forEach(child => {
+                // Check if anyone else has this number
+                if (child.val() === phone && child.key !== currentUser) {
+                    isTaken = true;
+                }
+            });
+
+            if (isTaken) {
+                document.getElementById('phone-error').innerText = "Extension already in use. Please choose another.";
+            } else {
+                // Save if unique
+                db.ref('userPhones/' + currentUser).set(phone).then(() => {
+                    localStorage.setItem('lastLoggedInUser', currentUser);
+                    localStorage.setItem('userPhoneNumber', phone);
+                    finalAction();
+                });
+            }
         });
     }
 
