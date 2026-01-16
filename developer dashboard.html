@@ -1,201 +1,1054 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Developer Dashboard — TAC</title>
-    <link rel="icon" type="image/png" href="favicon.png" />
+    <link rel="icon" type="image/png" href__="favicon.png" />
     <style>
-        :root{
-            --bg:#0f0f10; 
-            --panel:#1e1e1e; 
-            --accent:#4CAF50; 
-            --muted:#9aa0a6; 
-            --danger:#e05555;
-            --warning:#FFD700;
+        :root {
+            --bg: #0a0a0b;
+            --panel: #111113;
+            --panel-hover: #1a1a1c;
+            --accent: #22c55e;
+            --accent-dim: rgba(34, 197, 94, 0.1);
+            --muted: #71717a;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --border: rgba(255,255,255,0.06);
         }
-        html,body{height:100%;margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#fff}
-        .wrap{
-            padding:28px;
-            display: grid;
-            gap: 20px;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            grid-auto-rows: min-content;
+        * { box-sizing: border-box; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: #fff;
+            font-size: 14px;
         }
-        .panel{
-            background:var(--panel);
-            border-radius:10px;
-            padding:18px;
-            box-shadow:0 8px 30px rgba(0,0,0,.5);
-            min-width: 320px;
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10,10,11,0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(34,197,94,0.3);
+        }
+        .header-title h1 { margin: 0; font-size: 18px; font-weight: 600; }
+        .header-title p { margin: 4px 0 0; font-size: 12px; color: var(--muted); }
+        .header-right { display: flex; gap: 16px; align-items: center; }
+        .header-info { text-align: right; }
+        .header-info .user { font-weight: 600; font-size: 14px; }
+        .header-info .datetime { font-size: 12px; color: var(--muted); }
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--accent-dim);
+            border: 1px solid rgba(34,197,94,0.2);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent);
+        }
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        .last-fetch { font-size: 11px; color: var(--muted); margin-left: 8px; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #16a34a; }
+        .btn-secondary { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border); }
+        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: var(--warning); color: #000; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+        .nav {
+            position: sticky;
+            top: 65px;
+            z-index: 90;
+            background: rgba(10,10,11,0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+        }
+        .nav-tab {
+            padding: 12px 14px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+        .nav-tab:hover { color: #fff; }
+        .nav-tab.active { color: #fff; border-bottom-color: var(--accent); }
+
+        .main { padding: 24px; max-width: 1800px; margin: 0 auto; }
+        .page { display: none; }
+        .page.active { display: block; }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .panel-title { font-size: 16px; font-weight: 600; margin: 0; }
+        .panel-subtitle { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        .grid { display: grid; gap: 20px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-5 { grid-template-columns: repeat(5, 1fr); }
+        .grid-6 { grid-template-columns: repeat(6, 1fr); }
+        @media (max-width: 1400px) {
+            .grid-6 { grid-template-columns: repeat(4, 1fr); }
+            .grid-5 { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 1000px) {
+            .grid-6, .grid-5, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .grid-6, .grid-5, .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
             position: relative;
         }
-        .header{display:flex;gap:16px;align-items:center}
-        .logo{width:120px}
-        h1{margin:0;color:var(--accent);font-size:20px}
-        h2,h3{margin:0;color:#fff;font-size:18px}
-        .meta{color:var(--muted);margin-top:6px;font-size:13px}
-        .stats{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
-        .stat{padding:10px 14px;background:rgba(255,255,255,0.03);border-radius:8px;min-width:140px}
-        .stat b{display:block;font-size:18px}
-        table{border-collapse:collapse;width:100%;font-size:14px}
-        th,td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,0.04);text-align:left}
-        th{color:var(--muted);font-weight:600;font-size:13px}
-        .btn{background:var(--accent);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-        .btn.secondary{background:#2b2b2b;color:#fff;border:1px solid rgba(255,255,255,0.04)}
-        .btn.danger{background:var(--danger)}
-        .small{font-size:13px;color:var(--muted)}
-        .actions{display:flex;gap:8px}
-        .panel-lg{min-width:640px;grid-column: span 2;}
-        .search{margin-bottom:12px;display:flex;gap:8px}
-        input[type="search"], input#memberInput, input[type="text"]{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:#fff}
-        a.link{color:var(--accent);text-decoration:none}
-        .nowrap{white-space:nowrap}
-        .muted{color:var(--muted)}
-        .table-wrap{max-height:380px;overflow:auto;border-radius:6px}
-        .help-input-group{
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 12px;
+        .stat-card.accent { border-color: rgba(34,197,94,0.3); background: linear-gradient(135deg, rgba(34,197,94,0.1), transparent); }
+        .stat-card.blue { border-color: rgba(59,130,246,0.3); background: linear-gradient(135deg, rgba(59,130,246,0.1), transparent); }
+        .stat-card.amber { border-color: rgba(245,158,11,0.3); background: linear-gradient(135deg, rgba(245,158,11,0.1), transparent); }
+        .stat-card.red { border-color: rgba(239,68,68,0.3); background: linear-gradient(135deg, rgba(239,68,68,0.1), transparent); }
+        .stat-card.violet { border-color: rgba(139,92,246,0.3); background: linear-gradient(135deg, rgba(139,92,246,0.1), transparent); }
+        .stat-card.pink { border-color: rgba(236,72,153,0.3); background: linear-gradient(135deg, rgba(236,72,153,0.1), transparent); }
+        .stat-card.cyan { border-color: rgba(6,182,212,0.3); background: linear-gradient(135deg, rgba(6,182,212,0.1), transparent); }
+        .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+        .stat-value { font-size: 24px; font-weight: 700; }
+        .stat-sm { font-size: 18px; }
+        .live-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
-        .help-input-group input, .help-input-group textarea {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.06);
+
+        .table-wrap {
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            background: var(--panel);
+        }
+        tr:hover { background: var(--panel-hover); }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .badge-success { background: rgba(34,197,94,0.1); color: #22c55e; }
+        .badge-danger { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .badge-warning { background: rgba(245,158,11,0.1); color: #f59e0b; }
+        .badge-info { background: rgba(59,130,246,0.1); color: #3b82f6; }
+        .badge-muted { background: rgba(113,113,122,0.1); color: #71717a; }
+        .badge-pink { background: rgba(236,72,153,0.1); color: #ec4899; }
+        .badge-violet { background: rgba(139,92,246,0.1); color: #8b5cf6; }
+
+        input[type="text"], input[type="search"], input[type="password"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
             border-radius: 8px;
             color: #fff;
-            padding: 8px;
-            resize: vertical;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.05);
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        .input-group { display: flex; gap: 8px; margin-bottom: 12px; }
+        .input-group input { flex: 1; }
+
+        .feed { max-height: 400px; overflow-y: auto; }
+        .feed-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            transition: background 0.2s;
+            border-bottom: 1px solid var(--border);
+        }
+        .feed-item:hover { background: var(--panel-hover); }
+        .feed-content { flex: 1; min-width: 0; }
+        .feed-text { font-size: 13px; line-height: 1.4; }
+        .feed-text strong { color: #fff; }
+        .feed-time { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body { padding: 20px; }
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.05);
+            color: var(--muted);
+            cursor: pointer;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+        .flex { display: flex; }
+        .flex-wrap { flex-wrap: wrap; }
+        .items-center { align-items: center; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .gap-4 { gap: 16px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 16px; }
+        .mt-4 { margin-top: 16px; }
+        .text-muted { color: var(--muted); }
+        .text-sm { font-size: 12px; }
+        .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .col-span-2 { grid-column: span 2; }
+        .empty-state { text-align: center; padding: 40px; color: var(--muted); }
+        code { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+        .hidden-text { font-family: monospace; letter-spacing: 2px; color: var(--muted); }
+        
+        .chat-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+        }
+        .chat-sender { font-weight: 600; font-size: 13px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+        .chat-role { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(139,92,246,0.2); color: #8b5cf6; }
+        .chat-text { font-size: 13px; color: rgba(255,255,255,0.8); }
+        .chat-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+
+        .date-group { margin-bottom: 20px; }
+        .date-header {
+            background: rgba(255,255,255,0.03);
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        .date-header:hover { background: rgba(255,255,255,0.05); }
+        .date-header h4 { margin: 0; font-size: 14px; }
+        .date-content { padding-left: 16px; display: none; }
+        .date-content.open { display: block; }
+        .news-item {
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        .news-item .author { font-size: 11px; color: var(--accent); }
+        .news-item .time { font-size: 11px; color: var(--muted); }
+        .news-item .text { margin-top: 8px; font-size: 13px; }
+        .news-item .reactions { margin-top: 8px; display: flex; gap: 8px; }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        .setting-row label { font-size: 13px; }
+        .setting-row input { width: auto; max-width: 200px; }
+        .regex-list { max-height: 200px; overflow-y: auto; }
+        .regex-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(239,68,68,0.1);
+            border-radius: 6px;
+            margin-bottom: 4px;
         }
     </style>
 </head>
 <body>
-    <div class="wrap">
-        <div class="panel" id="panel-overview">
-            <div class="header">
-                <img src="logo.png" alt="TAC Logo" class="logo"/>
-                <div>
-                    <h1>Developer Dashboard</h1>
-                    <div class="meta">Admin controls & live stats</div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">T</div>
+            <div class="header-title">
+                <h1>TAC Developer Dashboard</h1>
+                <p>Full Control Center v3.0</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="live-indicator">
+                <div class="live-dot"></div>
+                <span>Live</span>
+            </div>
+            <span class="last-fetch" id="lastFetch">Last fetch: --</span>
+            <div class="header-info">
+                <div class="user" id="loggedInUser">Not logged in</div>
+                <div class="datetime" id="currentDateTime">--</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <button class="nav-tab active" data-page="overview">📊 Overview</button>
+        <button class="nav-tab" data-page="users">👤 Users</button>
+        <button class="nav-tab" data-page="appusage">📱 App Usage</button>
+        <button class="nav-tab" data-page="chat">💬 Chat</button>
+        <button class="nav-tab" data-page="privatechats">🔒 Private Chats</button>
+        <button class="nav-tab" data-page="forum">📋 Forum</button>
+        <button class="nav-tab" data-page="lpc">💕 LPC Likes</button>
+        <button class="nav-tab" data-page="news">📰 News</button>
+        <button class="nav-tab" data-page="polls">📊 Polls</button>
+        <button class="nav-tab" data-page="phone">📞 Phone</button>
+        <button class="nav-tab" data-page="notifications">🔔 Notifications</button>
+        <button class="nav-tab" data-page="moderation">🛡️ Moderation</button>
+        <button class="nav-tab" data-page="security">🔐 Security</button>
+        <button class="nav-tab" data-page="settings">⚙️ Settings</button>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- OVERVIEW PAGE -->
+        <div id="page-overview" class="page active">
+            <div class="grid grid-6 mb-4">
+                <div class="stat-card accent">
+                    <div class="live-badge"></div>
+                    <div class="stat-label">Total Logins</div>
+                    <div class="stat-value" id="totalLogins">—</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-label">Allowed Users</div>
+                    <div class="stat-value" id="allowedCount">—</div>
+                </div>
+                <div class="stat-card amber">
+                    <div class="stat-label">Pending</div>
+                    <div class="stat-value" id="pendingCount">—</div>
+                </div>
+                <div class="stat-card red">
+                    <div class="stat-label">Failed Attempts</div>
+                    <div class="stat-value" id="failedCount">—</div>
+                </div>
+                <div class="stat-card violet">
+                    <div class="stat-label">Total Games</div>
+                    <div class="stat-value" id="gamesCount">—</div>
+                </div>
+                <div class="stat-card pink">
+                    <div class="stat-label">Chat Messages</div>
+                    <div class="stat-value" id="chatCount">—</div>
                 </div>
             </div>
-            <div class="stats" style="margin-top:16px">
-                <div class="stat"><span class="small">Total Logins</span><b id="totalLogins">—</b></div>
-                <div class="stat"><span class="small">Allowed Users</span><b id="allowedCount">—</b></div>
-                <div class="stat"><span class="small">Pending Accounts</span><b id="pendingCount">—</b></div>
-            </div>
-            <div style="margin-top:14px;display:flex;gap:8px">
-                <a class="btn" id="openFirebase" href="https://console.firebase.google.com/u/0/project/taclogin-ab38e/database/taclogin-ab38e-default-rtdb/data" target="_blank">Open Firebase</a>
-                <a class="btn secondary" href="https://github.com/lloganisawsome/TAC" target="_blank">GitHub Repo</a>
-            </div>
-            <div style="margin-top:12px" class="small muted">Tip: Approve pending accounts to add them to allowedUsers.</div>
-        </div>
-        <div class="panel" id="panel-members">
-            <h3>Members</h3>
-            <div class="small muted">Manage developer, mod, and member accounts.</div>
-            <div style="display:flex;gap:8px;margin-bottom:8px; margin-top: 12px;">
-                <input type="text" id="memberInput" placeholder="Add new member"/>
-                <button class="btn" id="addMemberBtn">Add</button>
-            </div>
-            <div class="table-wrap" style="max-height:250px">
-                <table id="membersTable">
-                    <thead><tr><th>Member</th><th class="nowrap">Actions</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel panel-lg" id="panel-users">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-                <div>
-                    <h2 style="margin:0 0 8px 0">Users & Logins</h2>
-                    <div class="small muted">All users tracked under <code>/logins</code></div>
+
+            <div class="grid grid-3">
+                <div class="panel col-span-2">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📜 Recent Activity</h3>
+                            <p class="panel-subtitle">Failed login attempts</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="loadData()">Refresh</button>
+                    </div>
+                    <div class="feed" id="activityFeed">
+                        <div class="empty-state">Loading...</div>
+                    </div>
                 </div>
-                <div style="display:flex;gap:8px;align-items:center">
-                    <input id="userSearch" type="search" placeholder="Search username..."/>
-                    <button class="btn" id="exportCsv">Export CSV</button>
-                    <button class="btn secondary" id="refreshBtn">Refresh</button>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">👥 Team Members</h3>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="memberInput" placeholder="Add member..."/>
+                        <button class="btn btn-primary btn-sm" id="addMemberBtn">Add</button>
+                    </div>
+                    <div class="table-wrap" style="max-height: 280px;">
+                        <table id="membersTable">
+                            <thead><tr><th>Member</th><th>Role</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <div class="table-wrap" style="margin-top:12px">
-                <table id="usersTable">
-                    <thead><tr><th>User</th><th class="nowrap">Logins</th><th>Allowed?</th><th>Pending?</th><th>Failed</th><th class="nowrap">Actions</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
         </div>
-        <div class="panel panel-lg" id="panel-games">
-            <h2 style="margin-top:0">Games Manager</h2>
-            <div style="display:flex;gap:8px;margin-bottom:8px; margin-top: 12px;">
-                <input type="text" id="gameTitle" placeholder="Game Title"/>
-                <input type="text" id="gameIframe" placeholder="Iframe URL"/>
-                <input type="text" id="gameLogo" placeholder="Logo filename"/>
-                <button class="btn" id="addGameBtn">Add Game</button>
-            </div>
-            <div class="table-wrap" style="max-height:300px">
-                <table id="gamesTable">
-                    <thead>
-                        <tr><th>Title</th><th>Iframe URL</th><th>Logo</th><th class="nowrap">Actions</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel panel-lg" id="panel-game-counters">
-            <h2 style="margin-top:0">Game Play Counters</h2>
-            <div class="small muted">View the total play count for each game.</div>
-            <div class="table-wrap" style="margin-top:12px">
-                <table id="gameCountersTable">
-                    <thead>
-                        <tr>
-                            <th>Game Title</th>
-                            <th>Play Count</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-        <div class="panel" id="panel-help">
-            <h2 style="margin-top:0">Help Responses</h2>
-            <div class="small muted">Manage responses for the Help Page</div>
-            <div style="margin-top:12px">
-                <div class="help-input-group">
-                    <input type="text" id="helpTitleInput" placeholder="Response Title"/>
-                    <textarea id="helpBodyInput" placeholder="Response Body" rows="4"></textarea>
+
+        <!-- USERS PAGE -->
+        <div id="page-users" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">👤 User Management</h2>
+                        <p class="panel-subtitle">Manage all users</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="search" id="userSearch" placeholder="Search..." style="width: 200px;"/>
+                        <button class="btn btn-secondary" id="exportCsv">Export CSV</button>
+                        <button class="btn btn-primary" onclick="loadData()">Refresh</button>
+                    </div>
                 </div>
-                <button class="btn" id="addHelpBtn">Add Response</button>
-            </div>
-            <div class="table-wrap" style="max-height:300px; margin-top: 12px;">
-                <table id="helpTable">
-                    <thead>
-                        <tr><th>Title</th><th>Body</th><th class="nowrap">Actions</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <div class="table-wrap">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Logins</th>
+                                <th>Status</th>
+                                <th>Pending</th>
+                                <th>Failed</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
         </div>
-        <div class="panel panel-lg" id="panel-applications">
-            <h2 style="margin-top:0">Staff Applications</h2>
-            <div class="small muted">Manage staff applications</div>
-            <div class="table-wrap" style="max-height:380px; margin-top: 12px;">
-                <table id="applicationsTable">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Role</th>
-                            <th>Applied At</th>
-                            <th>Test Result</th>
-                            <th>Details</th>
-                            <th class="nowrap">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+
+        <!-- APP USAGE PAGE -->
+        <div id="page-appusage" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">📱 App Usage Analytics</h2>
+                        <p class="panel-subtitle">From /appUsage (direct keys)</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="resetAllAppUsage()">Reset All Counts</button>
+                </div>
+                <div class="grid grid-5" id="appUsageGrid">
+                    <div class="empty-state">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHAT PAGE -->
+        <div id="page-chat" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">💬 Public Chat</h2>
+                        <p class="panel-subtitle">From /chat/messages</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-danger" onclick="clearAllChat()">Clear All Chat</button>
+                    </div>
+                </div>
+                <div class="feed" id="chatFeed" style="max-height: 600px;">
+                    <div class="empty-state">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRIVATE CHATS PAGE -->
+        <div id="page-privatechats" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">🔒 Private Chats</h2>
+                        <p class="panel-subtitle">From /private_chats</p>
+                    </div>
+                </div>
+                <div class="grid grid-2">
+                    <div>
+                        <h4 class="mb-2">Chat Rooms</h4>
+                        <div class="table-wrap" style="max-height: 400px;">
+                            <table id="privateChatRoomsTable">
+                                <thead><tr><th>Chat ID</th><th>Actions</th></tr></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-2">Selected Chat Messages</h4>
+                        <div id="privateChatMessages" class="feed" style="max-height: 400px;">
+                            <div class="empty-state">Select a chat to view messages</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FORUM PAGE -->
+        <div id="page-forum" class="page">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📋 Forum Posts</h3>
+                            <p class="panel-subtitle">From /forum/posts</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="forumPostsTable">
+                            <thead><tr><th>Author</th><th>Title</th><th>Content</th><th>Votes</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📂 Subforums</h3>
+                            <p class="panel-subtitle">From /forum/subforums</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="subforumsTable">
+                            <thead><tr><th>Name</th><th>Description</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3 class="panel-title">📝 Audit Logs</h3>
+                        <p class="panel-subtitle">From /forum/auditLogs</p>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="clearForumAuditLogs()">Clear Logs</button>
+                </div>
+                <div class="table-wrap" style="max-height: 300px;">
+                    <table id="forumAuditTable">
+                        <thead><tr><th>Action</th><th>By</th><th>Target</th><th>Time</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- LPC LIKES PAGE -->
+        <div id="page-lpc" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">💕 Leak Peoples Crush - Likes</h2>
+                        <p class="panel-subtitle">From /likes</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="clearAllLikes()">Clear All Likes</button>
+                </div>
+                <div class="table-wrap" style="max-height: 600px;">
+                    <table id="likesTable">
+                        <thead>
+                            <tr>
+                                <th>From User</th>
+                                <th>Likes (Crush)</th>
+                                <th>Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEWS PAGE -->
+        <div id="page-news" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">📰 News Posts</h2>
+                        <p class="panel-subtitle">From /news (organized by date)</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showAddNewsModal()">+ Add News</button>
+                </div>
+                <div id="newsContainer" style="max-height: 600px; overflow-y: auto;">
+                    <div class="empty-state">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- POLLS PAGE -->
+        <div id="page-polls" class="page">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📊 Polls</h3>
+                            <p class="panel-subtitle">From /polls</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="pollsTable">
+                            <thead><tr><th>Question</th><th>Options</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">🗳️ Poll Votes</h3>
+                            <p class="panel-subtitle">From /pollVotes</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="pollVotesTable">
+                            <thead><tr><th>Poll</th><th>User</th><th>Vote</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHONE PAGE -->
+        <div id="page-phone" class="page">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📞 User Phones</h3>
+                            <p class="panel-subtitle">From /userPhones</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="userPhonesTable">
+                            <thead><tr><th>User</th><th>Phone #</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📱 Phone Sessions</h3>
+                            <p class="panel-subtitle">From /sessions</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="sessionsTable">
+                            <thead><tr><th>Session ID</th><th>User</th><th>Status</th><th>Time</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS PAGE -->
+        <div id="page-notifications" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">🔔 Notifications</h2>
+                        <p class="panel-subtitle">From /notifications</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="btn btn-primary" onclick="showSendNotificationModal()">Send Notification</button>
+                        <button class="btn btn-danger" onclick="clearAllNotifications()">Clear All</button>
+                    </div>
+                </div>
+                <div class="table-wrap" style="max-height: 600px;">
+                    <table id="notificationsTable">
+                        <thead>
+                            <tr>
+                                <th>To User</th>
+                                <th>Title</th>
+                                <th>Message</th>
+                                <th>Read</th>
+                                <th>Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODERATION PAGE (Chat Settings) -->
+        <div id="page-moderation" class="page">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">🛡️ Chat Moderation Settings</h3>
+                            <p class="panel-subtitle">From /moderation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="setting-row">
+                        <label>Mod Command</label>
+                        <input type="text" id="modCommand" style="width: 150px;" />
+                    </div>
+                    <div class="setting-row">
+                        <label>Mod Response Text</label>
+                        <input type="text" id="modText" />
+                    </div>
+                    <div class="setting-row">
+                        <label>Chat Paused</label>
+                        <select id="chatPaused" style="width: 100px;">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <label>Pinned Message ID</label>
+                        <input type="text" id="pinnedMessage" style="width: 200px;" />
+                    </div>
+                    <button class="btn btn-primary mt-4" onclick="saveModerationSettings()">Save Settings</button>
+                    
+                    <h4 class="mt-4 mb-2">Spam Settings</h4>
+                    <div class="setting-row">
+                        <label>Threshold</label>
+                        <input type="number" id="spamThreshold" style="width: 80px;" />
+                    </div>
+                    <div class="setting-row">
+                        <label>Window (ms)</label>
+                        <input type="number" id="spamWindowMs" style="width: 120px;" />
+                    </div>
+                    <div class="setting-row">
+                        <label>Duration (ms)</label>
+                        <input type="number" id="spamDurationMs" style="width: 120px;" />
+                    </div>
+                    <button class="btn btn-primary mt-4" onclick="saveSpamSettings()">Save Spam Settings</button>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">🚫 Blocked Words (Regex)</h3>
+                            <p class="panel-subtitle">From /moderation/regex</p>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="newRegexInput" placeholder="Add blocked word/pattern..." />
+                        <button class="btn btn-primary" onclick="addRegex()">Add</button>
+                    </div>
+                    <div class="regex-list" id="regexList">
+                        <div class="empty-state">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3 class="panel-title">💬 Mod Chat</h3>
+                        <p class="panel-subtitle">From /moderation/modChat</p>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="clearModChat()">Clear Mod Chat</button>
+                </div>
+                <div class="feed" id="modChatFeed" style="max-height: 300px;">
+                    <div class="empty-state">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECURITY PAGE -->
+        <div id="page-security" class="page">
+            <div class="panel mb-4">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">🔐 Admin Override</h2>
+                        <p class="panel-subtitle">Enter admin code to view sensitive data</p>
+                    </div>
+                </div>
+                <div class="input-group" style="max-width: 400px;">
+                    <input type="password" id="adminCodeInput" placeholder="Enter admin code..."/>
+                    <button class="btn btn-primary" onclick="verifyAdminCode()">Verify</button>
+                </div>
+                <p class="text-sm text-muted mt-4" id="adminStatus">Status: 🔒 Locked</p>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">🔑 User Passwords</h3>
+                            <p class="panel-subtitle">From /userPasswords</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="userPasswordsTable">
+                            <thead><tr><th>User</th><th>Password</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">📌 User PINs</h3>
+                            <p class="panel-subtitle">From /userPins</p>
+                        </div>
+                    </div>
+                    <div class="table-wrap" style="max-height: 400px;">
+                        <table id="userPinsTable">
+                            <thead><tr><th>User</th><th>PIN</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h3 class="panel-title">🚨 Failed Login Attempts</h3>
+                        <p class="panel-subtitle">From /failed</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="clearAllFailedLogins()">Clear All</button>
+                </div>
+                <div class="table-wrap" style="max-height: 400px;">
+                    <table id="failedLoginsTable">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Tried Password</th>
+                                <th>Time</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div id="page-settings" class="page">
+            <div class="grid grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">🎮 Games Manager</h3>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="gameTitle" placeholder="Title"/>
+                        <input type="text" id="gameIframe" placeholder="Iframe URL"/>
+                        <input type="text" id="gameLogo" placeholder="Logo"/>
+                        <button class="btn btn-primary" id="addGameBtn">Add</button>
+                    </div>
+                    <div class="table-wrap" style="max-height: 300px;">
+                        <table id="gamesTable">
+                            <thead><tr><th>Title</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">❓ Help Responses</h3>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <input type="text" id="helpTitleInput" placeholder="Title" class="mb-2"/>
+                        <textarea id="helpBodyInput" placeholder="Body"></textarea>
+                    </div>
+                    <button class="btn btn-primary mb-4" id="addHelpBtn">Add Response</button>
+                    <div class="table-wrap" style="max-height: 200px;">
+                        <table id="helpTable">
+                            <thead><tr><th>Title</th><th>Actions</th></tr></thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel col-span-2">
+                    <div class="panel-header">
+                        <div>
+                            <h3 class="panel-title">⚠️ Danger Zone</h3>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 flex-wrap">
+                        <button class="btn btn-warning" onclick="clearAllFailedLogins()">Clear Failed Logins</button>
+                        <button class="btn btn-warning" onclick="clearAllPending()">Clear Pending</button>
+                        <button class="btn btn-danger" onclick="resetAllLogins()">Reset All Login Counts</button>
+                        <button class="btn btn-danger" onclick="clearAllChat()">Clear All Chat</button>
+                        <button class="btn btn-danger" onclick="clearAllLikes()">Clear All LPC Likes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <div class="modal-overlay" id="newsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add News Post</h3>
+                <button class="modal-close" onclick="closeModal('newsModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="newsTitleInput" placeholder="Date (YYYY-MM-DD)" class="mb-2"/>
+                <textarea id="newsContentInput" placeholder="Content" class="mb-2"></textarea>
+                <input type="text" id="newsAuthorInput" placeholder="Author" class="mb-4"/>
+                <button class="btn btn-primary" onclick="addNews()">Publish</button>
             </div>
         </div>
     </div>
+
+    <div class="modal-overlay" id="notificationModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Send Notification</h3>
+                <button class="modal-close" onclick="closeModal('notificationModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="notifUserInput" placeholder="To User (or 'all')" class="mb-2"/>
+                <input type="text" id="notifTitleInput" placeholder="Title" class="mb-2"/>
+                <textarea id="notifMessageInput" placeholder="Message" class="mb-4"></textarea>
+                <button class="btn btn-primary" onclick="sendNotification()">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="viewPasswordModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="viewPasswordTitle">View Password</h3>
+                <button class="modal-close" onclick="closeModal('viewPasswordModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted mb-2">Enter admin code to reveal:</p>
+                <input type="password" id="revealCodeInput" placeholder="Admin code" class="mb-4"/>
+                <button class="btn btn-primary" onclick="revealPassword()">Reveal</button>
+                <div id="revealedPassword" class="mt-4" style="display:none;">
+                    <p class="text-muted">Value:</p>
+                    <code id="revealedPasswordText" style="font-size: 18px; padding: 10px; display: block;"></code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
@@ -209,69 +1062,173 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Elements
-        const totalLoginsEl = document.getElementById('totalLogins');
-        const allowedCountEl = document.getElementById('allowedCount');
-        const pendingCountEl = document.getElementById('pendingCount');
-        const usersTbody = document.querySelector('#usersTable tbody');
-        const membersTbody = document.querySelector('#membersTable tbody');
-        const gamesTbody = document.querySelector('#gamesTable tbody');
-        const helpTbody = document.querySelector('#helpTable tbody');
-        const applicationsTbody = document.querySelector('#applicationsTable tbody');
-        const gameCountersTbody = document.querySelector('#gameCountersTable tbody');
-        const userSearch = document.getElementById('userSearch');
-        const refreshBtn = document.getElementById('refreshBtn');
-        const memberInput = document.getElementById('memberInput');
-        const addMemberBtn = document.getElementById('addMemberBtn');
-        const gameTitleInput = document.getElementById('gameTitle');
-        const gameIframeInput = document.getElementById('gameIframe');
-        const gameLogoInput = document.getElementById('gameLogo');
-        const addGameBtn = document.getElementById('addGameBtn');
-        const helpTitleInput = document.getElementById('helpTitleInput');
-        const helpBodyInput = document.getElementById('helpBodyInput');
-        const addHelpBtn = document.getElementById('addHelpBtn');
+        const ADMIN_CODE = "admincode1234";
+        let isAdminVerified = false;
+        let currentViewUser = null;
+        let currentViewType = null;
+        let lastFetchTime = null;
 
-        let allowedUsers = {}, logins = {}, pending = {}, failed = {}, totalLogins = 0, members = {}, games = {}, helpResponses = {}, applications = {};
-        let gamePlays = {};
-        const sections = ["Developers","Mods","Members"];
+        // State
+        let allowedUsers = {};
+        let logins = {};
+        let pending = {};
+        let failed = {};
+        let members = {};
+        let games = {};
+        let helpResponses = {};
+        let appUsage = {};
+        let chatMessages = {};
+        let privateChats = {};
+        let forum = {};
+        let likes = {};
+        let news = {};
+        let polls = {};
+        let pollVotes = {};
+        let notifications = {};
+        let moderation = {};
+        let sessions = {};
+        let userPhones = {};
+        let userPasswords = {};
+        let userPins = {};
+        
+        let totalLogins = 0;
+        const sections = ["Developers", "Mods", "Members"];
 
-        // --- USER / LOGIN FUNCTIONS ---
-        function prettyTime(ts){ try { return new Date(ts).toLocaleString(); } catch(e){ return ts; } }
-        function renderOverview(){ totalLoginsEl.innerText = totalLogins; allowedCountEl.innerText = Object.keys(allowedUsers).length; pendingCountEl.innerText = Object.keys(pending).length; }
+        // Update date/time and user
+        function updateHeaderInfo() {
+            const now = new Date();
+            document.getElementById('currentDateTime').textContent = now.toLocaleString();
+            const user = localStorage.getItem('lastLoggedInUser') || 'Unknown';
+            document.getElementById('loggedInUser').textContent = user;
+        }
+        setInterval(updateHeaderInfo, 1000);
+        updateHeaderInfo();
 
-        function renderUsers(filter=''){
-            usersTbody.innerHTML = '';
+        function updateLastFetch() {
+            lastFetchTime = new Date();
+            document.getElementById('lastFetch').textContent = 'Last fetch: ' + lastFetchTime.toLocaleTimeString();
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById('page-' + tab.dataset.page).classList.add('active');
+            });
+        });
+
+        // Helpers
+        function timeAgo(date) {
+            if (!date) return 'Unknown';
+            let d = date;
+            if (typeof date === 'number') d = new Date(date);
+            else d = new Date(date);
+            const seconds = Math.floor((new Date() - d) / 1000);
+            if (seconds < 0 || isNaN(seconds)) return 'Just now';
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+            if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+            return Math.floor(seconds / 86400) + 'd ago';
+        }
+        function prettyTime(ts) { 
+            if (!ts) return 'Unknown';
+            try { 
+                if (typeof ts === 'number') return new Date(ts).toLocaleString();
+                return new Date(ts).toLocaleString(); 
+            } catch(e) { return ts; } 
+        }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function showModal(id) { document.getElementById(id).classList.add('active'); }
+
+        // ==================== OVERVIEW ====================
+        function renderOverview() {
+            document.getElementById('totalLogins').textContent = totalLogins.toLocaleString();
+            document.getElementById('allowedCount').textContent = Object.keys(allowedUsers).length;
+            document.getElementById('pendingCount').textContent = Object.keys(pending).length;
+            document.getElementById('failedCount').textContent = Object.keys(failed).length;
+            document.getElementById('gamesCount').textContent = Object.keys(games).length;
+            document.getElementById('chatCount').textContent = Object.keys(chatMessages).length;
+        }
+
+        function renderActivityFeed() {
+            const feed = document.getElementById('activityFeed');
+            const activities = [];
+            
+            Object.entries(failed).forEach(([key, data]) => {
+                if (typeof data === 'object' && data.username) {
+                    activities.push({
+                        user: data.username,
+                        text: `failed login (tried: "${data.triedPassword || 'empty'}")`,
+                        time: data.time
+                    });
+                }
+            });
+
+            activities.sort((a, b) => new Date(b.time || 0) - new Date(a.time || 0));
+            
+            if (activities.length === 0) {
+                feed.innerHTML = '<div class="empty-state">No failed login attempts</div>';
+                return;
+            }
+            
+            feed.innerHTML = activities.slice(0, 30).map(a => `
+                <div class="feed-item">
+                    <div class="feed-content">
+                        <div class="feed-text"><strong>${a.user}</strong> ${a.text}</div>
+                        <div class="feed-time">${timeAgo(a.time)}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==================== USERS ====================
+        function renderUsers(filter = '') {
+            const tbody = document.querySelector('#usersTable tbody');
+            tbody.innerHTML = '';
+            
             const allUsers = new Set([
                 ...Object.keys(logins),
                 ...Object.keys(allowedUsers),
-                ...Object.keys(pending),
-                ...Object.keys(failed)
+                ...Object.keys(pending)
             ]);
+            
+            const failedPerUser = {};
+            Object.values(failed).forEach(f => {
+                if (f && f.username) failedPerUser[f.username] = (failedPerUser[f.username] || 0) + 1;
+            });
 
             const sortedNames = Array.from(allUsers).sort((a, b) => (logins[b] || 0) - (logins[a] || 0));
             const q = filter.toLowerCase();
 
-            for(const n of sortedNames){
-                if(q && !n.toLowerCase().includes(q)) continue;
+            if (sortedNames.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users</td></tr>';
+                return;
+            }
 
+            for (const n of sortedNames) {
+                if (q && !n.toLowerCase().includes(q)) continue;
                 const c = logins[n] || 0;
                 const isAllowed = !!allowedUsers[n];
                 const isPending = !!pending[n];
-                const failedCount = failed[n] ? failed[n].attempted || 0 : 0;
+                const failedCount = failedPerUser[n] || 0;
 
-                usersTbody.innerHTML += `
+                tbody.innerHTML += `
                     <tr>
-                        <td><b>${n}</b></td>
+                        <td><strong>${n}</strong></td>
                         <td>${c}</td>
-                        <td>${isAllowed ? '<span style="color:#7ef0a7">Yes</span>' : '<span style="color:#f1a1a1">No</span>'}</td>
-                        <td>${isPending ? '<span style="color:#FFD700">Yes</span>' : '<span style="color:#f1a1a1">No</span>'}</td>
-                        <td>${failedCount}</td>
+                        <td>${isAllowed ? '<span class="badge badge-success">✓ Allowed</span>' : '<span class="badge badge-danger">✗ Not Allowed</span>'}</td>
+                        <td>${isPending ? '<span class="badge badge-warning">Pending</span>' : '—'}</td>
+                        <td>${failedCount > 0 ? `<span class="badge badge-danger">${failedCount}</span>` : '0'}</td>
                         <td>
-                            <div class="actions">
-                                ${isAllowed ? `<button class="btn secondary" onclick="revokeAllowed('${n}')">Revoke</button>` : `<button class="btn" onclick="makeAllowed('${n}')">Approve</button>`}
-                                ${isPending ? `<button class="btn" onclick="approvePending('${n}')">Approve Pending</button>` : ''}
-                                <button class="btn secondary" onclick="resetUserCount('${n}')">Reset Logins</button>
-                                ${failedCount > 0 ? `<button class="btn danger" onclick="deleteFailed('${n}')">Clear Failed</button>` : ''}
+                            <div class="flex gap-2">
+                                ${isAllowed 
+                                    ? `<button class="btn btn-secondary btn-sm" onclick="revokeAllowed('${n}')">Revoke</button>`
+                                    : `<button class="btn btn-primary btn-sm" onclick="makeAllowed('${n}')">Approve</button>`
+                                }
+                                ${isPending ? `<button class="btn btn-sm btn-primary" onclick="approvePending('${n}')">Accept</button>` : ''}
+                                <button class="btn btn-secondary btn-sm" onclick="resetUserCount('${n}')">Reset</button>
                             </div>
                         </td>
                     </tr>
@@ -279,32 +1236,728 @@
             }
         }
 
-        // New function to render game play counts
-        function renderGameCounters() {
-            gameCountersTbody.innerHTML = '';
-            const combinedData = Object.keys(gamePlays).map(gameId => {
-                const gameTitle = (games[gameId] && games[gameId].title) || 'Unknown Game';
-                return {
-                    id: gameId,
-                    title: gameTitle,
-                    plays: gamePlays[gameId]
-                };
-            }).sort((a, b) => b.plays - a.plays);
+        function makeAllowed(u) { db.ref('allowedUsers/' + u).set(true); }
+        function revokeAllowed(u) { db.ref('allowedUsers/' + u).remove(); }
+        function resetUserCount(u) { db.ref('logins/' + u).set(0); }
+        function approvePending(u) { makeAllowed(u); db.ref('pendingAccounts/' + u).remove(); }
+        function clearAllPending() { if (confirm('Clear ALL pending?')) db.ref('pendingAccounts').remove(); }
+        function resetAllLogins() { if (confirm('Reset ALL login counts?')) db.ref('logins').remove(); }
 
-            if (combinedData.length === 0) {
-                gameCountersTbody.innerHTML = '<tr><td colspan="2" class="muted">No play data available yet.</td></tr>';
+        document.getElementById('userSearch').addEventListener('input', (e) => renderUsers(e.target.value));
+        document.getElementById('exportCsv').addEventListener('click', () => {
+            let csv = 'Username,Logins,Allowed,Pending\n';
+            const allUsers = new Set([...Object.keys(logins), ...Object.keys(allowedUsers), ...Object.keys(pending)]);
+            Array.from(allUsers).forEach(u => {
+                csv += `${u},${logins[u] || 0},${!!allowedUsers[u]},${!!pending[u]}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'users.csv';
+            a.click();
+        });
+
+        // ==================== APP USAGE (FIXED - direct keys) ====================
+        function renderAppUsage() {
+            const grid = document.getElementById('appUsageGrid');
+            const entries = Object.entries(appUsage).sort((a, b) => b[1] - a[1]);
+            
+            if (entries.length === 0) {
+                grid.innerHTML = '<div class="empty-state col-span-2">No app usage data</div>';
                 return;
             }
-
-            combinedData.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td>${item.title}</td><td>${item.plays}</td>`;
-                gameCountersTbody.appendChild(row);
-            });
+            
+            const colors = ['accent', 'blue', 'violet', 'amber', 'pink', 'cyan', 'red'];
+            grid.innerHTML = entries.map(([appName, count], i) => `
+                <div class="stat-card ${colors[i % colors.length]}">
+                    <div class="stat-label">${appName}</div>
+                    <div class="stat-value stat-sm">${typeof count === 'number' ? count.toLocaleString() : count}</div>
+                </div>
+            `).join('');
+        }
+        function resetAllAppUsage() {
+            if (confirm('Reset ALL app usage counts?')) db.ref('appUsage').remove();
         }
 
-        function loadData(){
-            // Fetch multiple data points concurrently
+        // ==================== CHAT (FIXED - /chat/messages with role) ====================
+        function renderChat() {
+            const feed = document.getElementById('chatFeed');
+            const entries = Object.entries(chatMessages).sort((a, b) => {
+                return (b[1].timestamp || 0) - (a[1].timestamp || 0);
+            });
+            
+            if (entries.length === 0) {
+                feed.innerHTML = '<div class="empty-state">No chat messages</div>';
+                return;
+            }
+            
+            feed.innerHTML = entries.map(([key, msg]) => `
+                <div class="chat-message">
+                    <div class="chat-sender">
+                        ${msg.user || 'Unknown'}
+                        <span class="chat-role">${msg.role || 'Member'}</span>
+                        <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="deleteChat('${key}')">Delete</button>
+                    </div>
+                    <div class="chat-text">${msg.text || ''}</div>
+                    ${msg.attachmentId ? `<div class="text-sm text-muted">📎 Attachment: ${msg.attachmentId}</div>` : ''}
+                    <div class="chat-time">${prettyTime(msg.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+        function deleteChat(key) {
+            db.ref('chat/messages/' + key).remove();
+        }
+        function clearAllChat() {
+            if (confirm('Delete ALL chat messages?')) db.ref('chat/messages').remove();
+        }
+
+        // ==================== PRIVATE CHATS ====================
+        function renderPrivateChats() {
+            const tbody = document.querySelector('#privateChatRoomsTable tbody');
+            const entries = Object.entries(privateChats);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" class="empty-state">No private chats</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([chatId, data]) => `
+                <tr>
+                    <td class="truncate" style="max-width:200px;"><code>${chatId}</code></td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="viewPrivateChat('${chatId}')">View</button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePrivateChat('${chatId}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        function viewPrivateChat(chatId) {
+            const container = document.getElementById('privateChatMessages');
+            const chatData = privateChats[chatId];
+            
+            if (!chatData || !chatData.messages) {
+                container.innerHTML = '<div class="empty-state">No messages in this chat</div>';
+                return;
+            }
+            
+            const messages = Object.entries(chatData.messages).sort((a, b) => {
+                return (a[1].timestamp || 0) - (b[1].timestamp || 0);
+            });
+            
+            container.innerHTML = messages.map(([key, msg]) => `
+                <div class="chat-message">
+                    <div class="chat-sender">${msg.sender || msg.user || 'Unknown'}</div>
+                    <div class="chat-text">${msg.text || msg.message || ''}</div>
+                    <div class="chat-time">${prettyTime(msg.timestamp)}</div>
+                </div>
+            `).join('');
+        }
+        function deletePrivateChat(chatId) {
+            if (confirm('Delete this private chat?')) db.ref('private_chats/' + chatId).remove();
+        }
+
+        // ==================== FORUM (FIXED - subforums, posts, auditLogs) ====================
+        function renderForum() {
+            // Posts
+            const postsTbody = document.querySelector('#forumPostsTable tbody');
+            const posts = forum.posts || {};
+            const postEntries = Object.entries(posts);
+            
+            if (postEntries.length === 0) {
+                postsTbody.innerHTML = '<tr><td colspan="5" class="empty-state">No posts</td></tr>';
+            } else {
+                postsTbody.innerHTML = postEntries.map(([key, post]) => `
+                    <tr>
+                        <td><strong>${post.authorName || post.author || 'Unknown'}</strong></td>
+                        <td>${post.title || '(No title)'}</td>
+                        <td class="truncate" style="max-width:150px;">${post.content || post.body || ''}</td>
+                        <td>${post.votes || 0}</td>
+                        <td><button class="btn btn-danger btn-sm" onclick="deleteForumPost('${key}')">Delete</button></td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Subforums
+            const subTbody = document.querySelector('#subforumsTable tbody');
+            const subs = forum.subforums || {};
+            const subEntries = Object.entries(subs);
+            
+            if (subEntries.length === 0) {
+                subTbody.innerHTML = '<tr><td colspan="3" class="empty-state">No subforums</td></tr>';
+            } else {
+                subTbody.innerHTML = subEntries.map(([key, sub]) => `
+                    <tr>
+                        <td><strong>${sub.name || key}</strong></td>
+                        <td class="truncate" style="max-width:150px;">${sub.description || ''}</td>
+                        <td><button class="btn btn-danger btn-sm" onclick="deleteSubforum('${key}')">Delete</button></td>
+                    </tr>
+                `).join('');
+            }
+            
+            // Audit logs
+            const auditTbody = document.querySelector('#forumAuditTable tbody');
+            const logs = forum.auditLogs || {};
+            const logEntries = Object.entries(logs).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+            
+            if (logEntries.length === 0) {
+                auditTbody.innerHTML = '<tr><td colspan="4" class="empty-state">No audit logs</td></tr>';
+            } else {
+                auditTbody.innerHTML = logEntries.slice(0, 50).map(([key, log]) => `
+                    <tr>
+                        <td><span class="badge badge-info">${log.action || '—'}</span></td>
+                        <td>${log.by || '—'}</td>
+                        <td class="truncate" style="max-width:150px;">${log.target || '—'}</td>
+                        <td class="text-muted text-sm">${prettyTime(log.timestamp)}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+        function deleteForumPost(key) { db.ref('forum/posts/' + key).remove(); }
+        function deleteSubforum(key) { db.ref('forum/subforums/' + key).remove(); }
+        function clearForumAuditLogs() { if (confirm('Clear all audit logs?')) db.ref('forum/auditLogs').remove(); }
+
+        // ==================== LPC LIKES ====================
+        function renderLikes() {
+            const tbody = document.querySelector('#likesTable tbody');
+            const entries = Object.entries(likes).sort((a, b) => {
+                return (b[1].timestamp || 0) - (a[1].timestamp || 0);
+            });
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No likes recorded</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([key, like]) => `
+                <tr>
+                    <td><strong>${like.from || like.user || like.liker || 'Unknown'}</strong></td>
+                    <td><span class="badge badge-pink">💕 ${like.to || like.crush || like.liked || 'Unknown'}</span></td>
+                    <td class="text-muted text-sm">${prettyTime(like.timestamp || like.time)}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteLike('${key}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+        function deleteLike(key) { db.ref('likes/' + key).remove(); }
+        function clearAllLikes() { if (confirm('Delete ALL likes?')) db.ref('likes').remove(); }
+
+        // ==================== NEWS (FIXED - organized by date with dropdowns) ====================
+        function renderNews() {
+            const container = document.getElementById('newsContainer');
+            
+            // news is organized by date keys like "2025-12-09"
+            const dateKeys = Object.keys(news).filter(k => k.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
+            
+            if (dateKeys.length === 0) {
+                container.innerHTML = '<div class="empty-state">No news posts</div>';
+                return;
+            }
+            
+            container.innerHTML = dateKeys.map(dateKey => {
+                const posts = news[dateKey] || {};
+                const postEntries = Object.entries(posts);
+                
+                return `
+                    <div class="date-group">
+                        <div class="date-header" onclick="toggleDateGroup('${dateKey}')">
+                            <h4>📅 ${dateKey}</h4>
+                            <span>${postEntries.length} post(s) ▼</span>
+                        </div>
+                        <div class="date-content" id="news-${dateKey}">
+                            ${postEntries.map(([key, post]) => `
+                                <div class="news-item">
+                                    <div class="flex justify-between items-center">
+                                        <span class="author">By: ${post.author || 'anon'}</span>
+                                        <span class="time">${post.time || ''}</span>
+                                        <button class="btn btn-danger btn-sm" onclick="deleteNews('${dateKey}', '${key}')">Delete</button>
+                                    </div>
+                                    <div class="text">${post.text || ''}</div>
+                                    ${post.pinned ? '<span class="badge badge-warning">📌 Pinned</span>' : ''}
+                                    ${post.reactions ? `<div class="reactions">${Object.entries(post.reactions).map(([u, r]) => `<span>${r}</span>`).join('')}</div>` : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function toggleDateGroup(dateKey) {
+            const el = document.getElementById('news-' + dateKey);
+            el.classList.toggle('open');
+        }
+        
+        function showAddNewsModal() { 
+            document.getElementById('newsTitleInput').value = new Date().toISOString().split('T')[0];
+            showModal('newsModal'); 
+        }
+        function addNews() {
+            const dateKey = document.getElementById('newsTitleInput').value.trim();
+            const content = document.getElementById('newsContentInput').value.trim();
+            const author = document.getElementById('newsAuthorInput').value.trim() || 'anon';
+            if (!dateKey || !content) return alert('Date and content required');
+            
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            const key = db.ref('news/' + dateKey).push().key;
+            db.ref('news/' + dateKey + '/' + key).set({ 
+                text: content, 
+                author, 
+                time,
+                pinned: false
+            }).then(() => {
+                closeModal('newsModal');
+                document.getElementById('newsContentInput').value = '';
+                document.getElementById('newsAuthorInput').value = '';
+            });
+        }
+        function deleteNews(dateKey, postKey) {
+            db.ref('news/' + dateKey + '/' + postKey).remove();
+        }
+
+        // ==================== POLLS ====================
+        function renderPolls() {
+            const tbody = document.querySelector('#pollsTable tbody');
+            const entries = Object.entries(polls);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No polls</td></tr>';
+            } else {
+                tbody.innerHTML = entries.map(([key, poll]) => {
+                    let options = '';
+                    if (poll.options) {
+                        if (Array.isArray(poll.options)) options = poll.options.join(', ');
+                        else if (typeof poll.options === 'object') options = Object.values(poll.options).join(', ');
+                    }
+                    return `
+                        <tr>
+                            <td><strong>${poll.question || poll.title || '(No question)'}</strong></td>
+                            <td class="text-sm">${options || '—'}</td>
+                            <td><button class="btn btn-danger btn-sm" onclick="deletePoll('${key}')">Delete</button></td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        }
+        function deletePoll(key) { db.ref('polls/' + key).remove(); }
+        
+        function renderPollVotes() {
+            const tbody = document.querySelector('#pollVotesTable tbody');
+            const entries = Object.entries(pollVotes);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No votes</td></tr>';
+            } else {
+                tbody.innerHTML = entries.map(([key, vote]) => `
+                    <tr>
+                        <td>${vote.pollId || vote.poll || key}</td>
+                        <td><strong>${vote.user || vote.userId || 'Unknown'}</strong></td>
+                        <td><span class="badge badge-info">${vote.vote || vote.option || '—'}</span></td>
+                        <td><button class="btn btn-danger btn-sm" onclick="deletePollVote('${key}')">Delete</button></td>
+                    </tr>
+                `).join('');
+            }
+        }
+        function deletePollVote(key) { db.ref('pollVotes/' + key).remove(); }
+
+        // ==================== PHONE ====================
+        function renderUserPhones() {
+            const tbody = document.querySelector('#userPhonesTable tbody');
+            const entries = Object.entries(userPhones);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No phone numbers</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([user, phone]) => {
+                const displayPhone = isAdminVerified ? phone : '••••••••';
+                return `
+                    <tr>
+                        <td><strong>${user}</strong></td>
+                        <td><code class="${isAdminVerified ? '' : 'hidden-text'}">${displayPhone}</code></td>
+                        <td>
+                            ${!isAdminVerified ? `<button class="btn btn-secondary btn-sm" onclick="showViewModal('${user}', 'phone')">View</button>` : ''}
+                            <button class="btn btn-warning btn-sm" onclick="resetUserPhone('${user}')">Reset</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        function resetUserPhone(user) { if (confirm(`Reset phone for ${user}?`)) db.ref('userPhones/' + user).remove(); }
+        
+        function renderSessions() {
+            const tbody = document.querySelector('#sessionsTable tbody');
+            const entries = Object.entries(sessions);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No sessions</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([key, session]) => `
+                <tr>
+                    <td class="truncate" style="max-width:100px;"><code>${key}</code></td>
+                    <td><strong>${session.user || session.userId || 'Unknown'}</strong></td>
+                    <td><span class="badge ${session.active ? 'badge-success' : 'badge-muted'}">${session.active ? 'Active' : 'Inactive'}</span></td>
+                    <td class="text-muted text-sm">${prettyTime(session.timestamp || session.time)}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ==================== NOTIFICATIONS ====================
+        function renderNotifications() {
+            const tbody = document.querySelector('#notificationsTable tbody');
+            const entries = Object.entries(notifications).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No notifications</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([key, notif]) => `
+                <tr>
+                    <td><strong>${notif.to || notif.user || 'All'}</strong></td>
+                    <td>${notif.title || '(No title)'}</td>
+                    <td class="truncate" style="max-width:200px;">${notif.message || notif.body || ''}</td>
+                    <td><span class="badge ${notif.read ? 'badge-success' : 'badge-warning'}">${notif.read ? 'Read' : 'Unread'}</span></td>
+                    <td class="text-muted text-sm">${prettyTime(notif.timestamp)}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteNotification('${key}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+        function showSendNotificationModal() { showModal('notificationModal'); }
+        function sendNotification() {
+            const to = document.getElementById('notifUserInput').value.trim();
+            const title = document.getElementById('notifTitleInput').value.trim();
+            const message = document.getElementById('notifMessageInput').value.trim();
+            if (!title || !message) return alert('Title and message required');
+            const key = db.ref('notifications').push().key;
+            db.ref('notifications/' + key).set({ to: to || 'all', title, message, read: false, timestamp: Date.now() }).then(() => {
+                closeModal('notificationModal');
+                document.getElementById('notifUserInput').value = '';
+                document.getElementById('notifTitleInput').value = '';
+                document.getElementById('notifMessageInput').value = '';
+            });
+        }
+        function deleteNotification(key) { db.ref('notifications/' + key).remove(); }
+        function clearAllNotifications() { if (confirm('Delete ALL notifications?')) db.ref('notifications').remove(); }
+
+        // ==================== MODERATION (FIXED - chat settings) ====================
+        function renderModeration() {
+            // Settings
+            document.getElementById('modCommand').value = moderation.command || '!mod';
+            document.getElementById('modText').value = moderation.text || '';
+            document.getElementById('chatPaused').value = moderation.paused ? 'true' : 'false';
+            document.getElementById('pinnedMessage').value = moderation.pinned || '';
+            
+            // Spam settings
+            const settings = moderation.settings || {};
+            document.getElementById('spamThreshold').value = settings.threshold || 3;
+            document.getElementById('spamWindowMs').value = settings.windowMs || 60000;
+            document.getElementById('spamDurationMs').value = settings.durationMs || 36060000;
+            
+            // Regex list
+            const regexList = document.getElementById('regexList');
+            const regexEntries = Object.entries(moderation.regex || {});
+            
+            if (regexEntries.length === 0) {
+                regexList.innerHTML = '<div class="empty-state">No blocked words</div>';
+            } else {
+                regexList.innerHTML = regexEntries.map(([key, pattern]) => `
+                    <div class="regex-item">
+                        <code>${pattern}</code>
+                        <button class="btn btn-danger btn-sm" onclick="deleteRegex('${key}')">Remove</button>
+                    </div>
+                `).join('');
+            }
+            
+            // Mod chat
+            const modChatFeed = document.getElementById('modChatFeed');
+            const modChatEntries = Object.entries(moderation.modChat || {}).sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
+            
+            if (modChatEntries.length === 0) {
+                modChatFeed.innerHTML = '<div class="empty-state">No mod chat messages</div>';
+            } else {
+                modChatFeed.innerHTML = modChatEntries.map(([key, msg]) => `
+                    <div class="chat-message">
+                        <div class="chat-sender">${msg.user || 'Unknown'}</div>
+                        <div class="chat-text">${msg.text || ''}</div>
+                        <div class="chat-time">${prettyTime(msg.timestamp)}</div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function saveModerationSettings() {
+            const command = document.getElementById('modCommand').value;
+            const text = document.getElementById('modText').value;
+            const paused = document.getElementById('chatPaused').value === 'true';
+            const pinned = document.getElementById('pinnedMessage').value;
+            
+            db.ref('moderation/command').set(command);
+            db.ref('moderation/text').set(text);
+            db.ref('moderation/paused').set(paused);
+            db.ref('moderation/pinned').set(pinned);
+            alert('Settings saved!');
+        }
+        
+        function saveSpamSettings() {
+            const threshold = parseInt(document.getElementById('spamThreshold').value) || 3;
+            const windowMs = parseInt(document.getElementById('spamWindowMs').value) || 60000;
+            const durationMs = parseInt(document.getElementById('spamDurationMs').value) || 36060000;
+            
+            db.ref('moderation/settings').set({ threshold, windowMs, durationMs });
+            alert('Spam settings saved!');
+        }
+        
+        function addRegex() {
+            const pattern = document.getElementById('newRegexInput').value.trim();
+            if (!pattern) return alert('Enter a pattern');
+            db.ref('moderation/regex').push(pattern).then(() => {
+                document.getElementById('newRegexInput').value = '';
+            });
+        }
+        
+        function deleteRegex(key) {
+            db.ref('moderation/regex/' + key).remove();
+        }
+        
+        function clearModChat() {
+            if (confirm('Clear all mod chat?')) db.ref('moderation/modChat').remove();
+        }
+
+        // ==================== SECURITY ====================
+        function verifyAdminCode() {
+            const code = document.getElementById('adminCodeInput').value;
+            if (code === ADMIN_CODE) {
+                isAdminVerified = true;
+                document.getElementById('adminStatus').innerHTML = 'Status: <span style="color:#22c55e;">🔓 Unlocked</span>';
+                renderUserPasswords();
+                renderUserPins();
+                renderUserPhones();
+                alert('Admin access granted!');
+            } else {
+                alert('Invalid admin code!');
+            }
+        }
+        
+        function renderUserPasswords() {
+            const tbody = document.querySelector('#userPasswordsTable tbody');
+            const entries = Object.entries(userPasswords);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No passwords stored</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([user, pass]) => {
+                const displayPass = isAdminVerified ? pass : '••••••••••';
+                return `
+                    <tr>
+                        <td><strong>${user}</strong></td>
+                        <td><code class="${isAdminVerified ? '' : 'hidden-text'}">${displayPass}</code></td>
+                        <td>
+                            ${!isAdminVerified ? `<button class="btn btn-secondary btn-sm" onclick="showViewModal('${user}', 'password')">View</button>` : ''}
+                            <button class="btn btn-warning btn-sm" onclick="resetUserPassword('${user}')">Reset</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function renderUserPins() {
+            const tbody = document.querySelector('#userPinsTable tbody');
+            const entries = Object.entries(userPins);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No PINs stored</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([user, pin]) => {
+                const displayPin = isAdminVerified ? pin : '••••';
+                return `
+                    <tr>
+                        <td><strong>${user}</strong></td>
+                        <td><code class="${isAdminVerified ? '' : 'hidden-text'}">${displayPin}</code></td>
+                        <td>
+                            ${!isAdminVerified ? `<button class="btn btn-secondary btn-sm" onclick="showViewModal('${user}', 'pin')">View</button>` : ''}
+                            <button class="btn btn-warning btn-sm" onclick="resetUserPin('${user}')">Reset</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        function showViewModal(user, type) {
+            currentViewUser = user;
+            currentViewType = type;
+            document.getElementById('viewPasswordTitle').textContent = `View ${type === 'password' ? 'Password' : type === 'pin' ? 'PIN' : 'Phone'} for ${user}`;
+            document.getElementById('revealedPassword').style.display = 'none';
+            document.getElementById('revealCodeInput').value = '';
+            showModal('viewPasswordModal');
+        }
+        
+        function revealPassword() {
+            const code = document.getElementById('revealCodeInput').value;
+            if (code !== ADMIN_CODE) {
+                alert('Invalid admin code!');
+                return;
+            }
+            
+            let value = '';
+            if (currentViewType === 'password') value = userPasswords[currentViewUser] || 'Not found';
+            else if (currentViewType === 'pin') value = userPins[currentViewUser] || 'Not found';
+            else if (currentViewType === 'phone') value = userPhones[currentViewUser] || 'Not found';
+            
+            document.getElementById('revealedPasswordText').textContent = value;
+            document.getElementById('revealedPassword').style.display = 'block';
+        }
+        
+        function resetUserPassword(user) { if (confirm(`Reset password for ${user}?`)) db.ref('userPasswords/' + user).remove(); }
+        function resetUserPin(user) { if (confirm(`Reset PIN for ${user}?`)) db.ref('userPins/' + user).remove(); }
+        
+        function renderFailedLogins() {
+            const tbody = document.querySelector('#failedLoginsTable tbody');
+            const entries = Object.entries(failed).filter(([k, v]) => typeof v === 'object' && v.username).sort((a, b) => new Date(b[1].time || 0) - new Date(a[1].time || 0));
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No failed login attempts</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([key, data]) => `
+                <tr>
+                    <td><strong>${data.username}</strong></td>
+                    <td><code>${data.triedPassword || '(empty)'}</code></td>
+                    <td class="text-muted text-sm">${prettyTime(data.time)}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteFailedLogin('${key}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+        
+        function deleteFailedLogin(key) { db.ref('failed/' + key).remove(); }
+        function clearAllFailedLogins() { if (confirm('Clear ALL failed logins?')) db.ref('failed').remove(); }
+
+        // ==================== MEMBERS ====================
+        function renderMembers() {
+            const tbody = document.querySelector('#membersTable tbody');
+            const entries = Object.entries(members);
+            
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No members</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = entries.map(([key, member]) => {
+                if (typeof member === 'string') member = { name: member, section: 'Members' };
+                const roleColor = member.section === 'Developers' ? 'badge-success' : member.section === 'Mods' ? 'badge-warning' : 'badge-info';
+                return `
+                    <tr>
+                        <td><strong>${member.name}</strong></td>
+                        <td><span class="badge ${roleColor}">${member.section}</span></td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="editMember('${key}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteMember('${key}')">Del</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        function addMember() {
+            const val = document.getElementById('memberInput').value.trim();
+            if (!val) return alert('Enter name');
+            const section = prompt('Role (Developers, Mods, Members)', 'Members');
+            if (!sections.includes(section)) return alert('Invalid role');
+            db.ref('members').push({ name: val, section }).then(() => {
+                document.getElementById('memberInput').value = '';
+            });
+        }
+        function editMember(key) {
+            const m = members[key];
+            const name = typeof m === 'string' ? m : m.name;
+            const sect = typeof m === 'string' ? 'Members' : m.section;
+            const newName = prompt('Name:', name);
+            if (!newName) return;
+            const newSect = prompt('Role (Developers, Mods, Members):', sect);
+            if (!sections.includes(newSect)) return alert('Invalid role');
+            db.ref('members/' + key).set({ name: newName, section: newSect });
+        }
+        function deleteMember(key) { if (confirm('Delete?')) db.ref('members/' + key).remove(); }
+        document.getElementById('addMemberBtn').addEventListener('click', addMember);
+
+        // ==================== GAMES ====================
+        function renderGames() {
+            const tbody = document.querySelector('#gamesTable tbody');
+            const entries = Object.entries(games);
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" class="empty-state">No games</td></tr>';
+                return;
+            }
+            tbody.innerHTML = entries.map(([key, g]) => `
+                <tr>
+                    <td><strong>${g.title || key}</strong></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteGame('${key}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+        function addGame() {
+            const title = document.getElementById('gameTitle').value.trim();
+            const iframe = document.getElementById('gameIframe').value.trim();
+            const logo = document.getElementById('gameLogo').value.trim();
+            if (!title || !iframe) return alert('Title & URL required');
+            db.ref('games').push({ title, iframe, logo }).then(() => {
+                document.getElementById('gameTitle').value = '';
+                document.getElementById('gameIframe').value = '';
+                document.getElementById('gameLogo').value = '';
+            });
+        }
+        function deleteGame(key) { db.ref('games/' + key).remove(); }
+        document.getElementById('addGameBtn').addEventListener('click', addGame);
+
+        // ==================== HELP ====================
+        function renderHelp() {
+            const tbody = document.querySelector('#helpTable tbody');
+            const entries = Object.entries(helpResponses);
+            if (entries.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" class="empty-state">No responses</td></tr>';
+                return;
+            }
+            tbody.innerHTML = entries.map(([key, r]) => `
+                <tr>
+                    <td><strong>${r.title}</strong></td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="editHelp('${key}')">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteHelp('${key}')">Del</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        function addHelp() {
+            const title = document.getElementById('helpTitleInput').value.trim();
+            const body = document.getElementById('helpBodyInput').value.trim();
+            if (!title || !body) return alert('Both required');
+            db.ref('helpResponses').push({ title, body }).then(() => {
+                document.getElementById('helpTitleInput').value = '';
+                document.getElementById('helpBodyInput').value = '';
+            });
+        }
+        function editHelp(key) {
+            const r = helpResponses[key];
+            const t = prompt('Title:', r.title);
+            if (!t) return;
+            const b = prompt('Body:', r.body);
+            if (!b) return;
+            db.ref('helpResponses/' + key).set({ title: t, body: b });
+        }
+        function deleteHelp(key) { db.ref('helpResponses/' + key).remove(); }
+        document.getElementById('addHelpBtn').addEventListener('click', addHelp);
+
+        // ==================== LOAD DATA ====================
+        function loadData() {
+            console.log('Loading all data from Firebase...');
+            
             Promise.all([
                 db.ref('logins').once('value'),
                 db.ref('allowedUsers').once('value'),
@@ -313,249 +1966,98 @@
                 db.ref('members').once('value'),
                 db.ref('games').once('value'),
                 db.ref('helpResponses').once('value'),
-                db.ref('artifacts/default_app_id/users').once('value'),
-                db.ref('analytics/gamePlays').once('value')
-            ]).then(snapshots => {
-                const [loginsSnap, allowedSnap, pendingSnap, failedSnap, membersSnap, gamesSnap, helpSnap, appsSnap, gamePlaysSnap] = snapshots;
+                db.ref('appUsage').once('value'),
+                db.ref('chat/messages').once('value'),
+                db.ref('private_chats').once('value'),
+                db.ref('forum').once('value'),
+                db.ref('likes').once('value'),
+                db.ref('news').once('value'),
+                db.ref('polls').once('value'),
+                db.ref('pollVotes').once('value'),
+                db.ref('notifications').once('value'),
+                db.ref('moderation').once('value'),
+                db.ref('sessions').once('value'),
+                db.ref('userPhones').once('value'),
+                db.ref('userPasswords').once('value'),
+                db.ref('userPins').once('value')
+            ]).then(snaps => {
+                logins = snaps[0].val() || {};
+                totalLogins = Object.values(logins).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
+                allowedUsers = snaps[1].val() || {};
+                pending = snaps[2].val() || {};
+                failed = snaps[3].val() || {};
+                members = snaps[4].val() || {};
+                games = snaps[5].val() || {};
+                helpResponses = snaps[6].val() || {};
+                appUsage = snaps[7].val() || {};
+                chatMessages = snaps[8].val() || {};
+                privateChats = snaps[9].val() || {};
+                forum = snaps[10].val() || {};
+                likes = snaps[11].val() || {};
+                news = snaps[12].val() || {};
+                polls = snaps[13].val() || {};
+                pollVotes = snaps[14].val() || {};
+                notifications = snaps[15].val() || {};
+                moderation = snaps[16].val() || {};
+                sessions = snaps[17].val() || {};
+                userPhones = snaps[18].val() || {};
+                userPasswords = snaps[19].val() || {};
+                userPins = snaps[20].val() || {};
 
-                logins = loginsSnap.val() || {};
-                totalLogins = Object.values(logins).reduce((a, b) => a + b, 0);
-                allowedUsers = allowedSnap.val() || {};
-                pending = pendingSnap.val() || {};
-                failed = failedSnap.val() || {};
-                members = membersSnap.val() || {};
-                games = gamesSnap.val() || {};
-                helpResponses = helpSnap.val() || {};
-                gamePlays = gamePlaysSnap.val() || {};
+                updateLastFetch();
+                console.log('Data loaded');
 
-                applications = {};
-                const usersData = appsSnap.val() || {};
-                for (const userId in usersData) {
-                    if (usersData[userId].staff_applications) {
-                        applications[userId] = usersData[userId].staff_applications;
-                    }
-                }
-
-                // Render all sections after data is loaded
                 renderOverview();
-                renderUsers(userSearch.value);
+                renderActivityFeed();
+                renderUsers();
                 renderMembers();
-                renderGamesTable();
-                renderHelpResponses();
-                renderApplications();
-                renderGameCounters();
-            }).catch(error => {
-                console.error("Error loading data:", error);
-            });
-
-            // Set up real-time listeners for key data
-            db.ref('games').on('value', snap => { games = snap.val() || {}; renderGamesTable(); renderGameCounters(); });
-            db.ref('analytics/gamePlays').on('value', snap => { gamePlays = snap.val() || {}; renderGameCounters(); });
+                renderAppUsage();
+                renderChat();
+                renderPrivateChats();
+                renderForum();
+                renderLikes();
+                renderNews();
+                renderPolls();
+                renderPollVotes();
+                renderNotifications();
+                renderModeration();
+                renderUserPhones();
+                renderSessions();
+                renderUserPasswords();
+                renderUserPins();
+                renderFailedLogins();
+                renderGames();
+                renderHelp();
+            }).catch(err => console.error('Error:', err));
         }
 
-        function makeAllowed(u){ allowedUsers[u]=true; db.ref('allowedUsers/'+u).set(true).then(() => { renderUsers(userSearch.value); renderOverview(); }); }
-        function revokeAllowed(u){ db.ref('allowedUsers/'+u).remove().then(() => { delete allowedUsers[u]; renderUsers(userSearch.value); renderOverview(); }); }
-        function resetUserCount(u){ db.ref('logins/'+u).set(0).then(() => { logins[u]=0; renderUsers(userSearch.value); }); }
-        function approvePending(u){ if(!pending[u])return; makeAllowed(u); db.ref('pendingAccounts/'+u).remove().then(() => { delete pending[u]; renderUsers(userSearch.value); renderOverview(); }); }
-        function deleteFailed(u){ db.ref('failed/'+u).remove().then(() => { delete failed[u]; renderUsers(userSearch.value); }); }
-
-        refreshBtn.onclick = () => loadData();
-        userSearch.oninput = () => renderUsers(userSearch.value);
-
-        // --- MEMBERS ---
-        function renderMembers() {
-            membersTbody.innerHTML = '';
-            Object.entries(members).forEach(([key, member]) => {
-                if(typeof member === 'string') member = { name: member, section: 'Members' };
-                members[key] = member;
-                membersTbody.innerHTML += `<tr><td><b>${member.name}</b> (${member.section})</td><td><div class="actions"><button class="btn secondary" onclick="editMember('${key}')">Change</button><button class="btn danger" onclick="deleteMember('${key}')">Delete</button></div></td></tr>`;
-            });
-        }
-        function addMember() {
-            const val = memberInput.value.trim();
-            if (!val) return alert('Enter member name');
-            const section = prompt('Section (Developers, Mods, Members)', 'Members');
-            if (!sections.includes(section)) return alert('Invalid section');
-            const key = db.ref('members').push().key;
-            const memberObj = { name: val, section: section };
-            db.ref('members/' + key).set(memberObj).then(() => { members[key] = memberObj; renderMembers(); memberInput.value = ''; });
-        }
-        function editMember(key) {
-            const member = members[key];
-            if (!member) return;
-            if (typeof member === 'string') members[key] = { name: member, section: 'Members' };
-            const newName = prompt('Edit member name:', members[key].name);
-            if (newName === null) return;
-            const newSection = prompt('Section (Developers, Mods, Members):', members[key].section);
-            if (!sections.includes(newSection)) return alert('Invalid section');
-            const updatedMember = { name: newName, section: newSection };
-            db.ref('members/' + key).set(updatedMember).then(() => { members[key] = updatedMember; renderMembers(); });
-        }
-        function deleteMember(key) { if(!confirm('Delete this member?'))return; db.ref('members/'+key).remove().then(()=>{delete members[key]; renderMembers();}); }
-        addMemberBtn.onclick = addMember;
-
-        // --- GAMES ---
-        function renderGamesTable() {
-            gamesTbody.innerHTML = '';
-            Object.entries(games).forEach(([key, g])=>{
-                const title = g.title||key, iframe = g.iframe||'', logo=g.logo||'';
-                gamesTbody.innerHTML += `<tr>
-                    <td>${title}</td>
-                    <td>${iframe}</td>
-                    <td>${logo}</td>
-                    <td><button class="btn danger" onclick="deleteGame('${key}')">Delete</button></td>
-                </tr>`;
-            });
-        }
-        function addGame() {
-            const title = gameTitleInput.value.trim();
-            const iframe = gameIframeInput.value.trim();
-            const logo = gameLogoInput.value.trim();
-            if(!title||!iframe) return alert('Title & Iframe required');
-            const key = db.ref('games').push().key;
-            db.ref('games/'+key).set({title,iframe,logo}).then(()=>{games[key]={title,iframe,logo}; renderGamesTable(); gameTitleInput.value=''; gameIframeInput.value=''; gameLogoInput.value='';});
-        }
-        function deleteGame(key){if(!confirm('Delete this game?'))return; db.ref('games/'+key).remove().then(()=>{delete games[key]; renderGamesTable();});}
-        addGameBtn.onclick = addGame;
-
-        // --- HELP RESPONSES ---
-        function renderHelpResponses() {
-            helpTbody.innerHTML = '';
-            const sortedKeys = Object.keys(helpResponses).sort();
-            sortedKeys.forEach(key => {
-                const response = helpResponses[key];
-                helpTbody.innerHTML += `
-                    <tr>
-                        <td>${response.title}</td>
-                        <td>${response.body.substring(0, 50)}...</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn secondary" onclick="editHelpResponse('${key}')">Edit</button>
-                                <button class="btn danger" onclick="deleteHelpResponse('${key}')">Delete</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-        function addHelpResponse() {
-            const title = helpTitleInput.value.trim();
-            const body = helpBodyInput.value.trim();
-            if (!title || !body) return alert('Title and body are required.');
-            const key = db.ref('helpResponses').push().key;
-            const newResponse = { title, body };
-            db.ref('helpResponses/' + key).set(newResponse).then(() => {
-                helpResponses[key] = newResponse;
-                renderHelpResponses();
-                helpTitleInput.value = '';
-                helpBodyInput.value = '';
-            });
-        }
-        function editHelpResponse(key) {
-            const response = helpResponses[key];
-            const newTitle = prompt('Edit title:', response.title);
-            if (newTitle === null) return;
-            const newBody = prompt('Edit body:', response.body);
-            if (newBody === null) return;
-            const updatedResponse = { title: newTitle, body: newBody };
-            db.ref('helpResponses/' + key).set(updatedResponse).then(() => {
-                helpResponses[key] = updatedResponse;
-                renderHelpResponses();
-            });
-        }
-        function deleteHelpResponse(key) {
-            if (confirm('Delete this help response?')) {
-                db.ref('helpResponses/' + key).remove().then(() => {
-                    delete helpResponses[key];
-                    renderHelpResponses();
-                });
-            }
-        }
-        addHelpBtn.onclick = addHelpResponse;
-
-        // --- STAFF APPLICATIONS ---
-        function renderApplications() {
-            applicationsTbody.innerHTML = '';
-            const allApplications = [];
-            for (const userId in applications) {
-                for (const appId in applications[userId]) {
-                    allApplications.push({ ...applications[userId][appId], userId, appId });
-                }
-            }
-            if (allApplications.length === 0) {
-                applicationsTbody.innerHTML = '<tr><td colspan="6" class="muted">No staff applications yet</td></tr>';
-                return;
-            }
-            
-            allApplications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            allApplications.forEach(app => {
-                let testStatusHTML = '<span class="muted">N/A</span>';
-                if (app.testResult === 'passed') {
-                    testStatusHTML = '<span style="color:var(--accent)">Passed ✅</span>';
-                } else if (app.testResult === 'barely') {
-                    testStatusHTML = '<span style="color:var(--warning)">Passed (Barely) 🟡</span>';
-                } else if (app.testResult === 'failed') {
-                    testStatusHTML = '<span style="color:var(--danger)">Failed ❌</span>';
-                }
-
-                let detailsHTML = '';
-                if (app.role === 'Beta Tester' && app.bugReport) {
-                    detailsHTML = `<div class="small muted">Bug Report: ${app.bugReport}</div>`;
-                } else if (app.role === 'Other' && app.otherRole) {
-                    detailsHTML = `<div class="small muted">Other Role: ${app.otherRole}</div>
-                                  <div class="small muted">Description: ${app.description}</div>`;
-                }
-                
-                const row = `
-                    <tr>
-                        <td>${app.name}</td>
-                        <td>${app.role}</td>
-                        <td class="nowrap">${new Date(app.timestamp).toLocaleString()}</td>
-                        <td>${testStatusHTML}</td>
-                        <td>${detailsHTML}</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn danger" onclick="deleteApplication('${app.userId}', '${app.appId}')">Delete</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-                applicationsTbody.innerHTML += row;
-            });
+        // Real-time listeners
+        function setupListeners() {
+            db.ref('logins').on('value', s => { logins = s.val() || {}; totalLogins = Object.values(logins).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0); renderOverview(); renderUsers(document.getElementById('userSearch').value); updateLastFetch(); });
+            db.ref('allowedUsers').on('value', s => { allowedUsers = s.val() || {}; renderOverview(); renderUsers(document.getElementById('userSearch').value); });
+            db.ref('pendingAccounts').on('value', s => { pending = s.val() || {}; renderOverview(); renderUsers(document.getElementById('userSearch').value); });
+            db.ref('failed').on('value', s => { failed = s.val() || {}; renderOverview(); renderActivityFeed(); renderFailedLogins(); });
+            db.ref('appUsage').on('value', s => { appUsage = s.val() || {}; renderAppUsage(); });
+            db.ref('chat/messages').on('value', s => { chatMessages = s.val() || {}; renderChat(); renderOverview(); });
+            db.ref('private_chats').on('value', s => { privateChats = s.val() || {}; renderPrivateChats(); });
+            db.ref('forum').on('value', s => { forum = s.val() || {}; renderForum(); });
+            db.ref('likes').on('value', s => { likes = s.val() || {}; renderLikes(); });
+            db.ref('news').on('value', s => { news = s.val() || {}; renderNews(); });
+            db.ref('polls').on('value', s => { polls = s.val() || {}; renderPolls(); });
+            db.ref('pollVotes').on('value', s => { pollVotes = s.val() || {}; renderPollVotes(); });
+            db.ref('notifications').on('value', s => { notifications = s.val() || {}; renderNotifications(); });
+            db.ref('moderation').on('value', s => { moderation = s.val() || {}; renderModeration(); });
+            db.ref('sessions').on('value', s => { sessions = s.val() || {}; renderSessions(); });
+            db.ref('userPhones').on('value', s => { userPhones = s.val() || {}; renderUserPhones(); });
+            db.ref('userPasswords').on('value', s => { userPasswords = s.val() || {}; renderUserPasswords(); });
+            db.ref('userPins').on('value', s => { userPins = s.val() || {}; renderUserPins(); });
+            db.ref('members').on('value', s => { members = s.val() || {}; renderMembers(); });
+            db.ref('games').on('value', s => { games = s.val() || {}; renderGames(); renderOverview(); });
+            db.ref('helpResponses').on('value', s => { helpResponses = s.val() || {}; renderHelp(); });
         }
 
-        function deleteApplication(userId, appId) {
-            if (confirm('Delete this application?')) {
-                db.ref(`artifacts/default_app_id/users/${userId}/staff_applications/${appId}`).remove().then(() => {
-                    if (applications[userId] && applications[userId][appId]) {
-                        delete applications[userId][appId];
-                        if (Object.keys(applications[userId]).length === 0) {
-                            delete applications[userId];
-                        }
-                    }
-                    renderApplications();
-                });
-            }
-        }
-
-        // --- CSV export ---
-        document.getElementById('exportCsv').onclick = () => {
-            let csv='Username,LoginCount,Allowed,Pending,Failed\n';
-            const allUsers = new Set([...Object.keys(logins),...Object.keys(allowedUsers),...Object.keys(pending),...Object.keys(failed)]);
-            Array.from(allUsers).forEach(u => {
-                const loginCount = logins[u] || 0;
-                const isAllowed = !!allowedUsers[u];
-                const isPending = !!pending[u];
-                const failedCount = failed[u] ? failed[u].attempted || 0 : 0;
-                csv += `${u},${loginCount},${isAllowed},${isPending},${failedCount}\n`;
-            });
-            const blob = new Blob([csv],{type:'text/csv'});
-            const url = URL.createObjectURL(blob);
-            const a=document.createElement('a'); a.href=url; a.download='users.csv'; a.click(); URL.revokeObjectURL(url);
-        };
-
-        // Load initially
         loadData();
+        setupListeners();
     </script>
 </body>
 </html>
