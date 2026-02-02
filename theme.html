@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC - Theme Settings</title>
+
+<script>
+(function(){
+  try {
+    if (window.top === window.self) {
+      window.location.replace('https://www.google.com/');
+    }
+  } catch (e) {
+    window.location.replace('https://www.google.com/');
+  }
+})();
+</script>
+
+<style>
+:root {
+    --bg: #0a0a0b;
+    --panel: #111113;
+    --panel-hover: #1a1a1c;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --muted: #71717a;
+    --border: rgba(255,255,255,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    font-size: 14px;
+    overflow-x: hidden;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px var(--accent-dim);
+}
+
+.sidebar.collapsed { width: 0; padding: 0; border: none; margin-left: -10px; overflow: hidden; }
+
+.logo-container { margin-bottom: 16px; padding: 4px; transition: opacity 0.3s; }
+.logo { width: 62px; height: 62px; border-radius: 8px; }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--accent);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.nav-item:hover, .nav-item.active { background: var(--accent-dim); }
+.nav-item.active { border: 1px solid var(--accent); }
+.nav-item svg { width: 24px; height: 24px; }
+.nav-item span { font-size: 9px; font-weight: 500; margin-top: 2px; }
+
+.toggle-btn {
+    position: fixed;
+    left: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 36px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toggle-btn.collapsed { left: 10px; }
+.toggle-btn.collapsed svg { transform: rotate(180deg); }
+
+/* Main Content */
+.main-content { margin-left: 100px; padding: 24px; transition: margin-left 0.3s ease; }
+.main-content.expanded { margin-left: 24px; }
+
+.header { margin-bottom: 32px; text-align: center; }
+.header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+/* Theme Selector Grid */
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.theme-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-card:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.theme-card.active {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.theme-name {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Preview Box */
+.preview-box {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px dashed var(--accent);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.btn-preview {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .main-content { margin-left: 24px; }
+    .sidebar, .toggle-btn { display: none; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    </div>
+    <nav class="nav-items">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+        </nav>
+</aside>
+
+<button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<main class="main-content" id="mainContent">
+    <div class="header">
+        <h1>Appearance</h1>
+        <p style="color: var(--muted)">Personalize your TAC experience</p>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Interface Color</h2>
+        <p style="color: var(--muted); font-size: 13px;">Select a theme color to update the sidebar, icons, and highlights.</p>
+        
+        <div class="theme-grid" id="themeGrid">
+            </div>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Live Preview</h2>
+        <div class="preview-box">
+            <p style="color: var(--accent)">This is how your accent text will look.</p>
+            <button class="btn-preview">Action Button</button>
+        </div>
+    </div>
+</main>
+
+<script>
+const themeColors = {
+    red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+    green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+    blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+    pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+    cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+    white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+    whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
+};
+
+function applyTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[currentTheme] || themeColors.green;
+
+    document.documentElement.style.setProperty('--accent', colors.primary);
+    document.documentElement.style.setProperty('--accent-dim', colors.dim);
+
+    const logo = document.getElementById('logo');
+    if (logo) logo.src = `taclogos/${currentTheme}.png`;
+
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+
+    // Update active class in UI
+    document.querySelectorAll('.theme-card').forEach(card => {
+        card.classList.remove('active');
+        if(card.dataset.theme === currentTheme) card.classList.add('active');
+    });
+}
+
+function initThemeSelector() {
+    const grid = document.getElementById('themeGrid');
+    Object.keys(themeColors).forEach(key => {
+        const card = document.createElement('div');
+        card.className = 'theme-card';
+        card.dataset.theme = key;
+        card.innerHTML = `
+            <div class="swatch" style="background: ${themeColors[key].primary}"></div>
+            <span class="theme-name">${key}</span>
+        `;
+        card.onclick = () => {
+            localStorage.setItem('theme', key);
+            applyTheme();
+        };
+        grid.appendChild(card);
+    });
+}
+
+// Sidebar Toggle Logic
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleBtn.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+});
+
+// Start
+initThemeSelector();
+applyTheme();
+
+// Listen for changes from other tabs
+window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') applyTheme();
+});
+</script>
+
+</body>
+</html>
