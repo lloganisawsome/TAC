@@ -5,176 +5,221 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TAC Launcher</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0d0d0d;
-      color: #fff;
-      overflow: hidden;
+    :root {
+      --bg: #0a0a0b;
+      --panel: #111113;
+      --panel-hover: #1a1a1c;
+      --accent: #22c55e;
+      --accent-dim: rgba(34, 197, 94, 0.1);
+      --muted: #71717a;
+      --border: rgba(255,255,255,0.06);
     }
 
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: #fff;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
     header {
-      background: #111;
-      padding: 10px;
+      background: var(--panel);
+      padding: 20px;
       text-align: center;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .header-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+
+    .header-logo:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px var(--accent-dim);
     }
 
     header h1 {
       margin: 0;
-      font-size: 20px;
-      color: #25ffA0;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    .page-title {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .page-title h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .page-title p {
+      font-size: 14px;
+      color: var(--muted);
     }
 
     #appGrid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 20px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
     }
 
     .app {
       display: flex;
       flex-direction: column;
       align-items: center;
-      background: #1a1a1a;
-      padding: 15px;
-      border-radius: 12px;
+      justify-content: center;
+      background: var(--panel);
+      padding: 24px 16px;
+      border-radius: 16px;
       cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .app:hover {
-      background: #222;
-    }
-
-    .app svg {
-      width: 40px;
-      height: 40px;
-      fill: #25ffa0;
-      margin-bottom: 10px;
-    }
-
-    .taskbar {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 35px;
-      background: #111;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 10px;
-      border-top: 1px solid #333;
-      font-size: 12px;
-    }
-
-    .window-controls {
-      display: flex;
-      gap: 8px;
-    }
-
-    .control-btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    .close { background: #ff5f56; }
-    .minimize { background: #ffbd2e; }
-    .fullscreen { background: #27c93f; }
-
-    #startMenu {
-      position: fixed;
-      bottom: 40px;
-      left: 10px;
-      width: 300px;
-      max-height: 400px;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      display: none;
-      flex-direction: column;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      position: relative;
       overflow: hidden;
     }
 
-    #startMenu h3 {
-      margin: 0;
-      padding: 10px;
-      background: #111;
-      border-bottom: 1px solid #333;
-      font-size: 14px;
+    .app::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, var(--accent-dim), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
     }
 
-    #notifList {
-      flex: 1;
-      overflow-y: auto;
-      padding: 10px;
+    .app:hover::before {
+      opacity: 1;
     }
 
-    .notification {
-      background: #252525;
-      padding: 8px;
-      border-radius: 6px;
+    .app:hover {
+      background: var(--panel-hover);
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .app:active {
+      transform: translateY(-2px);
+    }
+
+    .app svg {
+      width: 48px;
+      height: 48px;
+      fill: var(--accent);
+      margin-bottom: 12px;
+      transition: all 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+
+    .app img {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      object-fit: contain;
+      position: relative;
+      z-index: 1;
+    }
+
+    .app:hover svg,
+    .app:hover img {
+      transform: scale(1.1);
+    }
+
+    .app span {
       font-size: 13px;
-      margin-bottom: 8px;
-      border-left: 3px solid #25ffa0;
+      font-weight: 500;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      color: rgba(255, 255, 255, 0.9);
     }
 
-    #quickSettings {
-      background: #111;
-      padding: 8px;
-      display: flex;
-      justify-content: space-around;
-      border-top: 1px solid #333;
-    }
+    @media (max-width: 768px) {
+      #appGrid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 12px;
+      }
 
-    #quickSettings button {
-      background: #25ffa0;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 12px;
-      color: #111;
+      .app {
+        padding: 16px 12px;
+      }
+
+      .app svg,
+      .app img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .app span {
+        font-size: 11px;
+      }
+
+      header h1 {
+        font-size: 20px;
+      }
+
+      .header-logo {
+        width: 36px;
+        height: 36px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
+    <img src="taclogos/green.png" alt="TAC Logo" class="header-logo" id="logo">
     <h1>TAC Launcher</h1>
   </header>
 
-  <div id="appGrid"></div>
-
-  <!-- Start Menu -->
-  <div id="startMenu">
-    <h3>Notifications</h3>
-    <div id="notifList"></div>
-    <div id="quickSettings">
-      <button>Wi-Fi</button>
-      <button>Volume</button>
-      <button>Brightness</button>
+  <div class="container">
+    <div class="page-title">
+      <h2>All Applications</h2>
+      <p>Select an app to get started</p>
     </div>
+
+    <div id="appGrid"></div>
   </div>
 
-  <div class="taskbar">
-    <span id="startBtn">Start</span>
-    <span id="datetime"></span>
-    <div class="window-controls">
-      <div class="control-btn minimize"></div>
-      <div class="control-btn fullscreen"></div>
-      <div class="control-btn close"></div>
-    </div>
-  </div>
-
-
-<script type="module">
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, onChildAdded, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     // Firebase config
     const firebaseConfig = {
@@ -190,28 +235,43 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Start menu toggle
-    const startBtn = document.getElementById("startBtn");
-    const startMenu = document.getElementById("startMenu");
-    startBtn.onclick = () => {
-      startMenu.style.display = startMenu.style.display === "flex" ? "none" : "flex";
+    // Theme Colors
+    const themeColors = {
+      green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)' },
+      blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)' },
+      red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)' },
+      cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)' },
+      pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)' },
+      purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)' },
+      yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)' },
+      orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)' },
+      white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)' },
+      whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)' }
     };
 
-    // Notifications
-    const notifList = document.getElementById("notifList");
-    const notifRef = ref(db, "notifications");
-    onChildAdded(notifRef, (snapshot) => {
-      const data = snapshot.val();
-      const div = document.createElement("div");
-      div.className = "notification";
-      div.textContent = data.message || "New Notification";
-      notifList.prepend(div);
+    function applyTheme() {
+      const theme = localStorage.getItem('theme') || 'green';
+      const colors = themeColors[theme] || themeColors.green;
+
+      document.documentElement.style.setProperty('--accent', colors.primary);
+      document.documentElement.style.setProperty('--accent-dim', colors.dim);
+
+      const logo = document.getElementById('logo');
+      logo.src = `taclogos/${theme}.png`;
+    }
+
+    applyTheme();
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'theme') {
+        applyTheme();
+      }
     });
 
     // All apps
     const apps = [
       { name:'Not Games', link:'notgames.html', svg:'M3 6h18v2H3z M3 10h18v2H3z M3 14h12v2H3z' },
-      { name:'Members', link:'members.html', svg:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c-2.66-5.33-4-8-4z' },
+      { name:'Members', link:'members.html', svg:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' },
       { name:'Apply Staff', link:'staff.html', svg:'M12 2l4 4h-3v4h-2V6H8l4-4z M5 18h14v2H5z' },
       { name:'Help', link:'help.html', svg:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z' },
       { name:'Home', link:'index.html', svg:'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' },
@@ -228,7 +288,7 @@
       { name:'Reminders', link:'reminders.html', svg:'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 14H11v-2h2v2zm0-4H11V6h2v6z' },
       { name:'To-Do', link:'todo.html', svg:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 6l-6 6-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9z' },
       { name:'Update Log', link:'updatelog.html', svg:'M12 4v4l3 3-3 3v4l8-8-8-8z' },
-      { name:'Leak Peoples Crush', link:'leakcrush.html', svg:'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
+      { name:'Leak Crush', link:'leakcrush.html', svg:'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
       { name:'Spacebar Clicker', link:'spacebar.html', svg:'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z' },
       { name:'Account', link:'account.html', svg:'M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z' },
       { name:'Calendar', link:'calendar.html', svg:'M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 18H5V9h14v13z' },
@@ -241,19 +301,16 @@
     ];
 
     const grid = document.getElementById("appGrid");
-    
-    // UPDATED LOOP: Handles both SVGs and Images
+
     apps.forEach(app => {
       const div = document.createElement("div");
       div.className = "app";
       
       let iconHtml;
       if (app.svg) {
-        // Standard SVG Icon
         iconHtml = `<svg viewBox="0 0 24 24"><path d="${app.svg}"/></svg>`;
       } else {
-        // Image Icon (for Loftis)
-        iconHtml = `<img src="${app.img}" style="width:40px;height:40px;margin-bottom:10px;object-fit:contain;">`;
+        iconHtml = `<img src="${app.img}" alt="${app.name}">`;
       }
 
       div.innerHTML = `
@@ -262,7 +319,7 @@
       `;
 
       div.onclick = () => {
-        // Track app open
+        // Track app open (background tracking, no display)
         const countRef = ref(db, `appUsage/${app.name}`);
         runTransaction(countRef, (current) => (current || 0) + 1);
 
@@ -271,23 +328,6 @@
       };
       grid.appendChild(div);
     });
-
-    // Window controls
-    document.querySelector(".close").onclick = () => window.close();
-    document.querySelector(".minimize").onclick = () => document.body.style.display = "none";
-    document.querySelector(".fullscreen").onclick = () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    };
-
-    // Date/Time
-    function updateDateTime() {
-      const now = new Date();
-      document.getElementById("datetime").textContent = now.toLocaleString();
-    }
-    setInterval(updateDateTime, 1000);
-    updateDateTime();
   </script>
+</body>
+</html>
