@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,78 +7,448 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         :root {
-            --bg: #070707;
-            --panel: rgba(255,255,255,0.06);
-            --muted: rgba(255,255,255,0.6);
-            --accent: #19b56a;
-            --accent-600: #12a85a;
+            --bg: #0a0a0b;
+            --panel: #111113;
+            --panel-hover: #1a1a1c;
+            --accent: #22c55e;
+            --accent-dim: rgba(34, 197, 94, 0.1);
+            --muted: #71717a;
+            --border: rgba(255,255,255,0.06);
             --danger: #ef4444;
-            --glass-border: rgba(255,255,255,0.08);
-            --card: rgba(0,0,0,0.45);
-            color: white;
+            --card: #111317;
         }
 
-        [data-theme="light"] {
-            --bg: #f6f7f9;
-            --panel: rgba(0,0,0,0.04);
-            --muted: rgba(0,0,0,0.6);
-            --accent: #0a8f46;
-            --accent-600: #07733a;
-            --glass-border: rgba(0,0,0,0.06);
-            --card: rgba(255,255,255,0.85);
-            color: #111;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: #e8eaed;
+            font-size: 14px;
+            overflow: hidden;
         }
 
-        html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); font-family: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif; overflow: hidden; }
-        .wrap { max-width: 480px; margin: 0 auto; padding: 18px; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; }
-        .glass { background: var(--panel); border: 1px solid var(--glass-border); border-radius: 16px; padding: 15px; backdrop-filter: blur(12px); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        /* Floating Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 0 20px var(--accent-dim);
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            border: none;
+            margin-left: -10px;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            margin-bottom: 16px;
+            padding: 4px;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed .logo-container {
+            opacity: 0;
+        }
+
+        .logo {
+            width: 62px;
+            height: 62px;
+            border-radius: 8px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            padding: 0 8px;
+            transition: opacity 0.3s;
+            flex: 1;
+        }
+
+        .sidebar.collapsed .nav-items {
+            opacity: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--accent);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            padding: 0;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-dim);
+        }
+
+        .nav-item.active {
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+        }
+
+        .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 90px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 36px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toggle-btn:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent);
+        }
+
+        .toggle-btn svg {
+            width: 14px;
+            height: 14px;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.collapsed {
+            left: 10px;
+        }
+
+        .toggle-btn.collapsed svg {
+            transform: rotate(180deg);
+        }
+
+        /* Main Layout */
+        .wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 18px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+            margin-left: 100px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .wrap.expanded {
+            margin-left: 24px;
+        }
+
+        .glass {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
         .row { display: flex; gap: 10px; align-items: center; }
         .col { display: flex; flex-direction: column; gap: 4px; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
         
         input[type="text"], input[type="number"] {
-            background: var(--card); border: 1px solid var(--glass-border); padding: 12px; border-radius: 10px;
-            outline: none; width: 100%; color: inherit; font-size: 16px; box-sizing: border-box;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            outline: none;
+            width: 100%;
+            color: #e8eaed;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-dim);
         }
 
         .btn {
-            background: var(--accent); color: white; padding: 12px; border-radius: 10px; border: none; cursor: pointer;
-            font-weight: 600; transition: all 0.12s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: var(--accent);
+            color: #000;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.12s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
+
+        .btn:hover { opacity: 0.9; }
         .btn:active { transform: scale(0.98); }
-        .btn-danger { background: var(--danger); }
-        .btn-ghost { background: transparent; border: 1px solid var(--glass-border); color: var(--muted); padding: 8px 12px; border-radius: 8px; font-size: 12px; cursor: pointer; }
-        .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+        .btn-danger { background: var(--danger); color: white; }
+        
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-ghost:hover { background: rgba(255,255,255,0.05); }
 
         /* Tabs */
-        .nav { display: flex; gap: 5px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 12px; margin: 15px 0; }
-        .tab { flex: 1; padding: 8px; text-align: center; cursor: pointer; border-radius: 8px; font-size: 13px; color: var(--muted); transition: 0.2s; }
-        .tab.active { background: var(--panel); color: white; border: 1px solid var(--glass-border); }
+        .nav {
+            display: flex;
+            gap: 5px;
+            background: rgba(0,0,0,0.2);
+            padding: 4px;
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: var(--panel);
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
 
         /* Lists */
-        .scroll { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
-        .scroll::-webkit-scrollbar { width: 3px; }
-        .scroll::-webkit-scrollbar-thumb { background: var(--glass-border); }
-        
-        .item { padding: 12px; border-radius: 10px; background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; }
-        .blocked-tag { font-size: 10px; background: var(--danger); color: white; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold; }
-        
-        /* Overlay */
-        #call-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100;
-            display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+        .scroll {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 4px;
         }
-        .avatar { width: 80px; height: 80px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin-bottom: 20px; animation: pulse 2s infinite; }
         
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(25, 181, 106, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(25, 181, 106, 0); } 100% { box-shadow: 0 0 0 0 rgba(25, 181, 106, 0); } }
+        .item {
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
 
-        svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .item:hover {
+            background: var(--panel-hover);
+            border-color: rgba(255,255,255,0.1);
+        }
+
+        .blocked-tag {
+            font-size: 10px;
+            background: var(--danger);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+        
+        /* Call Overlay */
+        #call-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), #16a34a);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 40px var(--accent-dim);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.6), 0 0 40px var(--accent-dim); }
+            50% { box-shadow: 0 0 0 30px rgba(34, 197, 94, 0), 0 0 40px var(--accent-dim); }
+        }
+
+        /* Waveform Visualizer */
+        .waveform-container {
+            display: none;
+            margin: 30px 0;
+            height: 100px;
+            width: 300px;
+            position: relative;
+        }
+
+        .waveform-container.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .waveform-bar {
+            width: 4px;
+            background: linear-gradient(to top, var(--accent), #16a34a);
+            border-radius: 2px;
+            transition: height 0.1s ease;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+
+        .waveform-bar:nth-child(1) { animation-delay: 0s; }
+        .waveform-bar:nth-child(2) { animation-delay: 0.1s; }
+        .waveform-bar:nth-child(3) { animation-delay: 0.2s; }
+        .waveform-bar:nth-child(4) { animation-delay: 0.3s; }
+        .waveform-bar:nth-child(5) { animation-delay: 0.4s; }
+        .waveform-bar:nth-child(6) { animation-delay: 0.3s; }
+        .waveform-bar:nth-child(7) { animation-delay: 0.2s; }
+        .waveform-bar:nth-child(8) { animation-delay: 0.1s; }
+
+        @keyframes wave {
+            0%, 100% { height: 20px; }
+            50% { height: 60px; }
+        }
+
+        .call-timer {
+            font-size: 18px;
+            color: var(--accent);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            margin-top: 10px;
+        }
+
+        @media(max-width: 600px) {
+            .sidebar { display: none; }
+            .toggle-btn { display: none; }
+            .wrap { margin-left: 0 !important; }
+        }
     </style>
 </head>
 <body>
 
-<div class="wrap">
-    <!-- Header -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    </div>
+    
+    <nav class="nav-items">
+        <a href__="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        
+        <a href__="chat.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                <circle cx="8" cy="10" r="1.5"/>
+                <circle cx="12" cy="10" r="1.5"/>
+                <circle cx="16" cy="10" r="1.5"/>
+            </svg>
+            <span>Chat</span>
+        </a>
+        
+        <a href__="notgames.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+            </svg>
+            <span>Games</span>
+        </a>
+        
+        <a href__="phone.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+            </svg>
+            <span>Phone</span>
+        </a>
+        
+        <a href__="apps.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+            </svg>
+            <span>Apps</span>
+        </a>
+    </nav>
+</aside>
+
+<button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<div class="wrap" id="wrap">
     <div class="glass flex-between">
         <div class="row">
             <div style="width:10px; height:10px; background:var(--accent); border-radius:50%;"></div>
@@ -87,30 +457,28 @@
         <div id="connection-status" class="row" style="font-size: 11px; opacity: 0.6;">Connecting...</div>
     </div>
 
-    <!-- Identity -->
     <div class="glass" style="margin-top:15px">
         <div class="flex-between">
             <div class="col">
                 <span style="font-size:10px; text-transform:uppercase; color:var(--muted)">Active Extension</span>
-                <span id="display-ext" style="font-size:24px; font-weight:700">---</span>
+                <span id="display-ext" style="font-size:24px; font-weight:700; color: var(--accent)">---</span>
             </div>
-            <button class="btn-ghost" style="padding:8px" onclick="toggleTheme()">🌓</button>
         </div>
     </div>
 
-    <!-- Navigation -->
     <div class="nav">
         <div class="tab active" onclick="showTab('dialer')">Dialer</div>
         <div class="tab" onclick="showTab('contacts')">Contacts</div>
         <div class="tab" onclick="showTab('history')">History</div>
     </div>
 
-    <!-- Main Content -->
     <div id="view-dialer" class="scroll glass">
         <div class="col" style="gap:15px; padding: 10px 0;">
             <input type="number" id="input-target" placeholder="Extension..." style="font-size:32px; text-align:center; letter-spacing:4px">
             <button class="btn" style="height:60px; font-size:18px" onclick="startCall()">
-                <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 24px; height: 24px;">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
                 Call
             </button>
         </div>
@@ -120,7 +488,7 @@
         <div class="row" style="margin-bottom:10px">
             <input type="number" id="c-ext" placeholder="Ext" style="flex:1">
             <input type="text" id="c-name" placeholder="Name" style="flex:2">
-            <button class="btn" onclick="addContact()">+</button>
+            <button class="btn" onclick="addContact()" style="width: 44px; height: 44px; padding: 0;">+</button>
         </div>
         <div id="list-contacts"></div>
     </div>
@@ -130,15 +498,26 @@
     </div>
 </div>
 
-<!-- Overlay UI -->
 <div id="call-overlay">
     <div class="avatar">📞</div>
-    <h2 id="ov-name">Calling...</h2>
-    <p id="ov-ext" style="color:var(--muted)">Ext ---</p>
+    <h2 id="ov-name" style="font-size: 28px; margin-bottom: 8px;">Calling...</h2>
+    <p id="ov-ext" style="color:var(--muted); font-size: 16px;">Ext ---</p>
+    <div class="call-timer" id="call-timer" style="display:none;">00:00</div>
+    
+    <div class="waveform-container" id="waveform">
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+        <div class="waveform-bar"></div>
+    </div>
     
     <div class="row" style="margin-top:40px; gap:30px">
-        <button id="btn-decline" class="btn btn-danger" style="width:70px; height:70px; border-radius:50%">✕</button>
-        <button id="btn-answer" class="btn" style="width:70px; height:70px; border-radius:50%; background:var(--accent)">✔</button>
+        <button id="btn-decline" class="btn btn-danger" style="width:70px; height:70px; border-radius:50%; font-size: 24px;">✕</button>
+        <button id="btn-answer" class="btn" style="width:70px; height:70px; border-radius:50%; background:var(--accent); font-size: 24px;">✔</button>
     </div>
     <button id="btn-hangup" class="btn btn-danger" style="margin-top:40px; width:200px; display:none">End Call</button>
 </div>
@@ -147,7 +526,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getDatabase, ref, onValue, set, remove, get, push, update, onDisconnect, child } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+    import { getDatabase, ref, onValue, set, remove, get, push, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
@@ -162,9 +541,52 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     
+    // --- Theme System ---
+    const themeColors = {
+        green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+        blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+        red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+        cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+        pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+        purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+        yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+        orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' }
+    };
+
+    function applyTheme() {
+        const theme = localStorage.getItem('theme') || 'green';
+        const colors = themeColors[theme] || themeColors.green;
+        
+        document.documentElement.style.setProperty('--accent', colors.primary);
+        document.documentElement.style.setProperty('--accent-dim', colors.dim);
+        
+        const logo = document.getElementById('logo');
+        if (logo) logo.src = `taclogos/${theme}.png`;
+        
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+    }
+
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'theme') applyTheme();
+    });
+
+    applyTheme();
+
+    // --- Sidebar Toggle ---
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleBtn');
+    const wrap = document.getElementById('wrap');
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        toggleBtn.classList.toggle('collapsed');
+        wrap.classList.toggle('expanded');
+    });
+    
     // --- Session Setup ---
     const myExt = localStorage.getItem('userPhoneNumber') || "000";
-    const sessionId = Math.random().toString(36).substr(2, 9); // Unique ID for this tab
+    const sessionId = Math.random().toString(36).substr(2, 9);
     const sessionPath = `sessions/${myExt}/${sessionId}`;
 
     document.getElementById('display-ext').innerText = myExt;
@@ -174,6 +596,10 @@
     let localStream = null;
     let activeRemoteExt = null;
     let startTime = null;
+    let timerInterval = null;
+    let audioContext = null;
+    let analyser = null;
+    let animationId = null;
 
     // --- Tab Management ---
     window.showTab = (name) => {
@@ -185,10 +611,67 @@
         });
     };
 
-    window.toggleTheme = () => {
-        const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', theme);
-    };
+    // --- Audio Visualizer ---
+    function setupAudioVisualizer(stream) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        const source = audioContext.createMediaStreamSource(stream);
+        source.connect(analyser);
+        analyser.fftSize = 256;
+        
+        const bufferLength = analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        
+        const waveformBars = document.querySelectorAll('.waveform-bar');
+        
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            analyser.getByteFrequencyData(dataArray);
+            
+            waveformBars.forEach((bar, i) => {
+                const index = Math.floor(i * bufferLength / waveformBars.length);
+                const value = dataArray[index];
+                const height = 20 + (value / 255) * 60;
+                bar.style.height = `${height}px`;
+            });
+        }
+        
+        animate();
+    }
+
+    function stopAudioVisualizer() {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
+        if (audioContext) {
+            audioContext.close();
+            audioContext = null;
+        }
+        document.getElementById('waveform').classList.remove('active');
+    }
+
+    // --- Call Timer ---
+    function startCallTimer() {
+        startTime = Date.now();
+        document.getElementById('call-timer').style.display = 'block';
+        
+        timerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            document.getElementById('call-timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    }
+
+    function stopCallTimer() {
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        document.getElementById('call-timer').style.display = 'none';
+    }
 
     // --- Peer Connection ---
     function initPeer() {
@@ -196,14 +679,10 @@
         
         peer.on('open', () => {
             document.getElementById('connection-status').innerText = "Online";
-            // Register this tab session in Firebase
             const sRef = ref(db, sessionPath);
             set(sRef, { active: true, lastSeen: Date.now() });
             onDisconnect(sRef).remove();
-            
-            // Periodically update heartbeat
             setInterval(() => update(sRef, { lastSeen: Date.now() }), 10000);
-            
             listenForSignals();
         });
 
@@ -234,7 +713,6 @@
         const contact = contactSnap.val();
         const name = contact ? contact.name : "Unknown";
 
-        // Check blocking: Automatically remove the call signal if blocked
         if (contact && contact.blocked) {
             remove(ref(db, `calls/${myExt}/${sessionId}`));
             return;
@@ -254,15 +732,15 @@
         document.getElementById('btn-decline').style.display = 'none';
         document.getElementById('btn-hangup').style.display = 'flex';
         document.getElementById('ringtone').pause();
-        startTime = Date.now();
+        document.getElementById('waveform').classList.add('active');
+        startCallTimer();
     }
 
-    // --- Outgoing Call logic ---
+    // --- Outgoing Call ---
     window.startCall = async () => {
         const target = document.getElementById('input-target').value;
         if (!target || target === myExt) return;
 
-        // Find an active session for the target
         const sessionsSnap = await get(ref(db, `sessions/${target}`));
         if (!sessionsSnap.exists()) {
             alert("User is offline");
@@ -284,6 +762,7 @@
 
             const call = peer.call(`TAC-SESSION-${bestSession}`, localStream);
             setupCallHandlers(call, target, bestSession);
+            setupAudioVisualizer(localStream);
 
             document.getElementById('ov-name').innerText = "Calling...";
             document.getElementById('ov-ext').innerText = `Ext ${target}`;
@@ -300,6 +779,7 @@
             if (currentCall) {
                 currentCall.answer(localStream);
                 setupCallHandlers(currentCall, activeRemoteExt);
+                setupAudioVisualizer(localStream);
                 
                 const signalSnap = await get(ref(db, `calls/${myExt}/${sessionId}`));
                 const callerData = signalSnap.val();
@@ -311,14 +791,14 @@
         } catch (e) { console.error(e); }
     };
 
-    function setupCallHandlers(call, remoteExt, remoteSessionId = null) {
+    function setupCallHandlers(call, remoteExt) {
         currentCall = call;
         call.on('stream', (stream) => {
             const audio = new Audio();
             audio.srcObject = stream;
             audio.play();
         });
-        call.on('close', cleanupUI);
+        call.on('close', () => hangup());
     }
 
     const hangup = async () => {
@@ -348,55 +828,86 @@
         document.getElementById('ringtone').pause();
         if (localStream) localStream.getTracks().forEach(t => t.stop());
         currentCall = null;
-        startTime = null;
+        activeRemoteExt = null;
+        stopCallTimer();
+        stopAudioVisualizer();
     }
 
     // --- Contacts & Blocking ---
     window.addContact = () => {
         const e = document.getElementById('c-ext').value;
         const n = document.getElementById('c-name').value;
-        if (e && n) set(ref(db, `users/${myExt}/contacts/${e}`), { name: n, blocked: false });
+        if (e && n) {
+            set(ref(db, `users/${myExt}/contacts/${e}`), { name: n, blocked: false });
+            document.getElementById('c-ext').value = '';
+            document.getElementById('c-name').value = '';
+        }
     };
 
     window.toggleBlock = (ext, currentState) => {
         update(ref(db, `users/${myExt}/contacts/${ext}`), { blocked: !currentState });
     };
 
+    window.callContact = (ext) => {
+        document.getElementById('input-target').value = ext;
+        showTab('dialer');
+    };
+
     onValue(ref(db, `users/${myExt}/contacts`), (snap) => {
         const list = document.getElementById('list-contacts');
         list.innerHTML = '';
+        if (!snap.exists()) {
+            list.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 20px;">No contacts yet</div>';
+            return;
+        }
         snap.forEach(child => {
             const d = child.val();
             const ext = child.key;
-            list.innerHTML += `
-                <div class="item">
-                    <div class="col">
-                        <div class="row">
-                            <span style="font-weight:600">${d.name}</span>
-                            ${d.blocked ? '<span class="blocked-tag">Blocked</span>' : ''}
-                        </div>
-                        <span style="font-size:12px; color:var(--muted)">Ext ${ext}</span>
-                    </div>
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <div class="col">
                     <div class="row">
-                        <button class="btn-ghost" style="color:var(--danger)" onclick="toggleBlock('${ext}', ${d.blocked})">
-                            ${d.blocked ? 'Unblock' : 'Block'}
-                        </button>
-                        <button class="btn-ghost" style="color:var(--accent)" onclick="document.getElementById('input-target').value='${ext}'; showTab('dialer')">Call</button>
+                        <span style="font-weight:600">${d.name}</span>
+                        ${d.blocked ? '<span class="blocked-tag">Blocked</span>' : ''}
                     </div>
+                    <span style="font-size:12px; color:var(--muted)">Ext ${ext}</span>
+                </div>
+                <div class="row">
+                    <button class="btn-ghost" style="color:var(--danger)" onclick="toggleBlock('${ext}', ${d.blocked})">
+                        ${d.blocked ? 'Unblock' : 'Block'}
+                    </button>
+                    ${!d.blocked ? `<button class="btn-ghost" style="color:var(--accent)" onclick="callContact('${ext}')">Call</button>` : ''}
                 </div>`;
+            list.appendChild(div);
         });
     });
 
     onValue(ref(db, `users/${myExt}/history`), (snap) => {
         const list = document.getElementById('list-history');
         list.innerHTML = '';
+        if (!snap.exists()) {
+            list.innerHTML = '<div style="color: var(--muted); text-align: center; padding: 20px;">No call history</div>';
+            return;
+        }
         const items = [];
         snap.forEach(c => items.push(c.val()));
         items.reverse().forEach(d => {
-            list.innerHTML += `<div class="item"><span>Ext ${d.remoteExt}</span><span style="color:var(--muted)">${d.duration}</span></div>`;
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <div class="col">
+                    <span style="font-weight:600">Ext ${d.remoteExt}</span>
+                    <span style="font-size:12px; color:var(--muted)">${new Date(d.timestamp).toLocaleString()}</span>
+                </div>
+                <div class="row">
+                    <span style="font-size:12px">${d.duration}</span>
+                </div>`;
+            list.appendChild(div);
         });
     });
 
+    // Initialize
     initPeer();
 </script>
 </body>

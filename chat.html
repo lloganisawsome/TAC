@@ -1,258 +1,980 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>TAC Chat — Moderation + DB-driven Profanity</title>
-<link rel="icon" type="image/png" href="favicon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TAC Chat - Moderation + DB-driven Profanity</title>
+<link rel="icon" type="image/png" href__="favicon.png" />
 <style>
   :root{
-    --bg:#0e0f12; --panel:#1a1c20; --accent:#4caf50; --muted:#9aa0a6; --danger:#e05555;
-    --msg:#111317; --msgAlt:#14161b;
+    --bg:#0a0a0b;
+    --panel:#111113;
+    --panel-hover:#1a1a1c;
+    --accent:#22c55e;
+    --accent-dim:rgba(34, 197, 94, 0.1);
+    --muted:#71717a;
+    --border:rgba(255,255,255,0.06);
+    --msg:#111317;
+    --msgAlt:#14161b;
   }
-  html,body{height:100%;margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:#e8eaed}
-  .layout{display:grid;grid-template-columns:260px 1fr 360px;height:100vh}
-  .sidebar{background:rgb(26,26,26);color:white;display:flex;flex-direction:column}
-  .sidebar img.logo{width:100%;padding:14px;box-sizing:border-box}
-  .sidebar nav ul{list-style:none;margin:0;padding:0}
-  .sidebar nav ul li a{display:block;color:white;padding:12px 16px;text-decoration:none}
-  .sidebar nav ul li a:hover{background:rgba(255,255,255,0.04)}
-  .app{display:grid;grid-template-rows:auto 1fr auto auto;background:transparent}
-  .topbar{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--panel);position:sticky;top:0;z-index:20;box-shadow: 0 2px 10px rgba(0,0,0,0.2);}
-  .topbar .title{font-weight:700}
-  .topbar .me{margin-left:auto;font-size:14px;color:var(--muted);display:flex;gap:8px;align-items:center}
-  .me-avatar{width:32px;height:32px;border-radius:50%;background:#222;display:inline-flex;align-items:center;justify-content:center;color:#bbb;font-weight:700;cursor:pointer;overflow:hidden}
-  .me-avatar img{width:100%;height:100%;object-fit:cover;display:block}
-  .tag{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:999px;background:#2b2f36;color:#c9d1d9;font-size:11px}
-  .tag.dev{background:#243026;color:#9df0ae}
-  .tag.mod{background:#262b3a;color:#b7c8ff}
-  .pinned{background:#132614;padding:8px 12px;border-left:4px solid #058b4a;color:#cfeed0}
-  /* The scroller handles the main chat messages and will automatically create a scrollbar */
-  .scroller{overflow:auto;padding:14px 12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent)}
-  .msg{display:grid;grid-template-columns:48px 1fr;gap:10px;padding:10px 12px;background:var(--msg);border-radius:10px;margin:8px 0}
-  .msg:nth-child(even){background:var(--msgAlt)}
-  .avatar{width:42px;height:42px;border-radius:50%;background:#222;display:flex;align-items:center;justify-content:center;color:#bbb;font-weight:700;overflow:hidden}
-  .avatar img{width:100%;height:100%;object-fit:cover;display:block}
-  .meta{display:flex;gap:10px;align-items:center}
-  .name{font-weight:700}
-  .when{font-size:12px;color:var(--muted)}
-  .text{white-space:pre-wrap;word-break:break-word;margin-top:6px}
-  .bubble-actions{margin-left:auto;display:flex;gap:6px}
-  .btn{background:#2a2d33;border:1px solid rgba(255,255,255,.06);color:#e8eaed;border-radius:8px;padding:6px 10px;font-size:12px;cursor:pointer}
-  .btn:hover{filter:brightness(1.08)}
-  .btn.danger{background:var(--danger);border-color:#ff8a8a}
-  .composer {
-    display: flex;
-    gap: 8px;
-    padding: 12px;
-    background: var(--panel);
-    position: sticky;
-    bottom: 0;
-    z-index: 10;
-    align-items: center;
-    box-sizing: border-box;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+  
+  *{box-sizing:border-box;margin:0;padding:0}
+  
+  html,body{
+    height:100%;
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);
+    color:#e8eaed;
+    font-size:14px;
   }
-  .composer input[type="text"] {
-    flex: 1 1 auto;
-    min-width: 0;
-    max-width: calc(100% - 160px);
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255,255,255,.06);
-    background: #121418;
-    color: #fff;
-    box-sizing: border-box;
+  
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+  
+  /* Floating Sidebar */
+  .sidebar{
+    position:fixed;
+    left:10px;
+    top:50%;
+    transform:translateY(-50%);
+    width:70px;
+    background:var(--panel);
+    border:1px solid var(--accent);
+    border-radius:16px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:12px 0;
+    transition:all 0.3s ease;
+    z-index:1000;
+    box-shadow:0 0 20px var(--accent-dim);
   }
-  .composer .attachBtn,
-  .composer .send,
-  .composer button {
-    flex: 0 0 auto;
-    min-width: 44px;
-    height: auto;
-    padding: 8px 12px;
-    box-sizing: border-box;
+  
+  .sidebar.collapsed{
+    width:0;
+    padding:0;
+    border:none;
+    margin-left:-10px;
+    overflow:hidden;
   }
-  .composer input[type="file"]{display:none}
-  .composer .attachBtn{ display:inline-flex; align-items:center; justify-content:center; background:#29363a;border:none;color:#fff;padding:8px 10px;border-radius:8px;cursor:pointer }
-  .composer .send{ background:var(--accent); border:none; color:#fff; padding:10px 14px; border-radius:10px; cursor:pointer }
-  .composer .attachBtn input[type="file"] { display: none; }
-  .composer input[type="text"],
-  .composer .attachBtn,
-  .composer .send {
-    max-width: 100% !important;
+  
+  .sidebar.hidden{
+    display:none;
   }
-  .notice{margin:8px 16px;color:#ffb4b4;font-size:13px}
-  .modpanel{background:var(--panel);padding:12px;overflow:auto;border-left:1px solid rgba(255,255,255,0.03);display:none}
-  .modpanel.visible{display:block}
-  .modpanel h3{margin-top:0;color:var(--accent)}
-  .small{font-size:13px;color:var(--muted)}
-  .list{max-height:200px;overflow:auto;padding:6px;border-radius:8px;background:rgba(255,255,255,0.02)}
-  .list div{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center}
-  .poll{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;margin-bottom:8px}
-  .attachment{max-width:220px;border-radius:6px;margin-top:8px}
-  .modKeyBtn{position:fixed;left:12px;bottom:12px;width:36px;height:36px;border-radius:8px;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;z-index:9999;border:1px solid rgba(255,255,255,0.04)}
-  .modKeyBtn:hover{background:rgba(0,0,0,0.6)}
-  .badword-list-item{display:flex;justify-content:space-between;gap:8px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,0.02)}
-  .badword-input{display:flex;gap:6px;margin-top:8px}
-  .badword-input input{flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,.04)}
-  .pending-pic-row{display:flex;gap:8px;align-items:center;padding:8px;border-bottom:1px solid rgba(255,255,255,0.03)}
-  .pending-pic-row img{width:64px;height:64px;border-radius:8px;object-fit:cover}
-  .pending-pic-meta{flex:1}
-  .game-req-item {
-    padding: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  
+  .logo-container{
+    margin-bottom:16px;
+    padding:4px;
+    transition:opacity 0.3s;
   }
-  .mod-notif-item {
-    padding: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.02);
+  
+  .sidebar.collapsed .logo-container{
+    opacity:0;
   }
-  .private-chat-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px;
-    border-top: 1px solid rgba(255,255,255,0.03);
-    overflow-y: auto;
+  
+  .logo{
+    width:62px;
+    height:62px;
+    border-radius:8px;
   }
-  .private-chat-list-item {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
+  
+  .nav-items{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+    width:100%;
+    padding:0 8px;
+    transition:opacity 0.3s;
+    flex:1;
   }
-  .private-chat-list-item.new {
-      animation: highlight 2s ease-out;
+  
+  .sidebar.collapsed .nav-items{
+    opacity:0;
   }
-  @keyframes highlight {
-      0% { background-color: rgba(76, 175, 80, 0); }
-      50% { background-color: rgba(76, 175, 80, 0.2); }
-      100% { background-color: rgba(76, 175, 80, 0); }
+  
+  .nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:54px;
+    height:54px;
+    border-radius:10px;
+    text-decoration:none;
+    color:var(--accent);
+    transition:all 0.2s ease;
+    cursor:pointer;
+    border:none;
+    background:transparent;
+    padding:0;
   }
-  .private-chat-list-item:hover {
-    background-color: rgba(255,255,255,0.05);
+  
+  .nav-item:hover{
+    background:var(--accent-dim);
   }
-  .private-chat-list-item.active {
-    background-color: rgba(255,255,255,0.1);
+  
+  .nav-item.active{
+    background:var(--accent-dim);
+    border:1px solid var(--accent);
   }
-  .chat-title-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  
+  .nav-item svg{
+    width:24px;
+    height:24px;
+    margin-bottom:2px;
   }
-  .chat-title-info h4 {
-    margin: 0;
+  
+  .nav-item span{
+    font-size:9px;
+    font-weight:500;
   }
-  .chat-title-info .small {
-    margin-top: 4px;
+  
+  .toggle-btn{
+    position:fixed;
+    left:90px;
+    top:50%;
+    transform:translateY(-50%);
+    width:20px;
+    height:36px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    z-index:1001;
   }
-  .create-chat-btn-wrap {
-    padding: 0 12px;
-    margin-bottom: 8px;
+  
+  .toggle-btn:hover{
+    background:var(--panel-hover);
+    border-color:var(--accent);
   }
-  .create-chat-btn-wrap .btn {
-    width: 100%;
-    padding: 12px;
-    background: #3a3f4b;
-    border: none;
-    font-size: 14px;
+  
+  .toggle-btn svg{
+    width:14px;
+    height:14px;
+    color:#fff;
+    transition:transform 0.3s ease;
   }
-  .create-chat-dropdown {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--panel);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
-    z-index: 100;
-    width: 300px;
-    max-height: 80vh;
-    overflow-y: auto;
-    display: none;
-    flex-direction: column;
-    gap: 12px;
+  
+  .toggle-btn.collapsed{
+    left:10px;
   }
-  .create-chat-dropdown.visible {
-    display: flex;
+  
+  .toggle-btn.collapsed svg{
+    transform:rotate(180deg);
   }
-  .create-chat-dropdown input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: #121418;
-    color: #fff;
-    border-radius: 6px;
+  
+  .toggle-btn.hidden{
+    display:none;
   }
-  .create-chat-dropdown .user-list {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 6px;
+  
+  /* Layout */
+  .layout{
+    display:grid;
+    grid-template-columns:1fr 360px;
+    height:100vh;
   }
-  .create-chat-dropdown .user-item {
-    padding: 8px;
-    cursor: pointer;
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  
+  .layout.fullscreen{
+    grid-template-columns:1fr;
   }
-  .create-chat-dropdown .user-item:hover {
-    background: rgba(255,255,255,0.05);
+  
+  .app{
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    background:transparent;
+    overflow:hidden;
+    margin-left:100px;
+    transition:margin-left 0.3s ease;
   }
-  .create-chat-dropdown .user-item.selected {
-    background: rgba(76,175,80,0.2);
+  
+  .app.expanded{
+    margin-left:24px;
   }
-  .create-chat-dropdown .user-item .avatar {
-    width: 28px;
-    height: 28px;
+  
+  .app.fullscreen{
+    margin-left:0;
   }
-  .mod-chat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+  
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px 20px;
+    background:var(--panel);
+    border-bottom:1px solid var(--border);
+    box-shadow:0 2px 10px rgba(0,0,0,0.2);
   }
-  .mod-chat-item .btn {
-    margin-left: 8px;
+  
+  .topbar .title{
+    font-weight:700;
+    font-size:18px;
+    color:var(--accent);
+  }
+  
+  .topbar .me{
+    margin-left:auto;
+    font-size:14px;
+    color:var(--muted);
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  
+  .me-avatar{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    color:#bbb;
+    font-weight:700;
+    cursor:pointer;
+    overflow:hidden;
+    border:2px solid var(--border);
+    transition:all 0.2s;
+  }
+  
+  .me-avatar:hover{
+    border-color:var(--accent);
+    transform:scale(1.05);
+  }
+  
+  .me-avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  
+  .tag{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:rgba(255,255,255,0.05);
+    color:#c9d1d9;
+    font-size:11px;
+    font-weight:600;
+    border:1px solid var(--border);
+  }
+  
+  .tag.dev{
+    background:rgba(34,197,94,0.15);
+    color:#22c55e;
+    border-color:var(--accent);
+  }
+  
+  .tag.mod{
+    background:rgba(59,130,246,0.15);
+    color:#3b82f6;
+    border-color:#3b82f6;
+  }
+  
+  /* Chat Selector Dropdown */
+  .chat-selector{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  
+  .chat-selector-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 14px;
+    background:var(--panel-hover);
+    border:1px solid var(--border);
+    border-radius:8px;
+    cursor:pointer;
+    transition:all 0.2s;
+    color:#e8eaed;
+    font-size:14px;
+    font-weight:600;
+  }
+  
+  .chat-selector-btn:hover{
+    background:var(--accent-dim);
+    border-color:var(--accent);
+  }
+  
+  .chat-selector-btn svg{
+    width:16px;
+    height:16px;
+    transition:transform 0.2s;
+  }
+  
+  .chat-selector-btn.open svg{
+    transform:rotate(180deg);
+  }
+  
+  .chat-dropdown{
+    position:absolute;
+    top:100%;
+    left:0;
+    margin-top:8px;
+    min-width:280px;
+    max-height:400px;
+    overflow-y:auto;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    z-index:100;
+    display:none;
+  }
+  
+  .chat-dropdown.visible{
+    display:block;
+  }
+  
+  .chat-dropdown-header{
+    padding:12px 16px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  
+  .chat-dropdown-header h4{
+    margin:0;
+    font-size:12px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  
+  .chat-dropdown-item{
+    padding:12px 16px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    transition:all 0.2s;
+    border-bottom:1px solid var(--border);
+  }
+  
+  .chat-dropdown-item:last-child{
+    border-bottom:none;
+  }
+  
+  .chat-dropdown-item:hover{
+    background:var(--panel-hover);
+  }
+  
+  .chat-dropdown-item.active{
+    background:var(--accent-dim);
+    border-left:3px solid var(--accent);
+  }
+  
+  .chat-dropdown-item .chat-icon{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:var(--accent-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--accent);
+  }
+  
+  .chat-dropdown-item .chat-info{
+    flex:1;
+  }
+  
+  .chat-dropdown-item .chat-info h5{
+    margin:0;
+    font-size:14px;
+    color:#e8eaed;
+  }
+  
+  .chat-dropdown-item .chat-info span{
+    font-size:12px;
+    color:var(--muted);
+  }
+  
+  .new-chat-btn{
+    width:100%;
+    padding:12px 16px;
+    background:var(--accent);
+    border:none;
+    color:#000;
+    font-size:14px;
+    font-weight:700;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  
+  .new-chat-btn:hover{
+    opacity:0.9;
+  }
+  
+  .pinned{
+    background:var(--accent-dim);
+    padding:12px 16px;
+    border-left:4px solid var(--accent);
+    color:#cfeed0;
+    border-radius:8px;
+    margin:12px 16px;
+  }
+  
+  .scroller{
+    overflow-y:auto;
+    padding:16px 12px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  }
+  
+  .msg{
+    display:grid;
+    grid-template-columns:48px 1fr;
+    gap:12px;
+    padding:12px;
+    background:var(--msg);
+    border-radius:10px;
+    margin:8px 0;
+    border:1px solid var(--border);
+    transition:all 0.2s;
+  }
+  
+  .msg:hover{
+    background:var(--msgAlt);
+    border-color:rgba(255,255,255,0.1);
+  }
+  
+  .avatar{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.05);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#bbb;
+    font-weight:700;
+    overflow:hidden;
+    border:2px solid var(--border);
+  }
+  
+  .avatar img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  
+  .meta{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  
+  .name{
+    font-weight:700;
+    color:var(--accent);
+  }
+  
+  .when{
+    font-size:12px;
+    color:var(--muted);
+  }
+  
+  .text{
+    white-space:pre-wrap;
+    word-break:break-word;
+    margin-top:6px;
+    line-height:1.5;
+  }
+  
+  .bubble-actions{
+    margin-left:auto;
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+  
+  .btn{
+    background:var(--panel);
+    border:1px solid var(--border);
+    color:#e8eaed;
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:12px;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-weight:600;
+  }
+  
+  .btn:hover{
+    background:var(--panel-hover);
+    border-color:var(--accent);
+    transform:translateY(-1px);
+  }
+  
+  .btn.danger{
+    background:#ef4444;
+    border-color:#ff8a8a;
+    color:#fff;
+  }
+  
+  .btn.danger:hover{
+    background:#dc2626;
+  }
+  
+  .composer{
+    display:flex;
+    gap:8px;
+    padding:16px;
+    background:var(--panel);
+    border-top:1px solid var(--border);
+    align-items:center;
+    box-shadow:0 -2px 10px rgba(0,0,0,0.2);
+  }
+  
+  .composer input[type="text"]{
+    flex:1;
+    padding:12px 16px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:#fff;
+    font-size:14px;
+    transition:all 0.2s;
+  }
+  
+  .composer input[type="text"]:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px var(--accent-dim);
+  }
+  
+  .composer .attachBtn{
+    background:var(--panel-hover);
+    border:1px solid var(--border);
+    color:#fff;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  
+  .composer .attachBtn:hover{
+    background:var(--accent-dim);
+    border-color:var(--accent);
+  }
+  
+  .composer .send{
+    background:var(--accent);
+    border:none;
+    color:#000;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+    transition:all 0.2s;
+  }
+  
+  .composer .send:hover{
+    opacity:0.9;
+    transform:translateY(-1px);
+  }
+  
+  .composer .send:disabled{
+    opacity:0.5;
+    cursor:not-allowed;
+  }
+  
+  .notice{
+    margin:8px 16px;
+    color:#ffb4b4;
+    font-size:13px;
+    padding:8px 12px;
+    background:rgba(239,68,68,0.1);
+    border-radius:8px;
+    border:1px solid rgba(239,68,68,0.2);
+  }
+  
+  .modpanel{
+    background:var(--panel);
+    padding:16px;
+    overflow-y:auto;
+    border-left:1px solid var(--border);
+    display:none;
+  }
+  
+  .modpanel.visible{
+    display:block;
+  }
+  
+  .modpanel h3{
+    margin:0 0 16px 0;
+    color:var(--accent);
+    font-size:18px;
+  }
+  
+  .modpanel h4{
+    margin:16px 0 8px 0;
+    color:#e8eaed;
+    font-size:14px;
+    font-weight:600;
+  }
+  
+  .small{
+    font-size:13px;
+    color:var(--muted);
+  }
+  
+  .list{
+    max-height:200px;
+    overflow-y:auto;
+    padding:8px;
+    border-radius:8px;
+    background:rgba(255,255,255,0.02);
+    border:1px solid var(--border);
+  }
+  
+  .list div{
+    padding:8px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  
+  .list div:last-child{
+    border-bottom:none;
+  }
+  
+  .poll{
+    background:rgba(255,255,255,0.02);
+    padding:12px;
+    border-radius:8px;
+    margin:8px 0;
+    border:1px solid var(--border);
+  }
+  
+  .attachment{
+    max-width:280px;
+    border-radius:8px;
+    margin-top:8px;
+    border:1px solid var(--border);
+  }
+  
+  .badword-list-item{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px;
+    border-bottom:1px solid var(--border);
+  }
+  
+  .badword-list-item:last-child{
+    border-bottom:none;
+  }
+  
+  .badword-input{
+    display:flex;
+    gap:6px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  
+  .badword-input input{
+    flex:1;
+    min-width:150px;
+    padding:8px 12px;
+    border-radius:8px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:#fff;
+    font-size:13px;
+  }
+  
+  .pending-pic-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:12px;
+    border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,0.01);
+    border-radius:8px;
+    margin-bottom:8px;
+  }
+  
+  .pending-pic-row img{
+    width:64px;
+    height:64px;
+    border-radius:8px;
+    object-fit:cover;
+    border:2px solid var(--border);
+  }
+  
+  .pending-pic-meta{
+    flex:1;
+  }
+  
+  .game-req-item,
+  .mod-notif-item,
+  .mod-chat-item{
+    padding:10px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+  }
+  
+  .create-chat-dropdown{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:var(--panel);
+    padding:24px;
+    border-radius:12px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.6);
+    z-index:100;
+    width:400px;
+    max-width:90vw;
+    max-height:80vh;
+    overflow-y:auto;
+    display:none;
+    flex-direction:column;
+    gap:16px;
+    border:1px solid var(--border);
+  }
+  
+  .create-chat-dropdown.visible{
+    display:flex;
+  }
+  
+  .create-chat-dropdown h4{
+    margin:0;
+    color:var(--accent);
+    font-size:18px;
+  }
+  
+  .create-chat-dropdown input{
+    width:100%;
+    padding:10px 14px;
+    border:1px solid var(--border);
+    background:var(--bg);
+    color:#fff;
+    border-radius:8px;
+    font-size:14px;
+  }
+  
+  .create-chat-dropdown input:focus{
+    outline:none;
+    border-color:var(--accent);
+  }
+  
+  .create-chat-dropdown .user-list{
+    max-height:300px;
+    overflow-y:auto;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:rgba(255,255,255,0.02);
+  }
+  
+  .create-chat-dropdown .user-item{
+    padding:10px 12px;
+    cursor:pointer;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    transition:all 0.2s;
+  }
+  
+  .create-chat-dropdown .user-item:hover{
+    background:var(--panel-hover);
+  }
+  
+  .create-chat-dropdown .user-item.selected{
+    background:var(--accent-dim);
+    border-left:3px solid var(--accent);
+  }
+  
+  /* Announcement Modal */
+  .announcement-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.8);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+  }
+  
+  .announcement-overlay.visible{
+    display:flex;
+  }
+  
+  .announcement-modal{
+    background:var(--panel);
+    border:2px solid var(--accent);
+    border-radius:16px;
+    padding:32px;
+    max-width:600px;
+    width:90%;
+    position:relative;
+    box-shadow:0 0 40px var(--accent-dim);
+  }
+  
+  .announcement-close{
+    position:absolute;
+    top:12px;
+    right:12px;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.1);
+    border:1px solid var(--border);
+    color:#fff;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    transition:all 0.2s;
+  }
+  
+  .announcement-close:hover{
+    background:var(--accent);
+    color:#000;
+  }
+  
+  .announcement-title{
+    font-size:24px;
+    font-weight:700;
+    color:var(--accent);
+    margin-bottom:16px;
+  }
+  
+  .announcement-text{
+    font-size:16px;
+    line-height:1.6;
+    color:#e8eaed;
+    white-space:pre-wrap;
+  }
+  
+  @media(max-width:1200px){
+    .layout{
+      grid-template-columns:1fr 300px;
+    }
+    .layout.fullscreen{
+      grid-template-columns:1fr;
+    }
+  }
+  
+  @media(max-width:900px){
+    .layout{
+      grid-template-columns:1fr;
+    }
+    .modpanel{
+      display:none!important;
+    }
+  }
+  
+  @media(max-width:600px){
+    .sidebar{
+      display:none;
+    }
+    .toggle-btn{
+      display:none;
+    }
+    .app{
+      margin-left:0!important;
+    }
   }
 </style>
 </head>
 <body>
-  <div class="layout">
-    <div class="sidebar">
-      <img src="logo.png" class="logo" alt="TAC Logo">
-      <nav>
-        <ul>
-          <li><a href="#" id="mainChatLink">Home</a></li>
-          <li><a href="apps.html">Apps</a></li>
-          <li><a href="help.html" target="_blank">Help</a></li>
-          <li><a href="staff.html" target="_blank">Apply for Staff</a></li>
-          <li><a href="members.html">Members</a></li>
-          <li><a href="homework.html">Not Games</a></li>
-        </ul>
-      </nav>
-      <div class="create-chat-btn-wrap">
-        <button class="btn" id="createChatBtn">Create Chat</button>
-      </div>
-      <div class="private-chat-list" id="privateChatsList">
-        <h4>Private Chats</h4>
-        <div class="small muted" id="privateChatsEmpty">No private chats yet.</div>
-      </div>
+  <!-- Floating Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+      <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
     </div>
+    
+    <nav class="nav-items">
+      <a href__="index.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+        </svg>
+        <span>Home</span>
+      </a>
+      
+      <button class="nav-item active" id="mainChatLink">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+          <circle cx="8" cy="10" r="1.5"/>
+          <circle cx="12" cy="10" r="1.5"/>
+          <circle cx="16" cy="10" r="1.5"/>
+        </svg>
+        <span>Chat</span>
+      </button>
+      
+      <a href__="notgames.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+        </svg>
+        <span>Games</span>
+      </a>
+      
+      <a href__="apps.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+        </svg>
+        <span>Apps</span>
+      </a>
+    </nav>
+  </aside>
+  
+  <button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
 
-    <div class="app" role="main">
+  <div class="layout" id="layout">
+    <div class="app" id="app" role="main">
       <div class="topbar">
-        <div class="title" id="chatTitle"># general</div>
+        <div class="chat-selector" id="chatSelector">
+          <button class="chat-selector-btn" id="chatSelectorBtn">
+            <span id="chatTitleText"># general</span>
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7 10l5 5 5-5z"/>
+            </svg>
+          </button>
+          <div class="chat-dropdown" id="chatDropdown">
+            <div class="chat-dropdown-header">
+              <h4>Your Chats</h4>
+            </div>
+            <div class="chat-dropdown-item active" id="mainChatOption" data-chat="main">
+              <div class="chat-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/>
+                </svg>
+              </div>
+              <div class="chat-info">
+                <h5># general</h5>
+                <span>Main chat room</span>
+              </div>
+            </div>
+            <div id="privateChatOptions"></div>
+            <button class="new-chat-btn" id="newChatBtn">+ New Private Chat</button>
+          </div>
+        </div>
         <div class="me">
           <div id="meAvatar" class="me-avatar" title="Click to upload profile picture"></div>
           <input id="profilePicInput" type="file" accept="image/*" style="display:none" />
@@ -263,16 +985,16 @@
 
       <div id="scroller" class="scroller" aria-live="polite"></div>
 
-      <div id="pinnedSlot" style="display:none;padding:8px 16px;border-top:1px solid rgba(255,255,255,.03);background:var(--panel)">
+      <div id="pinnedSlot" style="display:none">
         <div id="pinnedBox" class="pinned"></div>
       </div>
       
       <div class="composer">
-        <div class="notice" style="display: none; width: 100%; text-align: center;"></div>
+        <div class="notice" style="display:none;width:100%;text-align:center;"></div>
         <input id="msgInput" type="text" placeholder="Message #general" maxlength="1000" />
-        <label class="attachBtn btn" title="Attach image (small)">
-          📎
-          <input id="fileInput" type="file" accept="image/*">
+        <label class="attachBtn btn" title="Attach image">
+          Attach
+          <input id="fileInput" type="file" accept="image/*" style="display:none">
         </label>
         <button class="send btn" id="sendBtn">Send</button>
       </div>
@@ -282,91 +1004,104 @@
       <h3>Moderation</h3>
       <div class="small">You: <span id="modName">—</span> <span id="modRole" class="tag">Member</span></div>
       
-      <h4 style="margin-top:12px">Private Chat Monitoring</h4>
+      <h4>Announcement</h4>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+        <input id="announcementTitle" placeholder="Announcement title..." style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:#fff">
+        <textarea id="announcementText" placeholder="Announcement text..." style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:#fff;resize:vertical;min-height:60px"></textarea>
+        <button id="setAnnouncementBtn" class="btn">Set Announcement</button>
+        <button id="clearAnnouncementBtn" class="btn danger">Clear Announcement</button>
+      </div>
+      
+      <h4>Private Chat Monitoring</h4>
       <div id="modPrivateChatsList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Game Requests</h4>
+      <h4>Game Requests</h4>
       <div id="gameRequestsList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Mod Notifications</h4>
+      <h4>Mod Notifications</h4>
       <div id="modNotificationsList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Mod Chat</h4>
-      <div id="modChatList" class="list small">loading…</div>
-      <div class="badword-input" style="margin-top:8px">
-        <input id="modChatInput" placeholder="Send a message to mods">
+      <h4>Mod Chat</h4>
+      <div id="modChatList" class="list small" style="max-height:150px">loading…</div>
+      <div class="badword-input">
+        <input id="modChatInput" placeholder="Send to mods..." style="flex:1">
         <button id="modChatSendBtn" class="btn">Send</button>
       </div>
 
-      <h4 style="margin-top:12px">Pause / Pins</h4>
-      <div style="display:flex;gap:6px;margin-bottom:8px">
-        <button id="togglePause" class="btn">Toggle Pause</button>
+      <h4>Pause / Pins</h4>
+      <button id="togglePause" class="btn" style="width:100%;margin-bottom:8px">Toggle Pause</button>
+
+      <h4>Auto-ban Settings</h4>
+      <div class="small" style="display:grid;gap:8px">
+        <div>Threshold: <input id="abThreshold" type="number" min="1" value="3" style="width:60px;padding:4px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:#fff"></div>
+        <div>Window (sec): <input id="abWindow" type="number" min="1" value="60" style="width:60px;padding:4px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:#fff"></div>
+        <div>Duration (min): <input id="abDuration" type="number" min="1" value="60" style="width:60px;padding:4px;border-radius:4px;border:1px solid var(--border);background:var(--bg);color:#fff"></div>
+        <button id="saveAb" class="btn">Save Settings</button>
       </div>
 
-      <h4 style="margin-top:12px">Auto-ban settings</h4>
-      <div class="small">
-        Threshold: <input id="abThreshold" type="number" min="1" value="3" style="width:60px"><br>
-        Window (sec): <input id="abWindow" type="number" min="1" value="60" style="width:60px"><br>
-        Duration (min): <input id="abDuration" type="number" min="1" value="60" style="width:60px"><br>
-        <button id="saveAb" class="btn">Save</button>
-      </div>
-
-      <h4 style="margin-top:12px">Banned users</h4>
+      <h4>Banned Users</h4>
       <div id="bannedList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Timeouts</h4>
+      <h4>Timeouts</h4>
       <div id="timeoutList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Offenses</h4>
+      <h4>Offenses</h4>
       <div id="offensesList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Profanity list (DB)</h4>
+      <h4>Profanity List</h4>
       <div id="badWordsList" class="list small">loading…</div>
       <div class="badword-input">
-        <input id="badwordInput" placeholder="Add a bad word (single word only)">
+        <input id="badwordInput" placeholder="Add bad word..." style="flex:1">
         <button id="badwordAddBtn" class="btn">Add</button>
-        <button id="resetBadwords" class="btn secondary">Reset to defaults</button>
+        <button id="resetBadwords" class="btn secondary">Reset</button>
       </div>
-      <h4 style="margin-top:12px">Regex Filters (DB)</h4>
+
+      <h4>Regex Filters</h4>
       <div id="regexList" class="list small">loading…</div>
       <div class="badword-input">
-        <input id="regexInput" placeholder="Add a regex pattern (e.g., /s[h1t]t/i)">
+        <input id="regexInput" placeholder="Add regex (e.g. /test/i)" style="flex:1">
         <button id="regexAddBtn" class="btn">Add</button>
       </div>
 
-      <h4 style="margin-top:12px">Custom Bot Responses (DB)</h4>
+      <h4>Custom Bot Responses</h4>
       <div id="botResponsesList" class="list small">loading…</div>
-      <div class="badword-input" style="margin-top:8px">
-        <input id="botCommandInput" placeholder="!command">
-        <input id="botResponseInput" placeholder="Bot's response">
+      <div class="badword-input">
+        <input id="botCommandInput" placeholder="!command" style="flex:1">
+        <input id="botResponseInput" placeholder="Response..." style="flex:1">
         <button id="botResponseAddBtn" class="btn">Add</button>
       </div>
 
-      <h4 style="margin-top:12px">Profile Pic Approvals</h4>
+      <h4>Profile Pic Approvals</h4>
       <div id="pendingPicsList" class="list small">loading…</div>
 
-      <h4 style="margin-top:12px">Create Poll (posts in chat)</h4>
-      <div style="display:flex;gap:6px;margin-bottom:8px">
-        <input id="pollQ" placeholder="Question" style="flex:1;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,.04)">
-        <button id="createPoll" class="btn">Create</button>
+      <h4>Create Poll</h4>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <input id="pollQ" placeholder="Poll question..." style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:#fff">
+        <input id="pollOptions" placeholder="Option1,Option2,Option3" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:#fff">
+        <button id="createPoll" class="btn">Create Poll</button>
       </div>
-      <div class="small muted">Options (comma separated):</div>
-      <input id="pollOptions" placeholder="Yes,No,Maybe" style="width:100%;padding:6px;border-radius:6px;border:1px solid rgba(255,255,255,.04);margin-bottom:8px">
     </div>
   </div>
 
   <div class="create-chat-dropdown" id="createChatDropdown">
-    <h4>Create a new chat</h4>
-    <p class="small muted">Select up to 10 users. You can create a 1-on-1 chat or a group chat.</p>
-    <input type="text" id="userSearch" placeholder="Search for users...">
+    <h4>Create a New Chat</h4>
+    <p class="small muted">Select up to 9 users for a private chat.</p>
+    <input type="text" id="userSearch" placeholder="Search users...">
     <div class="user-list" id="userList"></div>
-    <div style="display:flex; gap:8px; margin-top:8px;">
-      <button class="btn" id="confirmCreateChatBtn">Create Chat</button>
-      <button class="btn danger" id="cancelCreateChatBtn">Cancel</button>
+    <div style="display:flex;gap:8px;">
+      <button class="btn" id="confirmCreateChatBtn" style="flex:1">Create</button>
+      <button class="btn danger" id="cancelCreateChatBtn" style="flex:1">Cancel</button>
     </div>
   </div>
-
-  <div class="modKeyBtn" id="modKeyBtn" title="Mod access (password) 🔐">🔑</div>
+  
+  <!-- Announcement Modal -->
+  <div class="announcement-overlay" id="announcementOverlay">
+    <div class="announcement-modal">
+      <button class="announcement-close" id="announcementClose">×</button>
+      <div class="announcement-title" id="announcementModalTitle">Announcement</div>
+      <div class="announcement-text" id="announcementModalText"></div>
+    </div>
+  </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -383,6 +1118,103 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+
+/* ================== THEME SYSTEM (from localStorage) ================== */
+const themeColors = {
+  green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+  blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+  red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+  cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+  pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+  purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+  yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+  orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+  white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+  whiteout: { primary: '#f5f5f5', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
+};
+
+function applyTheme() {
+  const theme = localStorage.getItem('theme') || 'green';
+  const colors = themeColors[theme] || themeColors.green;
+  
+  document.documentElement.style.setProperty('--accent', colors.primary);
+  document.documentElement.style.setProperty('--accent-dim', colors.dim);
+  
+  const logo = document.getElementById('logo');
+  if (logo) logo.src = `taclogos/${theme}.png`;
+  
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+}
+
+window.addEventListener('storage', (e) => {
+  if (e.key === 'theme') applyTheme();
+});
+
+applyTheme();
+
+/* ================== DOM refs ================== */
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const app = document.getElementById('app');
+const layout = document.getElementById('layout');
+const scroller = document.getElementById('scroller');
+const input = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const fileInput = document.getElementById('fileInput');
+const profilePicInput = document.getElementById('profilePicInput');
+const notice = document.querySelector('.notice');
+const bannedListEl = document.getElementById('bannedList');
+const timeoutListEl = document.getElementById('timeoutList');
+const offensesListEl = document.getElementById('offensesList');
+const pendingPicsListEl = document.getElementById('pendingPicsList');
+const abThresholdEl = document.getElementById('abThreshold');
+const abWindowEl = document.getElementById('abWindow');
+const abDurationEl = document.getElementById('abDuration');
+const saveAbBtn = document.getElementById('saveAb');
+const pollQEl = document.getElementById('pollQ');
+const pollOptionsEl = document.getElementById('pollOptions');
+const createPollBtn = document.getElementById('createPoll');
+const pinnedSlot = document.getElementById('pinnedSlot');
+const pinnedBox = document.getElementById('pinnedBox');
+const togglePauseBtn = document.getElementById('togglePause');
+const badWordsListEl = document.getElementById('badWordsList');
+const badwordInput = document.getElementById('badwordInput');
+const badwordAddBtn = document.getElementById('badwordAddBtn');
+const resetBadwordsBtn = document.getElementById('resetBadwords');
+const chatTitleText = document.getElementById('chatTitleText');
+const mainChatLink = document.getElementById('mainChatLink');
+const modPrivateChatsList = document.getElementById('modPrivateChatsList');
+const gameRequestsList = document.getElementById('gameRequestsList');
+const modNotificationsList = document.getElementById('modNotificationsList');
+const modChatList = document.getElementById('modChatList');
+const modChatInput = document.getElementById('modChatInput');
+const modChatSendBtn = document.getElementById('modChatSendBtn');
+const regexList = document.getElementById('regexList');
+const regexInput = document.getElementById('regexInput');
+const regexAddBtn = document.getElementById('regexAddBtn');
+const botResponsesList = document.getElementById('botResponsesList');
+const botCommandInput = document.getElementById('botCommandInput');
+const botResponseInput = document.getElementById('botResponseInput');
+const botResponseAddBtn = document.getElementById('botResponseAddBtn');
+const createChatDropdown = document.getElementById('createChatDropdown');
+const userSearch = document.getElementById('userSearch');
+const userListEl = document.getElementById('userList');
+const confirmCreateChatBtn = document.getElementById('confirmCreateChatBtn');
+const cancelCreateChatBtn = document.getElementById('cancelCreateChatBtn');
+const announcementOverlay = document.getElementById('announcementOverlay');
+const announcementClose = document.getElementById('announcementClose');
+const announcementModalTitle = document.getElementById('announcementModalTitle');
+const announcementModalText = document.getElementById('announcementModalText');
+const announcementTitle = document.getElementById('announcementTitle');
+const announcementText = document.getElementById('announcementText');
+const setAnnouncementBtn = document.getElementById('setAnnouncementBtn');
+const clearAnnouncementBtn = document.getElementById('clearAnnouncementBtn');
+const chatSelectorBtn = document.getElementById('chatSelectorBtn');
+const chatDropdown = document.getElementById('chatDropdown');
+const mainChatOption = document.getElementById('mainChatOption');
+const privateChatOptions = document.getElementById('privateChatOptions');
+const newChatBtn = document.getElementById('newChatBtn');
 
 /* ================== LOGIN / MOD AUTH ================== */
 let username = (localStorage.getItem('tacUsername') || '').trim();
@@ -406,6 +1238,32 @@ const defaultRoleFor = (n)=>{
   if(/^leonardo$/i.test(n)) return "Head Moderator";
   return "Member";
 };
+
+const modPanel = document.getElementById('modPanel');
+let modAuthenticated = !!localStorage.getItem('modAuth');
+
+function canModerate(role){
+  return role === 'Head Dev' || role === 'Head Moderator' || modAuthenticated;
+}
+
+function updateModPanelVisibility(){
+  if(canModerate(myRole)){
+    modAuthenticated = true;
+    localStorage.setItem('modAuth','1');
+    modPanel.classList.add('visible');
+    layout.classList.remove('fullscreen');
+    app.classList.remove('fullscreen');
+    sidebar.classList.remove('hidden');
+    toggleBtn.classList.remove('hidden');
+  } else {
+    modPanel.classList.remove('visible');
+    layout.classList.add('fullscreen');
+    app.classList.add('fullscreen');
+    sidebar.classList.add('hidden');
+    toggleBtn.classList.add('hidden');
+  }
+}
+
 db.ref('users/' + username + '/role').once('value').then(s=>{
   myRole = s.val() || defaultRoleFor(username);
   meRoleEl.textContent = myRole;
@@ -413,99 +1271,15 @@ db.ref('users/' + username + '/role').once('value').then(s=>{
   meRoleEl.className = 'tag ' + (myRole === 'Head Dev' ? 'dev' : myRole === 'Head Moderator' ? 'mod' : '');
   modRole.className = 'tag ' + (myRole === 'Head Dev' ? 'dev' : myRole === 'Head Moderator' ? 'mod' : '');
   db.ref('users/' + username).update({ name: username, role: myRole }).catch(()=>{});
+  updateModPanelVisibility();
 });
 
-/* modAuth */
-const modPanel = document.getElementById('modPanel');
-let modAuthenticated = !!localStorage.getItem('modAuth');
-
-function canModerate(role){
-  return role === 'Head Dev' || role === 'Head Moderator' || modAuthenticated;
-}
-function updateModPanelVisibility(){
-  if(canModerate(myRole)){
-    modAuthenticated = true; localStorage.setItem('modAuth','1');
-  }
-  if(canModerate(myRole)){
-    modPanel.classList.add('visible');
-  } else {
-    modPanel.classList.toggle('visible', !!modAuthenticated);
-  }
-}
-setTimeout(updateModPanelVisibility, 300);
-
-document.getElementById('modKeyBtn').addEventListener('click', async ()=>{
-  if(localStorage.getItem('modAuth')){
-    const ok = prompt('Log out of mod access? Type YES to confirm.');
-    if(ok === 'YES'){ localStorage.removeItem('modAuth'); modAuthenticated=false; updateModPanelVisibility(); showNotice('Mod access removed.'); }
-    return;
-  }
-  const snap = await db.ref('moderation/password').once('value');
-  const real = (snap.exists() ? String(snap.val()) : 'developer');
-  const attempt = prompt('Enter moderation password:');
-  if(attempt === null) return;
-  if(attempt === real){
-    modAuthenticated = true; localStorage.setItem('modAuth','1'); updateModPanelVisibility(); showNotice('Mod access granted.');
-  } else showNotice('Wrong password.');
+/* ================== SIDEBAR TOGGLE ================== */
+toggleBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  toggleBtn.classList.toggle('collapsed');
+  app.classList.toggle('expanded');
 });
-
-/* ================== DOM refs ================== */
-const scroller = document.getElementById('scroller');
-const input = document.getElementById('msgInput');
-const sendBtn = document.getElementById('sendBtn');
-const fileInput = document.getElementById('fileInput');
-const profilePicInput = document.getElementById('profilePicInput');
-
-const notice = document.querySelector('.notice');
-
-const bannedListEl = document.getElementById('bannedList');
-const timeoutListEl = document.getElementById('timeoutList');
-const offensesListEl = document.getElementById('offensesList');
-const pendingPicsListEl = document.getElementById('pendingPicsList');
-
-const abThresholdEl = document.getElementById('abThreshold');
-const abWindowEl = document.getElementById('abWindow');
-const abDurationEl = document.getElementById('abDuration');
-const saveAbBtn = document.getElementById('saveAb');
-
-const pollQEl = document.getElementById('pollQ');
-const pollOptionsEl = document.getElementById('pollOptions');
-const createPollBtn = document.getElementById('createPoll');
-const pinnedSlot = document.getElementById('pinnedSlot');
-const pinnedBox = document.getElementById('pinnedBox');
-const togglePauseBtn = document.getElementById('togglePause');
-
-const badWordsListEl = document.getElementById('badWordsList');
-const badwordInput = document.getElementById('badwordInput');
-const badwordAddBtn = document.getElementById('badwordAddBtn');
-const resetBadwordsBtn = document.getElementById('resetBadwords');
-
-// New DOM refs
-const chatTitle = document.getElementById('chatTitle');
-const mainChatLink = document.getElementById('mainChatLink');
-const privateChatsList = document.getElementById('privateChatsList');
-const privateChatsEmpty = document.getElementById('privateChatsEmpty');
-const modPrivateChatsList = document.getElementById('modPrivateChatsList');
-const gameRequestsList = document.getElementById('gameRequestsList');
-const modNotificationsList = document.getElementById('modNotificationsList');
-const modChatList = document.getElementById('modChatList');
-const modChatInput = document.getElementById('modChatInput');
-const modChatSendBtn = document.getElementById('modChatSendBtn');
-const regexList = document.getElementById('regexList');
-const regexInput = document.getElementById('regexInput');
-const regexAddBtn = document.getElementById('regexAddBtn');
-const botResponsesList = document.getElementById('botResponsesList');
-const botCommandInput = document.getElementById('botCommandInput');
-const botResponseInput = document.getElementById('botResponseInput');
-const botResponseAddBtn = document.getElementById('botResponseAddBtn');
-
-// Private chat creation DOM
-const createChatBtn = document.getElementById('createChatBtn');
-const createChatDropdown = document.getElementById('createChatDropdown');
-const userSearch = document.getElementById('userSearch');
-const userListEl = document.getElementById('userList');
-const confirmCreateChatBtn = document.getElementById('confirmCreateChatBtn');
-const cancelCreateChatBtn = document.getElementById('cancelCreateChatBtn');
 
 /* ================== Utilities ================== */
 const showNotice = (txt, ms=3500) => {
@@ -515,6 +1289,84 @@ const showNotice = (txt, ms=3500) => {
 };
 const fmtTime = ts => new Date(ts).toLocaleTimeString();
 const avatarLetters = n => (n||'?').trim().slice(0,2).toUpperCase();
+
+/* ================== CHAT SELECTOR DROPDOWN ================== */
+chatSelectorBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  chatDropdown.classList.toggle('visible');
+  chatSelectorBtn.classList.toggle('open');
+});
+
+document.addEventListener('click', (e) => {
+  if (!chatDropdown.contains(e.target) && !chatSelectorBtn.contains(e.target)) {
+    chatDropdown.classList.remove('visible');
+    chatSelectorBtn.classList.remove('open');
+  }
+});
+
+mainChatOption.addEventListener('click', () => {
+  loadChat('main');
+  chatDropdown.classList.remove('visible');
+  chatSelectorBtn.classList.remove('open');
+});
+
+newChatBtn.addEventListener('click', () => {
+  createChatDropdown.classList.add('visible');
+  chatDropdown.classList.remove('visible');
+  chatSelectorBtn.classList.remove('open');
+  userSearch.focus();
+  userSearch.value = '';
+  selectedUsers = [];
+  renderUserListForDropdown();
+});
+
+/* ================== ANNOUNCEMENT SYSTEM ================== */
+db.ref('moderation/announcement').on('value', snap => {
+  const announcement = snap.val();
+  const dismissedKey = 'announcement_dismissed_' + (announcement?.timestamp || '');
+  
+  if (announcement && announcement.title && !localStorage.getItem(dismissedKey)) {
+    announcementModalTitle.textContent = announcement.title;
+    announcementModalText.textContent = announcement.text || '';
+    announcementOverlay.classList.add('visible');
+  } else {
+    announcementOverlay.classList.remove('visible');
+  }
+});
+
+announcementClose.addEventListener('click', () => {
+  db.ref('moderation/announcement').once('value').then(snap => {
+    const announcement = snap.val();
+    if (announcement && announcement.timestamp) {
+      localStorage.setItem('announcement_dismissed_' + announcement.timestamp, 'true');
+    }
+    announcementOverlay.classList.remove('visible');
+  });
+});
+
+setAnnouncementBtn.addEventListener('click', async () => {
+  if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
+  const title = announcementTitle.value.trim();
+  const text = announcementText.value.trim();
+  if (!title) { showNotice('Title required'); return; }
+  
+  await db.ref('moderation/announcement').set({
+    title: title,
+    text: text,
+    timestamp: Date.now(),
+    setBy: username
+  });
+  
+  announcementTitle.value = '';
+  announcementText.value = '';
+  showNotice('Announcement set');
+});
+
+clearAnnouncementBtn.addEventListener('click', async () => {
+  if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
+  await db.ref('moderation/announcement').remove();
+  showNotice('Announcement cleared');
+});
 
 /* ================== USER PROFILE PIC STATE ================== */
 let usersProfilePics = {};
@@ -552,29 +1404,36 @@ const DEFAULT_BAD_WORDS = ['fuck','shit','bitch','asshole','dick','bastard','slu
 let badWordMap = {};
 let PROFANITY_REGEXES = [];
 let customRegexList = {};
+
 function rebuildProfanityRegexes(){
   const words = Object.values(badWordMap).length ? Object.values(badWordMap) : DEFAULT_BAD_WORDS;
   PROFANITY_REGEXES = words.map(wordToRegex);
+  
   Object.values(customRegexList).forEach(regexStr => {
     try {
       const parts = regexStr.match(/^\/(.*?)\/([gimsuy]*)$/);
       if (parts) {
         PROFANITY_REGEXES.push(new RegExp(parts[1], parts[2]));
+      } else {
+        PROFANITY_REGEXES.push(new RegExp(regexStr, 'i'));
       }
     } catch (e) {
       console.error("Invalid regex:", regexStr, e);
     }
   });
 }
+
 function wordToRegex(word){
   const chars = word.split('').map(ch => ch.replace(/[-/\\^$*+?.()|[\]{}]/g,'\\$&') + '\\W*').join('');
   return new RegExp('\\b' + chars + '\\b','i');
 }
+
 function containsProfanity(text){
   if(!text) return false;
   for(const r of PROFANITY_REGEXES) if(r.test(text)) return true;
   return false;
 }
+
 db.ref('moderation/badWords').on('value', snap=>{
   const val = snap.val() || {};
   if(Array.isArray(val)){
@@ -587,11 +1446,12 @@ db.ref('moderation/badWords').on('value', snap=>{
   rebuildProfanityRegexes();
   renderBadWordsUI();
 });
+
 function renderBadWordsUI(){
   badWordsListEl.innerHTML = '';
   const entries = Object.entries(badWordMap);
   if(!entries.length){
-    badWordsListEl.innerHTML = '<div class="small muted">No words set — using built-in defaults.</div>';
+    badWordsListEl.innerHTML = '<div class="small muted">No words set - using defaults.</div>';
     return;
   }
   entries.forEach(([k,w])=>{
@@ -606,6 +1466,7 @@ function renderBadWordsUI(){
     badWordsListEl.appendChild(row);
   });
 }
+
 badwordAddBtn.addEventListener('click', async ()=>{
   if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
   const v = (badwordInput.value||'').trim().toLowerCase();
@@ -614,14 +1475,15 @@ badwordAddBtn.addEventListener('click', async ()=>{
   await db.ref('moderation/badWords').push(v);
   badwordInput.value = '';
 });
+
 resetBadwordsBtn.addEventListener('click', async ()=>{
   if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
-  const ok = prompt('Replace profanity list with built-in defaults? Type YES to confirm.');
+  const ok = prompt('Replace with defaults? Type YES to confirm.');
   if (ok !== 'YES') return;
   const obj = {};
   DEFAULT_BAD_WORDS.forEach(w=> { const k = db.ref().push().key; obj[k] = w; });
   await db.ref('moderation/badWords').set(obj);
-  showNotice('Profanity list reset to defaults.');
+  showNotice('Profanity list reset.');
 });
 
 db.ref('moderation/regex').on('value', snap => {
@@ -629,11 +1491,12 @@ db.ref('moderation/regex').on('value', snap => {
   rebuildProfanityRegexes();
   renderRegexUI();
 });
+
 function renderRegexUI() {
   regexList.innerHTML = '';
   const entries = Object.entries(customRegexList);
   if (!entries.length) {
-    regexList.innerHTML = '<div class="small muted">No regex patterns set.</div>';
+    regexList.innerHTML = '<div class="small muted">No regex patterns.</div>';
     return;
   }
   entries.forEach(([k, w]) => {
@@ -649,12 +1512,18 @@ function renderRegexUI() {
     regexList.appendChild(row);
   });
 }
+
 regexAddBtn.addEventListener('click', async () => {
   if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
   const v = (regexInput.value || '').trim();
   if (!v) return;
   try {
-    new RegExp(v);
+    const parts = v.match(/^\/(.*?)\/([gimsuy]*)$/);
+    if (parts) {
+      new RegExp(parts[1], parts[2]);
+    } else {
+      new RegExp(v);
+    }
   } catch (e) {
     showNotice("Invalid regex pattern.");
     return;
@@ -663,16 +1532,22 @@ regexAddBtn.addEventListener('click', async () => {
   regexInput.value = '';
 });
 
-/* ================== AUTO-BAN SETTINGS (from DB or default) ================== */
-const defaultAutoBan = { threshold: 3, windowMs: 60_000, durationMs: 60*60_1000 };
+/* ================== AUTO-BAN SETTINGS ================== */
+const defaultAutoBan = { threshold: 3, windowMs: 60_000, durationMs: 60*60_000 };
 let autoBanSettings = { ...defaultAutoBan };
+
 const loadAutoBan = ()=> db.ref('moderation/settings').once('value').then(s=>{
   const val = s.val();
   if(val && val.threshold) autoBanSettings = { ...autoBanSettings, ...val };
   abThresholdEl.value = autoBanSettings.threshold;
   abWindowEl.value = Math.round(autoBanSettings.windowMs/1000);
   abDurationEl.value = Math.round(autoBanSettings.durationMs/60000);
-}).catch(()=>{ abThresholdEl.value = autoBanSettings.threshold; abWindowEl.value = Math.round(autoBanSettings.windowMs/1000); abDurationEl.value = Math.round(autoBanSettings.durationMs/60000); });
+}).catch(()=>{
+  abThresholdEl.value = autoBanSettings.threshold;
+  abWindowEl.value = Math.round(autoBanSettings.windowMs/1000);
+  abDurationEl.value = Math.round(autoBanSettings.durationMs/60000);
+});
+
 saveAbBtn.addEventListener('click', ()=>{
   const t = Math.max(1, parseInt(abThresholdEl.value||'3',10));
   const w = Math.max(1, parseInt(abWindowEl.value||'60',10));
@@ -701,7 +1576,7 @@ async function recordOffense(name){
     const until = Date.now() + autoBanSettings.durationMs;
     await db.ref('bans/' + key).set(until);
     await timesRef.remove();
-    showNotice(`${name} was auto-banned for ${Math.round(autoBanSettings.durationMs/60000)} min (auto-ban).`);
+    showNotice(`${name} was auto-banned for ${Math.round(autoBanSettings.durationMs/60000)} min.`);
   }
 }
 
@@ -718,6 +1593,7 @@ async function isBanned(name){
   await db.ref('bans/'+key).remove();
   return false;
 }
+
 async function isTimedOut(name){
   if(!name) return 0;
   const snap = await db.ref('timeouts/'+name.toLowerCase()).once('value');
@@ -726,12 +1602,13 @@ async function isTimedOut(name){
   if(until) await db.ref('timeouts/'+name.toLowerCase()).remove();
   return 0;
 }
+
 function setTimeoutFor(name, msFromNow){
   const until = Date.now() + msFromNow;
   return db.ref('timeouts/'+name.toLowerCase()).set(until);
 }
 
-/* ================== SPAM PROTECTION (client side) ================== */
+/* ================== SPAM PROTECTION ================== */
 const MSG_WINDOW_MS = 10_000;
 const MSG_MAX = 5;
 const CLIENT_SENDS = [];
@@ -755,11 +1632,11 @@ async function uploadAttachment(file){
   });
 }
 
-/* ================== USER PROFILE PIC UPLOAD FLOW (user) ================== */
+/* ================== USER PROFILE PIC UPLOAD ================== */
 meAvatarEl.addEventListener('click', async () => {
   const snap = await db.ref('users/' + username + '/profilePic').once('value');
   if(snap.exists() && snap.val()){
-    showNotice('You already set a profile picture. Only mods/devs can change it.');
+    showNotice('You already have a profile picture.');
     return;
   }
   profilePicInput.click();
@@ -774,21 +1651,21 @@ profilePicInput.addEventListener('change', async (e) => {
   fr.onload = async () => {
     const dataUrl = fr.result;
     const id = db.ref('profilePicsPending').push().key;
-    await db.ref('profilePicsPending/' + id).set({ uploader: username, name: file.name, dataUrl, createdAt: Date.mow() });
-    showNotice('Profile picture uploaded and awaiting moderator approval.');
+    await db.ref('profilePicsPending/' + id).set({ uploader: username, name: file.name, dataUrl, createdAt: Date.now() });
+    showNotice('Profile picture uploaded, awaiting approval.');
     profilePicInput.value = '';
   };
   fr.onerror = () => { showNotice('Failed reading file'); profilePicInput.value = ''; };
   fr.readAsDataURL(file);
 });
 
-/* ================== PROFILE PIC APPROVALS (mod) ================== */
+/* ================== PROFILE PIC APPROVALS ================== */
 db.ref('profilePicsPending').on('value', snap => {
   const val = snap.val() || {};
   pendingPicsListEl.innerHTML = '';
   const entries = Object.entries(val);
   if(!entries.length){
-    pendingPicsListEl.innerHTML = '<div class="small muted">No pending profile pictures.</div>';
+    pendingPicsListEl.innerHTML = '<div class="small muted">No pending pictures.</div>';
     return;
   }
   entries.forEach(([id,data])=>{
@@ -804,23 +1681,13 @@ db.ref('profilePicsPending').on('value', snap => {
     const rejectBtn = document.createElement('button'); rejectBtn.className='btn danger'; rejectBtn.textContent='Reject';
     approveBtn.onclick = async () => {
       if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
-      const userRef = db.ref('users/' + data.uploader + '/profilePic');
-      const existing = (await userRef.once('value')).val();
-      if(existing){
-        const ok = prompt(`${data.uploader} already has a profile picture. Overwrite? Type YES to confirm.`);
-        if (ok !== 'YES') return;
-      }
-      await userRef.set(data.dataUrl);
+      await db.ref('users/' + data.uploader + '/profilePic').set(data.dataUrl);
       await db.ref('profilePicsPending/' + id).remove();
-      await db.ref('profilePicsApproved/' + data.uploader).set({ approvedBy: username, approvedAt: Date.now() });
       showNotice('Profile picture approved.');
     };
     rejectBtn.onclick = async () => {
       if(!canModerate(myRole)){ showNotice('Mod access required'); return; }
-      const ok = prompt('Reject and delete this profile picture? Type YES to confirm.');
-      if (ok !== 'YES') return;
       await db.ref('profilePicsPending/' + id).remove();
-      await db.ref('profilePicsRejected/' + data.uploader + '/' + id).set({ rejectedBy: username, rejectedAt: Date.now() });
       showNotice('Profile picture rejected.');
     };
     actions.appendChild(approveBtn);
@@ -832,10 +1699,10 @@ db.ref('profilePicsPending').on('value', snap => {
   });
 });
 
-/* ================== POLLS (also posted to chat) ================== */
+/* ================== POLLS ================== */
 async function createPoll(question, optionsArr){
   const key = db.ref('polls').push().key;
-  const obj = { question, options: {}, createdBy: username, createdAt: Date.now(), active: true };
+  const obj = { question, options: {}, votes: {}, createdBy: username, createdAt: Date.now(), active: true };
   optionsArr.forEach(o=> obj.options[o] = 0);
   await db.ref('polls/' + key).set(obj);
   const chatId = db.ref('chat/messages').push().key;
@@ -864,25 +1731,20 @@ function renderMessageObj(m, id, chatId='main'){
   const when = document.createElement('span'); when.className='when'; when.textContent = fmtTime(m.timestamp || Date.now());
   const actions = document.createElement('div'); actions.className='bubble-actions';
 
-  // Private chat actions for non-mods
   if(!canModerate(myRole) && chatId !== 'main'){
     const leaveBtn = document.createElement('button');
     leaveBtn.className = 'btn danger';
     leaveBtn.textContent = 'Leave';
     leaveBtn.onclick = () => {
-      const ok = prompt('Are you sure you want to leave this chat? Type YES to confirm.');
-      if(ok === 'YES'){
-        db.ref('private_chats/' + chatId + '/members/' + username).remove();
-        db.ref('users/' + username + '/private_chats/' + chatId).remove();
-        activeChatId = 'main';
-        loadChat('main');
-        showNotice('You have left the chat.');
-      }
+      db.ref('private_chats/' + chatId + '/members/' + username).remove();
+      db.ref('users/' + username + '/private_chats/' + chatId).remove();
+      activeChatId = 'main';
+      loadChat('main');
+      showNotice('You left the chat.');
     };
     actions.appendChild(leaveBtn);
   }
 
-  // Mod actions
   if(canModerate(myRole)){
     const pin = document.createElement('button');
     pin.className='btn';
@@ -890,18 +1752,17 @@ function renderMessageObj(m, id, chatId='main'){
     pin.onclick = async ()=> {
       if (pinnedId === id) {
         await setPinnedMessage(null);
-        showNotice('Message unpinned.');
+        showNotice('Unpinned.');
       } else {
         await setPinnedMessage(id);
-        showNotice('Message pinned.');
+        showNotice('Pinned.');
       }
     };
     actions.appendChild(pin);
     const del = document.createElement('button'); del.className='btn danger'; del.textContent = 'Delete';
-    // The delete button now removes the message without a confirmation dialog.
     del.onclick = ()=> {
       db.ref((chatId === 'main' ? 'chat/messages/' : `private_chats/${chatId}/messages/`) + id).remove();
-      showNotice('Message deleted.');
+      showNotice('Deleted.');
     };
     const ban = document.createElement('button'); ban.className='btn'; ban.textContent='Ban';
     ban.onclick = ()=> banPrompt(m.user);
@@ -916,18 +1777,43 @@ function renderMessageObj(m, id, chatId='main'){
 
   if(m.type === 'poll' && m.pollId){
     const pollWrap = document.createElement('div'); pollWrap.className='poll'; pollWrap.id = 'poll_' + m.pollId;
-    pollWrap.innerHTML = `<strong>${m.text}</strong><div id="poll_opts_${m.pollId}" style="margin-top:8px"></div>`;
+    pollWrap.innerHTML = `<strong>Poll: ${m.text}</strong><div id="poll_opts_${m.pollId}" style="margin-top:8px"></div>`;
     main.appendChild(pollWrap);
-    db.ref('polls/' + m.pollId).once('value').then(s=>{
+    
+    db.ref('polls/' + m.pollId).on('value', s=>{
       const p = s.val();
       if(!p) return;
-      const optEl = document.getElementById('poll_opts_' + m.pollId); optEl.innerHTML = '';
+      const optEl = document.getElementById('poll_opts_' + m.pollId);
+      if(!optEl) return;
+      optEl.innerHTML = '';
+      const votes = p.votes || {};
+      const voteCounts = {};
+      Object.values(votes).forEach(opt => {
+        voteCounts[opt] = (voteCounts[opt] || 0) + 1;
+      });
+      
       Object.keys(p.options || {}).forEach(opt=>{
-        const row = document.createElement('div'); row.style.display='flex'; row.style.gap='6px'; row.style.alignItems='center';
-        const optBtn = document.createElement('button'); optBtn.className='btn'; optBtn.textContent = opt;
-        optBtn.onclick = ()=> db.ref('polls/' + m.pollId + '/votes/' + username).set(opt);
-        const count = document.createElement('span'); count.className='small muted'; count.textContent = p.options[opt];
-        row.appendChild(optBtn); row.appendChild(count);
+        const row = document.createElement('div');
+        row.style.display='flex';
+        row.style.gap='8px';
+        row.style.alignItems='center';
+        row.style.marginBottom='6px';
+        const optBtn = document.createElement('button');
+        optBtn.className='btn';
+        optBtn.textContent = opt;
+        optBtn.style.flex = '1';
+        optBtn.onclick = ()=> {
+          db.ref('polls/' + m.pollId + '/votes/' + username).set(opt);
+        };
+        if(votes[username] === opt) {
+          optBtn.style.background = 'var(--accent)';
+          optBtn.style.color = '#000';
+        }
+        const count = document.createElement('span');
+        count.className='small muted';
+        count.textContent = `${voteCounts[opt] || 0} votes`;
+        row.appendChild(optBtn);
+        row.appendChild(count);
         optEl.appendChild(row);
       });
     });
@@ -949,7 +1835,6 @@ function renderMessageObj(m, id, chatId='main'){
 /* ================== CHAT SWITCHING ================== */
 let activeChatId = 'main';
 let chatListeners = {};
-let previousChats = {};
 
 function detachAllChatListeners() {
   Object.keys(chatListeners).forEach(ref => {
@@ -963,17 +1848,19 @@ function loadChat(chatId) {
   activeChatId = chatId;
   scroller.innerHTML = '';
   
-  // Update active link in sidebar
-  document.querySelectorAll('.sidebar .private-chat-list-item').forEach(a => a.classList.remove('active'));
-  document.getElementById('mainChatLink').classList.remove('active');
-  const activeLink = document.getElementById(`chat_${chatId}`);
-  if(activeLink) activeLink.classList.add('active');
-  if(chatId === 'main') document.getElementById('mainChatLink').classList.add('active');
+  // Update dropdown active states
+  document.querySelectorAll('.chat-dropdown-item').forEach(el => el.classList.remove('active'));
+  if(chatId === 'main') {
+    mainChatOption.classList.add('active');
+    chatTitleText.textContent = '# general';
+    input.placeholder = 'Message #general';
+  } else {
+    const chatOption = document.querySelector(`.chat-dropdown-item[data-chat="${chatId}"]`);
+    if(chatOption) chatOption.classList.add('active');
+  }
 
   let refPath = '';
   if (chatId === 'main') {
-    chatTitle.textContent = '# general';
-    input.placeholder = 'Message #general';
     refPath = 'chat/messages';
   } else {
     db.ref('private_chats/' + chatId).once('value').then(snap => {
@@ -983,8 +1870,9 @@ function loadChat(chatId) {
         loadChat('main');
         return;
       }
-      chatTitle.textContent = chatData.members.join(', ');
-      input.placeholder = 'Message ' + chatData.members.join(', ');
+      const displayName = chatData.members.filter(m => m !== username).join(', ') || 'Private Chat';
+      chatTitleText.textContent = displayName;
+      input.placeholder = 'Message ' + displayName;
     });
     refPath = `private_chats/${chatId}/messages`;
   }
@@ -1004,8 +1892,10 @@ function loadChat(chatId) {
   });
 }
 
-mainChatLink.addEventListener('click', () => loadChat('main'));
-meAvatarEl.addEventListener('click', () => loadChat('main'));
+mainChatLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  loadChat('main');
+});
 
 /* ================== PRIVATE CHAT MANAGEMENT ================== */
 let userChats = {};
@@ -1016,12 +1906,12 @@ db.ref('users/' + username + '/private_chats').on('value', snap => {
 
   if(newChatIds.length > 0){
     newChatIds.forEach(id => {
-      showNotice(`You've been added to a new private chat!`);
+      showNotice(`You've been added to a new chat!`);
     });
   }
 
   userChats = newChats;
-  renderPrivateChats();
+  renderPrivateChatsDropdown();
   if (activeChatId !== 'main' && !userChats[activeChatId]) {
     loadChat('main');
   }
@@ -1034,61 +1924,67 @@ if (canModerate(myRole)) {
   });
 }
 
-function renderPrivateChats() {
-  privateChatsList.innerHTML = '';
+function renderPrivateChatsDropdown() {
+  privateChatOptions.innerHTML = '';
+  
   const entries = Object.entries(userChats);
   if (entries.length === 0) {
-    privateChatsList.innerHTML = '<div class="small muted" id="privateChatsEmpty">No private chats yet.</div>';
     return;
   }
   
   entries.forEach(([id, members]) => {
     const el = document.createElement('div');
-    el.className = 'private-chat-list-item';
+    el.className = 'chat-dropdown-item';
+    el.dataset.chat = id;
     if(id === activeChatId) el.classList.add('active');
     
-    // Check if it's a new chat from the previous render state
-    const isNew = !previousChats[id];
-    if(isNew) {
-      el.classList.add('new');
-      setTimeout(() => el.classList.remove('new'), 2000);
-    }
+    const displayName = members.filter(m => m !== username).join(', ') || 'Private Chat';
     
-    el.id = 'chat_' + id;
-    el.innerHTML = `<div class="chat-title-info"><h4>${members.join(', ')}</h4><span class="small muted">Private Chat</span></div>`;
-    el.onclick = () => loadChat(id);
-    privateChatsList.appendChild(el);
+    el.innerHTML = `
+      <div class="chat-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+      <div class="chat-info">
+        <h5>${displayName}</h5>
+        <span>Private Chat</span>
+      </div>
+    `;
+    el.onclick = () => {
+      loadChat(id);
+      chatDropdown.classList.remove('visible');
+      chatSelectorBtn.classList.remove('open');
+    };
+    privateChatOptions.appendChild(el);
   });
-  previousChats = userChats;
 }
 
 function renderModPrivateChats(chats) {
   modPrivateChatsList.innerHTML = '';
   const entries = Object.entries(chats);
   if (entries.length === 0) {
-    modPrivateChatsList.innerHTML = '<div class="small muted">No private chats to monitor.</div>';
+    modPrivateChatsList.innerHTML = '<div class="small muted">No private chats.</div>';
     return;
   }
   entries.forEach(([id, data]) => {
     const el = document.createElement('div');
     el.className = 'mod-chat-item';
-    el.innerHTML = `<div><strong>${data.members.join(', ')}</strong><br><span class="small muted">Last Msg: ${new Date(data.lastMessageTimestamp).toLocaleString()}</span></div>`;
+    el.innerHTML = `<div><strong>${data.members.join(', ')}</strong><br><span class="small muted">Last: ${new Date(data.lastMessageTimestamp||0).toLocaleString()}</span></div>`;
     const actions = document.createElement('div');
+    actions.style.display = 'flex';
+    actions.style.gap = '6px';
     const viewBtn = document.createElement('button');
     viewBtn.className = 'btn';
     viewBtn.textContent = 'View';
     viewBtn.onclick = () => {
-      if(activeChatId === id){
-        loadChat('main');
-        return;
-      }
       loadChat(id);
     };
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn danger';
     deleteBtn.textContent = 'Delete';
     deleteBtn.onclick = () => {
-      const ok = prompt('Are you sure you want to delete this private chat? This cannot be undone. Type YES to confirm.');
+      const ok = prompt('Delete this chat? Type YES to confirm.');
       if(ok === 'YES'){
         db.ref('private_chats/' + id).remove();
         data.members.forEach(member => {
@@ -1109,26 +2005,18 @@ function renderModPrivateChats(chats) {
 /* ================== CREATE CHAT DROPDOWN ================== */
 let selectedUsers = [];
 
-createChatBtn.addEventListener('click', () => {
-  createChatDropdown.classList.add('visible');
-  userSearch.focus();
-  userSearch.value = '';
-  selectedUsers = [];
-  renderUserListForDropdown();
-});
-
 cancelCreateChatBtn.addEventListener('click', () => {
   createChatDropdown.classList.remove('visible');
 });
 
 confirmCreateChatBtn.addEventListener('click', async () => {
   if (selectedUsers.length === 0) {
-    showNotice('Please select at least one user.');
+    showNotice('Select at least one user.');
     return;
   }
   
   if (selectedUsers.length > 9) {
-    showNotice('You can select a maximum of 9 users.');
+    showNotice('Max 9 users.');
     return;
   }
   
@@ -1139,7 +2027,7 @@ confirmCreateChatBtn.addEventListener('click', async () => {
     const chatId = Object.keys(existingChatSnap.val())[0];
     loadChat(chatId);
     createChatDropdown.classList.remove('visible');
-    showNotice('You are already in this chat.');
+    showNotice('Chat already exists.');
     return;
   }
   
@@ -1147,7 +2035,8 @@ confirmCreateChatBtn.addEventListener('click', async () => {
   const chatData = {
     members: members,
     members_sorted: members.join(','),
-    createdAt: Date.now()
+    createdAt: Date.now(),
+    lastMessageTimestamp: Date.now()
   };
   
   const updates = {};
@@ -1160,7 +2049,7 @@ confirmCreateChatBtn.addEventListener('click', async () => {
   
   loadChat(newChatId);
   createChatDropdown.classList.remove('visible');
-  showNotice('New chat created successfully!');
+  showNotice('Chat created!');
 });
 
 userSearch.addEventListener('input', () => {
@@ -1170,6 +2059,11 @@ userSearch.addEventListener('input', () => {
 function renderUserListForDropdown(searchTerm = '') {
   userListEl.innerHTML = '';
   const filteredUsers = allUsers.filter(u => u.toLowerCase() !== username.toLowerCase() && u.toLowerCase().includes(searchTerm.toLowerCase()));
+  
+  if(filteredUsers.length === 0){
+    userListEl.innerHTML = '<div class="small muted" style="padding:12px">No users found.</div>';
+    return;
+  }
   
   filteredUsers.forEach(user => {
     const el = document.createElement('div');
@@ -1189,7 +2083,7 @@ function renderUserListForDropdown(searchTerm = '') {
           selectedUsers.push(user);
           el.classList.add('selected');
         } else {
-          showNotice('You can select a maximum of 9 users.');
+          showNotice('Max 9 users.');
         }
       }
     };
@@ -1197,16 +2091,12 @@ function renderUserListForDropdown(searchTerm = '') {
   });
 }
 
-// REMOVED DUPLICATE MAIN CHAT LISTENER FROM HERE
-// db.ref('chat/messages').on('child_added', snap => { ... });
-
 db.ref('chat/messages').on('child_removed', snap => {
   const id = snap.key;
   const el = document.getElementById('m_' + id);
   if(el) el.remove();
 });
 
-// Pinned message watcher
 let pinnedId = null;
 db.ref('moderation/pinned').on('value', async snap=>{
   pinnedId = snap.val();
@@ -1218,51 +2108,46 @@ db.ref('moderation/pinned').on('value', async snap=>{
   pinnedSlot.style.display = 'block';
 });
 
-// Pause watcher
 let isPaused = false;
 db.ref('moderation/paused').on('value', snap=>{
   isPaused = snap.val();
-  input.placeholder = isPaused ? 'Chat is paused by a moderator.' : 'Message #general';
-  sendBtn.disabled = isPaused;
-  input.disabled = isPaused;
-  fileInput.disabled = isPaused;
+  input.placeholder = isPaused ? 'Chat is paused' : (activeChatId === 'main' ? 'Message #general' : 'Message...');
+  sendBtn.disabled = isPaused && activeChatId === 'main';
+  input.disabled = isPaused && activeChatId === 'main';
+  fileInput.disabled = isPaused && activeChatId === 'main';
 });
 
-/* ================== SEND MESSAGE / COMMAND ================== */
+/* ================== SEND MESSAGE ================== */
 sendBtn.addEventListener('click', async ()=>{
-  if(isPaused && activeChatId === 'main'){ showNotice('Main chat is currently paused.'); return; }
+  if(isPaused && activeChatId === 'main'){ showNotice('Chat is paused.'); return; }
   let text = input.value.trim();
   if(!text && !fileInput.files.length) return;
   
-  if(checkClientSpam()){ showNotice('Sending messages too quickly. Please wait.'); return; }
-  if(containsProfanity(text)){ showNotice('Your message contains profanity.'); recordOffense(username); return; }
-  if(await isBanned(username)){ showNotice('You are banned from chat.'); return; }
-  if(await isTimedOut(username)){ showNotice('You are timed out from chat.'); return; }
+  if(checkClientSpam()){ showNotice('Slow down!'); return; }
+  if(containsProfanity(text)){ showNotice('Message contains profanity.'); recordOffense(username); return; }
+  if(await isBanned(username)){ showNotice('You are banned.'); return; }
+  if(await isTimedOut(username)){ showNotice('You are timed out.'); return; }
   
   recordClientSend();
   
-  // Handle Commands
   const parts = text.split(/\s+/);
   const cmd = parts[0].toLowerCase();
 
-  // !game command
   if(cmd === '!game' && activeChatId === 'main'){
     await db.ref('moderation/gameRequests').push({ user: username, timestamp: Date.now() });
     input.value = '';
-    showNotice('Game request sent to the moderation menu.');
+    showNotice('Game request sent.');
     return;
   }
 
-  // !mod command
   if(cmd === '!mod' && activeChatId === 'main'){
-    const message = parts.slice(1).join(' ').trim() || 'No message provided.';
-    await db.ref('moderation/modNotifications').push({ user: username, message: message, timestamp: Date.mow() });
+    const message = parts.slice(1).join(' ').trim() || 'No message.';
+    await db.ref('moderation/modNotifications').push({ user: username, message: message, timestamp: Date.now() });
     input.value = '';
-    showNotice('Mod notification sent successfully.');
+    showNotice('Mod notification sent.');
     return;
   }
 
-  // Custom bot commands
   const botResponsesRef = db.ref('moderation/customBotResponses');
   const snap = await botResponsesRef.once('value');
   const responses = snap.val() || {};
@@ -1279,7 +2164,6 @@ sendBtn.addEventListener('click', async ()=>{
     return;
   }
 
-  // Handle regular messages and attachments
   if(activeChatId === 'main'){
     try {
       if(fileInput.files.length){
@@ -1306,10 +2190,9 @@ sendBtn.addEventListener('click', async ()=>{
         input.value = '';
       }
     } catch(e) {
-      showNotice('Failed to send message: ' + e.message, true);
+      showNotice('Failed: ' + e.message);
     }
   } else {
-    // Private chat message logic
     try {
       const chatRef = db.ref('private_chats/' + activeChatId);
       const messageRef = chatRef.child('messages').push();
@@ -1323,13 +2206,14 @@ sendBtn.addEventListener('click', async ()=>{
       await chatRef.update({ lastMessageTimestamp: Date.now() });
       input.value = '';
     } catch(e) {
-      showNotice('Failed to send message: ' + e.message, true);
+      showNotice('Failed: ' + e.message);
     }
   }
 });
+
 input.addEventListener('keyup', (e)=>{ if(e.key==='Enter') sendBtn.click(); });
 
-/* ================== MODERATION PANEL LISTENERS ================== */
+/* ================== MODERATION PANEL ================== */
 function renderUserList(container, data, actionBtnText, onActionClick){
   container.innerHTML = '';
   const entries = Object.entries(data);
@@ -1349,6 +2233,7 @@ function renderUserList(container, data, actionBtnText, onActionClick){
 }
 
 db.ref('bans').on('value', s=> renderUserList(bannedListEl, s.val()||{}, 'Unban', (name) => db.ref('bans/'+name).remove()));
+
 db.ref('timeouts').on('value', s=>{
   timeoutListEl.innerHTML = '';
   const entries = Object.entries(s.val()||{});
@@ -1358,7 +2243,7 @@ db.ref('timeouts').on('value', s=>{
     const timeLeft = Math.round((until - Date.now())/1000);
     el.innerHTML = `<span>${name}</span> <span class="small muted">${timeLeft}s</span>`;
     const actions = document.createElement('div');
-    const del = document.createElement('button'); del.className='btn danger'; del.textContent='Untimeout';
+    const del = document.createElement('button'); del.className='btn danger'; del.textContent='Remove';
     del.onclick = ()=> db.ref('timeouts/'+name).remove();
     actions.appendChild(del);
     el.appendChild(actions);
@@ -1372,35 +2257,35 @@ db.ref('offenses').on('value', s=>{
   if(!entries.length){ offensesListEl.innerHTML = '<div class="small muted">None.</div>'; return; }
   entries.forEach(([name, data])=>{
     const el = document.createElement('div');
-    el.innerHTML = `<span>${name}</span> <span class="small muted">${Object.values(data.times||{}).length} offenses</span>`;
+    el.innerHTML = `<span>${name}</span> <span class="small muted">${Object.values(data.times||{}).length} offense(s)</span>`;
     offensesListEl.appendChild(el);
   });
 });
 
 function banPrompt(user){
   if(!canModerate(myRole)) return;
-  const dur = prompt('Ban user ' + user + ' for how many minutes? (type "perm" for permanent)');
+  const dur = prompt('Ban ' + user + ' for how many minutes? (or "perm")');
   if(dur === null) return;
   if(dur.toLowerCase() === 'perm'){ db.ref('bans/'+user.toLowerCase()).set('perm'); showNotice(user + ' permanently banned.'); return; }
   const mins = parseInt(dur, 10);
   if(mins > 0){
     const until = Date.now() + mins * 60_000;
     db.ref('bans/'+user.toLowerCase()).set(until);
-    showNotice(user + ' banned for ' + mins + ' minutes.');
+    showNotice(user + ' banned for ' + mins + ' min.');
   }
 }
 
 togglePauseBtn.addEventListener('click', async()=>{
   if(!canModerate(myRole)) return;
   await setPaused(!isPaused);
-  showNotice('Main chat is now ' + (isPaused ? 'paused' : 'unpaused'));
+  showNotice('Chat ' + (isPaused ? 'paused' : 'unpaused'));
 });
 
 createPollBtn.addEventListener('click', async ()=>{
   if(!canModerate(myRole)) return;
   const q = pollQEl.value.trim();
   const opts = pollOptionsEl.value.split(',').map(s=>s.trim()).filter(s=>s);
-  if(!q || opts.length < 2){ showNotice('Need a question and at least 2 options.'); return; }
+  if(!q || opts.length < 2){ showNotice('Need question and 2+ options.'); return; }
   await createPoll(q, opts);
   pollQEl.value = '';
   pollOptionsEl.value = '';
@@ -1412,7 +2297,7 @@ db.ref('moderation/gameRequests').on('value', snap => {
   gameRequestsList.innerHTML = '';
   const entries = Object.entries(reqs);
   if (!entries.length) {
-    gameRequestsList.innerHTML = '<div class="small muted">No game requests.</div>';
+    gameRequestsList.innerHTML = '<div class="small muted">No requests.</div>';
     return;
   }
   entries.forEach(([k, req]) => {
@@ -1437,7 +2322,7 @@ db.ref('moderation/modNotifications').on('value', snap => {
   modNotificationsList.innerHTML = '';
   const entries = Object.entries(notifs);
   if (!entries.length) {
-    modNotificationsList.innerHTML = '<div class="small muted">No new notifications.</div>';
+    modNotificationsList.innerHTML = '<div class="small muted">No notifications.</div>';
     return;
   }
   entries.forEach(([k, notif]) => {
@@ -1447,6 +2332,7 @@ db.ref('moderation/modNotifications').on('value', snap => {
     content.innerHTML = `<strong>${notif.user}</strong> <span class="small muted">${new Date(notif.timestamp).toLocaleTimeString()}</span>`;
     const msg = document.createElement('div');
     msg.textContent = notif.message;
+    msg.style.marginTop = '4px';
     const actions = document.createElement('div');
     actions.style.marginTop = '6px';
     const dismissBtn = document.createElement('button');
@@ -1478,7 +2364,7 @@ db.ref('moderation/modChat').orderByChild('timestamp').on('child_added', snap =>
   const el = document.createElement('div');
   el.innerHTML = `<div><strong>${m.user}</strong> <span class="small muted">${fmtTime(m.timestamp)}</span></div><div style="margin-top:4px">${m.text}</div>`;
   el.style.padding = '8px';
-  el.style.borderBottom = '1px solid rgba(255,255,255,0.02)';
+  el.style.borderBottom = '1px solid var(--border)';
   modChatList.appendChild(el);
   modChatList.scrollTop = modChatList.scrollHeight;
 });
@@ -1488,7 +2374,7 @@ db.ref('moderation/customBotResponses').on('value', snap => {
   botResponsesList.innerHTML = '';
   const entries = Object.entries(responses);
   if (!entries.length) {
-    botResponsesList.innerHTML = '<div class="small muted">No custom bot responses.</div>';
+    botResponsesList.innerHTML = '<div class="small muted">No bot responses.</div>';
     return;
   }
   entries.forEach(([k, response]) => {
@@ -1513,17 +2399,19 @@ botResponseAddBtn.addEventListener('click', async () => {
   const command = (botCommandInput.value || '').trim().toLowerCase();
   const response = (botResponseInput.value || '').trim();
   if (!command.startsWith('!') || !response) {
-    showNotice('Command must start with "!" and response cannot be empty.');
+    showNotice('Command must start with "!" and response required.');
     return;
   }
   await db.ref('moderation/customBotResponses').push({ command, text: response });
   botCommandInput.value = '';
   botResponseInput.value = '';
+  showNotice('Bot command added.');
 });
 
 /* ================== INIT ================== */
 loadAutoBan();
 loadChat('main');
+updateModPanelVisibility();
 </script>
 </body>
 </html>
