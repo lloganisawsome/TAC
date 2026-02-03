@@ -24,7 +24,7 @@
             height: 100%;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg);
-            color: #e8eaed;
+            color: #fff;
             font-size: 14px;
             overflow: hidden;
         }
@@ -33,7 +33,7 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
 
-        /* Floating Sidebar */
+        /* Sidebar */
         .sidebar {
             position: fixed;
             left: 10px;
@@ -84,7 +84,6 @@
             width: 100%;
             padding: 0 8px;
             transition: opacity 0.3s;
-            flex: 1;
         }
 
         .sidebar.collapsed .nav-items {
@@ -103,9 +102,6 @@
             color: var(--accent);
             transition: all 0.2s ease;
             cursor: pointer;
-            border: none;
-            background: transparent;
-            padding: 0;
         }
 
         .nav-item:hover {
@@ -168,14 +164,12 @@
 
         /* Main Layout */
         .wrap {
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 18px;
+            margin-left: 100px;
+            padding: 24px;
             height: 100vh;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
-            margin-left: 100px;
             transition: margin-left 0.3s ease;
         }
 
@@ -203,7 +197,7 @@
             border-radius: 10px;
             outline: none;
             width: 100%;
-            color: #e8eaed;
+            color: #fff;
             font-size: 16px;
             box-sizing: border-box;
         }
@@ -387,7 +381,7 @@
             margin-top: 10px;
         }
 
-        @media(max-width: 600px) {
+        @media(max-width: 768px) {
             .sidebar { display: none; }
             .toggle-btn { display: none; }
             .wrap { margin-left: 0 !important; }
@@ -437,7 +431,7 @@
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
             </svg>
-            <span>Apps</span>
+            <span>All Apps</span>
         </a>
     </nav>
 </aside>
@@ -541,7 +535,7 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     
-    // --- Theme System ---
+    // --- Theme System (matching file 2) ---
     const themeColors = {
         green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
         blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
@@ -550,7 +544,9 @@
         pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
         purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
         yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
-        orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' }
+        orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+        white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+        whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
     };
 
     function applyTheme() {

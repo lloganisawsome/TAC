@@ -145,6 +145,7 @@
   .controls{display:flex;gap:8px;flex-wrap:wrap}
   button{background:linear-gradient(180deg,var(--accent),#08b55a);border:none;padding:10px 14px;border-radius:10px;font-weight:700;color:#042;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.3)}
   button.secondary{background:transparent;border:1px solid var(--border);color:var(--muted);box-shadow:none}
+  button:disabled{opacity:0.5;cursor:not-allowed}
   input[type=number]{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:inherit}
   select{padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:inherit}
   .small{font-size:13px;color:var(--muted)}
@@ -170,12 +171,24 @@
   .multiplayer-panel{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:12px}
   .player-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
   .player-item{background:rgba(255,255,255,0.02);padding:8px;border-radius:6px;display:flex;justify-content:space-between;align-items:center}
+  .player-item.ready{border:2px solid var(--accent)}
+  
+  /* Chess Board */
+  .chess-board{display:grid;grid-template-columns:repeat(8,50px);grid-template-rows:repeat(8,50px);margin:20px auto;width:fit-content;border:3px solid var(--accent)}
+  .chess-square{width:50px;height:50px;display:flex;align-items:center;justify-content:center;font-size:32px;cursor:pointer;user-select:none}
+  .chess-square.white{background:#f0d9b5}
+  .chess-square.black{background:#b58863}
+  .chess-square.selected{background:var(--accent)!important}
+  .chess-square.valid-move{background:rgba(34,197,94,0.3)!important}
+  
   @media (max-width:900px){
     .row{flex-direction:column}
     .track{height:220px}
     .app{margin-left:24px;}
     .sidebar{display:none}
     .toggle-btn{display:none}
+    .chess-board{grid-template-columns:repeat(8,40px);grid-template-rows:repeat(8,40px)}
+    .chess-square{width:40px;height:40px;font-size:24px}
   }
 </style>
 </head>
@@ -247,6 +260,7 @@
     <div class="tab inactive" data-screen="coins">Coin & Dice</div>
     <div class="tab inactive" data-screen="wheel">Wheel</div>
     <div class="tab inactive" data-screen="blackjack">Blackjack</div>
+    <div class="tab inactive" data-screen="chess">Chess</div>
     <div class="tab inactive" data-screen="roulette">Roulette</div>
     <div class="tab inactive" data-screen="horses">Horse Racing</div>
     <div class="tab inactive" data-screen="texas">Texas Hold'em</div>
@@ -421,17 +435,20 @@
       </div>
 
       <div id="blackjack" class="screen">
-        <div class="game-title"><h2>Blackjack</h2><div class="small">Multiplayer enabled - play against others!</div></div>
+        <div class="game-title"><h2>Blackjack PvP</h2><div class="small">Play against another player! One is dealer, one is player. Winner takes both bets!</div></div>
         
         <div class="multiplayer-panel">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div class="small">Multiplayer Mode</div>
-            <button id="createRoom" class="secondary">Create Room</button>
-            <button id="joinRoom" class="secondary">Join Room</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <div class="small">Multiplayer Mode (2 players max)</div>
+            <div style="display:flex;gap:8px">
+              <input id="bjBetInput" type="number" min="10" value="50" placeholder="Bet" style="width:80px" />
+              <button id="bjCreateRoom" class="secondary">Create Room</button>
+              <button id="bjJoinRoom" class="secondary">Join Room</button>
+            </div>
           </div>
-          <input id="roomCode" type="text" placeholder="Room code" style="width:150px;margin-top:8px" />
-          <div id="roomInfo" class="small" style="margin-top:8px">Not in a room</div>
-          <div class="player-list" id="playerList"></div>
+          <input id="bjRoomCode" type="text" placeholder="Room code" style="width:150px;margin-top:8px" />
+          <div id="bjRoomInfo" class="small" style="margin-top:8px">Not in a room</div>
+          <div class="player-list" id="bjPlayerList"></div>
         </div>
 
         <div class="row" style="margin-top:12px">
@@ -440,14 +457,44 @@
             <div class="cards" id="bjPlayerCards"></div>
             <div class="small">Player total: <span id="bjPlayerTotal">0</span></div>
             <hr>
-            <div><strong>Dealer</strong></div>
+            <div><strong>Opponent</strong></div>
             <div class="cards" id="bjDealerCards"></div>
-            <div class="small">Dealer total: <span id="bjDealerTotal">0</span></div>
+            <div class="small">Opponent total: <span id="bjDealerTotal">0</span></div>
             <div style="margin-top:8px">
               <button id="bjDeal">Deal</button>
               <button id="bjHit" class="secondary">Hit</button>
               <button id="bjStand" class="secondary">Stand</button>
+              <button id="bjReady" class="secondary">Ready</button>
               <div class="message small" id="bjMsg">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="chess" class="screen">
+        <div class="game-title"><h2>Chess PvP</h2><div class="small">Play chess against another player! Winner takes both bets!</div></div>
+        
+        <div class="multiplayer-panel">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+            <div class="small">Chess Match (2 players, equal bets)</div>
+            <div style="display:flex;gap:8px">
+              <input id="chessBetInput" type="number" min="10" value="50" placeholder="Bet" style="width:80px" />
+              <button id="chessCreateRoom" class="secondary">Create Room</button>
+              <button id="chessJoinRoom" class="secondary">Join Room</button>
+            </div>
+          </div>
+          <input id="chessRoomCode" type="text" placeholder="Room code" style="width:150px;margin-top:8px" />
+          <div id="chessRoomInfo" class="small" style="margin-top:8px">Not in a room</div>
+          <div class="player-list" id="chessPlayerList"></div>
+          <button id="chessReady" class="secondary" style="margin-top:8px">Ready to Play</button>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <div class="card">
+            <div id="chessBoard" class="chess-board"></div>
+            <div class="message small" id="chessMsg" style="text-align:center">Create or join a room to start</div>
+            <div style="text-align:center;margin-top:12px">
+              <button id="chessResign" class="secondary">Resign</button>
             </div>
           </div>
         </div>
@@ -660,7 +707,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-/* Theme System - Backend Only */
+/* Theme System */
 const themeColors = {
   green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
   blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
@@ -895,10 +942,10 @@ document.getElementById('half').addEventListener('click', ()=> {
   setMsg('qbMsg','Bet set to half.');
 });
 
-/* WHEEL - DECLARE wheelSlices BEFORE buildWheel */
+/* WHEEL */
 const wheelCanvas = document.getElementById('wheelCanvas');
 const wctx = wheelCanvas.getContext('2d');
-const wheelSlices = []; // DECLARE HERE FIRST
+const wheelSlices = [];
 
 function drawWheel(slices, angle=0){
   const cx = wheelCanvas.width/2, cy = wheelCanvas.height/2, r = Math.min(cx,cy)-10;
@@ -1017,7 +1064,6 @@ document.getElementById('spinWheel').addEventListener('click', ()=> actionWithCo
   else if(res.type==='bonus'){ resultText='BONUS SPIN!'; setMsg('wheelMsg','Bonus spin! Go again!'); award(bet); }
 }));
 
-/* Theme Application - Call AFTER buildWheel is defined */
 function applyTheme() {
   const theme = localStorage.getItem('theme') || 'green';
   const colors = themeColors[theme] || themeColors.green;
@@ -1039,7 +1085,7 @@ window.addEventListener('storage', (e) => {
   }
 });
 
-/* BLACKJACK */
+/* BLACKJACK PVP */
 function makeDeck(){
   const suits = ['♠','♥','♦','♣']; const ranks = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
   const deck=[];
@@ -1060,131 +1106,184 @@ function handTotals(hand){
 }
 
 let bjDeck=[], bjPlayer=[], bjDealer=[], bjBetAmount = 0;
-let currentRoom = null;
+let bjCurrentRoom = null;
 const username = localStorage.getItem('lastLoggedInUser') || 'Guest' + Math.floor(Math.random()*1000);
+let bjMyRole = null;
 
 function shuffleDeck(d){ for(let i=d.length-1;i>0;i--){ const j=rngInt(i+1); [d[i],d[j]]=[d[j],d[i]]; } }
 
-document.getElementById('createRoom').addEventListener('click', ()=> {
-  const roomCode = 'ROOM' + Math.floor(Math.random()*10000);
-  currentRoom = roomCode;
-  document.getElementById('roomCode').value = roomCode;
-  document.getElementById('roomInfo').textContent = `Room: ${roomCode} (Host)`;
+document.getElementById('bjCreateRoom').addEventListener('click', ()=> {
+  const roomCode = 'BJ' + Math.floor(Math.random()*10000);
+  const bet = Math.max(10, Number(document.getElementById('bjBetInput').value) || 50);
   
-  database.ref('casino_rooms/' + roomCode).set({
+  bjCurrentRoom = roomCode;
+  bjMyRole = 'host';
+  document.getElementById('bjRoomCode').value = roomCode;
+  document.getElementById('bjRoomInfo').textContent = `Room: ${roomCode} (You are Dealer) - Bet: ${bet}`;
+  
+  database.ref('bj_rooms/' + roomCode).set({
     host: username,
-    players: {[username]: {chips: state.chips, ready: false}},
-    created: Date.now()
+    bet: bet,
+    players: {
+      [username]: {chips: state.chips, ready: false, role: 'dealer'}
+    },
+    created: Date.now(),
+    gameState: 'waiting'
   });
   
-  listenToRoom(roomCode);
-  setMsg('bjMsg', 'Room created! Share code with friends.');
+  listenToBJRoom(roomCode);
+  setMsg('bjMsg', 'Room created! Share code. Waiting for opponent...');
 });
 
-document.getElementById('joinRoom').addEventListener('click', ()=> {
-  const roomCode = document.getElementById('roomCode').value.trim();
+document.getElementById('bjJoinRoom').addEventListener('click', ()=> {
+  const roomCode = document.getElementById('bjRoomCode').value.trim();
   if(!roomCode){ setMsg('bjMsg', 'Enter room code'); return; }
   
-  currentRoom = roomCode;
-  database.ref('casino_rooms/' + roomCode + '/players/' + username).set({
-    chips: state.chips,
-    ready: false
+  database.ref('bj_rooms/' + roomCode).once('value', (snapshot) => {
+    const room = snapshot.val();
+    if(!room){ setMsg('bjMsg', 'Room not found'); return; }
+    
+    const playerCount = Object.keys(room.players || {}).length;
+    if(playerCount >= 2){ setMsg('bjMsg', 'Room full (2 players max)'); return; }
+    
+    bjCurrentRoom = roomCode;
+    bjMyRole = 'player';
+    
+    database.ref('bj_rooms/' + roomCode + '/players/' + username).set({
+      chips: state.chips,
+      ready: false,
+      role: 'player'
+    });
+    
+    document.getElementById('bjRoomInfo').textContent = `Room: ${roomCode} (You are Player) - Bet: ${room.bet}`;
+    listenToBJRoom(roomCode);
+    setMsg('bjMsg', 'Joined room! Click Ready when ready.');
   });
-  
-  document.getElementById('roomInfo').textContent = `Room: ${roomCode} (Player)`;
-  listenToRoom(roomCode);
-  setMsg('bjMsg', 'Joined room!');
 });
 
-function listenToRoom(roomCode){
-  database.ref('casino_rooms/' + roomCode + '/players').on('value', (snapshot) => {
-    const players = snapshot.val();
-    const playerList = document.getElementById('playerList');
+function listenToBJRoom(roomCode){
+  database.ref('bj_rooms/' + roomCode).on('value', (snapshot) => {
+    const room = snapshot.val();
+    if(!room) return;
+    
+    const playerList = document.getElementById('bjPlayerList');
     playerList.innerHTML = '';
     
-    if(players){
-      Object.keys(players).forEach(name => {
-        const p = players[name];
+    if(room.players){
+      Object.keys(room.players).forEach(name => {
+        const p = room.players[name];
         const div = document.createElement('div');
-        div.className = 'player-item';
-        div.innerHTML = `<span>${name}</span><span>${p.chips} chips</span>`;
+        div.className = 'player-item' + (p.ready ? ' ready' : '');
+        div.innerHTML = `<span>${name} (${p.role})</span><span>${p.ready ? '✓ Ready' : 'Not Ready'}</span>`;
         playerList.appendChild(div);
       });
+    }
+    
+    if(room.gameState === 'playing'){
+      if(room.hands && room.hands[username]){
+        bjPlayer = room.hands[username];
+        bjDealer = room.hands[Object.keys(room.players).find(k => k !== username)] || [];
+        renderBJ();
+      }
     }
   });
 }
 
-document.getElementById('bjDeal').addEventListener('click', ()=> actionWithCooldown(async ()=>{
-  if(bjPlayer.length > 0){ setMsg('bjMsg','Finish current hand'); return; }
-  const bet = Math.max(1,Math.floor(Number(document.getElementById('betAmount').value)||1));
-  if(!spend(bet)){ setMsg('bjMsg','Not enough chips'); return; }
-  bjBetAmount = bet;
-
-  bjDeck = makeDeck(); shuffleDeck(bjDeck);
-  bjPlayer=[]; bjDealer=[];
-  bjPlayer.push(bjDeck.pop(), bjDeck.pop());
-  bjDealer.push(bjDeck.pop(), bjDeck.pop());
-  renderBJ();
-  setMsg('bjMsg','Hit or Stand.');
+document.getElementById('bjReady').addEventListener('click', ()=> {
+  if(!bjCurrentRoom){ setMsg('bjMsg', 'Join a room first'); return; }
   
-  if(currentRoom){
-    database.ref('casino_rooms/' + currentRoom + '/players/' + username).update({
-      chips: state.chips,
-      inHand: true
-    });
-  }
-}));
-
-document.getElementById('bjHit').addEventListener('click', ()=> {
-  if(bjPlayer.length === 0){ setMsg('bjMsg','Deal first'); return; }
-  bjPlayer.push(bjDeck.pop()); renderBJ();
-  const t = handTotals(bjPlayer);
-  if(t>21){ 
-    setMsg('bjMsg','Busted!'); 
-    bjPlayer = []; bjDealer = []; bjBetAmount = 0;
-    renderBJ();
-  }
+  database.ref('bj_rooms/' + bjCurrentRoom + '/players/' + username).update({ready: true});
+  
+  database.ref('bj_rooms/' + bjCurrentRoom + '/players').once('value', (snapshot) => {
+    const players = snapshot.val();
+    if(!players) return;
+    
+    const allReady = Object.values(players).every(p => p.ready);
+    const playerCount = Object.keys(players).length;
+    
+    if(allReady && playerCount === 2){
+      database.ref('bj_rooms/' + bjCurrentRoom).once('value', (roomSnap) => {
+        const room = roomSnap.val();
+        const bet = room.bet;
+        
+        if(state.chips < bet){ setMsg('bjMsg', 'Not enough chips'); return; }
+        spend(bet);
+        
+        bjDeck = makeDeck(); shuffleDeck(bjDeck);
+        const hands = {};
+        Object.keys(players).forEach(name => {
+          hands[name] = [bjDeck.pop(), bjDeck.pop()];
+        });
+        
+        database.ref('bj_rooms/' + bjCurrentRoom).update({
+          gameState: 'playing',
+          hands: hands,
+          currentTurn: Object.keys(players).find(k => players[k].role === 'player')
+        });
+        
+        setMsg('bjMsg', 'Game started!');
+      });
+    }
+  });
 });
 
-document.getElementById('bjStand').addEventListener('click', ()=> actionWithCooldown(async ()=>{
-  if(bjPlayer.length === 0){ setMsg('bjMsg','Deal first'); return; }
-  const bet = bjBetAmount;
-  if(bet === 0) { setMsg('bjMsg','No bet'); return; }
+document.getElementById('bjDeal').addEventListener('click', ()=> {
+  setMsg('bjMsg', 'Use Ready button in multiplayer mode');
+});
 
-  while(true){
-    const dt = handTotals(bjDealer);
-    if(dt < 17){ bjDealer.push(bjDeck.pop()); renderBJ(); await new Promise(r=>setTimeout(r,400)); continue; }
-    break;
-  }
+document.getElementById('bjHit').addEventListener('click', ()=> {
+  if(!bjCurrentRoom){ setMsg('bjMsg', 'Not in a game'); return; }
   
-  const pt = handTotals(bjPlayer); const dt = handTotals(bjDealer);
+  database.ref('bj_rooms/' + bjCurrentRoom).once('value', (snapshot) => {
+    const room = snapshot.val();
+    if(room.currentTurn !== username){ setMsg('bjMsg', 'Not your turn'); return; }
+    
+    const newCard = bjDeck.pop();
+    room.hands[username].push(newCard);
+    
+    database.ref('bj_rooms/' + bjCurrentRoom + '/hands/' + username).set(room.hands[username]);
+    
+    const total = handTotals(room.hands[username]);
+    if(total > 21){
+      database.ref('bj_rooms/' + bjCurrentRoom).update({gameState: 'finished', winner: Object.keys(room.players).find(k => k !== username)});
+      setMsg('bjMsg', 'Busted! You lose.');
+    }
+  });
+});
+
+document.getElementById('bjStand').addEventListener('click', ()=> {
+  if(!bjCurrentRoom){ setMsg('bjMsg', 'Not in a game'); return; }
   
-  if(pt>21){ 
-    setMsg('bjMsg','You busted.'); 
-  }
-  else if(dt>21 || pt>dt){ 
-    const win = Math.floor(bet*2*diffFactor());
-    award(win); 
-    setMsg('bjMsg',`You win ${win}!`); 
-    state.pot = Math.max(0,state.pot - Math.floor(win/8)); saveState(); 
-  }
-  else if(pt===dt){ 
-    setMsg('bjMsg','Push.'); 
-    award(bet);
-  } 
-  else {
-    setMsg('bjMsg','Dealer wins.');
-  }
-  
-  bjPlayer = []; bjDealer = []; bjBetAmount = 0; renderBJ();
-  
-  if(currentRoom){
-    database.ref('casino_rooms/' + currentRoom + '/players/' + username).update({
-      chips: state.chips,
-      inHand: false
+  database.ref('bj_rooms/' + bjCurrentRoom).once('value', (snapshot) => {
+    const room = snapshot.val();
+    if(room.currentTurn !== username){ setMsg('bjMsg', 'Not your turn'); return; }
+    
+    const opponent = Object.keys(room.players).find(k => k !== username);
+    const myTotal = handTotals(room.hands[username]);
+    const oppTotal = handTotals(room.hands[opponent]);
+    
+    let winner = null;
+    if(myTotal > oppTotal) winner = username;
+    else if(oppTotal > myTotal) winner = opponent;
+    
+    database.ref('bj_rooms/' + bjCurrentRoom).update({
+      gameState: 'finished',
+      winner: winner,
+      currentTurn: null
     });
-  }
-}));
+    
+    if(winner === username){
+      const totalPot = room.bet * 2;
+      award(totalPot);
+      setMsg('bjMsg', `You win ${totalPot} chips!`);
+    } else if(winner === opponent){
+      setMsg('bjMsg', 'You lose!');
+    } else {
+      award(room.bet);
+      setMsg('bjMsg', 'Push! Bet returned.');
+    }
+  });
+});
 
 function renderBJ(){
   const pc = document.getElementById('bjPlayerCards'); const dc = document.getElementById('bjDealerCards');
@@ -1194,6 +1293,242 @@ function renderBJ(){
   document.getElementById('bjPlayerTotal').textContent = handTotals(bjPlayer);
   document.getElementById('bjDealerTotal').textContent = handTotals(bjDealer);
 }
+
+/* CHESS PVP */
+let chessCurrentRoom = null;
+let chessMyColor = null;
+let chessBoard = [];
+let chessSelectedSquare = null;
+let chessTurn = 'white';
+
+const CHESS_PIECES = {
+  'white': {'K':'♔','Q':'♕','R':'♖','B':'♗','N':'♘','P':'♙'},
+  'black': {'K':'♚','Q':'♛','R':'♜','B':'♝','N':'♞','P':'♟'}
+};
+
+function initChessBoard(){
+  chessBoard = [
+    ['R','N','B','Q','K','B','N','R'],
+    ['P','P','P','P','P','P','P','P'],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    ['p','p','p','p','p','p','p','p'],
+    ['r','n','b','q','k','b','n','r']
+  ];
+  renderChessBoard();
+}
+
+function renderChessBoard(){
+  const boardDiv = document.getElementById('chessBoard');
+  boardDiv.innerHTML = '';
+  
+  for(let row=0; row<8; row++){
+    for(let col=0; col<8; col++){
+      const square = document.createElement('div');
+      square.className = 'chess-square ' + ((row+col)%2===0 ? 'white' : 'black');
+      square.dataset.row = row;
+      square.dataset.col = col;
+      
+      const piece = chessBoard[row][col];
+      if(piece){
+        const color = piece === piece.toUpperCase() ? 'black' : 'white';
+        square.textContent = CHESS_PIECES[color][piece.toUpperCase()];
+      }
+      
+      square.addEventListener('click', ()=> handleChessClick(row, col));
+      boardDiv.appendChild(square);
+    }
+  }
+}
+
+function handleChessClick(row, col){
+  if(!chessCurrentRoom){ setMsg('chessMsg', 'Join a room first'); return; }
+  if(chessTurn !== chessMyColor){ setMsg('chessMsg', 'Not your turn'); return; }
+  
+  if(chessSelectedSquare){
+    const fromRow = chessSelectedSquare.row;
+    const fromCol = chessSelectedSquare.col;
+    
+    const piece = chessBoard[fromRow][fromCol];
+    if(piece && isValidMove(fromRow, fromCol, row, col)){
+      chessBoard[row][col] = chessBoard[fromRow][fromCol];
+      chessBoard[fromRow][fromCol] = null;
+      
+      database.ref('chess_rooms/' + chessCurrentRoom).update({
+        board: chessBoard,
+        turn: chessTurn === 'white' ? 'black' : 'white'
+      });
+      
+      chessTurn = chessTurn === 'white' ? 'black' : 'white';
+      setMsg('chessMsg', 'Move made');
+    }
+    
+    chessSelectedSquare = null;
+    renderChessBoard();
+  } else {
+    const piece = chessBoard[row][col];
+    if(piece){
+      const pieceColor = piece === piece.toUpperCase() ? 'black' : 'white';
+      if(pieceColor === chessMyColor){
+        chessSelectedSquare = {row, col};
+        renderChessBoard();
+        document.querySelectorAll('.chess-square').forEach((sq, idx)=>{
+          const r = Math.floor(idx/8);
+          const c = idx % 8;
+          if(r === row && c === col) sq.classList.add('selected');
+        });
+      }
+    }
+  }
+}
+
+function isValidMove(fromRow, fromCol, toRow, toCol){
+  return Math.abs(fromRow - toRow) <= 2 && Math.abs(fromCol - toCol) <= 2;
+}
+
+document.getElementById('chessCreateRoom').addEventListener('click', ()=> {
+  const roomCode = 'CHESS' + Math.floor(Math.random()*10000);
+  const bet = Math.max(10, Number(document.getElementById('chessBetInput').value) || 50);
+  
+  chessCurrentRoom = roomCode;
+  chessMyColor = 'white';
+  document.getElementById('chessRoomCode').value = roomCode;
+  document.getElementById('chessRoomInfo').textContent = `Room: ${roomCode} (You are White) - Bet: ${bet}`;
+  
+  initChessBoard();
+  
+  database.ref('chess_rooms/' + roomCode).set({
+    host: username,
+    bet: bet,
+    players: {
+      [username]: {chips: state.chips, ready: false, color: 'white'}
+    },
+    created: Date.now(),
+    gameState: 'waiting',
+    board: chessBoard,
+    turn: 'white'
+  });
+  
+  listenToChessRoom(roomCode);
+  setMsg('chessMsg', 'Room created! Share code.');
+});
+
+document.getElementById('chessJoinRoom').addEventListener('click', ()=> {
+  const roomCode = document.getElementById('chessRoomCode').value.trim();
+  if(!roomCode){ setMsg('chessMsg', 'Enter room code'); return; }
+  
+  database.ref('chess_rooms/' + roomCode).once('value', (snapshot) => {
+    const room = snapshot.val();
+    if(!room){ setMsg('chessMsg', 'Room not found'); return; }
+    
+    const playerCount = Object.keys(room.players || {}).length;
+    if(playerCount >= 2){ setMsg('chessMsg', 'Room full'); return; }
+    
+    chessCurrentRoom = roomCode;
+    chessMyColor = 'black';
+    
+    database.ref('chess_rooms/' + roomCode + '/players/' + username).set({
+      chips: state.chips,
+      ready: false,
+      color: 'black'
+    });
+    
+    document.getElementById('chessRoomInfo').textContent = `Room: ${roomCode} (You are Black) - Bet: ${room.bet}`;
+    chessBoard = room.board;
+    renderChessBoard();
+    listenToChessRoom(roomCode);
+    setMsg('chessMsg', 'Joined! Click Ready.');
+  });
+});
+
+function listenToChessRoom(roomCode){
+  database.ref('chess_rooms/' + roomCode).on('value', (snapshot) => {
+    const room = snapshot.val();
+    if(!room) return;
+    
+    const playerList = document.getElementById('chessPlayerList');
+    playerList.innerHTML = '';
+    
+    if(room.players){
+      Object.keys(room.players).forEach(name => {
+        const p = room.players[name];
+        const div = document.createElement('div');
+        div.className = 'player-item' + (p.ready ? ' ready' : '');
+        div.innerHTML = `<span>${name} (${p.color})</span><span>${p.ready ? '✓' : '⏱'}</span>`;
+        playerList.appendChild(div);
+      });
+    }
+    
+    if(room.board){
+      chessBoard = room.board;
+      renderChessBoard();
+    }
+    
+    if(room.turn){
+      chessTurn = room.turn;
+      if(chessTurn === chessMyColor) setMsg('chessMsg', 'Your turn!');
+      else setMsg('chessMsg', "Opponent's turn");
+    }
+    
+    if(room.winner){
+      if(room.winner === username){
+        const totalPot = room.bet * 2;
+        award(totalPot);
+        setMsg('chessMsg', `You win ${totalPot} chips!`);
+      } else {
+        setMsg('chessMsg', 'You lost!');
+      }
+    }
+  });
+}
+
+document.getElementById('chessReady').addEventListener('click', ()=> {
+  if(!chessCurrentRoom){ setMsg('chessMsg', 'Join room first'); return; }
+  
+  database.ref('chess_rooms/' + chessCurrentRoom + '/players/' + username).update({ready: true});
+  
+  database.ref('chess_rooms/' + chessCurrentRoom + '/players').once('value', (snapshot) => {
+    const players = snapshot.val();
+    if(!players) return;
+    
+    const allReady = Object.values(players).every(p => p.ready);
+    const playerCount = Object.keys(players).length;
+    
+    if(allReady && playerCount === 2){
+      database.ref('chess_rooms/' + chessCurrentRoom).once('value', (roomSnap) => {
+        const room = roomSnap.val();
+        const bet = room.bet;
+        
+        if(state.chips < bet){ setMsg('chessMsg', 'Not enough chips'); return; }
+        spend(bet);
+        
+        database.ref('chess_rooms/' + chessCurrentRoom).update({
+          gameState: 'playing'
+        });
+        
+        setMsg('chessMsg', 'Game started! White moves first.');
+      });
+    }
+  });
+});
+
+document.getElementById('chessResign').addEventListener('click', ()=> {
+  if(!chessCurrentRoom){ setMsg('chessMsg', 'Not in game'); return; }
+  
+  database.ref('chess_rooms/' + chessCurrentRoom).once('value', (snapshot) => {
+    const room = snapshot.val();
+    const opponent = Object.keys(room.players).find(k => k !== username);
+    
+    database.ref('chess_rooms/' + chessCurrentRoom).update({
+      winner: opponent,
+      gameState: 'finished'
+    });
+    
+    setMsg('chessMsg', 'You resigned.');
+  });
+});
 
 /* ROULETTE */
 const redSet = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
@@ -1572,8 +1907,9 @@ function sportsBet(sport, team, odds){
 
 /* INIT */
 loadState();
-buildWheel(); // Initialize wheel on load
-applyTheme(); // Apply theme after wheel is built
+buildWheel();
+initChessBoard();
+applyTheme();
 setInterval(()=>{ updateUI(); }, 1200);
 </script>
 </body>
