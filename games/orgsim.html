@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Organism Simulator — Moving Sun & Cell Movement</title>
+<style>
+  html,body{height:100%;margin:0;font-family:sans-serif;background:#1c3a2a;color:#e0ffe0;}
+  .container{display:flex;flex-direction:row;height:100%;}
+  #ui{width:260px;background:#122517;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;}
+  #ui h2{margin:0 0 6px 0;font-size:16px;}
+  label{display:block;margin-bottom:6px;font-size:13px;}
+  select,button{width:100%;padding:8px;border-radius:6px;border:none;outline:none;background:#2b5440;color:#fff;font-weight:bold;cursor:pointer;}
+  button:hover{background:#3b7055;}
+  #canvas{flex:1;background:#357a52;display:block;cursor:crosshair;}
+  small{opacity:0.8;font-size:11px;}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="ui">
+    <h2>Organism Simulator</h2>
+    <label>Selected Cell Type:
+      <select id="cellType">
+        <option value="producer">Producer</option>
+        <option value="consumer">Consumer</option>
+        <option value="photosynth">Photosynth</option>
+        <option value="sensor">Sensor</option>
+        <option value="movement">Movement</option>
+      </select>
+    </label>
+    <button id="runBtn">▶ Run Simulation</button>
+    <button id="pauseBtn">⏸ Pause Simulation<button>
+    <button id="resetBtn">🔄 Retry</button>
+    <button id="randomEnvBtn">🥓 randomize food</button>
+    <small>Click grid to add/remove cells.<br>Movement cells propel the organism toward sunlight.</small>
+  </div>
+  <canvas id="canvas" width="960" height="640"></canvas>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const COLS = 24, ROWS = 16, SIZE = 40;
+
+  const COLORS = {
+    bg: "#357a52",
+    grid: "#2b6348",
+    outline: "#071826",
+    producer: "#f29a4c",
+    consumer: "#f0c25b",
+    photosynth: "#6bd06e",
+    sensor: "#b6e46d",
+    movement: "#80b6f8",
+    sun: "#ffd24d",
+    food: "#ff8a3d",
+  };
+
+  let running = false;
+  let energy = 100;
+  let cells = [];
+  let foodTiles = new Set();
+  let sunPos = {x: 12, y: 8, radius: 5}; // circular moving sun area
+  let t = 0;
+
+  function drawGrid() {
+    ctx.fillStyle = COLORS.bg;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = COLORS.grid;
+    ctx.lineWidth = 1;
+    for(let x=0;x<=COLS;x++){
+      ctx.beginPath(); ctx.moveTo(x*SIZE,0); ctx.lineTo(x*SIZE,canvas.height); ctx.stroke();
+    }
+    for(let y=0;y<=ROWS;y++){
+      ctx.beginPath(); ctx.moveTo(0,y*SIZE); ctx.lineTo(canvas.width,y*SIZE); ctx.stroke();
+    }
+  }
+
+  function drawSun() {
+    ctx.fillStyle = COLORS.sun;
+    ctx.beginPath();
+    ctx.arc(sunPos.x*SIZE, sunPos.y*SIZE, sunPos.radius*SIZE, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 0.3;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1.0;
+  }
+
+  function drawFood() {
+    foodTiles.forEach(k=>{
+      const [x,y]=k.split(',').map(Number);
+      const px=x*SIZE+SIZE/2, py=y*SIZE+SIZE/2;
+      ctx.fillStyle=COLORS.food;
+      ctx.beginPath();
+      ctx.arc(px,py,5,0,Math.PI*5);
+      ctx.fill();
+    });
+  }
+
+  function drawCells() {
+    cells.forEach(c=>{
+      const px=c.x*SIZE, py=c.y*SIZE;
+      ctx.fillStyle=COLORS.outline;
+      ctx.fillRect(px+2,py+2,SIZE-4,SIZE-4);
+      ctx.fillStyle=COLORS[c.type] || "white";
+      ctx.fillRect(px+6,py+6,SIZE-12,SIZE-12);
+    });
+  }
+
+  function randomizeFood() {
+    foodTiles.clear();
+    for(let i=0;i<10;i++)
+      foodTiles.add(`${Math.floor(Math.random()*COLS)},${Math.floor(Math.random()*ROWS)}`);
+  }
+
+  function getCell(x,y){return cells.find(c=>c.x===x && c.y===y);}
+  function addCell(x,y,type){if(!getCell(x,y)) cells.push({x,y,type,damage:0});}
+  function removeCell(x,y){cells=cells.filter(c=>!(c.x===x&&c.y===y));}
+
+  function moveSun(dt) {
+    // circular motion
+    const speed = 0.005;
+    const r = 6;
+    const cx = 12, cy = 8;
+    sunPos.x = cx + Math.cos(dt*speed)*r;
+    sunPos.y = cy + Math.sin(dt*speed)*r;
+  }
+
+  function sunExposure(x,y){
+    const dx=(x - sunPos.x);
+    const dy=(y - sunPos.y);
+    const dist=Math.sqrt(dx*dx+dy*dy);
+    return dist < sunPos.radius ? 1 - dist/sunPos.radius : 0;
+  }
+
+  function simulate() {
+    if (!running) return;
+    t++;
+    moveSun(t);
+
+    // absorb energy
+    cells.forEach(c=>{
+      const exposure=sunExposure(c.x,c.y);
+      if(c.type==="photosynth") energy += exposure*0.8;
+      if(c.type==="producer") energy += exposure*0.3;
+      const key=`${c.x},${c.y}`;
+      if(foodTiles.has(key)) energy += 1;
+    });
+
+    // movement: average direction toward sun center
+    const movers=cells.filter(c=>c.type==="movement");
+    if(movers.length>0 && energy>5 && t%20===0){
+      let avgX=0, avgY=0;
+      cells.forEach(c=>{
+        const dx=sunPos.x-c.x;
+        const dy=sunPos.y-c.y;
+        avgX+=dx; avgY+=dy;
+      });
+      avgX/=cells.length; avgY/=cells.length;
+      const stepX = Math.sign(avgX)*0.3;
+      const stepY = Math.sign(avgY)*0.3;
+      cells.forEach(c=>{
+        c.x = Math.max(0, Math.min(COLS-1, c.x + stepX));
+        c.y = Math.max(0, Math.min(ROWS-1, c.y + stepY));
+      });
+      energy -= 2;
+    }
+
+    // energy decay
+    energy -= 0.01 * cells.length;
+    energy = Math.max(0, Math.min(200, energy));
+
+    // reproduction & mutation
+    if (energy >110 && cells.length<100){
+      const parent = cells[Math.floor(Math.random()*cells.length)];
+      const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+      const d=dirs[Math.floor(Math.random()*dirs.length)];
+      const nx=Math.round(parent.x+d[0]), ny=Math.round(parent.y+d[1]);
+      if(nx>=0&&ny>=0&&nx<COLS&&ny<ROWS&&!getCell(nx,ny)){
+        const types=["producer","consumer","photosynth","sensor","movement"];
+        const maybeMutate = Math.random()<0.2 ? types[Math.floor(Math.random()*types.length)] : parent.type;
+        addCell(nx,ny,maybeMutate);
+        energy -= 40;
+      }
+    }
+
+    // damage decay
+    cells.forEach(c=>{
+      if(Math.random()<0.002) c.damage+=0.2;
+      if(c.damage>1){removeCell(c.x,c.y);}
+    });
+  }
+
+  function drawHUD() {
+    ctx.fillStyle="rgba(0,0,0,0.5)";
+    ctx.fillRect(10,10,160,40);
+    ctx.fillStyle="white";
+    ctx.font="14px monospace";
+    ctx.fillText(`Energy: ${energy.toFixed(0)}`,20,35);
+  }
+
+  function loop() {
+    drawGrid();
+    drawSun();
+    drawFood();
+    drawCells();
+    simulate();
+    drawHUD();
+    requestAnimationFrame(loop);
+  }
+
+  // interaction
+  canvas.addEventListener("click", (e)=>{
+    const rect=canvas.getBoundingClientRect();
+    const x=Math.floor((e.clientX-rect.left)/SIZE);
+    const y=Math.floor((e.clientY-rect.top)/SIZE);
+    const existing=getCell(x,y);
+    if(existing) removeCell(x,y);
+    else addCell(x,y,document.getElementById("cellType").value);
+  });
+
+  // buttons
+  document.getElementById("runBtn").onclick=()=>running=true;
+  document.getElementById("pauseBtn").onclick=()=>running=false;
+  document.getElementById("resetBtn").onclick=()=>{cells=[];energy=50;running=false;};
+  document.getElementById("randomEnvBtn").onclick=randomizeFood;
+
+  randomizeFood();
+  loop();
+})();
+</script>
+</body>
+</html>
