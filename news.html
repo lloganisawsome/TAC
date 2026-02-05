@@ -1,142 +1,832 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>TAC News</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    :root{
-      --bg:#070707;
-      --panel:rgba(255,255,255,0.06);
-      --muted:rgba(255,255,255,0.6);
-      --accent: #19b56a; /* green accent */
-      --accent-600: #12a85a;
-      --glass-border: rgba(255,255,255,0.08);
-      --card: rgba(0,0,0,0.45);
-      color: white; /* default text color for dark mode */
-    }
-    [data-theme="light"]{
-      --bg:#f6f7f9;
-      --panel:rgba(0,0,0,0.04);
-      --muted:rgba(0,0,0,0.6);
-      --accent: #0a8f46;
-      --accent-600:#07733a;
-      --glass-border: rgba(0,0,0,0.06);
-      --card: rgba(255,255,255,0.85);
-      color: #111;
-    }
-    html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;}
-    .wrap{max-width:820px;margin:22px auto;padding:18px;}
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-    .brand{font-weight:800;font-size:20px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:10px}
-    .logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-600));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 6px 18px rgba(0,0,0,0.45);transform:translateZ(0)}
-    .controls{display:flex;gap:10px;align-items:center}
-    .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:10px;border:none;cursor:pointer;font-weight:600;box-shadow:0 4px 10px rgba(0,0,0,0.25);transition:transform .12s ease}
-    .btn:active{transform:translateY(1px)}
-    .glass{background:var(--panel);border:1px solid var(--glass-border);border-radius:12px;padding:12px}
-    .row{display:flex;gap:10px;align-items:center}
-    input[type="text"], input[type="password"], .search{background:var(--card);border:1px solid var(--glass-border);padding:10px;border-radius:10px;outline:none;width:100%;color:inherit;} /* Added color:inherit */
-    textarea{width:100%;min-height:70px;padding:10px;border-radius:10px;border:1px solid var(--glass-border);background:var(--card);color:inherit}
-    .small{font-size:13px;color:var(--muted)}
-    #newsList{margin-top:6px}
-    .post{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.18), transparent);margin-bottom:10px;border:1px solid rgba(0,0,0,0.15);position:relative;overflow:hidden;transition:transform .18s, box-shadow .18s}
-    .post:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.45)}
-    .post .meta{font-size:12px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:6px}
-    .post .text{white-space:pre-wrap;font-size:15px}
-    .pinned{border-left:4px solid var(--accent);padding-left:10px}
-    .actions{margin-top:10px;display:flex;gap:8px;align-items:center}
-    .icon-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:6px;border-radius:8px}
-    .icon-btn:hover{color:var(--accent)}
-    .reaction{display:inline-flex;gap:8px;align-items:center}
-    .reaction button{background:transparent;border:none;font-size:16px;cursor:pointer;padding:6px;border-radius:8px;transition:transform .12s}
-    .reaction button:active{transform:scale(.9)}
-    .reaction .count{margin-left:6px;font-size:13px;color:var(--muted)}
-    .fade-in{animation:fadeIn .28s ease}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-    /* reactive pop */
-    .pop { animation:pop .38s ease; }
-    @keyframes pop { 0%{transform:scale(.6);opacity:0}50%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1} }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC News</title>
 
-    /* modal */
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;z-index:60}
-    .modal{background:var(--card);padding:18px;border-radius:12px;min-width:300px;border:1px solid var(--glass-border)}
-    .admin-icon{position:fixed;right:18px;bottom:18px;background:rgba(0,0,0,0.35);border-radius:10px;padding:8px;display:none;color:white;z-index:70}
-    .admin-icon.show{display:block;background:linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.2));border:1px solid var(--glass-border);cursor:pointer;}
-    .tiny{font-size:12px}
-    /* mobile tweaks */
-    @media(max-width:640px){
-      .wrap{padding:12px}
-      .brand{font-size:18px}
-      .controls{flex-wrap:wrap;}
-      .search{order: 1; min-width: 100%; margin-top: 10px;}
+<style>
+:root {
+    --bg: #0a0a0b;
+    --panel: #111113;
+    --panel-hover: #1a1a1c;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --muted: #71717a;
+    --border: rgba(255,255,255,0.06);
+    --card: rgba(0,0,0,0.45);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    font-size: 14px;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px var(--accent-dim);
+}
+
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    border: none;
+    margin-left: -10px;
+    overflow: hidden;
+}
+
+.logo-container {
+    margin-bottom: 16px;
+    padding: 4px;
+    transition: opacity 0.3s;
+}
+
+.sidebar.collapsed .logo-container {
+    opacity: 0;
+}
+
+.logo {
+    width: 62px;
+    height: 62px;
+    border-radius: 8px;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 0 8px;
+    transition: opacity 0.3s;
+}
+
+.sidebar.collapsed .nav-items {
+    opacity: 0;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--accent);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background: var(--accent-dim);
+}
+
+.nav-item.active {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 2px;
+}
+
+.nav-item span {
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.toggle-btn {
+    position: fixed;
+    left: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 36px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toggle-btn:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+}
+
+.toggle-btn svg {
+    width: 14px;
+    height: 14px;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.toggle-btn.collapsed {
+    left: 10px;
+}
+
+.toggle-btn.collapsed svg {
+    transform: rotate(180deg);
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 100px;
+    padding: 24px;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+}
+
+.main-content.expanded {
+    margin-left: 24px;
+}
+
+.header {
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.datetime {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+/* Panel */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.panel-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+}
+
+/* Buttons */
+.btn {
+    background: var(--accent);
+    color: #000;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--panel-hover);
+    color: #fff;
+    border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent);
+}
+
+/* Form Elements */
+input[type="text"], textarea, .search {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px;
+    border-radius: 8px;
+    outline: none;
+    width: 100%;
+    color: #fff;
+    font-size: 14px;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus, textarea:focus, .search:focus {
+    border-color: var(--accent);
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* Post Composer */
+.composer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.composer-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.composer-row input[type="text"] {
+    flex: 1;
+    min-width: 150px;
+    max-width: 250px;
+}
+
+/* News Feed */
+.news-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.post {
+    padding: 16px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+}
+
+.post:hover {
+    background: var(--panel-hover);
+    border-color: rgba(255,255,255,0.1);
+    transform: translateY(-2px);
+}
+
+.post.pinned {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-dim);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.post-author {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 13px;
+}
+
+.post-time {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.post-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.9);
+    white-space: pre-wrap;
+    margin-bottom: 12px;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+/* Likes/Dislikes */
+.vote-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.vote-btn:hover {
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.vote-btn.active-like {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: #22c55e;
+    color: #22c55e;
+}
+
+.vote-btn.active-dislike {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.vote-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.share-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.share-btn:hover {
+    color: var(--accent);
+}
+
+/* Admin Controls */
+.admin-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    font-size: 14px;
+}
+
+.admin-btn:hover {
+    color: var(--accent);
+}
+
+/* View Past Panel */
+.past-panel {
+    margin-top: 20px;
+}
+
+.past-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.past-date-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.past-date-card:hover {
+    border-color: var(--accent);
+    background: var(--panel-hover);
+    transform: translateY(-2px);
+}
+
+.past-date-card.active {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.past-date-card .date {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.past-date-card .label {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* Day Display */
+.day-display {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    text-align: center;
+}
+
+.day-display .label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+.day-display .date {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* Live Indicator */
+.live-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--accent);
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+}
+
+.empty-state svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Modal */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    backdrop-filter: blur(4px);
+}
+
+.modal {
+    background: var(--panel);
+    padding: 24px;
+    border-radius: 16px;
+    min-width: 320px;
+    max-width: 90vw;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal h3 {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.modal-actions .btn {
+    flex: 1;
+    min-width: 100px;
+}
+
+/* Admin Icon */
+.admin-icon {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    display: none;
+    color: var(--accent);
+    z-index: 1500;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+}
+
+.admin-icon.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-icon:hover {
+    border-color: var(--accent);
+    transform: scale(1.05);
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+    .grid {
+        grid-template-columns: 2fr 1fr;
     }
-  </style>
+}
+
+/* Controls Row */
+.controls-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search {
+    max-width: 250px;
+}
+
+.auto-refresh-toggle {
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.auto-refresh-toggle:hover {
+    color: var(--accent);
+}
+
+/* Animations */
+.fade-in {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.pop {
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(0.8); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 24px;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+    
+    .toggle-btn {
+        display: none;
+    }
+    
+    .header h1 {
+        font-size: 24px;
+    }
+    
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .past-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+</style>
 </head>
 <body>
-  <div class="wrap" id="app">
-    <div class="topbar">
-      <div class="brand" id="brand">
-        <div class="logo" title="TAC">TN</div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    </div>
+
+    <nav class="nav-items">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                <circle cx="8" cy="10" r="1.5"/>
+                <circle cx="12" cy="10" r="1.5"/>
+                <circle cx="16" cy="10" r="1.5"/>
+            </svg>
+            <span>Chat</span>
+        </a>
+
+
+        <a href="notgames.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+            </svg>
+            <span>Games</span>
+        </a>
+
+        <a href="apps.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+            </svg>
+            <span>All Apps</span>
+        </a>
+    </nav>
+</aside>
+
+<button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<!-- Admin Icon -->
+<button id="adminIcon" class="admin-icon" title="Admin controls">⚙️</button>
+
+<!-- Main Content -->
+<main class="main-content" id="mainContent">
+    <div class="header">
+        <h1>TAC News</h1>
+        <div class="datetime" id="datetime"></div>
+    </div>
+
+    <div class="grid">
+        <!-- Left Column: Composer + Feed -->
         <div>
-          <div style="line-height:1">TAC News</div>
-          <div class="tiny small">Daily news</div>
+            <!-- Composer Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Post News</h2>
+                        <p class="panel-subtitle">Share what's happening</p>
+                    </div>
+                </div>
+                <div class="composer">
+                    <textarea id="newsInput" placeholder="What's happening today?"></textarea>
+                    <div class="composer-row">
+                        <input type="text" id="nameInput" placeholder="Your name (optional)"/>
+                        <button class="btn" id="postBtn">Post</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Feed Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Feed</h2>
+                        <p class="panel-subtitle">Pinned posts show first</p>
+                    </div>
+                    <div class="controls-row">
+                        <input class="search" id="searchInput" placeholder="Search posts..." />
+                        <button class="btn btn-secondary" id="refreshBtn">Refresh</button>
+                        <span class="auto-refresh-toggle" id="autoTxt">Auto: ON</span>
+                    </div>
+                </div>
+                <div class="news-feed" id="newsList"></div>
+            </div>
         </div>
-      </div>
 
-      <div class="controls">
-        <button class="btn" id="toggleTheme">Toggle Theme</button>
-        <input class="search" id="searchInput" placeholder="Search posts..." />
-        <button class="btn" id="refreshBtn" title="Force refresh">Refresh</button>
-      </div>
-    </div>
+        <!-- Right Column: Day + Past -->
+        <div>
+            <!-- Current Day Panel -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Viewing</h2>
+                    </div>
+                    <div class="live-indicator">
+                        <span class="live-dot"></span>
+                        Live
+                    </div>
+                </div>
+                <div class="day-display">
+                    <div class="label">Current Date</div>
+                    <div class="date" id="todayBox"></div>
+                </div>
+                <div style="margin-top: 12px;">
+                    <button class="btn btn-secondary" id="viewPastBtn" style="width: 100%;">View Past Days</button>
+                </div>
+            </div>
 
-    <button id="adminIcon" class="admin-icon" title="Admin controls" onclick="openAdminPanel()">⚙</button>
-
-    <div class="glass">
-      <div class="row" style="justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap">
-        <div style="flex:1;min-width:280px">
-          <textarea id="newsInput" placeholder="What's happening today?"></textarea>
-          <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
-            <input type="text" id="nameInput" placeholder="Name (optional)" style="width:200px;padding:8px;border-radius:8px;border:1px solid var(--glass-border);background:var(--card)"/>
-            <button class="btn" id="postBtn">Post</button>
-            <div class="small" id="autoTxt" style="cursor:pointer">Auto-refresh: ON</div>
-          </div>
+            <!-- Past Days Panel -->
+            <div class="panel past-panel" id="pastPanel" style="display: none;">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">Past Days</h2>
+                        <p class="panel-subtitle">Select a date to view</p>
+                    </div>
+                </div>
+                <div class="past-grid" id="pastDates"></div>
+            </div>
         </div>
-        <div style="width:200px;min-width:180px">
-          <div class="small" style="margin-bottom:6px">Viewing Day</div>
-          <div class="glass" id="todayBox" style="text-align:center;font-weight:600"></div>
-          <div style="margin-top:8px;text-align:center">
-            <button class="btn" id="viewPastBtn">View Past</button>
-          </div>
-        </div>
-      </div>
     </div>
+</main>
 
-    <div class="glass" style="margin-top:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <h3 style="margin:0">Feed</h3>
-        <div class="small">Pinned show first</div>
-      </div>
-      <div id="newsList" class="fade-in"></div>
-    </div>
-
-    <div class="glass" id="pastPanel" style="display:none;margin-top:12px">
-      <h4 style="margin:0 0 8px 0">Past Days</h4>
-      <div id="pastDates" class="small"></div>
-    </div>
-  </div>
-
-  <div id="adminModal" style="display:none"></div>
+<div id="adminModal"></div>
 
 <script type="module">
-  // Corrected Firebase modular imports for version 9+
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue, get, update, remove, set } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, get, update, remove, set } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
-  /* ---------- CONFIG ---------- */
-  // NOTE: REPLACE THESE WITH YOUR ACTUAL FIREBASE CONFIG AND ADMIN KEY!
-  const firebaseConfig = {
+/* ---------- CONFIG ---------- */
+const firebaseConfig = {
     apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
     authDomain: "taclogin-ab38e.firebaseapp.com",
     databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
@@ -144,442 +834,524 @@
     storageBucket: "taclogin-ab38e.firebasestorage.app",
     messagingSenderId: "937853298051",
     appId: "1:937853298051:web:119ccc7b5499514bd442b6"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-  /* ---------- SETTINGS ---------- */
-  const ADMIN_KEY = "tacdev1234"; // <-- replace with your secret admin key
-  const REACTIONS = ["🔥","👍","😂","😮","😢"];
-  const AUTO_REFRESH_MS = 8000;
+/* ---------- SETTINGS ---------- */
+const ADMIN_KEY = "tacdev1234";
+const AUTO_REFRESH_MS = 8000;
 
-  /* ---------- state ---------- */
-  let currentView = getToday();
-  let isAdmin = false;
-  let autoRefresh = true;
-  let refreshTimer = null;
+/* ---------- Theme Colors ---------- */
+const themeColors = {
+    green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+    blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+    red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+    cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+    pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+    white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+    whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
+};
 
-  // user id to track reactions (stored locally)
-  let userId = localStorage.getItem("tac_user_id") || cryptoRandomId();
-  localStorage.setItem("tac_user_id", userId);
+function applyTheme() {
+    const theme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[theme] || themeColors.green;
 
-  // theme preference
-  const savedTheme = localStorage.getItem("tac_theme");
-  if(savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+    document.documentElement.style.setProperty('--accent', colors.primary);
+    document.documentElement.style.setProperty('--accent-dim', colors.dim);
 
-  // elements
-  const newsListEl = document.getElementById("newsList");
-  const todayBox = document.getElementById("todayBox");
-  const pastPanel = document.getElementById("pastPanel");
-  const pastDatesEl = document.getElementById("pastDates");
-  const adminIcon = document.getElementById("adminIcon");
-  const adminModal = document.getElementById("adminModal");
-  const searchInput = document.getElementById("searchInput");
-  const autoTxt = document.getElementById("autoTxt");
-  document.getElementById("todayBox").innerText = currentView;
+    const logo = document.getElementById('logo');
+    if (logo) logo.src = `taclogos/${theme}.png`;
 
-  /* ---------- helpers ---------- */
-  function getToday(){ return new Date().toISOString().split("T")[0]; }
-  function cryptoRandomId(){ return 'u_' + Math.random().toString(36).slice(2,11); }
-  function el(tag, attrs={}, children=[]){ const e=document.createElement(tag); for(const k in attrs) e[k]=attrs[k]; (Array.isArray(children)?children:[children]).forEach(c=>{ if(typeof c==='string') e.appendChild(document.createTextNode(c)); else if(c) e.appendChild(c) }); return e }
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+}
 
-  /* ---------- UI behavior ---------- */
+applyTheme();
 
-  // theme toggle
-  document.getElementById("toggleTheme").addEventListener("click", ()=>{
-    const cur = document.documentElement.getAttribute("data-theme");
-    const next = cur === "light" ? "" : "light";
-    if(next) document.documentElement.setAttribute("data-theme", next);
-    else document.documentElement.removeAttribute("data-theme");
-    localStorage.setItem("tac_theme", next);
-  });
+window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') {
+        applyTheme();
+    }
+});
 
-  // brand long-press to open admin login (not obvious)
-  (function adminLongPress(){
-    const brand = document.getElementById("brand");
+/* ---------- state ---------- */
+let currentView = getToday();
+let isAdmin = false;
+let autoRefresh = true;
+let refreshTimer = null;
+
+let userId = localStorage.getItem("tac_user_id") || cryptoRandomId();
+localStorage.setItem("tac_user_id", userId);
+
+const newsListEl = document.getElementById("newsList");
+const todayBox = document.getElementById("todayBox");
+const pastPanel = document.getElementById("pastPanel");
+const pastDatesEl = document.getElementById("pastDates");
+const adminIcon = document.getElementById("adminIcon");
+const adminModal = document.getElementById("adminModal");
+const searchInput = document.getElementById("searchInput");
+const autoTxt = document.getElementById("autoTxt");
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const mainContent = document.getElementById('mainContent');
+
+todayBox.innerText = currentView;
+
+/* ---------- Sidebar Toggle ---------- */
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleBtn.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+});
+
+/* ---------- DateTime ---------- */
+function updateDateTime() {
+    const now = new Date();
+    const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit' 
+    };
+    const dtElem = document.getElementById('datetime');
+    if (dtElem) dtElem.textContent = now.toLocaleDateString('en-US', options);
+}
+setInterval(updateDateTime, 1000);
+updateDateTime();
+
+/* ---------- helpers ---------- */
+function getToday(){ return new Date().toISOString().split("T")[0]; }
+function cryptoRandomId(){ return 'u_' + Math.random().toString(36).slice(2,11); }
+
+function getAuthorName() {
+    const lastLoggedIn = localStorage.getItem("lastLoggedInUser");
+    if (lastLoggedIn) {
+        try {
+            const parsed = JSON.parse(lastLoggedIn);
+            return parsed.name || parsed.username || parsed.email || "anon";
+        } catch {
+            return lastLoggedIn || "anon";
+        }
+    }
+    return "anon";
+}
+
+function el(tag, attrs={}, children=[]){ 
+    const e = document.createElement(tag); 
+    for(const k in attrs) {
+        if (k === 'className') e.className = attrs[k];
+        else if (k === 'style' && typeof attrs[k] === 'object') Object.assign(e.style, attrs[k]);
+        else e[k] = attrs[k];
+    }
+    (Array.isArray(children) ? children : [children]).forEach(c => { 
+        if(typeof c === 'string') e.appendChild(document.createTextNode(c)); 
+        else if(c) e.appendChild(c);
+    }); 
+    return e;
+}
+
+/* ---------- Admin long-press ---------- */
+(function adminLongPress(){
+    const brand = document.querySelector('.header h1');
     let t = null;
     brand.addEventListener("pointerdown", e => {
-      // Prevent context menu on some devices
-      e.preventDefault(); 
-      t = setTimeout(()=> openAdminLogin(), 700); // long press 700ms
+        t = setTimeout(()=> openAdminLogin(), 700);
     });
     ["pointerup","pointerleave","pointercancel"].forEach(ev => brand.addEventListener(ev, ()=> clearTimeout(t)));
-  })();
+})();
 
-  // search filter
-  searchInput.addEventListener("input", ()=> renderPosts(lastSnapshot));
+adminIcon.addEventListener("click", openAdminPanel);
 
-  // manual refresh
-  document.getElementById("refreshBtn").addEventListener("click", ()=> {
-    loadView(currentView);
-  });
+searchInput.addEventListener("input", ()=> renderPosts(lastSnapshot));
+document.getElementById("refreshBtn").addEventListener("click", ()=> loadView(currentView));
 
-  // view past toggle
-  document.getElementById("viewPastBtn").addEventListener("click", ()=>{
-    // Toggle visibility
+document.getElementById("viewPastBtn").addEventListener("click", ()=>{
     const isVisible = pastPanel.style.display === "block";
     pastPanel.style.display = isVisible ? "none" : "block";
-    document.getElementById("viewPastBtn").innerText = isVisible ? "View Past" : "Hide Past";
+    document.getElementById("viewPastBtn").innerText = isVisible ? "View Past Days" : "Hide Past Days";
     if(!isVisible) loadPastDates();
-  });
+});
 
-  // post
-  document.getElementById("postBtn").addEventListener("click", async ()=>{
+document.getElementById("postBtn").addEventListener("click", async ()=>{
     const text = document.getElementById("newsInput").value.trim();
-    const name = document.getElementById("nameInput").value.trim() || "anon";
+    let name = document.getElementById("nameInput").value.trim();
+    if (!name) name = getAuthorName();
     if(!text) return;
     const postRef = ref(db, `news/${getToday()}`);
-    await push(postRef, { text, time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}), pinned:false, author:name, reactions:{} });
+    await push(postRef, { 
+        text, 
+        time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}), 
+        pinned: false, 
+        author: name, 
+        likes: {},
+        dislikes: {}
+    });
     document.getElementById("newsInput").value = "";
     document.getElementById("nameInput").value = "";
-  });
+});
 
-  // auto-refresh toggle by clicking auto text
-  autoTxt.addEventListener("click", ()=>{
+autoTxt.addEventListener("click", ()=>{
     autoRefresh = !autoRefresh;
-    autoTxt.innerText = `Auto-refresh: ${autoRefresh? "ON":"OFF"}`;
+    autoTxt.innerText = `Auto: ${autoRefresh ? "ON" : "OFF"}`;
     if(autoRefresh) startAutoRefresh(); else stopAutoRefresh();
-  });
+});
 
-  /* ---------- data loading ---------- */
-  let lastSnapshot = null;
-  let offCurrentViewListener = null;
+/* ---------- data loading ---------- */
+let lastSnapshot = null;
+let offCurrentViewListener = null;
 
-  // live listener for "today" (keeps feed reactive)
-  function attachTodayListener(day){
-    // Detach previous listener if it exists
+function attachTodayListener(day){
     if(offCurrentViewListener) offCurrentViewListener();
-
     offCurrentViewListener = onValue(ref(db, `news/${day}`), snap=>{
-      lastSnapshot = snap;
-      renderPosts(snap);
+        lastSnapshot = snap;
+        renderPosts(snap);
     });
-  }
+}
 
-  // load arbitrary day (one-off get)
-  async function loadView(day){
+async function loadView(day){
     currentView = day;
     todayBox.innerText = day;
     
-    // If viewing today, use the live listener
     if(day === getToday()){
-      // The attachTodayListener function already handles detaching the old one
-      attachTodayListener(day);
+        attachTodayListener(day);
     } else {
-      // If viewing a past day, detach the live listener and perform a one-off get
-      if(offCurrentViewListener) offCurrentViewListener();
-      offCurrentViewListener = null;
-
-      const snap = await get(ref(db, `news/${day}`));
-      lastSnapshot = snap;
-      renderPosts(snap);
+        if(offCurrentViewListener) offCurrentViewListener();
+        offCurrentViewListener = null;
+        const snap = await get(ref(db, `news/${day}`));
+        lastSnapshot = snap;
+        renderPosts(snap);
     }
-    // Also, if we change the view from today, stop auto-refreshing the *current* view 
-    // since the live listener is gone/changed. The timer handles past days.
-  }
+}
 
-  // get past dates list
-  async function loadPastDates(){
+async function loadPastDates(){
     const snap = await get(ref(db, "news"));
     pastDatesEl.innerHTML = "";
-    if(!snap.exists()) { pastDatesEl.innerHTML = "<div class='small'>No entries yet</div>"; return; }
+    if(!snap.exists()) { 
+        pastDatesEl.innerHTML = "<div class='empty-state'><p>No entries yet</p></div>"; 
+        return; 
+    }
     
-    // Sort dates descending
     const days = Object.keys(snap.val()).sort().reverse();
     
-    days.forEach(d=>{
-      const btn = el('div', {className:'small', style:"cursor:pointer;padding:6px;border-radius:6px;margin-bottom:6px;border:1px solid var(--glass-border);background:var(--card)"}, [
-        el('div', {}, [d]),
-        el('div', {className:'tiny small', style:"color:var(--muted)"}, ["Click to view"])
-      ]);
-      // Highlight current day in the list
-      if(d === currentView) {
-        btn.style.border = `1px solid var(--accent)`;
-        btn.style.fontWeight = 'bold';
-      }
-      btn.addEventListener("click", ()=> loadView(d));
-      pastDatesEl.appendChild(btn);
+    days.forEach(d => {
+        const isActive = d === currentView;
+        const isToday = d === getToday();
+        
+        const card = el('div', {
+            className: `past-date-card ${isActive ? 'active' : ''}`,
+        }, [
+            el('div', {className: 'date'}, [d]),
+            el('div', {className: 'label'}, [isToday ? 'Today' : 'Click to view'])
+        ]);
+        
+        card.addEventListener("click", () => {
+            loadView(d);
+            loadPastDates();
+        });
+        
+        pastDatesEl.appendChild(card);
     });
-  }
+}
 
-  /* ---------- render ---------- */
-  function renderPosts(snap){
+/* ---------- render ---------- */
+function renderPosts(snap){
     newsListEl.innerHTML = "";
     if(!snap || !snap.exists()){
-      newsListEl.innerHTML = "<div class='small' style='padding:12px'>No posts.</div>";
-      return;
+        newsListEl.innerHTML = `
+            <div class="empty-state">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+                <p>No posts yet. Be the first to share something!</p>
+            </div>
+        `;
+        return;
     }
     const data = snap.val();
-    // convert and sort: pinned first, then by the order in the database (which is Firebase's timestamp order)
     let entries = Object.entries(data).map(([id, val])=>({id, ...val}));
     
     entries.sort((a,b)=>{
-      // Pinned first
-      if(a.pinned && !b.pinned) return -1;
-      if(!a.pinned && b.pinned) return 1;
-      
-      // Fallback by key/time. Firebase keys are timestamp based, so sorting by ID works for chronological order.
-      if(a.id < b.id) return 1; // Reverse order (newest first based on key)
-      if(a.id > b.id) return -1;
-      return 0;
+        if(a.pinned && !b.pinned) return -1;
+        if(!a.pinned && b.pinned) return 1;
+        if(a.id < b.id) return 1;
+        if(a.id > b.id) return -1;
+        return 0;
     });
 
     const q = (searchInput.value || "").toLowerCase();
 
     entries.forEach(post=>{
-      if(q){
-        const hay = `${post.text} ${post.author || ""}`.toLowerCase();
-        if(!hay.includes(q)) return;
-      }
-      const node = renderPostNode(post);
-      newsListEl.appendChild(node);
+        if(q){
+            const hay = `${post.text} ${post.author || ""}`.toLowerCase();
+            if(!hay.includes(q)) return;
+        }
+        const node = renderPostNode(post);
+        newsListEl.appendChild(node);
     });
     
-    // If the view is switched, reload past dates to highlight the current day
     if(pastPanel.style.display === "block") loadPastDates();
-  }
+}
 
-  function renderPostNode(post){
-    const container = el('div', {className: `post ${post.pinned? 'pinned':''} fade-in`});
-    const meta = el('div', {className:'meta'}, [
-      el('div', {}, [`${post.author ? post.author : 'anon'}`]),
-      el('div', {}, [`${post.time || ''}`])
+function renderPostNode(post){
+    const container = el('div', {className: `post ${post.pinned ? 'pinned' : ''} fade-in`});
+    
+    const header = el('div', {className: 'post-header'}, [
+        el('span', {className: 'post-author'}, [post.author || 'anon']),
+        el('span', {className: 'post-time'}, [post.time || ''])
     ]);
-    const text = el('div', {className:'text'}, [post.text]);
-
-    // bottom row actions
-    const actions = el('div', {className:'actions'});
-    // reactions
-    const reactWrap = el('div', {className:'reaction'});
-    REACTIONS.forEach((emoji)=>{
-      const btn = el('button', {innerText: emoji});
-      // Count reactions for this emoji
-      const count = (post.reactions && Object.values(post.reactions).filter(r=>r===emoji).length) || 0;
-      const ct = el('span', {className:'count', innerText: count||''});
-      
-      // Check if current user has reacted with this emoji
-      const userReaction = post.reactions && post.reactions[userId] === emoji;
-      if(userReaction) {
-        btn.style.border = `1px solid var(--accent)`;
-        btn.style.borderRadius = '6px';
-      }
-      
-      btn.addEventListener("click", ()=> handleReact(post.id, emoji, btn));
-      reactWrap.appendChild(btn);
-      reactWrap.appendChild(ct);
+    
+    const text = el('div', {className: 'post-text'}, [post.text]);
+    
+    const actions = el('div', {className: 'post-actions'});
+    
+    // Likes
+    const likeCount = post.likes ? Object.keys(post.likes).length : 0;
+    const userLiked = post.likes && post.likes[userId];
+    const likeBtn = el('button', {
+        className: `vote-btn ${userLiked ? 'active-like' : ''}`,
+        innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg> ${likeCount || ''}`
     });
-
-    // share button
-    const shareBtn = el('button', {className:'icon-btn', title:'Copy post text', innerText:'🔗'});
-    shareBtn.addEventListener("click", ()=> {
-      navigator.clipboard?.writeText(`${post.text}\n— ${post.author || 'anon'} (${post.time || ''})`).then(()=> {
-        shareBtn.classList.add('pop');
-        setTimeout(()=>shareBtn.classList.remove('pop'),380);
-      });
+    likeBtn.addEventListener("click", () => handleVote(post.id, 'like', likeBtn));
+    
+    // Dislikes
+    const dislikeCount = post.dislikes ? Object.keys(post.dislikes).length : 0;
+    const userDisliked = post.dislikes && post.dislikes[userId];
+    const dislikeBtn = el('button', {
+        className: `vote-btn ${userDisliked ? 'active-dislike' : ''}`,
+        innerHTML: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg> ${dislikeCount || ''}`
     });
-
-    actions.appendChild(reactWrap);
+    dislikeBtn.addEventListener("click", () => handleVote(post.id, 'dislike', dislikeBtn));
+    
+    // Share
+    const shareBtn = el('button', {className: 'share-btn', title: 'Copy post', innerText: '🔗'});
+    shareBtn.addEventListener("click", () => {
+        navigator.clipboard?.writeText(`${post.text}\n— ${post.author || 'anon'} (${post.time || ''})`).then(() => {
+            shareBtn.classList.add('pop');
+            setTimeout(() => shareBtn.classList.remove('pop'), 300);
+        });
+    });
+    
+    actions.appendChild(likeBtn);
+    actions.appendChild(dislikeBtn);
     actions.appendChild(shareBtn);
-
-    // if admin, show admin controls
+    
+    // Admin controls
     if(isAdmin){
-      const editBtn = el('button', {className:'icon-btn', title:'Edit', innerText:'✏️'});
-      const delBtn = el('button', {className:'icon-btn', title:'Delete', innerText:'🗑️'});
-      const pinBtn = el('button', {className:'icon-btn', title: post.pinned ? 'Unpin':'Pin', innerText: post.pinned?'📌':'📍'}); // Changed pin icon when pinned/unpinned
-      editBtn.addEventListener("click", ()=> adminEdit(post));
-      delBtn.addEventListener("click", ()=> adminDelete(post));
-      pinBtn.addEventListener("click", ()=> adminTogglePin(post));
-      actions.appendChild(editBtn);
-      actions.appendChild(pinBtn);
-      actions.appendChild(delBtn);
+        const editBtn = el('button', {className: 'admin-btn', title: 'Edit', innerText: '✏️'});
+        const pinBtn = el('button', {className: 'admin-btn', title: post.pinned ? 'Unpin' : 'Pin', innerText: post.pinned ? '📌' : '📍'});
+        const delBtn = el('button', {className: 'admin-btn', title: 'Delete', innerText: '🗑️'});
+        
+        editBtn.addEventListener("click", () => adminEdit(post));
+        pinBtn.addEventListener("click", () => adminTogglePin(post));
+        delBtn.addEventListener("click", () => adminDelete(post));
+        
+        actions.appendChild(editBtn);
+        actions.appendChild(pinBtn);
+        actions.appendChild(delBtn);
     }
-
-    container.appendChild(meta);
+    
+    container.appendChild(header);
     container.appendChild(text);
     container.appendChild(actions);
     return container;
-  }
+}
 
-  /* ---------- reactions handling ---------- */
-  async function handleReact(postId, emoji, btnEl){
-    // store reaction under news/<day>/<postId>/reactions/<userId> = emoji
-    const path = `news/${currentView}/${postId}/reactions/${userId}`;
-    const reactionRef = ref(db, path);
+/* ---------- Likes/Dislikes handling ---------- */
+async function handleVote(postId, type, btnEl){
+    const likePath = `news/${currentView}/${postId}/likes/${userId}`;
+    const dislikePath = `news/${currentView}/${postId}/dislikes/${userId}`;
     
-    // Read then update/remove
-    const existingSnap = await get(reactionRef);
-    const current = existingSnap.exists() ? existingSnap.val() : null;
+    const likeRef = ref(db, likePath);
+    const dislikeRef = ref(db, dislikePath);
     
-    let isToggled = false;
-    if(current === emoji){
-      // Remove (toggle off)
-      await set(reactionRef, null);
+    const [likeSnap, dislikeSnap] = await Promise.all([get(likeRef), get(dislikeRef)]);
+    const hasLiked = likeSnap.exists();
+    const hasDisliked = dislikeSnap.exists();
+    
+    if(type === 'like'){
+        if(hasLiked){
+            await set(likeRef, null);
+        } else {
+            if(hasDisliked) await set(dislikeRef, null);
+            await set(likeRef, true);
+        }
     } else {
-      // Set or replace (toggle on)
-      await set(reactionRef, emoji);
-      isToggled = true;
+        if(hasDisliked){
+            await set(dislikeRef, null);
+        } else {
+            if(hasLiked) await set(likeRef, null);
+            await set(dislikeRef, true);
+        }
     }
     
-    // Optimistic UI: no need to manually update count as onValue listener handles it
     btnEl.classList.add('pop');
-    setTimeout(()=>btnEl.classList.remove('pop'),380);
-  }
+    setTimeout(() => btnEl.classList.remove('pop'), 300);
+}
 
-  /* ---------- admin actions ---------- */
-  function openAdminLogin(){
-    // ... admin login modal code (kept original)
+/* ---------- admin actions ---------- */
+function openAdminLogin(){
     adminModal.innerHTML = `
-      <div class="modal-backdrop">
-        <div class="modal glass">
-          <h3 style="margin-top:0">Admin Access</h3>
-          <input id="admKey" type="password" placeholder="Enter admin key" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--glass-border);background:var(--card)"/>
-          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
-            <button id="admCancel" class="btn">Cancel</button>
-            <button id="admOk" class="btn">Unlock</button>
-          </div>
-          <div class="small" style="margin-top:8px;color:var(--muted)">Pro tip: long-press the TAC title to open this.</div>
+        <div class="modal-backdrop">
+            <div class="modal">
+                <h3>Admin Access</h3>
+                <input id="admKey" type="password" placeholder="Enter admin key"/>
+                <div class="modal-actions">
+                    <button id="admCancel" class="btn btn-secondary">Cancel</button>
+                    <button id="admOk" class="btn">Unlock</button>
+                </div>
+            </div>
         </div>
-      </div>
     `;
     adminModal.style.display = "block";
-    document.getElementById("admCancel").addEventListener("click", ()=> { adminModal.style.display = "none"; adminModal.innerHTML = ""; });
-    document.getElementById("admOk").addEventListener("click", ()=> {
-      const k = document.getElementById("admKey").value.trim();
-      if(k === ADMIN_KEY && ADMIN_KEY !== "YOUR_ADMIN_KEY_HERE"){ // Added check for placeholder key
-        isAdmin = true;
-        adminModal.style.display = "none"; adminModal.innerHTML = "";
-        adminIcon.classList.add('show');
-        localStorage.setItem("news_admin_key", k);
-        startAdminPanel();
-        loadView(currentView);
-      } else {
-        alert("nah.");
-      }
+    document.getElementById("admCancel").addEventListener("click", () => { 
+        adminModal.style.display = "none"; 
+        adminModal.innerHTML = ""; 
     });
-  }
+    document.getElementById("admOk").addEventListener("click", () => {
+        const k = document.getElementById("admKey").value.trim();
+        if(k === ADMIN_KEY && ADMIN_KEY !== "YOUR_ADMIN_KEY_HERE"){
+            isAdmin = true;
+            adminModal.style.display = "none"; 
+            adminModal.innerHTML = "";
+            adminIcon.classList.add('show');
+            localStorage.setItem("news_admin_key", k);
+            loadView(currentView);
+        } else {
+            alert("Invalid key.");
+        }
+    });
+}
 
-  // Check stored login on load
-  if(localStorage.getItem("news_admin_key") === ADMIN_KEY && ADMIN_KEY !== "YOUR_ADMIN_KEY_HERE"){
+if(localStorage.getItem("news_admin_key") === ADMIN_KEY && ADMIN_KEY !== "YOUR_ADMIN_KEY_HERE"){
     isAdmin = true;
     adminIcon.classList.add('show');
-    startAdminPanel();
-  }
+}
 
-  function startAdminPanel(){
-    adminIcon.classList.add('show');
-    // Admin icon is visible
-  }
-
-  function openAdminPanel(){
-    // ... admin panel modal code (kept original)
+function openAdminPanel(){
     adminModal.innerHTML = `
-      <div class="modal-backdrop">
-        <div class="modal glass">
-          <h3 style="margin-top:0">Admin Panel</h3>
-          <div style="display:flex;gap:8px;flex-direction:column">
-            <button id="clearTodayBtn" class="btn">⚠ Clear Today (${getToday()})</button>
-            <div style="display:flex;gap:8px">
-              <input id="adminTargetDay" placeholder="YYYY-MM-DD" value="${currentView}" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--glass-border);background:var(--card)"/>
-              <button id="clearDayBtn" class="btn" style="width:100px;">Clear Day</button>
+        <div class="modal-backdrop">
+            <div class="modal">
+                <h3>Admin Panel</h3>
+                <div style="display:flex;flex-direction:column;gap:12px">
+                    <button id="clearTodayBtn" class="btn" style="background:#ef4444">⚠ Clear Today (${getToday()})</button>
+                    <div style="display:flex;gap:8px">
+                        <input id="adminTargetDay" type="text" placeholder="YYYY-MM-DD" value="${currentView}" style="flex:1"/>
+                        <button id="clearDayBtn" class="btn btn-secondary">Clear</button>
+                    </div>
+                    <button id="downloadJson" class="btn btn-secondary">Export All (JSON)</button>
+                    <button id="logoutAdmin" class="btn" style="background:#ef4444">Logout Admin</button>
+                    <button id="closeAdmin" class="btn btn-secondary">Close</button>
+                </div>
             </div>
-            <button id="downloadJson" class="btn">Export All (JSON)</button>
-            <button id="logoutAdmin" class="btn" style="background:red">Logout Admin</button>
-            <div style="display:flex;gap:8px">
-              <button id="closeAdmin" class="btn" style="flex:1">Close</button>
-            </div>
-            <div class="small" style="color:var(--muted);margin-top:8px">Use with care. Actions are destructive.</div>
-          </div>
         </div>
-      </div>
     `;
-    document.getElementById("closeAdmin").addEventListener("click", ()=> { adminModal.style.display = "none"; adminModal.innerHTML = ""; });
-    document.getElementById("logoutAdmin").addEventListener("click", ()=>{
-      localStorage.removeItem("news_admin_key");
-      isAdmin = false;
-      adminIcon.classList.remove('show');
-      adminModal.style.display='none'; 
-      adminModal.innerHTML='';
-      loadView(currentView); // Refresh to hide admin controls
-    });
-    document.getElementById("clearTodayBtn").addEventListener("click", async ()=>{
-      if(confirm(`Really clear today (${getToday()})? THIS IS DESTRUCTIVE.`)){ 
-        await set(ref(db, `news/${getToday()}`), null); // Use null to remove the day node
-        alert("Cleared."); 
-        adminModal.style.display='none'; 
-        adminModal.innerHTML=''; 
-      }
-    });
-    document.getElementById("clearDayBtn").addEventListener("click", async ()=>{
-      const d = document.getElementById("adminTargetDay").value.trim();
-      if(!d) return alert("Enter day in YYYY-MM-DD format.");
-      if(confirm(`Are you sure you want to clear ALL posts for ${d}? THIS IS DESTRUCTIVE.`)){
-        await set(ref(db, `news/${d}`), null); // Use null to remove the day node
-        alert(`Cleared day: ${d}.`);
-        adminModal.style.display='none'; 
-        adminModal.innerHTML='';
-        loadView(currentView);
-      }
-    });
-    document.getElementById("downloadJson").addEventListener("click", async ()=>{
-      const snap = await get(ref(db,"news"));
-      const data = snap.exists() ? snap.val() : {};
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href=url; a.download = `tac-news-${Date.now()}.json`; a.click(); URL.revokeObjectURL(url);
-    });
     adminModal.style.display = "block";
-  }
+    
+    document.getElementById("closeAdmin").addEventListener("click", () => { 
+        adminModal.style.display = "none"; 
+        adminModal.innerHTML = ""; 
+    });
+    
+    document.getElementById("logoutAdmin").addEventListener("click", () => {
+        localStorage.removeItem("news_admin_key");
+        isAdmin = false;
+        adminIcon.classList.remove('show');
+        adminModal.style.display = 'none'; 
+        adminModal.innerHTML = '';
+        loadView(currentView);
+    });
+    
+    document.getElementById("clearTodayBtn").addEventListener("click", async () => {
+        if(confirm(`Really clear today (${getToday()})? THIS IS DESTRUCTIVE.`)){ 
+            await set(ref(db, `news/${getToday()}`), null);
+            alert("Cleared."); 
+            adminModal.style.display = 'none'; 
+            adminModal.innerHTML = ''; 
+        }
+    });
+    
+    document.getElementById("clearDayBtn").addEventListener("click", async () => {
+        const d = document.getElementById("adminTargetDay").value.trim();
+        if(!d) return alert("Enter day in YYYY-MM-DD format.");
+        if(confirm(`Are you sure you want to clear ALL posts for ${d}? THIS IS DESTRUCTIVE.`)){
+            await set(ref(db, `news/${d}`), null);
+            alert(`Cleared day: ${d}.`);
+            adminModal.style.display = 'none'; 
+            adminModal.innerHTML = '';
+            loadView(currentView);
+        }
+    });
+    
+    document.getElementById("downloadJson").addEventListener("click", async () => {
+        const snap = await get(ref(db, "news"));
+        const data = snap.exists() ? snap.val() : {};
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); 
+        a.href = url; 
+        a.download = `tac-news-${Date.now()}.json`; 
+        a.click(); 
+        URL.revokeObjectURL(url);
+    });
+}
 
-  async function adminEdit(post){
+async function adminEdit(post){
     const newText = prompt("Edit post text:", post.text);
-    if(newText===null) return;
-    await update(ref(db, `news/${currentView}/${post.id}`), { text:newText, time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) + ' (edited)' }); // Add (edited) to time
-  }
+    if(newText === null) return;
+    await update(ref(db, `news/${currentView}/${post.id}`), { 
+        text: newText, 
+        time: new Date().toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'}) + ' (edited)' 
+    });
+}
 
-  async function adminDelete(post){
+async function adminDelete(post){
     if(!confirm("Delete this post?")) return;
     await remove(ref(db, `news/${currentView}/${post.id}`));
-  }
+}
 
-  async function adminTogglePin(post){
+async function adminTogglePin(post){
     await update(ref(db, `news/${currentView}/${post.id}`), { pinned: !post.pinned });
-  }
+}
 
-  /* ---------- utilities ---------- */
-
-  async function init(){
-    await loadView(getToday());
-    if(autoRefresh) startAutoRefresh();
-  }
-
-  function startAutoRefresh(){
+/* ---------- auto-refresh ---------- */
+function startAutoRefresh(){
     if(refreshTimer) clearInterval(refreshTimer);
-    refreshTimer = setInterval(()=> {
-      // Only force refresh non-today views. The 'today' view is updated live by onValue.
-      if(currentView !== getToday()){
-        loadView(currentView);
-      } else if (currentView === getToday()){
-        // Also ensure currentView is correct if day changes while app is open
-        todayBox.innerText = currentView;
-      }
+    refreshTimer = setInterval(() => {
+        if(currentView !== getToday()){
+            loadView(currentView);
+        }
     }, AUTO_REFRESH_MS);
-    autoTxt.innerText = `Auto-refresh: ON`;
-  }
-  function stopAutoRefresh(){
+    autoTxt.innerText = `Auto: ON`;
+}
+
+function stopAutoRefresh(){
     if(refreshTimer) clearInterval(refreshTimer);
     refreshTimer = null;
-    autoTxt.innerText = `Auto-refresh: OFF`;
-  }
-  
-  // initial startup
-  init();
+    autoTxt.innerText = `Auto: OFF`;
+}
 
-  // tiny accessibility: press "Escape" in search to clear
-  searchInput.addEventListener('keydown', (e)=>{ if(e.key==='Escape') { searchInput.value=''; renderPosts(lastSnapshot); } });
+/* ---------- init ---------- */
+async function init(){
+    await loadView(getToday());
+    if(autoRefresh) startAutoRefresh();
+}
 
-  // small UI polish: show date on todayBox
-  todayBox.innerText = getToday();
+init();
 
+searchInput.addEventListener('keydown', (e) => { 
+    if(e.key === 'Escape') { 
+        searchInput.value = ''; 
+        renderPosts(lastSnapshot); 
+    } 
+});
 </script>
+
 </body>
 </html>
