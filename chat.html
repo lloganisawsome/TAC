@@ -400,6 +400,20 @@
     color:var(--muted);
   }
   
+  .chat-dropdown-section{
+    padding:8px 16px;
+    background:rgba(255,255,255,0.02);
+    border-bottom:1px solid var(--border);
+  }
+  
+  .chat-dropdown-section h4{
+    margin:0;
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+  
   .new-chat-btn{
     width:100%;
     padding:12px 16px;
@@ -446,6 +460,11 @@
   .msg:hover{
     background:var(--msgAlt);
     border-color:rgba(255,255,255,0.1);
+  }
+  
+  .msg.bot-private{
+    background:rgba(59,130,246,0.1);
+    border-color:rgba(59,130,246,0.3);
   }
   
   .avatar{
@@ -868,6 +887,12 @@
     white-space:pre-wrap;
   }
   
+  .mod-cmd-hint{
+    color:var(--muted);
+    font-size:12px;
+    margin-left:4px;
+  }
+
   @media(max-width:1200px){
     .layout{
       grid-template-columns:1fr 300px;
@@ -958,7 +983,7 @@
           </button>
           <div class="chat-dropdown" id="chatDropdown">
             <div class="chat-dropdown-header">
-              <h4>Your Chats</h4>
+              <h4>Channels</h4>
             </div>
             <div class="chat-dropdown-item active" id="mainChatOption" data-chat="main">
               <div class="chat-icon">
@@ -970,6 +995,31 @@
                 <h5># general</h5>
                 <span>Main chat room</span>
               </div>
+            </div>
+            <div class="chat-dropdown-item" id="questionsChatOption" data-chat="questions">
+              <div class="chat-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                </svg>
+              </div>
+              <div class="chat-info">
+                <h5># questions</h5>
+                <span>Ask questions here</span>
+              </div>
+            </div>
+            <div class="chat-dropdown-item" id="helpChatOption" data-chat="help">
+              <div class="chat-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                </svg>
+              </div>
+              <div class="chat-info">
+                <h5># help</h5>
+                <span>Get help from the community</span>
+              </div>
+            </div>
+            <div class="chat-dropdown-section" id="privateChatsSection" style="display:none">
+              <h4>Private Chats</h4>
             </div>
             <div id="privateChatOptions"></div>
             <button class="new-chat-btn" id="newChatBtn">+ New Private Chat</button>
@@ -1213,16 +1263,21 @@ const clearAnnouncementBtn = document.getElementById('clearAnnouncementBtn');
 const chatSelectorBtn = document.getElementById('chatSelectorBtn');
 const chatDropdown = document.getElementById('chatDropdown');
 const mainChatOption = document.getElementById('mainChatOption');
+const questionsChatOption = document.getElementById('questionsChatOption');
+const helpChatOption = document.getElementById('helpChatOption');
 const privateChatOptions = document.getElementById('privateChatOptions');
+const privateChatsSection = document.getElementById('privateChatsSection');
 const newChatBtn = document.getElementById('newChatBtn');
 
 /* ================== LOGIN / MOD AUTH ================== */
-let username = (localStorage.getItem('tacUsername') || '').trim();
-while(!username){
-  username = prompt('Enter your chat display name:') || '';
-  username = username.trim();
+// Use lastLoggedInUser from localStorage instead of asking for username
+let username = (localStorage.getItem('lastLoggedInUser') || '').trim();
+if(!username){
+  // Fallback: if no lastLoggedInUser, redirect or show error
+  alert('No user logged in. Please log in first.');
+  // Optionally redirect to login page:
+  // window.location.href = 'login.html';
 }
-localStorage.setItem('tacUsername', username);
 
 const meNameEl = document.getElementById('meName');
 const meRoleEl = document.getElementById('meRole');
@@ -1306,6 +1361,18 @@ document.addEventListener('click', (e) => {
 
 mainChatOption.addEventListener('click', () => {
   loadChat('main');
+  chatDropdown.classList.remove('visible');
+  chatSelectorBtn.classList.remove('open');
+});
+
+questionsChatOption.addEventListener('click', () => {
+  loadChat('questions');
+  chatDropdown.classList.remove('visible');
+  chatSelectorBtn.classList.remove('open');
+});
+
+helpChatOption.addEventListener('click', () => {
+  loadChat('help');
   chatDropdown.classList.remove('visible');
   chatSelectorBtn.classList.remove('open');
 });
@@ -1715,8 +1782,10 @@ async function setPinnedMessage(msgId){ await db.ref('moderation/pinned').set(ms
 async function setPaused(val){ await db.ref('moderation/paused').set(!!val); }
 
 /* ================== RENDER MESSAGES & POLLS ================== */
-function renderMessageObj(m, id, chatId='main'){
-  const wrap = document.createElement('div'); wrap.className = 'msg'; wrap.id = 'm_' + id;
+function renderMessageObj(m, id, chatId='main', isPrivateBotMsg=false){
+  const wrap = document.createElement('div'); 
+  wrap.className = 'msg' + (isPrivateBotMsg ? ' bot-private' : ''); 
+  wrap.id = 'm_' + id;
   const avatar = document.createElement('div'); avatar.className='avatar';
   if(usersProfilePics[m.user]){
     const img = document.createElement('img'); img.src = usersProfilePics[m.user]; avatar.appendChild(img);
@@ -1731,7 +1800,7 @@ function renderMessageObj(m, id, chatId='main'){
   const when = document.createElement('span'); when.className='when'; when.textContent = fmtTime(m.timestamp || Date.now());
   const actions = document.createElement('div'); actions.className='bubble-actions';
 
-  if(!canModerate(myRole) && chatId !== 'main'){
+  if(!canModerate(myRole) && chatId !== 'main' && chatId !== 'questions' && chatId !== 'help'){
     const leaveBtn = document.createElement('button');
     leaveBtn.className = 'btn danger';
     leaveBtn.textContent = 'Leave';
@@ -1745,7 +1814,7 @@ function renderMessageObj(m, id, chatId='main'){
     actions.appendChild(leaveBtn);
   }
 
-  if(canModerate(myRole)){
+  if(canModerate(myRole) && !isPrivateBotMsg){
     const pin = document.createElement('button');
     pin.className='btn';
     pin.textContent = (pinnedId === id) ? 'Unpin' : 'Pin';
@@ -1761,7 +1830,11 @@ function renderMessageObj(m, id, chatId='main'){
     actions.appendChild(pin);
     const del = document.createElement('button'); del.className='btn danger'; del.textContent = 'Delete';
     del.onclick = ()=> {
-      db.ref((chatId === 'main' ? 'chat/messages/' : `private_chats/${chatId}/messages/`) + id).remove();
+      const refPath = chatId === 'main' ? 'chat/messages/' : 
+                      chatId === 'questions' ? 'chat/questions/' :
+                      chatId === 'help' ? 'chat/help/' :
+                      `private_chats/${chatId}/messages/`;
+      db.ref(refPath + id).remove();
       showNotice('Deleted.');
     };
     const ban = document.createElement('button'); ban.className='btn'; ban.textContent='Ban';
@@ -1850,10 +1923,19 @@ function loadChat(chatId) {
   
   // Update dropdown active states
   document.querySelectorAll('.chat-dropdown-item').forEach(el => el.classList.remove('active'));
+  
   if(chatId === 'main') {
     mainChatOption.classList.add('active');
     chatTitleText.textContent = '# general';
     input.placeholder = 'Message #general';
+  } else if(chatId === 'questions') {
+    questionsChatOption.classList.add('active');
+    chatTitleText.textContent = '# questions';
+    input.placeholder = 'Message #questions';
+  } else if(chatId === 'help') {
+    helpChatOption.classList.add('active');
+    chatTitleText.textContent = '# help';
+    input.placeholder = 'Message #help';
   } else {
     const chatOption = document.querySelector(`.chat-dropdown-item[data-chat="${chatId}"]`);
     if(chatOption) chatOption.classList.add('active');
@@ -1862,6 +1944,10 @@ function loadChat(chatId) {
   let refPath = '';
   if (chatId === 'main') {
     refPath = 'chat/messages';
+  } else if (chatId === 'questions') {
+    refPath = 'chat/questions';
+  } else if (chatId === 'help') {
+    refPath = 'chat/help';
   } else {
     db.ref('private_chats/' + chatId).once('value').then(snap => {
       const chatData = snap.val();
@@ -1912,7 +1998,7 @@ db.ref('users/' + username + '/private_chats').on('value', snap => {
 
   userChats = newChats;
   renderPrivateChatsDropdown();
-  if (activeChatId !== 'main' && !userChats[activeChatId]) {
+  if (activeChatId !== 'main' && activeChatId !== 'questions' && activeChatId !== 'help' && !userChats[activeChatId]) {
     loadChat('main');
   }
 });
@@ -1929,8 +2015,11 @@ function renderPrivateChatsDropdown() {
   
   const entries = Object.entries(userChats);
   if (entries.length === 0) {
+    privateChatsSection.style.display = 'none';
     return;
   }
+  
+  privateChatsSection.style.display = 'block';
   
   entries.forEach(([id, members]) => {
     const el = document.createElement('div');
@@ -2111,15 +2200,38 @@ db.ref('moderation/pinned').on('value', async snap=>{
 let isPaused = false;
 db.ref('moderation/paused').on('value', snap=>{
   isPaused = snap.val();
-  input.placeholder = isPaused ? 'Chat is paused' : (activeChatId === 'main' ? 'Message #general' : 'Message...');
-  sendBtn.disabled = isPaused && activeChatId === 'main';
-  input.disabled = isPaused && activeChatId === 'main';
-  fileInput.disabled = isPaused && activeChatId === 'main';
+  const isPublicChannel = activeChatId === 'main' || activeChatId === 'questions' || activeChatId === 'help';
+  input.placeholder = isPaused && isPublicChannel ? 'Chat is paused' : getPlaceholderForChat(activeChatId);
+  sendBtn.disabled = isPaused && isPublicChannel;
+  input.disabled = isPaused && isPublicChannel;
+  fileInput.disabled = isPaused && isPublicChannel;
 });
+
+function getPlaceholderForChat(chatId) {
+  if(chatId === 'main') return 'Message #general';
+  if(chatId === 'questions') return 'Message #questions';
+  if(chatId === 'help') return 'Message #help';
+  return 'Message...';
+}
+
+/* ================== LOCAL BOT MESSAGE (only visible to current user) ================== */
+function showLocalBotMessage(text) {
+  const localId = 'local_' + Date.now();
+  const botMsg = {
+    user: 'ModBot',
+    text: text,
+    role: 'Head Dev',
+    timestamp: Date.now()
+  };
+  const el = renderMessageObj(botMsg, localId, activeChatId, true);
+  scroller.appendChild(el);
+  scroller.scrollTop = scroller.scrollHeight;
+}
 
 /* ================== SEND MESSAGE ================== */
 sendBtn.addEventListener('click', async ()=>{
-  if(isPaused && activeChatId === 'main'){ showNotice('Chat is paused.'); return; }
+  const isPublicChannel = activeChatId === 'main' || activeChatId === 'questions' || activeChatId === 'help';
+  if(isPaused && isPublicChannel){ showNotice('Chat is paused.'); return; }
   let text = input.value.trim();
   if(!text && !fileInput.files.length) return;
   
@@ -2133,18 +2245,25 @@ sendBtn.addEventListener('click', async ()=>{
   const parts = text.split(/\s+/);
   const cmd = parts[0].toLowerCase();
 
-  if(cmd === '!game' && activeChatId === 'main'){
+  if(cmd === '!game' && isPublicChannel){
     await db.ref('moderation/gameRequests').push({ user: username, timestamp: Date.now() });
     input.value = '';
     showNotice('Game request sent.');
     return;
   }
 
-  if(cmd === '!mod' && activeChatId === 'main'){
-    const message = parts.slice(1).join(' ').trim() || 'No message.';
+  if(cmd === '!mod' && isPublicChannel){
+    const message = parts.slice(1).join(' ').trim();
+    if(!message) {
+      // Show placeholder hint to user
+      showLocalBotMessage('Usage: !mod [Type message here]\nExample: !mod Someone is spamming in chat');
+      input.value = '';
+      return;
+    }
     await db.ref('moderation/modNotifications').push({ user: username, message: message, timestamp: Date.now() });
     input.value = '';
-    showNotice('Mod notification sent.');
+    // Show confirmation only to the user who sent it
+    showLocalBotMessage('✓ Your message has been sent to the moderators.');
     return;
   }
 
@@ -2152,25 +2271,32 @@ sendBtn.addEventListener('click', async ()=>{
   const snap = await botResponsesRef.once('value');
   const responses = snap.val() || {};
   const botResponse = Object.values(responses).find(res => res.command.toLowerCase() === cmd);
-  if(botResponse && activeChatId === 'main'){
-    const botMessage = {
-      user: 'Bot',
-      text: botResponse.text,
-      role: 'Head Dev',
-      timestamp: firebase.database.ServerValue.TIMESTAMP
-    };
-    await db.ref('chat/messages').push(botMessage);
+  if(botResponse && isPublicChannel){
+    // Show bot response only to the user who typed the command
+    showLocalBotMessage(botResponse.text);
     input.value = '';
     return;
   }
 
-  if(activeChatId === 'main'){
+  // Determine which chat path to use
+  let refPath = '';
+  if (activeChatId === 'main') {
+    refPath = 'chat/messages';
+  } else if (activeChatId === 'questions') {
+    refPath = 'chat/questions';
+  } else if (activeChatId === 'help') {
+    refPath = 'chat/help';
+  } else {
+    refPath = `private_chats/${activeChatId}/messages`;
+  }
+
+  if(isPublicChannel){
     try {
       if(fileInput.files.length){
         const file = fileInput.files[0];
         const upload = await uploadAttachment(file);
         if(upload){
-          await db.ref('chat/messages').push({
+          await db.ref(refPath).push({
             user: username,
             text: text,
             role: myRole,
@@ -2181,7 +2307,7 @@ sendBtn.addEventListener('click', async ()=>{
           fileInput.value = '';
         }
       } else if(text){
-        await db.ref('chat/messages').push({
+        await db.ref(refPath).push({
           user: username,
           text: text,
           role: myRole,
