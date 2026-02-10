@@ -1,0 +1,25 @@
+import os
+
+folder_path = "."  # current folder
+script_tag = '<script src="guard.js"></script>\n'
+
+for filename in os.listdir(folder_path):
+    if filename.endswith(".html"):
+        file_path = os.path.join(folder_path, filename)
+
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        if "guard.js" in content:
+            print(f"Skipped: {filename}")
+            continue
+
+        if "</body>" in content:
+            content = content.replace("</body>", script_tag + "</body>")
+        else:
+            content += "\n" + script_tag
+
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(content)
+
+        print(f"Updated: {filename}")
