@@ -4,36 +4,63 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Sign in – Google Accounts</title>
-    <link rel="icon" type="image/png" href="https://placehold.co/16x16/0a8c2d/ffffff?text=G" />
+    <link rel="icon" type="image/png" href__="https://placehold.co/16x16/0a8c2d/ffffff?text=G" />
     <style>
         /* General Setup */
+        :root {
+            --bg-color: #f1f1f1;
+            --container-bg: #fff;
+            --text-color: #3c4043;
+            --input-border: #dadce0;
+            --input-focus: #1a73e8;
+            --button-bg: #1a73e8;
+            --button-hover: #0c5adb;
+            --secondary-bg: #f0f0f0;
+            --secondary-hover: #e8e8e8;
+        }
+        
+        body.dark-mode {
+            --bg-color: #1a1a1a;
+            --container-bg: #2d2d2d;
+            --text-color: #e8e8e8;
+            --input-border: #404040;
+            --input-focus: #4a9eff;
+            --button-bg: #1a73e8;
+            --button-hover: #0c5adb;
+            --secondary-bg: #404040;
+            --secondary-hover: #505050;
+        }
+        
         html,body { height: 100%; margin: 0; font-family: 'Inter', Arial, Helvetica, sans-serif; }
-        body { background: #f1f1f1; display: flex; justify-content: center; align-items: center; }
+        body { background: var(--bg-color); display: flex; justify-content: center; align-items: center; transition: background 0.3s; }
 
         /* Container Styling */
         .container {
             width: 360px;
             max-width: 90%;
-            background: #fff;
+            background: var(--container-bg);
             padding: 40px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,.1);
             text-align: center;
+            transition: background 0.3s;
         }
         .google-logo { width: 75px; margin-bottom: 20px; }
-        h2 { font-size: 24px; font-weight: 400; margin-bottom: 24px; }
+        h2 { font-size: 24px; font-weight: 400; margin-bottom: 24px; color: var(--text-color); }
 
         /* Form Elements */
         input {
             width: 100%;
             padding: 10px;
             margin: 12px 0;
-            border: 1px solid #dadce0;
+            border: 1px solid var(--input-border);
             border-radius: 4px;
             font-size: 14px;
             transition: border-color 0.3s;
+            background: var(--container-bg);
+            color: var(--text-color);
         }
-        input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 1px #1a73e8; }
+        input:focus { outline: none; border-color: var(--input-focus); box-shadow: 0 0 0 1px var(--input-focus); }
         
         /* PIN Input specific styling (to center text) */
         .pin-input { text-align: center; font-size: 24px; letter-spacing: 5px; }
@@ -41,7 +68,7 @@
         button {
             width: 100%;
             padding: 10px;
-            background: #1a73e8;
+            background: var(--button-bg);
             color: #fff;
             border: none;
             border-radius: 4px;
@@ -51,25 +78,26 @@
             margin-top: 16px;
             transition: background 0.3s;
         }
-        button:hover { background: #0c5adb; }
+        button:hover { background: var(--button-hover); }
         
         .secondary-button {
-            background: #f0f0f0;
-            color: #3c4043;
-            border: 1px solid #dadce0;
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
         }
-        .secondary-button:hover { background: #e8e8e8; }
+        .secondary-button:hover { background: var(--secondary-hover); }
 
         /* Links and Messages */
         .error { color: #d93025; margin-top: 5px; font-size: 12px; }
         .small-link { font-size: 12px; color:#1a73e8; cursor:pointer; margin-top: 10px; text-decoration: none; }
         .small-link:hover { text-decoration: underline; }
+        p { color: var(--text-color); }
 
         .recent-account-info {
             display: flex;
             align-items: center;
             padding: 10px;
-            border: 1px solid #dadce0;
+            border: 1px solid var(--input-border);
             border-radius: 4px;
             margin-bottom: 20px;
         }
@@ -86,15 +114,16 @@
             font-size: 18px;
             margin-right: 15px;
         }
-        .user-name-text { font-size: 16px; font-weight: 500; color: #3c4043; }
-        .sign-out-link { margin-top: 20px; font-size: 12px; color: #3c4043; cursor: pointer; }
+        .user-name-text { font-size: 16px; font-weight: 500; color: var(--text-color); }
+        .sign-out-link { margin-top: 20px; font-size: 12px; color: var(--text-color); cursor: pointer; }
         .sign-out-link:hover { color: #d93025; }
 
         /* Video Overlay */
         #videoOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;justify-content:center;align-items:center;z-index:9999;cursor:none;flex-direction:column}
         #videoOverlay video{width:100%;height:100%;object-fit:cover;display:block}
+        #skipHint{position:absolute;bottom:30px;color:#fff;font-size:14px;background:rgba(0,0,0,0.7);padding:10px 20px;border-radius:5px;display:none}
 
-        /* NEW Update Popup Styles */
+        /* Update Popup Styles */
         #updatePopup {
             display: none;
             position: fixed;
@@ -102,7 +131,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             padding: 30px;
-            background: white;
+            background: var(--container-bg);
             border-radius: 8px;
             z-index: 10001;
             text-align: center;
@@ -119,6 +148,66 @@
             background: rgba(0,0,0,0.7);
             z-index: 10000;
         }
+        
+        /* Forgot Password Modal */
+        #forgotModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            background: var(--container-bg);
+            border-radius: 8px;
+            z-index: 10001;
+            text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+            width: 320px;
+        }
+        #forgotOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+        }
+        .modal-option {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .modal-option:hover { background: var(--secondary-hover); }
+        
+        /* Dark Mode Toggle */
+        #darkModeToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--container-bg);
+            border: 2px solid var(--input-border);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        #darkModeToggle:hover { transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -128,7 +217,7 @@
     <h2>Sign in</h2>
 
     <div id="step-phone" style="display:none;">
-        <p style="font-size: 14px; color: #3c4043;">Choose your 3-digit extension.</p>
+        <p style="font-size: 14px;">Choose your 3-digit extension.</p>
         <input id="phone-input" type="number" pattern="\d{3}" maxlength="3" placeholder="e.g. 123" oninput="if(this.value.length>3)this.value=this.value.slice(0,3)" />
         <div class="error" id="phone-error"></div>
         <button onclick="savePhoneNumber()">Confirm Extension</button>
@@ -139,7 +228,7 @@
             <div class="user-icon" id="recent-user-icon">U</div>
             <span class="user-name-text" id="recent-user-name">User</span>
         </div>
-        <p style="font-size: 14px; color: #3c4043;">Unlock your account with your 4-digit PIN.</p>
+        <p style="font-size: 14px;">Unlock your account with your 4-digit PIN.</p>
         <input id="pin-input" class="pin-input" type="number" pattern="\d{4}" maxlength="4" placeholder="••••" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
         <div class="error" id="pin-error"></div>
         <button onclick="checkPin()">Unlock</button>
@@ -147,7 +236,7 @@
     </div>
 
     <div id="step-set-pin" style="display:none;">
-        <p style="font-size: 14px; color: #3c4043;">Set a 4-digit PIN for quick access to <span id="set-pin-username" class="user-name-text"></span>.</p>
+        <p style="font-size: 14px;">Set a 4-digit PIN for quick access to <span id="set-pin-username" class="user-name-text"></span>.</p>
         <input id="new-pin-input" class="pin-input" type="number" pattern="\d{4}" maxlength="4" placeholder="••••" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
         <input id="confirm-new-pin-input" class="pin-input" type="number" pattern="\d{4}" maxlength="4" placeholder="Confirm ••••" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
         <div class="error" id="set-pin-error"></div>
@@ -190,10 +279,21 @@
     <button id="downloadBtn">download here</button>
 </div>
 
+<div id="forgotOverlay"></div>
+<div id="forgotModal">
+    <h3 style="margin-top:0;color:var(--text-color)">Password Help</h3>
+    <p style="font-size: 14px; margin-bottom: 20px;color:var(--text-color)">Choose an option:</p>
+    <button class="modal-option" onclick="sendPasswordRequest()">📧 Send password reset request</button>
+    <button class="modal-option" onclick="closeForgotModal()">❌ Cancel</button>
+</div>
+
 <p class="sign-out-link" id="signOutLink" onclick="logout()" style="position: absolute; bottom: 20px;">Sign Out</p>
+
+<div id="darkModeToggle" onclick="toggleDarkMode()">🌙</div>
 
 <div id="videoOverlay">
     <video id="combinedVideo" playsinline preload="auto"></video>
+    <div id="skipHint">Press SPACE to skip</div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -214,6 +314,14 @@
     const db = firebase.database();
     let currentUser = "";
 
+    // Dark Mode
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+        document.getElementById('darkModeToggle').innerText = isDark ? '☀️' : '🌙';
+    }
+
     function hideAllSteps() {
         ['step-username', 'step-password', 'step-change-password', 'step-create', 'step-recent-account', 'step-set-pin', 'step-phone'].forEach(id => {
             const el = document.getElementById(id);
@@ -230,6 +338,12 @@
     }
 
     window.onload = function() {
+        // Dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('darkModeToggle').innerText = '☀️';
+        }
+        
         if (!localStorage.getItem('newfile')) {
             document.getElementById('updatePopup').style.display = 'block';
             document.getElementById('updateOverlay').style.display = 'block';
@@ -251,28 +365,23 @@
         }
     }
 
-    // --- LOGIC UPDATE: Check for duplicates on login ---
     function loginSuccess() {
         db.ref('userPhones/' + currentUser).once('value').then(userSnap => {
             if (userSnap.exists()) {
                 const myPhone = userSnap.val();
                 
-                // We have a phone number, but let's check if it's unique
                 db.ref('userPhones').once('value').then(allSnaps => {
                     let isDuplicate = false;
                     allSnaps.forEach(child => {
-                        // If value matches mine, but the key (username) is NOT me
                         if (child.val() === myPhone && child.key !== currentUser) {
                             isDuplicate = true;
                         }
                     });
 
                     if (isDuplicate) {
-                        // Force them to change it
                         alert("Conflict detected: Your extension ("+myPhone+") is claimed by another user. Please set a new one.");
                         showPhoneStep(); 
                     } else {
-                        // Unique - Login success
                         localStorage.setItem('lastLoggedInUser', currentUser);
                         localStorage.setItem('userPhoneNumber', myPhone);
                         finalAction();
@@ -290,7 +399,6 @@
         document.getElementById('step-phone').style.display = 'block';
     }
 
-    // --- LOGIC UPDATE: Check for duplicates when saving ---
     function savePhoneNumber() {
         resetErrors();
         const phone = document.getElementById('phone-input').value.trim();
@@ -299,11 +407,9 @@
             return;
         }
 
-        // Scan Firebase for this number
         db.ref('userPhones').once('value').then(snapshot => {
             let isTaken = false;
             snapshot.forEach(child => {
-                // Check if anyone else has this number
                 if (child.val() === phone && child.key !== currentUser) {
                     isTaken = true;
                 }
@@ -312,7 +418,6 @@
             if (isTaken) {
                 document.getElementById('phone-error').innerText = "Extension already in use. Please choose another.";
             } else {
-                // Save if unique
                 db.ref('userPhones/' + currentUser).set(phone).then(() => {
                     localStorage.setItem('lastLoggedInUser', currentUser);
                     localStorage.setItem('userPhoneNumber', phone);
@@ -432,18 +537,68 @@
     function showVideoOverlay() {
         const overlay = document.getElementById('videoOverlay');
         const videoEl = document.getElementById('combinedVideo');
+        const skipHint = document.getElementById('skipHint');
+        const hasWatchedBefore = localStorage.getItem('videoWatchedOnce') === 'true';
+        
         overlay.style.display = 'flex';
-        videoEl.src = 'combined.mp4';
+        
+        if (hasWatchedBefore) {
+            // Show skip hint and play short version
+            skipHint.style.display = 'block';
+            videoEl.src = 'short.mp4';
+            
+            // Listen for space key
+            const spaceHandler = function(e) {
+                if (e.key === ' ' || e.keyCode === 32) {
+                    videoEl.pause();
+                    window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html');
+                    document.removeEventListener('keydown', spaceHandler);
+                }
+            };
+            document.addEventListener('keydown', spaceHandler);
+            
+            videoEl.onended = () => { 
+                document.removeEventListener('keydown', spaceHandler);
+                window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html'); 
+            };
+        } else {
+            // First time - play full video
+            videoEl.src = 'combined.mp4';
+            videoEl.onended = () => { 
+                localStorage.setItem('videoWatchedOnce', 'true');
+                window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html'); 
+            };
+        }
+        
         videoEl.play();
-        videoEl.onended = () => { 
-            window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html'); 
-        };
     }
 
+    // Forgot Password Modal
     document.getElementById('forgotBtn').addEventListener('click', () => {
-        db.ref('notifications').push({ type: 'forgotPassword', user: currentUser, time: new Date().toISOString() });
-        alert('Support notified.');
+        document.getElementById('forgotModal').style.display = 'block';
+        document.getElementById('forgotOverlay').style.display = 'block';
     });
+    
+    function closeForgotModal() {
+        document.getElementById('forgotModal').style.display = 'none';
+        document.getElementById('forgotOverlay').style.display = 'none';
+    }
+    
+    function sendPasswordRequest() {
+        db.ref('notifications').push({ 
+            type: 'forgotPassword', 
+            user: currentUser, 
+            time: new Date().toISOString() 
+        });
+        alert('Password reset request sent to support!');
+        closeForgotModal();
+    }
+    
+    function openDevChat() {
+        // Replace with your actual dev chat link (Discord, Telegram, etc.)
+        window.open('https://discord.gg/yourdevserver', '_blank');
+        closeForgotModal();
+    }
 </script>
 </body>
 </html>
