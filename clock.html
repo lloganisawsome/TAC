@@ -5,185 +5,1796 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAC Clock</title>
 <style>
-  body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
-  header { width:100%; text-align:center; padding:15px; font-size:1.5em; border-bottom:2px solid #19FFA0; }
-  .tabs { display:flex; width:100%; max-width:400px; }
-  .tab { flex:1; padding:10px; text-align:center; cursor:pointer; border-bottom:3px solid transparent; }
-  .tab.active { border-bottom:3px solid #19FFA0; }
-  .app-content { display:none; flex-direction:column; align-items:center; padding:20px; width:100%; max-width:400px; }
-  .app-content.active { display:flex; }
-  #liveClock { font-size:3em; margin:30px 0; }
-  button,input { margin:5px 0; padding:10px; border:none; border-radius:8px; }
-  button { background:#19FFA0; color:black; font-weight:bold; cursor:pointer; }
-  button:hover { background:#13CCA0; }
-  ul { list-style:none; padding:0; width:100%; }
-  li { background:#111; padding:8px; margin:4px 0; border-radius:6px; display:flex; justify-content:space-between; align-items:center; }
-  /* Home button */
-  #homeBtn {
+:root {
+    --bg: #0a0a0b;
+    --panel: #111113;
+    --panel-hover: #1a1a1c;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --muted: #71717a;
+    --border: rgba(255,255,255,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    font-size: 14px;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* Sidebar */
+.sidebar {
     position: fixed;
-    top: 15px;
-    left: 15px;
-    z-index: 100;
-    border-radius:50%;
-    width:50px;
-    height:50px;
-    font-weight:bold;
-    font-size:1em;
-    background:#19FFA0;
-    color:black;
-    cursor:pointer;
-  }
-  #homeBtn:hover { background:#13CCA0; }
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px var(--accent-dim);
+}
+
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    border: none;
+    margin-left: -10px;
+    overflow: hidden;
+}
+
+.logo-container {
+    margin-bottom: 16px;
+    padding: 4px;
+    transition: opacity 0.3s;
+}
+
+.sidebar.collapsed .logo-container {
+    opacity: 0;
+}
+
+.logo {
+    width: 62px;
+    height: 62px;
+    border-radius: 8px;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 0 8px;
+    transition: opacity 0.3s;
+}
+
+.sidebar.collapsed .nav-items {
+    opacity: 0;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--accent);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background: var(--accent-dim);
+}
+
+.nav-item.active {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    margin-bottom: 2px;
+}
+
+.nav-item span {
+    font-size: 9px;
+    font-weight: 500;
+}
+
+.toggle-btn {
+    position: fixed;
+    left: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 36px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toggle-btn:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+}
+
+.toggle-btn svg {
+    width: 14px;
+    height: 14px;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.toggle-btn.collapsed {
+    left: 10px;
+}
+
+.toggle-btn.collapsed svg {
+    transform: rotate(180deg);
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 100px;
+    padding: 24px;
+    transition: margin-left 0.3s ease;
+    min-height: 100vh;
+}
+
+.main-content.expanded {
+    margin-left: 24px;
+}
+
+.header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--accent);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.tab {
+    padding: 12px 24px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.tab:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.tab.active {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Panel */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.app-content {
+    display: none;
+}
+
+.app-content.active {
+    display: block;
+}
+
+/* Clock Display */
+#liveClock {
+    font-size: 4em;
+    font-weight: 200;
+    text-align: center;
+    color: var(--accent);
+    font-family: 'SF Mono', 'Consolas', monospace;
+    text-shadow: 0 0 30px var(--accent-dim);
+    margin: 40px 0;
+}
+
+#clockDate {
+    text-align: center;
+    color: var(--muted);
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+/* Analog Clock */
+.analog-clock {
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--accent);
+    border-radius: 50%;
+    position: relative;
+    margin: 20px auto;
+    background: var(--panel);
+    box-shadow: 0 0 30px var(--accent-dim);
+}
+
+.clock-face {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.clock-center {
+    width: 12px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    border-radius: 4px;
+}
+
+.hour-hand {
+    width: 4px;
+    height: 50px;
+    background: var(--accent);
+    margin-left: -2px;
+}
+
+.minute-hand {
+    width: 3px;
+    height: 70px;
+    background: #fff;
+    margin-left: -1.5px;
+}
+
+.second-hand {
+    width: 2px;
+    height: 80px;
+    background: #ef4444;
+    margin-left: -1px;
+}
+
+.clock-number {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+/* World Clock */
+.world-clocks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.world-clock-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.world-clock-item:hover {
+    border-color: var(--accent);
+    background: var(--panel-hover);
+}
+
+.world-clock-city {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.world-clock-time {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: monospace;
+}
+
+/* Buttons */
+button {
+    padding: 12px 24px;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin: 4px;
+}
+
+button:hover {
+    background: var(--accent);
+    color: #000;
+}
+
+button.danger {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+button.danger:hover {
+    background: #ef4444;
+    color: #fff;
+}
+
+button.secondary {
+    border-color: var(--muted);
+    background: transparent;
+    color: var(--muted);
+}
+
+button.secondary:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+/* Inputs */
+input, select {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel-hover);
+    color: #fff;
+    font-size: 14px;
+    width: 100%;
+    margin-bottom: 12px;
+    transition: all 0.2s;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-dim);
+}
+
+/* Lists */
+.list-item {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.list-item:hover {
+    border-color: var(--accent);
+    background: var(--panel-hover);
+}
+
+.list-item-time {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: monospace;
+}
+
+.list-item-label {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.list-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.list-item-actions button {
+    padding: 8px 12px;
+    font-size: 12px;
+}
+
+/* Stopwatch Display */
+#stopwatchDisplay {
+    font-size: 3.5em;
+    font-weight: 200;
+    text-align: center;
+    color: var(--accent);
+    font-family: 'SF Mono', 'Consolas', monospace;
+    margin: 20px 0;
+}
+
+.stopwatch-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+/* Physical Stopwatch */
+.physical-stopwatch {
+    width: 280px;
+    height: 280px;
+    border: 4px solid var(--accent);
+    border-radius: 50%;
+    position: relative;
+    margin: 30px auto;
+    background: linear-gradient(145deg, var(--panel), var(--bg));
+    box-shadow: 0 0 40px var(--accent-dim), inset 0 0 30px rgba(0,0,0,0.5);
+}
+
+.stopwatch-face {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.stopwatch-center {
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.stopwatch-hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    border-radius: 2px;
+}
+
+.stopwatch-second-hand {
+    width: 2px;
+    height: 100px;
+    background: #ef4444;
+    margin-left: -1px;
+    box-shadow: 0 0 5px #ef4444;
+}
+
+.stopwatch-minute-hand {
+    width: 3px;
+    height: 70px;
+    background: var(--accent);
+    margin-left: -1.5px;
+}
+
+.stopwatch-tick {
+    position: absolute;
+    background: var(--accent);
+    transform-origin: center bottom;
+}
+
+.stopwatch-number {
+    position: absolute;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+/* Sub dial for minutes */
+.sub-dial {
+    width: 80px;
+    height: 80px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg);
+}
+
+.sub-dial-center {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+.sub-dial-hand {
+    width: 2px;
+    height: 25px;
+    background: var(--accent);
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    margin-left: -1px;
+    transform-origin: bottom center;
+}
+
+/* Lap times */
+.lap-times {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 20px;
+}
+
+.lap-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: monospace;
+}
+
+.lap-item:nth-child(odd) {
+    background: rgba(255,255,255,0.02);
+}
+
+.lap-number {
+    color: var(--muted);
+}
+
+.lap-time {
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.lap-diff {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+}
+
+.mode-btn.active {
+    background: var(--accent);
+    color: #000;
+}
+
+/* Timer Statistics (csTimer inspired) */
+.stats-panel {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 20px;
+}
+
+.stats-title {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    font-family: monospace;
+}
+
+/* Session selector (csTimer inspired) */
+.session-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    align-items: center;
+}
+
+.session-selector select {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.session-selector button {
+    padding: 12px;
+    margin: 0;
+}
+
+/* Pomodoro Timer */
+.pomodoro-display {
+    text-align: center;
+}
+
+.pomodoro-time {
+    font-size: 5em;
+    font-weight: 200;
+    color: var(--accent);
+    font-family: monospace;
+    margin: 20px 0;
+}
+
+.pomodoro-status {
+    font-size: 18px;
+    color: var(--muted);
+    margin-bottom: 20px;
+}
+
+.pomodoro-progress {
+    width: 100%;
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.pomodoro-progress-bar {
+    height: 100%;
+    background: var(--accent);
+    transition: width 1s linear;
+}
+
+.pomodoro-settings {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.pomodoro-setting {
+    text-align: center;
+}
+
+.pomodoro-setting label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.pomodoro-setting input {
+    width: 80px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+/* Countdown specific */
+.countdown-input-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.countdown-input-group div {
+    text-align: center;
+}
+
+.countdown-input-group label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.countdown-input-group input {
+    text-align: center;
+    font-size: 24px;
+    padding: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 24px;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+    
+    .toggle-btn {
+        display: none;
+    }
+    
+    #liveClock {
+        font-size: 2.5em;
+    }
+    
+    #stopwatchDisplay {
+        font-size: 2.5em;
+    }
+    
+    .physical-stopwatch {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .stopwatch-second-hand {
+        height: 80px;
+    }
+    
+    .stopwatch-minute-hand {
+        height: 55px;
+    }
+}
 </style>
 </head>
 <body>
 
-<!-- Home Button -->
-<button id="homeBtn" onclick="location.href='index.html'">🏠</button>
+<!-- Sidebar (exact from file2) -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    </div>
 
-<header>TAC Clock</header>
+    <nav class="nav-items">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
 
-<div class="tabs">
-  <div class="tab active" data-target="clockTab">Clock</div>
-  <div class="tab" data-target="timerTab">Timers</div>
-  <div class="tab" data-target="stopwatchTab">Stopwatch</div>
-  <div class="tab" data-target="alarmsTab">Alarms</div>
-</div>
+        <a href="chat.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                <circle cx="8" cy="10" r="1.5"/>
+                <circle cx="12" cy="10" r="1.5"/>
+                <circle cx="16" cy="10" r="1.5"/>
+            </svg>
+            <span>Chat</span>
+        </a>
 
-<!-- Clock -->
-<div id="clockTab" class="app-content active">
-  <p id="liveClock">12:00:00 AM</p>
-</div>
+        <a href="notgames.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+            </svg>
+            <span>Games</span>
+        </a>
 
-<!-- Timers -->
-<div id="timerTab" class="app-content">
-  <input type="number" id="timerMinutes" placeholder="Minutes">
-  <button onclick="addTimer()">Add Timer</button>
-  <ul id="timerList"></ul>
-</div>
+        <a href="phone.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+            </svg>
+            <span>Phone</span>
+        </a>
 
-<!-- Stopwatch -->
-<div id="stopwatchTab" class="app-content">
-  <p id="stopwatchDisplay">00:00:00.000</p>
-  <button onclick="startStopwatch()">Start</button>
-  <button onclick="stopStopwatch()">Stop</button>
-  <button onclick="resetStopwatch()">Reset</button>
-</div>
+        <a href="apps.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+            </svg>
+            <span>All Apps</span>
+        </a>
+    </nav>
+</aside>
 
-<!-- Alarms -->
-<div id="alarmsTab" class="app-content">
-  <input type="time" id="alarmTime">
-  <button onclick="addAlarm()">Add Alarm</button>
-  <ul id="alarmList"></ul>
-</div>
+<button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<!-- Main Content -->
+<main class="main-content" id="mainContent">
+    <div class="header">
+        <h1>TAC Clock</h1>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" data-target="clockTab">Clock</div>
+        <div class="tab" data-target="timerTab">Timers</div>
+        <div class="tab" data-target="stopwatchTab">Stopwatch</div>
+        <div class="tab" data-target="alarmsTab">Alarms</div>
+        <div class="tab" data-target="pomodoroTab">Pomodoro</div>
+        <div class="tab" data-target="countdownTab">Countdown</div>
+    </div>
+
+    <!-- Clock -->
+    <div id="clockTab" class="app-content active">
+        <div class="panel">
+            <div id="clockDate"></div>
+            <div class="analog-clock" id="analogClock">
+                <div class="clock-face">
+                    <div class="clock-center"></div>
+                    <div class="hand hour-hand" id="hourHand"></div>
+                    <div class="hand minute-hand" id="minuteHand"></div>
+                    <div class="hand second-hand" id="secondHand"></div>
+                </div>
+            </div>
+            <p id="liveClock">12:00:00 AM</p>
+            
+            <div class="world-clocks">
+                <div class="world-clock-item">
+                    <div class="world-clock-city">New York</div>
+                    <div class="world-clock-time" id="nyTime">--:--</div>
+                </div>
+                <div class="world-clock-item">
+                    <div class="world-clock-city">London</div>
+                    <div class="world-clock-time" id="londonTime">--:--</div>
+                </div>
+                <div class="world-clock-item">
+                    <div class="world-clock-city">Tokyo</div>
+                    <div class="world-clock-time" id="tokyoTime">--:--</div>
+                </div>
+                <div class="world-clock-item">
+                    <div class="world-clock-city">Sydney</div>
+                    <div class="world-clock-time" id="sydneyTime">--:--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timers -->
+    <div id="timerTab" class="app-content">
+        <div class="panel">
+            <h3 style="margin-bottom:16px; color:var(--accent);">Quick Timers</h3>
+            <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                <button onclick="addQuickTimer(1)">1 min</button>
+                <button onclick="addQuickTimer(5)">5 min</button>
+                <button onclick="addQuickTimer(10)">10 min</button>
+                <button onclick="addQuickTimer(15)">15 min</button>
+                <button onclick="addQuickTimer(30)">30 min</button>
+            </div>
+            
+            <h3 style="margin-bottom:16px; color:var(--accent);">Custom Timer</h3>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <input type="number" id="timerMinutes" placeholder="Minutes" style="flex:1;">
+                <input type="number" id="timerSeconds" placeholder="Seconds" style="flex:1;">
+                <button onclick="addTimer()">Add</button>
+            </div>
+            
+            <div id="timerList" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <!-- Stopwatch -->
+    <div id="stopwatchTab" class="app-content">
+        <div class="panel">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="setStopwatchMode('digital')">Digital</button>
+                <button class="mode-btn" onclick="setStopwatchMode('physical')">Physical</button>
+            </div>
+            
+            <!-- Digital Mode -->
+            <div id="digitalStopwatch">
+                <p id="stopwatchDisplay">00:00:00.000</p>
+                <div class="stopwatch-controls">
+                    <button onclick="startStopwatch()" id="startBtn">Start</button>
+                    <button onclick="stopStopwatch()" id="stopBtn" class="danger">Stop</button>
+                    <button onclick="lapStopwatch()" id="lapBtn" class="secondary">Lap</button>
+                    <button onclick="resetStopwatch()" id="resetBtn" class="secondary">Reset</button>
+                </div>
+            </div>
+            
+            <!-- Physical Mode -->
+            <div id="physicalStopwatch" style="display:none;">
+                <div class="physical-stopwatch" id="stopwatchFace">
+                    <div class="stopwatch-face">
+                        <div class="stopwatch-center"></div>
+                        <div class="stopwatch-hand stopwatch-second-hand" id="swSecondHand"></div>
+                        <div class="stopwatch-hand stopwatch-minute-hand" id="swMinuteHand"></div>
+                        <!-- Sub dial for minutes -->
+                        <div class="sub-dial">
+                            <div class="sub-dial-center"></div>
+                            <div class="sub-dial-hand" id="swSubHand"></div>
+                        </div>
+                    </div>
+                </div>
+                <p id="stopwatchDisplayPhysical" style="font-size:2em; text-align:center; color:var(--accent); font-family:monospace;">00:00.000</p>
+                <div class="stopwatch-controls">
+                    <button onclick="startStopwatch()">Start</button>
+                    <button onclick="stopStopwatch()" class="danger">Stop</button>
+                    <button onclick="lapStopwatch()" class="secondary">Lap</button>
+                    <button onclick="resetStopwatch()" class="secondary">Reset</button>
+                </div>
+            </div>
+            
+            <!-- Statistics (csTimer inspired) -->
+            <div class="stats-panel">
+                <div class="stats-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                    </svg>
+                    Session Statistics
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">Best</div>
+                        <div class="stat-value" id="statBest">--:--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Average</div>
+                        <div class="stat-value" id="statAvg">--:--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Worst</div>
+                        <div class="stat-value" id="statWorst">--:--</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Count</div>
+                        <div class="stat-value" id="statCount">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Lap Times -->
+            <div id="lapTimesContainer" style="display:none; margin-top:20px;">
+                <h4 style="color:var(--accent); margin-bottom:12px;">Lap Times</h4>
+                <div class="lap-times" id="lapTimes"></div>
+            </div>
+            
+            <!-- Session History -->
+            <div style="margin-top:20px;">
+                <div class="session-selector">
+                    <select id="sessionSelect" onchange="loadSession()">
+                        <option value="default">Default Session</option>
+                    </select>
+                    <button onclick="newSession()">+</button>
+                    <button onclick="clearSession()" class="danger">×</button>
+                </div>
+                <div id="sessionTimes"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alarms -->
+    <div id="alarmsTab" class="app-content">
+        <div class="panel">
+            <h3 style="margin-bottom:16px; color:var(--accent);">Set Alarm</h3>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="time" id="alarmTime" style="flex:1; min-width:150px;">
+                <input type="text" id="alarmLabel" placeholder="Label (optional)" style="flex:1; min-width:150px;">
+                <button onclick="addAlarm()">Add Alarm</button>
+            </div>
+            
+            <div id="alarmList" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <!-- Pomodoro -->
+    <div id="pomodoroTab" class="app-content">
+        <div class="panel">
+            <div class="pomodoro-display">
+                <div class="pomodoro-status" id="pomodoroStatus">Ready to focus</div>
+                <div class="pomodoro-time" id="pomodoroTime">25:00</div>
+                <div class="pomodoro-progress">
+                    <div class="pomodoro-progress-bar" id="pomodoroProgress" style="width:100%"></div>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <span style="color:var(--muted);">Sessions completed: </span>
+                    <span id="pomodoroSessions" style="color:var(--accent); font-weight:bold;">0</span>
+                </div>
+                <div class="stopwatch-controls">
+                    <button onclick="startPomodoro()" id="pomodoroStartBtn">Start Focus</button>
+                    <button onclick="pausePomodoro()" class="secondary">Pause</button>
+                    <button onclick="resetPomodoro()" class="danger">Reset</button>
+                    <button onclick="skipPomodoro()" class="secondary">Skip</button>
+                </div>
+            </div>
+            
+            <div class="pomodoro-settings">
+                <div class="pomodoro-setting">
+                    <label>Focus (min)</label>
+                    <input type="number" id="focusTime" value="25" min="1" max="120">
+                </div>
+                <div class="pomodoro-setting">
+                    <label>Short Break</label>
+                    <input type="number" id="shortBreak" value="5" min="1" max="30">
+                </div>
+                <div class="pomodoro-setting">
+                    <label>Long Break</label>
+                    <input type="number" id="longBreak" value="15" min="1" max="60">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Countdown -->
+    <div id="countdownTab" class="app-content">
+        <div class="panel">
+            <h3 style="margin-bottom:16px; color:var(--accent);">Countdown Timer</h3>
+            <div class="countdown-input-group">
+                <div>
+                    <label>Hours</label>
+                    <input type="number" id="countdownHours" value="0" min="0" max="99">
+                </div>
+                <div>
+                    <label>Minutes</label>
+                    <input type="number" id="countdownMinutes" value="0" min="0" max="59">
+                </div>
+                <div>
+                    <label>Seconds</label>
+                    <input type="number" id="countdownSeconds" value="0" min="0" max="59">
+                </div>
+            </div>
+            
+            <div id="countdownDisplay" style="font-size:4em; text-align:center; color:var(--accent); font-family:monospace; margin:30px 0;">
+                00:00:00
+            </div>
+            
+            <div class="stopwatch-controls">
+                <button onclick="startCountdown()" id="countdownStartBtn">Start</button>
+                <button onclick="pauseCountdown()" class="secondary">Pause</button>
+                <button onclick="resetCountdown()" class="danger">Reset</button>
+            </div>
+            
+            <h4 style="margin-top:30px; margin-bottom:12px; color:var(--accent);">Quick Presets</h4>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button onclick="setCountdown(0,5,0)">5 min</button>
+                <button onclick="setCountdown(0,10,0)">10 min</button>
+                <button onclick="setCountdown(0,15,0)">15 min</button>
+                <button onclick="setCountdown(0,30,0)">30 min</button>
+                <button onclick="setCountdown(1,0,0)">1 hour</button>
+            </div>
+        </div>
+    </div>
+</main>
 
 <script>
+// Request notification permission
 if(Notification.permission !== "granted") Notification.requestPermission();
+
+// Initialize all variables at the top BEFORE any function calls
+let alarms = JSON.parse(localStorage.getItem('alarms') || '[]');
+let timers = [];
+let timerIntervals = {};
+let stopwatch = null;
+let swStart = 0;
+let swElapsed = 0;
+let lapTimes = [];
+let sessionTimes = JSON.parse(localStorage.getItem('swSessionTimes') || '[]');
+let stopwatchMode = 'digital';
+let pomodoroInterval = null;
+let pomodoroTime = 25 * 60;
+let pomodoroTotal = 25 * 60;
+let pomodoroSessions = 0;
+let pomodoroPhase = 'focus';
+let countdownInterval = null;
+let countdownTime = 0;
+
+// Theme colors for dynamic theming from localStorage
+const themeColors = {
+    green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+    blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+    red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+    cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+    pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+    white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+    whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
+};
+
+function applyTheme() {
+    const theme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[theme] || themeColors.green;
+    document.documentElement.style.setProperty('--accent', colors.primary);
+    document.documentElement.style.setProperty('--accent-dim', colors.dim);
+    
+    const logo = document.getElementById('logo');
+    if (logo) logo.src = `taclogos/${theme}.png`;
+    
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+}
+
+applyTheme();
+window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') applyTheme();
+});
+
+// Sidebar Toggle
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleBtn.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+});
 
 // Tabs
 const tabs = document.querySelectorAll(".tab");
 const contents = document.querySelectorAll(".app-content");
-tabs.forEach(tab=>{
-  tab.addEventListener("click", ()=>{
-    tabs.forEach(t=>t.classList.remove("active"));
-    tab.classList.add("active");
-    contents.forEach(c=>c.classList.remove("active"));
-    document.getElementById(tab.dataset.target).classList.add("active");
-  });
+tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        tab.classList.add("active");
+        contents.forEach(c => c.classList.remove("active"));
+        document.getElementById(tab.dataset.target).classList.add("active");
+    });
 });
 
-// Clock
-function updateClock(){
-  const now = new Date();
-  let h = now.getHours();
-  const ampm = h>=12?'PM':'AM';
-  h = h%12||12;
-  const m = now.getMinutes().toString().padStart(2,'0');
-  const s = now.getSeconds().toString().padStart(2,'0');
-  document.getElementById("liveClock").innerText = `${h}:${m}:${s} ${ampm}`;
-
-  const current = `${h.toString().padStart(2,'0')}:${m} ${ampm}`;
-  alarms.forEach(a=>{
-    if(a.time===current && !a.notified){
-      notify("Alarm", "Alarm: "+current);
-      a.notified=true;
+// Initialize analog clock numbers
+function initAnalogClock() {
+    const clock = document.getElementById('analogClock');
+    for (let i = 1; i <= 12; i++) {
+        const num = document.createElement('div');
+        num.className = 'clock-number';
+        const angle = (i * 30 - 90) * Math.PI / 180;
+        const radius = 75;
+        const x = 100 + radius * Math.cos(angle) - 7;
+        const y = 100 + radius * Math.sin(angle) - 7;
+        num.style.left = x + 'px';
+        num.style.top = y + 'px';
+        num.textContent = i;
+        clock.querySelector('.clock-face').appendChild(num);
     }
-  });
 }
-setInterval(updateClock,1000);
+initAnalogClock();
+
+// Initialize physical stopwatch
+function initPhysicalStopwatch() {
+    const face = document.getElementById('stopwatchFace').querySelector('.stopwatch-face');
+    
+    for (let i = 0; i < 60; i++) {
+        const tick = document.createElement('div');
+        tick.className = 'stopwatch-tick';
+        const angle = i * 6;
+        const isMain = i % 5 === 0;
+        tick.style.width = isMain ? '3px' : '1px';
+        tick.style.height = isMain ? '15px' : '8px';
+        tick.style.left = '50%';
+        tick.style.top = '10px';
+        tick.style.marginLeft = isMain ? '-1.5px' : '-0.5px';
+        tick.style.transform = `rotate(${angle}deg)`;
+        tick.style.transformOrigin = 'center 130px';
+        face.appendChild(tick);
+    }
+    
+    for (let i = 0; i < 12; i++) {
+        const num = document.createElement('div');
+        num.className = 'stopwatch-number';
+        const angle = (i * 30 - 90) * Math.PI / 180;
+        const radius = 100;
+        const x = 140 + radius * Math.cos(angle) - 10;
+        const y = 140 + radius * Math.sin(angle) - 10;
+        num.style.left = x + 'px';
+        num.style.top = y + 'px';
+        num.textContent = i * 5;
+        face.appendChild(num);
+    }
+}
+initPhysicalStopwatch();
+
+// Clock
+function updateClock() {
+    const now = new Date();
+    let h = now.getHours();
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const h12 = h % 12 || 12;
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const s = now.getSeconds().toString().padStart(2, '0');
+    
+    document.getElementById("liveClock").innerText = `${h12}:${m}:${s} ${ampm}`;
+    
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById("clockDate").innerText = now.toLocaleDateString('en-US', options);
+    
+    const hourDeg = (h % 12 + now.getMinutes() / 60) * 30;
+    const minDeg = (now.getMinutes() + now.getSeconds() / 60) * 6;
+    const secDeg = now.getSeconds() * 6;
+    
+    document.getElementById('hourHand').style.transform = `rotate(${hourDeg}deg)`;
+    document.getElementById('minuteHand').style.transform = `rotate(${minDeg}deg)`;
+    document.getElementById('secondHand').style.transform = `rotate(${secDeg}deg)`;
+    
+    updateWorldClocks();
+    
+    const current = `${h.toString().padStart(2, '0')}:${m}`;
+    alarms.forEach(a => {
+        if (a.time === current && !a.notified && a.enabled) {
+            notify("Alarm", a.label || "Time's up!");
+            a.notified = true;
+            playSound();
+        }
+    });
+}
+
+function updateWorldClocks() {
+    const cities = [
+        { id: 'nyTime', tz: 'America/New_York' },
+        { id: 'londonTime', tz: 'Europe/London' },
+        { id: 'tokyoTime', tz: 'Asia/Tokyo' },
+        { id: 'sydneyTime', tz: 'Australia/Sydney' }
+    ];
+    
+    cities.forEach(city => {
+        const time = new Date().toLocaleTimeString('en-US', { 
+            timeZone: city.tz, 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+        });
+        document.getElementById(city.id).textContent = time;
+    });
+}
+
+setInterval(updateClock, 1000);
+updateClock();
 
 // Stopwatch
-let stopwatch, swStart=0, swElapsed=0;
-function startStopwatch(){
-  if(stopwatch) return;
-  swStart = performance.now()-swElapsed;
-  stopwatch = requestAnimationFrame(updateStopwatch);
+function setStopwatchMode(mode) {
+    stopwatchMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    if (mode === 'digital') {
+        document.getElementById('digitalStopwatch').style.display = 'block';
+        document.getElementById('physicalStopwatch').style.display = 'none';
+    } else {
+        document.getElementById('digitalStopwatch').style.display = 'none';
+        document.getElementById('physicalStopwatch').style.display = 'block';
+    }
 }
-function stopStopwatch(){
-  if(stopwatch){ cancelAnimationFrame(stopwatch); stopwatch=null; swElapsed=performance.now()-swStart; }
+
+function startStopwatch() {
+    if (stopwatch) return;
+    swStart = performance.now() - swElapsed;
+    stopwatch = requestAnimationFrame(updateStopwatch);
 }
-function resetStopwatch(){ cancelAnimationFrame(stopwatch); stopwatch=null; swElapsed=0; document.getElementById("stopwatchDisplay").innerText="00:00:00.000"; }
-function updateStopwatch(){
-  const diff = performance.now()-swStart;
-  swElapsed = diff;
-  const h = Math.floor(diff/3600000).toString().padStart(2,'0');
-  const m = Math.floor((diff%3600000)/60000).toString().padStart(2,'0');
-  const s = Math.floor((diff%60000)/1000).toString().padStart(2,'0');
-  const ms = Math.floor(diff%1000).toString().padStart(3,'0');
-  document.getElementById("stopwatchDisplay").innerText=`${h}:${m}:${s}.${ms}`;
-  stopwatch = requestAnimationFrame(updateStopwatch);
+
+function stopStopwatch() {
+    if (stopwatch) {
+        cancelAnimationFrame(stopwatch);
+        stopwatch = null;
+        swElapsed = performance.now() - swStart;
+        
+        if (swElapsed > 1000) {
+            sessionTimes.push(swElapsed);
+            localStorage.setItem('swSessionTimes', JSON.stringify(sessionTimes));
+            updateSessionDisplay();
+            updateStats();
+        }
+    }
 }
+
+function resetStopwatch() {
+    cancelAnimationFrame(stopwatch);
+    stopwatch = null;
+    swElapsed = 0;
+    lapTimes = [];
+    document.getElementById("stopwatchDisplay").innerText = "00:00:00.000";
+    document.getElementById("stopwatchDisplayPhysical").innerText = "00:00.000";
+    document.getElementById("lapTimes").innerHTML = '';
+    document.getElementById("lapTimesContainer").style.display = 'none';
+    updatePhysicalStopwatch(0);
+}
+
+function lapStopwatch() {
+    if (!stopwatch) return;
+    const lapTime = performance.now() - swStart;
+    lapTimes.push(lapTime);
+    renderLapTimes();
+}
+
+function renderLapTimes() {
+    const container = document.getElementById('lapTimesContainer');
+    const list = document.getElementById('lapTimes');
+    container.style.display = 'block';
+    
+    list.innerHTML = lapTimes.map((time, i) => {
+        const diff = i > 0 ? time - lapTimes[i-1] : time;
+        return `
+            <div class="lap-item">
+                <span class="lap-number">Lap ${i + 1}</span>
+                <span class="lap-diff">+${formatTime(diff)}</span>
+                <span class="lap-time">${formatTime(time)}</span>
+            </div>
+        `;
+    }).reverse().join('');
+}
+
+function updateStopwatch() {
+    const diff = performance.now() - swStart;
+    swElapsed = diff;
+    
+    const timeStr = formatTime(diff);
+    document.getElementById("stopwatchDisplay").innerText = timeStr;
+    document.getElementById("stopwatchDisplayPhysical").innerText = formatTimeShort(diff);
+    
+    updatePhysicalStopwatch(diff);
+    
+    stopwatch = requestAnimationFrame(updateStopwatch);
+}
+
+function updatePhysicalStopwatch(ms) {
+    const totalSeconds = ms / 1000;
+    const seconds = totalSeconds % 60;
+    const minutes = Math.floor(totalSeconds / 60) % 30;
+    
+    const secDeg = (seconds / 60) * 360;
+    const minDeg = (minutes / 30) * 360;
+    
+    document.getElementById('swSecondHand').style.transform = `rotate(${secDeg}deg)`;
+    document.getElementById('swMinuteHand').style.transform = `rotate(${minDeg}deg)`;
+    document.getElementById('swSubHand').style.transform = `rotate(${minDeg}deg)`;
+}
+
+function formatTime(ms) {
+    const h = Math.floor(ms / 3600000).toString().padStart(2, '0');
+    const m = Math.floor((ms % 3600000) / 60000).toString().padStart(2, '0');
+    const s = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
+    const msStr = Math.floor(ms % 1000).toString().padStart(3, '0');
+    return `${h}:${m}:${s}.${msStr}`;
+}
+
+function formatTimeShort(ms) {
+    const m = Math.floor(ms / 60000).toString().padStart(2, '0');
+    const s = Math.floor((ms % 60000) / 1000).toString().padStart(2, '0');
+    const msStr = Math.floor(ms % 1000).toString().padStart(3, '0');
+    return `${m}:${s}.${msStr}`;
+}
+
+function updateStats() {
+    if (sessionTimes.length === 0) {
+        document.getElementById('statBest').textContent = '--:--';
+        document.getElementById('statAvg').textContent = '--:--';
+        document.getElementById('statWorst').textContent = '--:--';
+        document.getElementById('statCount').textContent = '0';
+        return;
+    }
+    
+    const best = Math.min(...sessionTimes);
+    const worst = Math.max(...sessionTimes);
+    const avg = sessionTimes.reduce((a, b) => a + b, 0) / sessionTimes.length;
+    
+    document.getElementById('statBest').textContent = formatTimeShort(best);
+    document.getElementById('statAvg').textContent = formatTimeShort(avg);
+    document.getElementById('statWorst').textContent = formatTimeShort(worst);
+    document.getElementById('statCount').textContent = sessionTimes.length;
+}
+
+function updateSessionDisplay() {
+    const container = document.getElementById('sessionTimes');
+    container.innerHTML = sessionTimes.slice(-10).reverse().map((time, i) => `
+        <div class="list-item">
+            <div>
+                <div class="list-item-time">${formatTimeShort(time)}</div>
+                <div class="list-item-label">Solve #${sessionTimes.length - i}</div>
+            </div>
+            <button onclick="deleteSessionTime(${sessionTimes.length - 1 - i})" class="danger" style="padding:6px 10px;">×</button>
+        </div>
+    `).join('');
+}
+
+function deleteSessionTime(index) {
+    sessionTimes.splice(index, 1);
+    localStorage.setItem('swSessionTimes', JSON.stringify(sessionTimes));
+    updateSessionDisplay();
+    updateStats();
+}
+
+function newSession() {
+    const name = prompt('Session name:');
+    if (name) {
+        const select = document.getElementById('sessionSelect');
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        select.appendChild(option);
+        select.value = name;
+        sessionTimes = [];
+        localStorage.setItem('swSessionTimes', JSON.stringify(sessionTimes));
+        updateSessionDisplay();
+        updateStats();
+    }
+}
+
+function clearSession() {
+    if (confirm('Clear all times in this session?')) {
+        sessionTimes = [];
+        localStorage.setItem('swSessionTimes', JSON.stringify(sessionTimes));
+        updateSessionDisplay();
+        updateStats();
+    }
+}
+
+function loadSession() {
+    updateSessionDisplay();
+    updateStats();
+}
+
+updateSessionDisplay();
+updateStats();
 
 // Timers
-let timers=[];
-function addTimer(){
-  const minutes=parseFloat(document.getElementById("timerMinutes").value);
-  if(isNaN(minutes)) return;
-  const endTime=Date.now()+minutes*60000;
-  const timerObj={end:endTime, notified:false};
-  timers.push(timerObj);
-  renderTimers();
+function addQuickTimer(minutes) {
+    addTimerWithDuration(minutes, 0);
 }
-function renderTimers(){
-  const list=document.getElementById("timerList");
-  list.innerHTML="";
-  timers.forEach((t,i)=>{
-    const li=document.createElement("li");
-    const remaining=Math.max(0,t.end-Date.now());
-    const m=Math.floor(remaining/60000).toString().padStart(2,'0');
-    const s=Math.floor((remaining%60000)/1000).toString().padStart(2,'0');
-    li.textContent=`${m}:${s}`;
-    list.appendChild(li);
 
-    if(remaining<=0 && !t.notified){ notify("Timer","Time's up!"); t.notified=true; }
-  });
+function addTimer() {
+    const minutes = parseFloat(document.getElementById("timerMinutes").value) || 0;
+    const seconds = parseFloat(document.getElementById("timerSeconds").value) || 0;
+    if (minutes === 0 && seconds === 0) return;
+    addTimerWithDuration(minutes, seconds);
+    document.getElementById("timerMinutes").value = '';
+    document.getElementById("timerSeconds").value = '';
 }
-setInterval(renderTimers,250);
+
+function addTimerWithDuration(minutes, seconds) {
+    const id = Date.now();
+    const duration = (minutes * 60 + seconds) * 1000;
+    const endTime = Date.now() + duration;
+    const timerObj = { id, end: endTime, duration, notified: false, paused: false };
+    timers.push(timerObj);
+    renderTimers();
+}
+
+function renderTimers() {
+    const list = document.getElementById("timerList");
+    list.innerHTML = "";
+    
+    timers.forEach((t, i) => {
+        const remaining = Math.max(0, t.end - Date.now());
+        const m = Math.floor(remaining / 60000).toString().padStart(2, '0');
+        const s = Math.floor((remaining % 60000) / 1000).toString().padStart(2, '0');
+        
+        const progress = ((t.duration - remaining) / t.duration) * 100;
+        
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div style="flex:1;">
+                <div class="list-item-time">${m}:${s}</div>
+                <div style="height:4px; background:var(--border); border-radius:2px; margin-top:8px; overflow:hidden;">
+                    <div style="height:100%; width:${progress}%; background:var(--accent); transition:width 0.5s;"></div>
+                </div>
+            </div>
+            <div class="list-item-actions">
+                <button onclick="removeTimer(${i})" class="danger">×</button>
+            </div>
+        `;
+        list.appendChild(div);
+
+        if (remaining <= 0 && !t.notified) {
+            notify("Timer", "Time's up!");
+            playSound();
+            t.notified = true;
+        }
+    });
+    
+    timers = timers.filter(t => !t.notified || (Date.now() - t.end) < 5000);
+}
+
+function removeTimer(index) {
+    timers.splice(index, 1);
+    renderTimers();
+}
+
+setInterval(renderTimers, 250);
 
 // Alarms
-let alarms=[];
-function addAlarm(){
-  const timeInput=document.getElementById("alarmTime").value;
-  if(!timeInput) return;
-  let [hour,min]=timeInput.split(":").map(Number);
-  const ampm=hour>=12?'PM':'AM';
-  hour=hour%12||12;
-  const formatted=`${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')} ${ampm}`;
-  alarms.push({time:formatted, notified:false});
-  renderAlarms();
+function addAlarm() {
+    const timeInput = document.getElementById("alarmTime").value;
+    const label = document.getElementById("alarmLabel").value;
+    if (!timeInput) return;
+    
+    alarms.push({ time: timeInput, label, notified: false, enabled: true });
+    localStorage.setItem('alarms', JSON.stringify(alarms));
+    renderAlarms();
+    
+    document.getElementById("alarmTime").value = '';
+    document.getElementById("alarmLabel").value = '';
 }
-function renderAlarms(){
-  const list=document.getElementById("alarmList");
-  list.innerHTML="";
-  alarms.forEach(a=>{
-    const li=document.createElement("li"); li.textContent=a.time; list.appendChild(li);
-  });
+
+function renderAlarms() {
+    const list = document.getElementById("alarmList");
+    list.innerHTML = "";
+    
+    alarms.forEach((a, i) => {
+        const [h, m] = a.time.split(':');
+        const hour = parseInt(h);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const h12 = hour % 12 || 12;
+        
+        const div = document.createElement('div');
+        div.className = 'list-item';
+        div.innerHTML = `
+            <div>
+                <div class="list-item-time">${h12}:${m} ${ampm}</div>
+                <div class="list-item-label">${a.label || 'Alarm'}</div>
+            </div>
+            <div class="list-item-actions">
+                <button onclick="toggleAlarm(${i})" class="${a.enabled ? '' : 'secondary'}">${a.enabled ? 'ON' : 'OFF'}</button>
+                <button onclick="removeAlarm(${i})" class="danger">×</button>
+            </div>
+        `;
+        list.appendChild(div);
+    });
+}
+
+function toggleAlarm(index) {
+    alarms[index].enabled = !alarms[index].enabled;
+    alarms[index].notified = false;
+    localStorage.setItem('alarms', JSON.stringify(alarms));
+    renderAlarms();
+}
+
+function removeAlarm(index) {
+    alarms.splice(index, 1);
+    localStorage.setItem('alarms', JSON.stringify(alarms));
+    renderAlarms();
+}
+
+renderAlarms();
+
+// Pomodoro
+function updatePomodoroDisplay() {
+    const m = Math.floor(pomodoroTime / 60).toString().padStart(2, '0');
+    const s = (pomodoroTime % 60).toString().padStart(2, '0');
+    document.getElementById('pomodoroTime').textContent = `${m}:${s}`;
+    
+    const progress = (pomodoroTime / pomodoroTotal) * 100;
+    document.getElementById('pomodoroProgress').style.width = `${progress}%`;
+    document.getElementById('pomodoroSessions').textContent = pomodoroSessions;
+}
+
+function startPomodoro() {
+    if (pomodoroInterval) return;
+    
+    const statusMap = {
+        focus: 'Focus Time - Stay concentrated!',
+        shortBreak: 'Short Break - Relax a bit',
+        longBreak: 'Long Break - You deserve it!'
+    };
+    document.getElementById('pomodoroStatus').textContent = statusMap[pomodoroPhase];
+    
+    pomodoroInterval = setInterval(() => {
+        pomodoroTime--;
+        updatePomodoroDisplay();
+        
+        if (pomodoroTime <= 0) {
+            clearInterval(pomodoroInterval);
+            pomodoroInterval = null;
+            
+            if (pomodoroPhase === 'focus') {
+                pomodoroSessions++;
+                notify('Pomodoro', 'Focus session complete! Take a break.');
+                playSound();
+                
+                if (pomodoroSessions % 4 === 0) {
+                    pomodoroPhase = 'longBreak';
+                    pomodoroTime = parseInt(document.getElementById('longBreak').value) * 60;
+                } else {
+                    pomodoroPhase = 'shortBreak';
+                    pomodoroTime = parseInt(document.getElementById('shortBreak').value) * 60;
+                }
+            } else {
+                notify('Pomodoro', 'Break over! Time to focus.');
+                playSound();
+                pomodoroPhase = 'focus';
+                pomodoroTime = parseInt(document.getElementById('focusTime').value) * 60;
+            }
+            
+            pomodoroTotal = pomodoroTime;
+            updatePomodoroDisplay();
+            document.getElementById('pomodoroStatus').textContent = 'Ready - Click Start';
+            document.getElementById('pomodoroStartBtn').textContent = pomodoroPhase === 'focus' ? 'Start Focus' : 'Start Break';
+        }
+    }, 1000);
+}
+
+function pausePomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroInterval = null;
+    document.getElementById('pomodoroStatus').textContent = 'Paused';
+}
+
+function resetPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroInterval = null;
+    pomodoroPhase = 'focus';
+    pomodoroTime = parseInt(document.getElementById('focusTime').value) * 60;
+    pomodoroTotal = pomodoroTime;
+    updatePomodoroDisplay();
+    document.getElementById('pomodoroStatus').textContent = 'Ready to focus';
+    document.getElementById('pomodoroStartBtn').textContent = 'Start Focus';
+}
+
+function skipPomodoro() {
+    clearInterval(pomodoroInterval);
+    pomodoroInterval = null;
+    
+    if (pomodoroPhase === 'focus') {
+        if (pomodoroSessions % 4 === 3) {
+            pomodoroPhase = 'longBreak';
+            pomodoroTime = parseInt(document.getElementById('longBreak').value) * 60;
+        } else {
+            pomodoroPhase = 'shortBreak';
+            pomodoroTime = parseInt(document.getElementById('shortBreak').value) * 60;
+        }
+    } else {
+        pomodoroPhase = 'focus';
+        pomodoroTime = parseInt(document.getElementById('focusTime').value) * 60;
+    }
+    
+    pomodoroTotal = pomodoroTime;
+    updatePomodoroDisplay();
+    document.getElementById('pomodoroStatus').textContent = 'Ready - Click Start';
+    document.getElementById('pomodoroStartBtn').textContent = pomodoroPhase === 'focus' ? 'Start Focus' : 'Start Break';
+}
+
+updatePomodoroDisplay();
+
+// Countdown
+function setCountdown(h, m, s) {
+    document.getElementById('countdownHours').value = h;
+    document.getElementById('countdownMinutes').value = m;
+    document.getElementById('countdownSeconds').value = s;
+    countdownTime = h * 3600 + m * 60 + s;
+    updateCountdownDisplay();
+}
+
+function updateCountdownDisplay() {
+    const h = Math.floor(countdownTime / 3600).toString().padStart(2, '0');
+    const m = Math.floor((countdownTime % 3600) / 60).toString().padStart(2, '0');
+    const s = (countdownTime % 60).toString().padStart(2, '0');
+    document.getElementById('countdownDisplay').textContent = `${h}:${m}:${s}`;
+}
+
+function startCountdown() {
+    if (countdownInterval) return;
+    
+    if (countdownTime === 0) {
+        const h = parseInt(document.getElementById('countdownHours').value) || 0;
+        const m = parseInt(document.getElementById('countdownMinutes').value) || 0;
+        const s = parseInt(document.getElementById('countdownSeconds').value) || 0;
+        countdownTime = h * 3600 + m * 60 + s;
+    }
+    
+    if (countdownTime <= 0) return;
+    
+    countdownInterval = setInterval(() => {
+        countdownTime--;
+        updateCountdownDisplay();
+        
+        if (countdownTime <= 0) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+            notify('Countdown', 'Time is up!');
+            playSound();
+        }
+    }, 1000);
+}
+
+function pauseCountdown() {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+}
+
+function resetCountdown() {
+    clearInterval(countdownInterval);
+    countdownInterval = null;
+    countdownTime = 0;
+    document.getElementById('countdownHours').value = 0;
+    document.getElementById('countdownMinutes').value = 0;
+    document.getElementById('countdownSeconds').value = 0;
+    updateCountdownDisplay();
 }
 
 // Notifications
-function notify(title,msg){ 
-  if(Notification.permission==="granted"){ new Notification(title,{body:msg}); }
+function notify(title, msg) {
+    if (Notification.permission === "granted") {
+        new Notification(title, { body: msg });
+    }
 }
+
+// Sound
+function playSound() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    
+    oscillator.frequency.value = 800;
+    oscillator.type = 'sine';
+    gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.5);
+    
+    oscillator.start(audioCtx.currentTime);
+    oscillator.stop(audioCtx.currentTime + 0.5);
+}
+
+// Keyboard shortcuts (csTimer inspired)
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space' && document.getElementById('stopwatchTab').classList.contains('active')) {
+        e.preventDefault();
+        if (stopwatch) {
+            stopStopwatch();
+        } else {
+            startStopwatch();
+        }
+    }
+});
 </script>
 </body>
 </html>

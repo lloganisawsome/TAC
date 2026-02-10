@@ -3,275 +3,869 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Application</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>TAC - Staff Application</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #222; color: #e2e8f0; }
-        .theme-btn { background-color: rgb(103,173,91); transition: background-color 0.3s ease; }
-        .theme-btn:hover { background-color: rgb(93,155,81); }
-        .test-container { background-color: #1a1a1a; padding: 1rem; border-radius: 8px; }
+        :root {
+            --bg: #0a0a0b;
+            --panel: #111113;
+            --panel-hover: #1a1a1c;
+            --accent: #22c55e;
+            --accent-dim: rgba(34, 197, 94, 0.1);
+            --muted: #71717a;
+            --border: rgba(255,255,255,0.06);
+        }
 
-        /* Chat-specific styles */
-        .chat-container {
-            width: 100%;
-            background-color: #111;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            padding: 12px 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 0 20px var(--accent-dim);
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            border: none;
+            margin-left: -10px;
             overflow: hidden;
         }
-        .chat-header {
-            background-color: #1a1a1a;
-            padding: 10px;
-            font-weight: bold;
-            text-align: center;
-            border-bottom: 1px solid #333;
+
+        .logo-container {
+            margin-bottom: 16px;
+            padding: 4px;
+            transition: opacity 0.3s;
         }
+
+        .sidebar.collapsed .logo-container {
+            opacity: 0;
+        }
+
+        .logo {
+            width: 62px;
+            height: 62px;
+            border-radius: 8px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            padding: 0 8px;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed .nav-items {
+            opacity: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--accent);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-dim);
+        }
+
+        .nav-item.active {
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+        }
+
+        .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 90px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 36px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toggle-btn:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent);
+        }
+
+        .toggle-btn svg {
+            width: 14px;
+            height: 14px;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.collapsed {
+            left: 10px;
+        }
+
+        .toggle-btn.collapsed svg {
+            transform: rotate(180deg);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 100px;
+            padding: 24px;
+            transition: margin-left 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-content.expanded {
+            margin-left: 24px;
+        }
+
+        .application-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-section img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+        }
+
+        .header-section h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .header-section p {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .form-select option {
+            background: #111;
+            color: #fff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .test-container {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-top: 16px;
+        }
+
+        .test-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--accent);
+        }
+
+        .test-round {
+            background: rgba(255,255,255,0.02);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .test-round-title {
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .chat-container {
+            background: rgba(0,0,0,0.5);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .chat-header {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            font-weight: 600;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            font-size: 12px;
+        }
+
         .chat-log {
-            flex-grow: 1;
             padding: 15px;
             max-height: 200px;
             overflow-y: auto;
-            border-bottom: 1px solid #333;
-            background-color: #1a1a1a;
+            background: rgba(0,0,0,0.3);
         }
+
         .message {
-            margin-bottom: 8px;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
         }
-        .message-content {
-            flex-grow: 1;
-        }
+
         .message-actions {
             display: flex;
-            gap: 5px;
-            margin-top: 5px;
+            gap: 6px;
+            margin-top: 8px;
         }
+
         .message-actions button {
-            background-color: #4a4a4a;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75rem;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
             cursor: pointer;
-            border: none;
-            transition: background-color 0.2s;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
         }
+
         .message-actions button:hover {
-            background-color: #6a6a6a;
+            background: rgba(255,255,255,0.15);
+            border-color: var(--accent);
         }
-        .message-actions button.ban { background-color: #e05555; }
-        .message-actions button.ban:hover { background-color: #c04545; }
+
+        .message-actions button.ban { 
+            background: rgba(239, 68, 68, 0.2); 
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+        .message-actions button.ban:hover { 
+            background: rgba(239, 68, 68, 0.3); 
+        }
 
         .username {
-            font-weight: bold;
+            font-weight: 600;
             margin-right: 5px;
         }
-        .username.mod { color: #b7c8ff; }
-        .username.bot { color: #e05555; }
-        
+
+        .username.mod { color: #3b82f6; }
+        .username.bot { color: #ef4444; }
+        .username.user { color: #10b981; }
+
         .status-message {
             text-align: center;
-            padding: 8px;
+            padding: 12px;
+            font-size: 12px;
             font-style: italic;
-            font-size: 0.9rem;
         }
-        .input-container {
-            display: flex;
-            padding: 10px;
-            background-color: #1a1a1a;
-        }
-        .command-input {
-            flex-grow: 1;
-            padding: 8px;
-            border: 1px solid #333;
-            border-radius: 5px;
-            background-color: #222;
-            color: #e2e8f0;
-            outline: none;
-        }
-        .command-input::placeholder { color: #999; }
 
-        /* Beta Tester Test Styles */
-        .beta-test-site {
-            background-color: white;
-            color: black;
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #333;
+        .warning-text {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
         }
-        .beta-test-site h3 {
-            color: #111;
+
+        .warning-text.show {
+            display: block;
         }
-        .beta-test-site button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: #000;
+            font-weight: 600;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-size: 15px;
+            transition: all 0.2s;
+            margin-top: 32px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--accent-dim);
+        }
+
+        .hidden { display: none; }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .modal-content {
+            background: var(--panel);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid var(--accent);
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .modal-content button {
+            padding: 10px 24px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .applications-section {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+
+        .applications-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .application-card {
+            background: rgba(255,255,255,0.02);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 16px;
+        }
+
+        .application-card h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .application-card p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 4px;
+        }
+
+        .test-progress {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 24px;
+                padding: 16px;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .toggle-btn {
+                display: none;
+            }
+
+            .application-container {
+                padding: 24px;
+            }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-<div class="w-full max-w-2xl bg-[#111] rounded-lg shadow-xl p-8 space-y-8">
-    <div class="text-center mb-6">
-        <img src="https://placehold.co/140x140/4CAF50/fff?text=TAC" alt="TAC Logo" class="w-24 h-24 mx-auto rounded-full mb-4">
-        <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2">Staff Application</h1>
-        <p id="user-id-display" class="text-sm text-gray-400"></p>
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
     </div>
 
-    <form id="application-form" class="space-y-6">
-        <div>
-            <label for="name" class="block text-sm font-medium text-gray-300 mb-1">Your Name</label>
-            <input type="text" id="name" name="name" required class="w-full px-4 py-2 bg-[#222] border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition-colors duration-200">
+    <nav class="nav-items">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+
+        <a href="chat.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                <circle cx="8" cy="10" r="1.5"/>
+                <circle cx="12" cy="10" r="1.5"/>
+                <circle cx="16" cy="10" r="1.5"/>
+            </svg>
+            <span>Chat</span>
+        </a>
+
+        <a href="notgames.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+            </svg>
+            <span>Games</span>
+        </a>
+
+        <a href="phone.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+            </svg>
+            <span>Phone</span>
+        </a>
+
+        <a href="apps.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+            </svg>
+            <span>All Apps</span>
+        </a>
+    </nav>
+</aside>
+
+<button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<!-- Main Content -->
+<main class="main-content" id="mainContent">
+    <div class="application-container">
+        <div class="header-section">
+            <img src="https://placehold.co/140x140/4CAF50/fff?text=TAC" alt="TAC Logo" id="headerLogo">
+            <h1>TAC Staff Application</h1>
+            <p id="user-id-display"></p>
         </div>
 
-        <div>
-            <label for="role" class="block text-sm font-medium text-gray-300 mb-1">What role are you applying for?</label>
-            <select id="role" name="role" required class="w-full px-4 py-2 bg-[#222] border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-200">
-                <option value="" disabled selected>Select a role...</option>
-                <option value="Mod">Mod</option>
-                <option value="Dev">Dev</option>
-                <option value="Game Finder">Game Finder</option>
-                <option value="Beta Tester">Beta Tester</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-
-        <div id="mod-section" class="hidden space-y-4">
-            <div>
-                <p class="block text-sm font-medium text-gray-300 mb-2">Do you work well under stress?</p>
-                <label class="flex items-center text-sm text-gray-300 cursor-pointer">
-                    <input type="checkbox" id="can-stress" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
-                    <span class="ml-2">Yes, I can.</span>
-                </label>
-                <p id="mod-warning" class="mt-2 text-sm text-red-400 hidden">You must be able to work well under stress to apply as a Mod.</p>
+        <form id="application-form">
+            <div class="form-group">
+                <label class="form-label">Your Name</label>
+                <input type="text" id="name" class="form-input" required>
             </div>
-            <div id="mod-test-container" class="test-container">
-                <p class="text-sm font-semibold text-gray-300 mb-2">Mod Test: A bot is spamming the chat. Address the issue using the buttons. Choose wisely.</p>
-                <div class="chat-container">
-                    <div class="chat-header">Moderator Test Chat</div>
-                    <div class="chat-log" id="mod-chat-log">
-                        <div class="message">
-                            <div class="message-content">
-                                <span class="username mod">You</span>: Welcome to the chat. Your goal is to moderate a spam bot.
-                            </div>
-                        </div>
-                        <div class="message">
-                            <div class="message-content">
-                                <span class="username">User1</span>: hey everyone, how's it going?
-                            </div>
-                        </div>
-                        <div class="message bot-message" id="spambot-message">
-                            <div class="message-content">
-                                <span class="username bot">SpamBot</span>: Get free games and V-Bucks! Visit our shady website now!
-                            </div>
+
+            <div class="form-group">
+                <label class="form-label">What role are you applying for?</label>
+                <select id="role" class="form-select" required>
+                    <option value="" disabled selected>Select a role...</option>
+                    <option value="Developer">Developer (Monitor & Control)</option>
+                    <option value="Moderator">Moderator</option>
+                    <option value="Beta Tester">Beta Tester</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <!-- Developer Section -->
+            <div id="developer-section" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">Developer Skills Assessment</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="monitor-systems">
+                        <label>I can effectively monitor system performance and user activity</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="handle-requests">
+                        <label>I can review and approve/deny user requests efficiently</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="analytics">
+                        <label>I can analyze data and make informed decisions</label>
+                    </div>
+                    <p class="warning-text" id="dev-warning">All skills must be confirmed to proceed</p>
+                </div>
+
+                <div class="test-container">
+                    <div class="test-title">Developer Control Panel Test (3 Rounds)</div>
+                    
+                    <!-- Round 1 -->
+                    <div class="test-round" id="dev-round-1">
+                        <div class="test-round-title">Round 1: User Request Management</div>
+                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+                            You receive 3 user requests. Approve or deny each based on TAC guidelines.
+                        </p>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <strong style="color: var(--accent);">Request #1:</strong> User "Logan" wants admin privileges to help moderate
                             <div class="message-actions">
-                                <button class="btn delete" data-action="delete">Delete</button>
-                                <button class="btn timeout" data-action="timeout">Timeout</button>
-                                <button class="btn ban" data-action="ban">Ban</button>
+                                <button type="button" data-round="1" data-request="1" data-action="approve">Approve</button>
+                                <button type="button" data-round="1" data-request="1" data-action="deny">Deny</button>
                             </div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <strong style="color: var(--accent);">Request #2:</strong> User "SpamBot123" requests access to post links in chat
+                            <div class="message-actions">
+                                <button type="button" data-round="1" data-request="2" data-action="approve">Approve</button>
+                                <button type="button" data-round="1" data-request="2" data-action="deny">Deny</button>
+                            </div>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+                            <strong style="color: var(--accent);">Request #3:</strong> Established user "Loftis" requests password reset
+                            <div class="message-actions">
+                                <button type="button" data-round="1" data-request="3" data-action="approve">Approve</button>
+                                <button type="button" data-round="1" data-request="3" data-action="deny">Deny</button>
+                            </div>
+                        </div>
+                        <div class="status-message" id="dev-round-1-status"></div>
+                    </div>
+
+                    <!-- Round 2 -->
+                    <div class="test-round hidden" id="dev-round-2">
+                        <div class="test-round-title">Round 2: System Monitoring</div>
+                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+                            Review the system alerts and identify which requires immediate action.
+                        </p>
+                        <div class="message-actions" style="flex-direction: column; gap: 8px;">
+                            <button type="button" data-round="2" data-alert="cpu" style="width: 100%; text-align: left;">
+                                Login count +100 in a day
+                            </button>
+                            <button type="button" data-round="2" data-alert="login" style="width: 100%; text-align: left;">
+                                Failed Login Attempts: 247 from single person in 5 minutes
+                            </button>
+                            <button type="button" data-round="2" data-alert="storage" style="width: 100%; text-align: left;">
+                                40 chat messages sent
+                            </button>
+                        </div>
+                        <div class="status-message" id="dev-round-2-status"></div>
+                    </div>
+
+                    <!-- Round 3 -->
+                    <div class="test-round hidden" id="dev-round-3">
+                        <div class="test-round-title">Round 3: User Data Analysis</div>
+                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+                            Based on the data below, what action should be taken?
+                        </p>
+                        <pre style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; font-size: 11px; overflow-x: auto; margin-bottom: 12px;">
+User: "NewUser247"
+Account Created: 2 hours ago
+Login Attempts: 47
+Messages Sent: 0
+Pages Visited: Admin Panel (x23), User Management (x18)
+Failed Access Attempts: 31</pre>
+                        <div class="message-actions" style="flex-direction: column; gap: 8px;">
+                            <button type="button" data-round="3" data-action="monitor" style="width: 100%;">
+                                Continue Monitoring (No Action)
+                            </button>
+                            <button type="button" data-round="3" data-action="limit" style="width: 100%;">
+                                Limit Access Temporarily
+                            </button>
+                            <button type="button" data-round="3" data-action="ban" style="width: 100%;">
+                                Ban Account & Block IP
+                            </button>
+                        </div>
+                        <div class="status-message" id="dev-round-3-status"></div>
+                    </div>
+
+                    <p class="warning-text" id="dev-test-warning">You must complete all 3 rounds successfully</p>
+                    <div class="test-progress" id="dev-progress">Progress: 0/3 rounds completed</div>
+                </div>
+            </div>
+
+            <!-- Moderator Section -->
+            <div id="moderator-section" class="hidden">
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="can-stress">
+                        <label>I can work well under pressure and make quick decisions</label>
+                    </div>
+                    <p class="warning-text" id="mod-warning">This skill is required for moderators</p>
+                </div>
+
+                <div class="test-container">
+                    <div class="test-title">Moderator Response Test (3 Scenarios)</div>
+                    
+                    <!-- Scenario 1 -->
+                    <div class="test-round" id="mod-round-1">
+                        <div class="test-round-title">Scenario 1: Spam Bot</div>
+                        <div class="chat-container">
+                            <div class="chat-header">TAC Public Chat</div>
+                            <div class="chat-log">
+                                <div class="message">
+                                    <span class="username user">User1</span>: Hey everyone!
+                                </div>
+                                <div class="message">
+                                    <span class="username bot">FastMoneyBot</span>: 💰 GET RICH QUICK! Visit sketchy-site[.]com NOW!!!
+                                </div>
+                                <div class="message">
+                                    <span class="username user">User2</span>: What's that link?
+                                </div>
+                                <div class="message" id="spam-msg-1">
+                                    <span class="username bot">FastMoneyBot</span>: 💰 FREE MONEY! Click here: sketchy-site[.]com
+                                    <div class="message-actions">
+                                        <button type="button" data-round="1" data-action="delete">Delete Message</button>
+                                        <button type="button" data-round="1" data-action="timeout">Timeout (1hr)</button>
+                                        <button type="button" data-round="1" data-action="ban" class="ban">Ban User</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="status-message" id="mod-round-1-status"></div>
                         </div>
                     </div>
-                    <div class="status-message" id="mod-status-message"></div>
+
+                    <!-- Scenario 2 -->
+                    <div class="test-round hidden" id="mod-round-2">
+                        <div class="test-round-title">Scenario 2: User Conflict</div>
+                        <div class="chat-container">
+                            <div class="chat-header">TAC Public Chat</div>
+                            <div class="chat-log">
+                                <div class="message">
+                                    <span class="username user">PlayerA</span>: That's a stupid way to play the game
+                                </div>
+                                <div class="message">
+                                    <span class="username user">PlayerB</span>: You're stupid! Mind your own business!
+                                </div>
+                                <div class="message">
+                                    <span class="username user">PlayerA</span>: At least I'm not trash like you
+                                </div>
+                            </div>
+                            <div class="status-message">How do you handle this?</div>
+                        </div>
+                        <div class="message-actions" style="margin-top: 12px;">
+                            <button type="button" data-round="2" data-action="warn">Warn Both Users</button>
+                            <button type="button" data-round="2" data-action="separate">Timeout Both (Cool Down)</button>
+                            <button type="button" data-round="2" data-action="ignore">Let Them Resolve It</button>
+                        </div>
+                        <div class="status-message" id="mod-round-2-status"></div>
+                    </div>
+
+                    <!-- Scenario 3 -->
+                    <div class="test-round hidden" id="mod-round-3">
+                        <div class="test-round-title">Scenario 3: Inappropriate Content</div>
+                        <div class="chat-container">
+                            <div class="chat-header">TAC Public Chat</div>
+                            <div class="chat-log">
+                                <div class="message">
+                                    <span class="username user">EdgeLord99</span>: Check out this meme [contains inappropriate content]
+                                </div>
+                                <div class="message">
+                                    <span class="username user">User3</span>: Dude that's not cool
+                                </div>
+                                <div class="message">
+                                    <span class="username user">EdgeLord99</span>: It's just a joke, relax
+                                </div>
+                            </div>
+                            <div class="status-message">What's your response?</div>
+                        </div>
+                        <div class="message-actions" style="margin-top: 12px;">
+                            <button type="button" data-round="3" data-action="delete-warn">Delete & Official Warning</button>
+                            <button type="button" data-round="3" data-action="timeout">Delete & 24hr Timeout</button>
+                            <button type="button" data-round="3" data-action="ask">Ask Them to Remove It</button>
+                        </div>
+                        <div class="status-message" id="mod-round-3-status"></div>
+                    </div>
+
+                    <p class="warning-text" id="mod-test-warning">Complete all scenarios to pass</p>
+                    <div class="test-progress" id="mod-progress">Progress: 0/3 scenarios completed</div>
                 </div>
-                <p id="mod-test-warning" class="mt-2 text-sm text-red-400 hidden">You must pass the mod test to apply. Try again.</p>
             </div>
-        </div>
 
-        <div id="dev-section" class="hidden space-y-4">
-            <div>
-                <p class="block text-sm font-medium text-gray-300 mb-2">Can you code in HTML, CSS, or JS?</p>
-                <label class="flex items-center text-sm text-gray-300 cursor-pointer">
-                    <input type="checkbox" id="can-code" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
-                    <span class="ml-2">Yes, I can.</span>
-                </label>
-                <p id="dev-warning" class="mt-2 text-sm text-red-400 hidden">You must be able to code to apply as Dev.</p>
-            </div>
-            <div class="test-container">
-                <p class="text-sm font-semibold text-gray-300 mb-2">Dev Test: There is a typo in this HTML snippet. Correct it below.</p>
-                <pre class="bg-[#222] p-4 rounded-md text-sm font-mono text-gray-400 mb-2"><code>&lt;p&gt;This is a parograph.&lt;/p&gt;</code></pre>
-                <textarea id="dev-test-input" rows="2" class="w-full px-3 py-2 bg-[#222] border border-gray-600 rounded-md text-sm font-mono"></textarea>
-                <p id="dev-test-warning" class="mt-2 text-sm text-red-400 hidden">Incorrect code. Please correct the typo to `paragraph`.</p>
-            </div>
-        </div>
-
-        <div id="game-finder-section" class="hidden">
-            <p class="block text-sm font-medium text-gray-300 mb-2">Do you know a lot of game sites?</p>
-            <label class="flex items-center text-sm text-gray-300 cursor-pointer">
-                <input type="checkbox" id="knows-sites" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
-                <span class="ml-2">Yes, I do.</span>
-            </label>
-            <p id="game-finder-warning" class="mt-2 text-sm text-red-400 hidden">You must know a lot of game sites to apply as Game Finder.</p>
-        </div>
-        
-        <div id="beta-tester-section" class="hidden space-y-4">
-            <div>
-                <p class="block text-sm font-medium text-gray-300 mb-2">Please confirm your skills below to apply as a Beta Tester.</p>
-                <div class="space-y-2">
-                    <label class="flex items-center text-sm text-gray-300 cursor-pointer">
-                        <input type="checkbox" id="find-errors" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
-                        <span class="ml-2">I am skilled at finding and reporting errors.</span>
-                    </label>
-                    <label class="flex items-center text-sm text-gray-300 cursor-pointer">
-                        <input type="checkbox" id="detailed-feedback" class="h-4 w-4 text-blue-500 border-gray-600 rounded focus:ring-blue-500">
-                        <span class="ml-2">I can provide detailed feedback on user experience.</span>
-                    </label>
+            <!-- Beta Tester Section -->
+            <div id="beta-tester-section" class="hidden">
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="find-errors">
+                        <label>I excel at finding bugs and errors in software</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="detailed-feedback">
+                        <label>I can provide detailed, actionable feedback</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="test-documentation">
+                        <label>I can document issues clearly for developers</label>
+                    </div>
+                    <p class="warning-text" id="beta-warning">All skills required for Beta Testers</p>
                 </div>
-                <p id="beta-tester-warning" class="mt-2 text-sm text-red-400 hidden">You must select both options to apply as a Beta Tester.</p>
-            </div>
-            <div class="test-container">
-                <p class="text-sm font-semibold text-gray-300 mb-2">Beta Tester Test: Find and report all 3 errors on the test site below.</p>
-                <div class="beta-test-site">
-                    <h3>Welcoome to our site!</h3>
-                    <img src="non-existent-image.png" alt="broken image">
-                    <p>We are excited to have you here. Please click the botton below to continue.</p>
-                    <button>Go Home</button>
+
+                <div class="test-container">
+                    <div class="test-title">Beta Testing Evaluation (2 Rounds)</div>
+                    
+                    <!-- Round 1: Bug Finding -->
+                    <div class="test-round" id="beta-round-1">
+                        <div class="test-round-title">Round 1: Bug Identification</div>
+                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+                            Find and report ALL bugs in this test interface. There are 5 bugs total.
+                        </p>
+                        <div style="background: white; color: black; padding: 20px; border-radius: 8px;">
+                            <h2 style="color: #111;">Welcoome to TAC Beta!</h2>
+                            <img src="broken-image-404.png" alt="Feature Preview" style="max-width: 100%;">
+                            <p>Click the botton below to get started with our amaz ing new feature!</p>
+                            <button style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+                                Get Strated
+                            </button>
+                            <p style="margin-top: 15px;">For more info, visit our <a href="#">docmentation</a>.</p>
+                        </div>
+                        <textarea id="beta-bugs" class="form-textarea" rows="6" placeholder="List each bug you found (minimum 5 required):&#10;1. ...&#10;2. ...&#10;3. ..." style="margin-top: 12px;"></textarea>
+                    </div>
+
+                    <!-- Round 2: UX Feedback -->
+                    <div class="test-round hidden" id="beta-round-2">
+                        <div class="test-round-title">Round 2: User Experience Evaluation</div>
+                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+                            Review this new feature mockup and provide detailed UX feedback.
+                        </p>
+                        <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+                            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+                                <button style="padding: 4px 8px; background: var(--accent); color: #000; border: none; font-size: 10px;">Save</button>
+                                <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">Cancel</button>
+                                <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">Submit</button>
+                                <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">Delete</button>
+                            </div>
+                            <input type="text" placeholder="Enter your data here..." style="width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; font-size: 11px;">
+                            <p style="font-size: 9px; color: var(--muted); margin-top: 4px;">*Required field</p>
+                        </div>
+                        <textarea id="beta-ux-feedback" class="form-textarea" rows="6" placeholder="Provide UX feedback covering:&#10;- Button placement and clarity&#10;- User flow and confusion points&#10;- Accessibility concerns&#10;- Suggestions for improvement" style="margin-top: 12px;"></textarea>
+                    </div>
+
+                    <p class="warning-text" id="beta-test-warning">Complete both rounds with thorough feedback</p>
+                    <div class="test-progress" id="beta-progress">Progress: 0/2 rounds completed</div>
                 </div>
-                <textarea id="beta-tester-test-input" rows="5" placeholder="List the errors you found here (e.g., '1. Typos...', '2. Broken images...', '3. Non-functional buttons...')" class="mt-2 w-full px-3 py-2 bg-[#222] border border-gray-600 rounded-md text-sm"></textarea>
-                <p id="beta-tester-test-warning" class="mt-2 text-sm text-red-400 hidden">You must report all three errors to pass the test.</p>
+            </div>
+
+            <!-- Other Section -->
+            <div id="other-section" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">What role would you like to apply for?</label>
+                    <input type="text" id="other-role" class="form-input" placeholder="e.g., Content Creator, Community Manager">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Describe your relevant skills and experience</label>
+                    <textarea id="other-description" class="form-textarea" rows="6" placeholder="Tell us about your background, skills, and why you'd be great for this role..."></textarea>
+                </div>
+                <p class="warning-text" id="other-warning">Both fields are required</p>
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Application</button>
+        </form>
+
+        <div class="applications-section">
+            <h2 class="applications-title">Your Past Applications</h2>
+            <div id="applications-list">
+                <p style="text-align: center; color: var(--muted);">Loading applications...</p>
             </div>
         </div>
-
-        <div id="other-section" class="hidden space-y-4">
-            <p class="block text-sm font-medium text-gray-300 mb-2">What is the other role you would like to apply for?</p>
-            <input type="text" id="other-role-input" placeholder="e.g., Artist, Community Manager" class="w-full px-4 py-2 bg-[#222] border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition-colors duration-200">
-            <p class="block text-sm font-medium text-gray-300 mb-2">Please describe your relevant skills and experience.</p>
-            <textarea id="other-description-input" rows="4" placeholder="Describe your skills here..." class="w-full px-3 py-2 bg-[#222] border border-gray-600 rounded-md text-sm"></textarea>
-            <p id="other-warning" class="mt-2 text-sm text-red-400 hidden">Please provide a role and a description.</p>
-        </div>
-
-        <button type="submit" class="w-full py-2 px-4 theme-btn text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4CAF50] transition-all duration-300 transform hover:scale-105">
-            Submit Application
-        </button>
-    </form>
-
-    <div id="message-box" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-sm p-6 bg-gray-700 rounded-lg shadow-xl text-center z-50 hidden">
-        <p id="message-text" class="text-white font-semibold mb-4"></p>
-        <button id="close-message" class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md">OK</button>
     </div>
+</main>
 
-    <div class="mt-8 pt-6 border-t border-gray-700">
-        <h2 class="text-xl font-bold text-gray-200 mb-4 text-center">Your Past Applications</h2>
-        <div id="applications-list" class="space-y-4">
-            <p class="text-center text-gray-400">Loading your applications...</p>
-        </div>
-    </div>
-</div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+// Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
     authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -282,257 +876,450 @@ const firebaseConfig = {
     appId: "1:937853298051:web:119ccc7b5499514bd442b6"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getDatabase(firebaseApp);
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 const sanitizedAppId = 'default_app_id'.replace(/[\.\-\[\]\#\$]/g, '_');
-
 const userId = 'user_' + Date.now() + '_' + Math.floor(Math.random()*1000);
-document.getElementById('user-id-display').textContent = `Your User ID: ${userId}`;
 
-const form = document.getElementById('application-form');
-const roleSelect = document.getElementById('role');
-const nameInput = document.getElementById('name');
-const applicationsList = document.getElementById('applications-list');
-const messageBox = document.getElementById('message-box');
-const messageText = document.getElementById('message-text');
-const closeMessageButton = document.getElementById('close-message');
+document.getElementById('user-id-display').textContent = `User ID: ${userId}`;
 
-const devSection = document.getElementById('dev-section');
-const canCode = document.getElementById('can-code');
-const devTestInput = document.getElementById('dev-test-input');
-const devWarning = document.getElementById('dev-warning');
-const devTestWarning = document.getElementById('dev-test-warning');
-
-const modSection = document.getElementById('mod-section');
-const canStress = document.getElementById('can-stress');
-const modWarning = document.getElementById('mod-warning');
-const modTestWarning = document.getElementById('mod-test-warning');
-const modStatusMessage = document.getElementById('mod-status-message');
-const spambotMessage = document.getElementById('spambot-message');
-let modTestResult = null; // null, 'passed', 'barely', 'failed'
-
-const gameFinderSection = document.getElementById('game-finder-section');
-const knowsSites = document.getElementById('knows-sites');
-const gameFinderWarning = document.getElementById('game-finder-warning');
-
-const betaTesterSection = document.getElementById('beta-tester-section');
-const findErrors = document.getElementById('find-errors');
-const detailedFeedback = document.getElementById('detailed-feedback');
-const betaTesterTestInput = document.getElementById('beta-tester-test-input');
-const betaTesterWarning = document.getElementById('beta-tester-warning');
-const betaTesterTestWarning = document.getElementById('beta-tester-test-warning');
-
-const otherSection = document.getElementById('other-section');
-const otherRoleInput = document.getElementById('other-role-input');
-const otherDescriptionInput = document.getElementById('other-description-input');
-const otherWarning = document.getElementById('other-warning');
-
-const allSections = [devSection, modSection, gameFinderSection, betaTesterSection, otherSection];
-const allWarnings = [devWarning, modWarning, gameFinderWarning, betaTesterWarning, devTestWarning, modTestWarning, betaTesterTestWarning, otherWarning];
-
-function hideAllSections() {
-    allSections.forEach(section => section.classList.add('hidden'));
-    allWarnings.forEach(warning => warning.classList.add('hidden'));
-}
-
-roleSelect.addEventListener('change', () => {
-    hideAllSections();
-    const selectedRole = roleSelect.value;
-    if (selectedRole === 'Dev') {
-        devSection.classList.remove('hidden');
-    } else if (selectedRole === 'Mod') {
-        modSection.classList.remove('hidden');
-        modTestResult = null; // Reset test state
-        modStatusMessage.textContent = '';
-        spambotMessage.style.display = 'flex';
-    } else if (selectedRole === 'Game Finder') {
-        gameFinderSection.classList.remove('hidden');
-    } else if (selectedRole === 'Beta Tester') {
-        betaTesterSection.classList.remove('hidden');
-    } else if (selectedRole === 'Other') {
-        otherSection.classList.remove('hidden');
-    }
-});
-
-// Mod test button logic
-spambotMessage.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON') {
-        const action = e.target.dataset.action;
-        const modChatLog = document.getElementById('mod-chat-log');
-
-        const systemMessage = (msg) => {
-            const el = document.createElement('div');
-            el.className = 'message';
-            el.innerHTML = `<div class="message-content"><span class="username mod">Mod System</span>: ${msg}</div>`;
-            modChatLog.appendChild(el);
-            modChatLog.scrollTop = modChatLog.scrollHeight;
-        };
-
-        if (action === 'delete') {
-            modTestResult = 'failed';
-            modStatusMessage.textContent = '❌ Test Failed: The bot keeps spamming. Deleting a message does not remove the user.';
-            modStatusMessage.style.color = '#e05555';
-            systemMessage('The message was deleted, but a new one from SpamBot appears.');
-            const newSpam = document.createElement('div');
-            newSpam.className = 'message bot-message';
-            newSpam.innerHTML = `<div class="message-content"><span class="username bot">SpamBot</span>: More shady links! Get your free stuff now!</div><div class="message-actions"><button class="btn delete" data-action="delete">Delete</button><button class="btn timeout" data-action="timeout">Timeout</button><button class="btn ban" data-action="ban">Ban</button></div>`;
-            modChatLog.appendChild(newSpam);
-        } else if (action === 'timeout') {
-            modTestResult = 'barely';
-            modStatusMessage.textContent = '✅ Test Passed: A timeout is a temporary fix. Better than deleting, but not the best option for a repeat offender.';
-            modStatusMessage.style.color = '#4CAF50';
-            systemMessage('SpamBot has been timed out.');
-            spambotMessage.style.display = 'none';
-        } else if (action === 'ban') {
-            modTestResult = 'passed';
-            modStatusMessage.textContent = '✅ Test Passed: A permanent ban is the correct action for a spambot. Great job!';
-            modStatusMessage.style.color = '#4CAF50';
-            systemMessage('SpamBot has been banned.');
-            spambotMessage.style.display = 'none';
-        }
-
-        // Hide buttons after a choice is made
-        spambotMessage.querySelectorAll('button').forEach(btn => btn.disabled = true);
-    }
-});
-
-form.addEventListener('submit', async e => {
-    e.preventDefault();
-    hideAllWarnings();
-
-    const selectedRole = roleSelect.value;
-    let applicationData = {
-        name: nameInput.value,
-        role: selectedRole,
-        timestamp: new Date().toISOString(),
-        testResult: 'N/A' // Default for roles without a test
-    };
-    
-    let hasError = false;
-
-    if (selectedRole === 'Dev') {
-        if (!canCode.checked) {
-            devWarning.classList.remove('hidden');
-            hasError = true;
-        }
-        const devTestResult = devTestInput.value.trim();
-        if (devTestResult === '<p>This is a paragraph.</p>') {
-            applicationData.testResult = 'Passed';
-        } else {
-            devTestWarning.classList.remove('hidden');
-            applicationData.testResult = 'Failed';
-        }
-    } else if (selectedRole === 'Mod') {
-        if (!canStress.checked) {
-            modWarning.classList.remove('hidden');
-            hasError = true;
-        }
-        if (modTestResult === null) {
-            modTestWarning.classList.remove('hidden');
-            hasError = true;
-        } else {
-            applicationData.testResult = modTestResult;
-        }
-    } else if (selectedRole === 'Game Finder') {
-        if (!knowsSites.checked) {
-            gameFinderWarning.classList.remove('hidden');
-            hasError = true;
-        }
-    } else if (selectedRole === 'Beta Tester') {
-        if (!findErrors.checked || !detailedFeedback.checked) {
-            betaTesterWarning.classList.remove('hidden');
-            hasError = true;
-        }
-        const betaTestResult = betaTesterTestInput.value.trim().toLowerCase();
-        
-        // Define the keywords for the three bugs
-        const typoReported = betaTestResult.includes('welcoome') || betaTestResult.includes('botton');
-        const brokenImageReported = betaTestResult.includes('image') || betaTestResult.includes('broken');
-        const brokenButtonReported = betaTestResult.includes('button') || betaTestResult.includes('non-functional');
-
-        if (typoReported && brokenImageReported && brokenButtonReported) {
-            applicationData.testResult = 'Passed';
-            applicationData.bugReport = betaTestResult;
-        } else {
-            betaTesterTestWarning.classList.remove('hidden');
-            applicationData.testResult = 'Failed';
-        }
-    } else if (selectedRole === 'Other') {
-        const otherRole = otherRoleInput.value.trim();
-        const otherDescription = otherDescriptionInput.value.trim();
-        if (!otherRole || !otherDescription) {
-            otherWarning.classList.remove('hidden');
-            hasError = true;
-        } else {
-            applicationData.otherRole = otherRole;
-            applicationData.description = otherDescription;
-        }
-    }
-
-    if (hasError) {
-        return;
-    }
-
-    try {
-        const applicationsRef = ref(db, `artifacts/${sanitizedAppId}/users/${userId}/staff_applications`);
-        await push(applicationsRef, applicationData);
-        showMessage('Your application has been submitted!');
-        form.reset();
-        hideAllSections();
-    } catch(err) {
-        console.error("Firebase submission error:", err);
-        showMessage('Error submitting application. Please try again.');
-    }
-});
-
-function hideAllWarnings() {
-    allWarnings.forEach(warning => warning.classList.add('hidden'));
-}
-
-const showMessage = msg => {
-    messageText.textContent = msg;
-    messageBox.classList.remove('hidden');
+// Theme System
+const themeColors = {
+    green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+    blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+    red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+    cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+    pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+    white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+    whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
 };
 
-closeMessageButton.addEventListener('click', () => messageBox.classList.add('hidden'));
+function applyTheme() {
+    const theme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[theme] || themeColors.green;
 
-const applicationsRef = ref(db, `artifacts/${sanitizedAppId}/users/${userId}/staff_applications`);
-onValue(applicationsRef, snapshot => {
-    applicationsList.innerHTML = '';
-    if (!snapshot.exists()) {
-        applicationsList.innerHTML = `<p class="text-center text-gray-400">No applications yet.</p>`;
-        return;
-    }
-    const apps = snapshot.val();
-    Object.values(apps).forEach(data => {
-        const el = document.createElement('div');
-        el.className = 'bg-gray-700 p-4 rounded-lg shadow-md';
-        let testStatus = '';
-        if (data.role === 'Dev' || data.role === 'Mod' || data.role === 'Beta Tester') {
-            const result = data.testResult;
-            if (result === 'passed') {
-                testStatus = '<span class="text-green-400">✅ Test Passed</span>';
-            } else if (result === 'barely') {
-                testStatus = '<span class="text-yellow-400">🟡 Test Passed (Barely)</span>';
-            } else {
-                testStatus = '<span class="text-red-400">❌ Test Failed</span>';
+    document.documentElement.style.setProperty('--accent', colors.primary);
+    document.documentElement.style.setProperty('--accent-dim', colors.dim);
+
+    const logo = document.getElementById('logo');
+    if (logo) logo.src = `taclogos/${theme}.png`;
+
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+}
+
+applyTheme();
+window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') applyTheme();
+});
+
+// Sidebar Toggle
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const mainContent = document.getElementById('mainContent');
+
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleBtn.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+});
+
+// Role Selection
+const roleSelect = document.getElementById('role');
+const sections = {
+    'Developer': document.getElementById('developer-section'),
+    'Moderator': document.getElementById('moderator-section'),
+    'Beta Tester': document.getElementById('beta-tester-section'),
+    'Other': document.getElementById('other-section')
+};
+
+roleSelect.addEventListener('change', () => {
+    Object.values(sections).forEach(section => section?.classList.add('hidden'));
+    const selected = sections[roleSelect.value];
+    if (selected) selected.classList.remove('hidden');
+    
+    // Reset test states
+    resetTests();
+});
+
+// Test State Management
+let testStates = {
+    developer: { round: 1, completed: 0, answers: {} },
+    moderator: { round: 1, completed: 0, answers: {} },
+    betaTester: { round: 1, completed: 0 }
+};
+
+function resetTests() {
+    testStates = {
+        developer: { round: 1, completed: 0, answers: {} },
+        moderator: { round: 1, completed: 0, answers: {} },
+        betaTester: { round: 1, completed: 0 }
+    };
+    
+    // Reset UI
+    ['dev', 'mod', 'beta'].forEach(prefix => {
+        for (let i = 1; i <= 3; i++) {
+            const round = document.getElementById(`${prefix}-round-${i}`);
+            if (round) {
+                if (i === 1) round.classList.remove('hidden');
+                else round.classList.add('hidden');
             }
         }
+        const progress = document.getElementById(`${prefix}-progress`);
+        if (progress) progress.textContent = `Progress: 0/${prefix === 'beta' ? 2 : 3} ${prefix === 'beta' ? 'rounds' : prefix === 'dev' ? 'rounds' : 'scenarios'} completed`;
+    });
+}
 
-        el.innerHTML = `
-            <p class="font-bold text-lg text-white">${data.name}</p>
-            <p class="text-gray-300">Role: ${data.role}</p>
-            <p class="text-gray-300">Applied: ${new Date(data.timestamp).toLocaleString()}</p>
-            ${data.canCode !== undefined ? `<p class="text-gray-300">Can Code: ${data.canCode ? 'Yes' : 'No'}</p>` : ''}
-            ${data.canStress !== undefined ? `<p class="text-gray-300">Works well under stress: ${data.canStress ? 'Yes' : 'No'}</p>` : ''}
-            ${data.knowsSites !== undefined ? `<p class="text-gray-300">Knows game sites: ${data.knowsSites ? 'Yes' : 'No'}</p>` : ''}
-            ${data.findErrors !== undefined ? `<p class="text-gray-300">Finds and reports errors: ${data.findErrors ? 'Yes' : 'No'}</p>` : ''}
-            ${data.detailedFeedback !== undefined ? `<p class="text-gray-300">Provides detailed feedback: ${data.detailedFeedback ? 'Yes' : 'No'}</p>` : ''}
-            ${data.otherRole ? `<p class="text-gray-300">Other Role: ${data.otherRole}</p>` : ''}
-            ${data.description ? `<p class="text-gray-300">Description: ${data.description}</p>` : ''}
-            ${testStatus ? `<p class="mt-2 font-semibold">${testStatus}</p>` : ''}
+// Developer Test Logic
+document.getElementById('developer-section')?.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON' || e.target.type === 'submit') return;
+    
+    const round = e.target.dataset.round;
+    const state = testStates.developer;
+    
+    if (round === '1') {
+        const request = e.target.dataset.request;
+        const action = e.target.dataset.action;
+        
+        // Correct answers: 1=deny, 2=deny, 3=approve
+        const correct = (request === '1' && action === 'deny') ||
+                       (request === '2' && action === 'deny') ||
+                       (request === '3' && action === 'approve');
+        
+        state.answers[`r1q${request}`] = correct;
+        e.target.style.background = correct ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)';
+        e.target.disabled = true;
+        e.target.parentElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        
+        const allAnswered = state.answers.r1q1 !== undefined && 
+                           state.answers.r1q2 !== undefined && 
+                           state.answers.r1q3 !== undefined;
+        
+        if (allAnswered) {
+            const allCorrect = state.answers.r1q1 && state.answers.r1q2 && state.answers.r1q3;
+            const status = document.getElementById('dev-round-1-status');
+            
+            if (allCorrect) {
+                status.textContent = '✅ Round 1 Complete! Proceeding to Round 2...';
+                status.style.color = '#22c55e';
+                state.completed = 1;
+                document.getElementById('dev-progress').textContent = 'Progress: 1/3 rounds completed';
+                setTimeout(() => {
+                    document.getElementById('dev-round-1').classList.add('hidden');
+                    document.getElementById('dev-round-2').classList.remove('hidden');
+                }, 1500);
+            } else {
+                status.textContent = '❌ Some answers incorrect. Review TAC guidelines: Admin privileges require approval process, suspicious usernames should be denied, password resets for established users should be approved.';
+                status.style.color = '#ef4444';
+            }
+        }
+    } else if (round === '2') {
+        const alert = e.target.dataset.alert;
+        const status = document.getElementById('dev-round-2-status');
+        
+        e.target.parentElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        
+        if (alert === 'login') {
+            status.textContent = '✅ Correct! Multiple failed login attempts indicate a brute force attack. Proceeding to Round 3...';
+            status.style.color = '#22c55e';
+            state.completed = 2;
+            document.getElementById('dev-progress').textContent = 'Progress: 2/3 rounds completed';
+            setTimeout(() => {
+                document.getElementById('dev-round-2').classList.add('hidden');
+                document.getElementById('dev-round-3').classList.remove('hidden');
+            }, 1500);
+        } else {
+            status.textContent = '❌ Incorrect. The critical alert is the failed login attempts - this indicates a potential security breach.';
+            status.style.color = '#ef4444';
+        }
+    } else if (round === '3') {
+        const action = e.target.dataset.action;
+        const status = document.getElementById('dev-round-3-status');
+        
+        e.target.parentElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        
+        if (action === 'ban') {
+            status.textContent = '✅ Excellent! This is clearly suspicious behavior - new account attempting to access admin areas. All rounds complete!';
+            status.style.color = '#22c55e';
+            state.completed = 3;
+            document.getElementById('dev-progress').textContent = 'Progress: 3/3 rounds completed ✓';
+        } else {
+            status.textContent = '❌ This suspicious activity requires immediate action. Monitoring alone is insufficient for clear threats.';
+            status.style.color = '#ef4444';
+        }
+    }
+});
+
+// Moderator Test Logic
+document.getElementById('moderator-section')?.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'BUTTON' || e.target.type === 'submit') return;
+    
+    const round = e.target.dataset.round;
+    const action = e.target.dataset.action;
+    const state = testStates.moderator;
+    
+    if (round === '1') {
+        const status = document.getElementById('mod-round-1-status');
+        e.target.parentElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        
+        if (action === 'ban') {
+            status.textContent = '✅ Correct! Spam bots should be permanently banned. Moving to Scenario 2...';
+            status.style.color = '#22c55e';
+            state.completed = 1;
+            document.getElementById('mod-progress').textContent = 'Progress: 1/3 scenarios completed';
+            setTimeout(() => {
+                document.getElementById('mod-round-1').classList.add('hidden');
+                document.getElementById('mod-round-2').classList.remove('hidden');
+            }, 1500);
+        } else if (action === 'timeout') {
+            status.textContent = '⚠️ Timeout works temporarily, but spam bots should be permanently banned.';
+            status.style.color = '#eab308';
+        } else {
+            status.textContent = '❌ Deleting messages alone won\'t stop the spam. The bot will continue posting.';
+            status.style.color = '#ef4444';
+        }
+    } else if (round === '2') {
+        const status = document.getElementById('mod-round-2-status');
+        e.target.parentElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        
+        if (action === 'separate') {
+            status.textContent = '✅ Good judgment! Both users are being disrespectful - a timeout gives them time to cool down. Proceeding to Scenario 3...';
+            status.style.color = '#22c55e';
+            state.completed = 2;
+            document.getElementById('mod-progress').textContent = 'Progress: 2/3 scenarios completed';
+            setTimeout(() => {
+                document.getElementById('mod-round-2').classList.add('hidden');
+                document.getElementById('mod-round-3').classList.remove('hidden');
+            }, 1500);
+        } else if (action === 'warn') {
+            status.textContent = '⚠️ Warnings can work, but the situation has already escalated. Consider stronger action.';
+            status.style.color = '#eab308';
+        } else {
+            status.textContent = '❌ Moderators need to intervene when users are being disrespectful to each other.';
+            status.style.color = '#ef4444';
+        }
+    } else if (round === '3') {
+        const status = document.getElementById('mod-round-3-status');
+        e.target.parentElement.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        
+        if (action === 'delete-warn') {
+            status.textContent = '✅ Perfect! Remove inappropriate content immediately and issue an official warning. All scenarios complete!';
+            status.style.color = '#22c55e';
+            state.completed = 3;
+            document.getElementById('mod-progress').textContent = 'Progress: 3/3 scenarios completed ✓';
+        } else if (action === 'timeout') {
+            status.textContent = '⚠️ A 24hr timeout might be too harsh for a first offense. Official warning is more appropriate.';
+            status.style.color = '#eab308';
+        } else {
+            status.textContent = '❌ Don\'t ask them to remove it - moderators should take immediate action on inappropriate content.';
+            status.style.color = '#ef4444';
+        }
+    }
+});
+
+// Beta Tester Test Logic
+document.getElementById('beta-tester-section')?.addEventListener('input', (e) => {
+    if (e.target.id === 'beta-bugs') {
+        const bugs = e.target.value.toLowerCase();
+        const foundBugs = {
+            typo1: bugs.includes('welcoome') || bugs.includes('welcome'),
+            typo2: bugs.includes('botton') || bugs.includes('button'),
+            typo3: bugs.includes('amaz ing') || bugs.includes('amazing'),
+            typo4: bugs.includes('strated') || bugs.includes('started'),
+            typo5: bugs.includes('docmentation') || bugs.includes('documentation'),
+            image: bugs.includes('broken') || bugs.includes('404') || bugs.includes('image')
+        };
+        
+        const count = Object.values(foundBugs).filter(Boolean).length;
+        
+        if (count >= 5) {
+            testStates.betaTester.completed = 1;
+            document.getElementById('beta-progress').textContent = 'Progress: 1/2 rounds completed';
+            setTimeout(() => {
+                document.getElementById('beta-round-1').classList.add('hidden');
+                document.getElementById('beta-round-2').classList.remove('hidden');
+            }, 1000);
+        }
+    } else if (e.target.id === 'beta-ux-feedback') {
+        const feedback = e.target.value.toLowerCase();
+        const hasDepth = feedback.length > 150 && 
+                        (feedback.includes('button') || feedback.includes('placement')) &&
+                        (feedback.includes('user') || feedback.includes('flow') || feedback.includes('confusion')) &&
+                        (feedback.includes('suggest') || feedback.includes('improve') || feedback.includes('better'));
+        
+        if (hasDepth) {
+            testStates.betaTester.completed = 2;
+            document.getElementById('beta-progress').textContent = 'Progress: 2/2 rounds completed ✓';
+        }
+    }
+});
+
+// Form Submission
+document.getElementById('application-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const role = roleSelect.value;
+    const name = document.getElementById('name').value;
+    
+    let isValid = true;
+    let testResult = 'N/A';
+    let additionalData = {};
+    
+    // Hide all warnings
+    document.querySelectorAll('.warning-text').forEach(w => w.classList.remove('show'));
+    
+    // Validate based on role
+    if (role === 'Developer') {
+        const monitor = document.getElementById('monitor-systems').checked;
+        const handle = document.getElementById('handle-requests').checked;
+        const analytics = document.getElementById('analytics').checked;
+        
+        if (!monitor || !handle || !analytics) {
+            document.getElementById('dev-warning').classList.add('show');
+            isValid = false;
+        }
+        
+        if (testStates.developer.completed !== 3) {
+            document.getElementById('dev-test-warning').classList.add('show');
+            isValid = false;
+        } else {
+            testResult = 'Passed - All 3 rounds';
+        }
+        
+        additionalData = {
+            monitorSystems: monitor,
+            handleRequests: handle,
+            analytics: analytics,
+            roundsCompleted: testStates.developer.completed
+        };
+    } else if (role === 'Moderator') {
+        const canStress = document.getElementById('can-stress').checked;
+        
+        if (!canStress) {
+            document.getElementById('mod-warning').classList.add('show');
+            isValid = false;
+        }
+        
+        if (testStates.moderator.completed !== 3) {
+            document.getElementById('mod-test-warning').classList.add('show');
+            isValid = false;
+        } else {
+            testResult = 'Passed - All 3 scenarios';
+        }
+        
+        additionalData = {
+            canWorkUnderPressure: canStress,
+            scenariosCompleted: testStates.moderator.completed
+        };
+    } else if (role === 'Beta Tester') {
+        const findErrors = document.getElementById('find-errors').checked;
+        const detailedFeedback = document.getElementById('detailed-feedback').checked;
+        const testDoc = document.getElementById('test-documentation').checked;
+        
+        if (!findErrors || !detailedFeedback || !testDoc) {
+            document.getElementById('beta-warning').classList.add('show');
+            isValid = false;
+        }
+        
+        if (testStates.betaTester.completed !== 2) {
+            document.getElementById('beta-test-warning').classList.add('show');
+            isValid = false;
+        } else {
+            testResult = 'Passed - Both rounds';
+        }
+        
+        additionalData = {
+            canFindErrors: findErrors,
+            canProvideFeedback: detailedFeedback,
+            canDocumentIssues: testDoc,
+            bugsFound: document.getElementById('beta-bugs').value,
+            uxFeedback: document.getElementById('beta-ux-feedback').value,
+            roundsCompleted: testStates.betaTester.completed
+        };
+    } else if (role === 'Other') {
+        const otherRole = document.getElementById('other-role').value.trim();
+        const otherDesc = document.getElementById('other-description').value.trim();
+        
+        if (!otherRole || !otherDesc) {
+            document.getElementById('other-warning').classList.add('show');
+            isValid = false;
+        }
+        
+        additionalData = {
+            customRole: otherRole,
+            description: otherDesc
+        };
+    }
+    
+    if (!isValid) return;
+    
+    // Submit to Firebase
+    const applicationData = {
+        name: name,
+        role: role,
+        timestamp: new Date().toISOString(),
+        testResult: testResult,
+        ...additionalData
+    };
+    
+    try {
+        const applicationsRef = database.ref(`artifacts/${sanitizedAppId}/users/${userId}/staff_applications`);
+        await applicationsRef.push(applicationData);
+        
+        showModal('Application submitted successfully! We\'ll review it and get back to you soon.');
+        
+        // Reset form
+        document.getElementById('application-form').reset();
+        Object.values(sections).forEach(section => section?.classList.add('hidden'));
+        resetTests();
+    } catch (error) {
+        console.error('Submission error:', error);
+        showModal('Error submitting application. Please try again.');
+    }
+});
+
+// Modal
+function showModal(message) {
+    document.getElementById('modal-message').textContent = message;
+    document.getElementById('modal').classList.remove('hidden');
+}
+
+document.getElementById('modal-close').addEventListener('click', () => {
+    document.getElementById('modal').classList.add('hidden');
+});
+
+// Load Past Applications
+const applicationsRef = database.ref(`artifacts/${sanitizedAppId}/users/${userId}/staff_applications`);
+applicationsRef.on('value', (snapshot) => {
+    const listEl = document.getElementById('applications-list');
+    listEl.innerHTML = '';
+    
+    if (!snapshot.exists()) {
+        listEl.innerHTML = '<p style="text-align: center; color: var(--muted);">No applications submitted yet.</p>';
+        return;
+    }
+    
+    const apps = snapshot.val();
+    Object.values(apps).forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'application-card';
+        
+        let testBadge = '';
+        if (app.testResult && app.testResult !== 'N/A') {
+            testBadge = `<p style="color: var(--accent); font-weight: 600;">✓ ${app.testResult}</p>`;
+        }
+        
+        card.innerHTML = `
+            <h3>${app.name}</h3>
+            <p><strong>Role:</strong> ${app.role}</p>
+            <p><strong>Applied:</strong> ${new Date(app.timestamp).toLocaleString()}</p>
+            ${testBadge}
         `;
-        applicationsList.appendChild(el);
+        
+        listEl.appendChild(card);
     });
 });
 </script>
