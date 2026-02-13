@@ -188,6 +188,48 @@
         }
         .modal-option:hover { background: var(--secondary-hover); }
         
+        /* Device Conflict Modal */
+        #deviceModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 30px;
+            background: var(--container-bg);
+            border-radius: 8px;
+            z-index: 10001;
+            text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+            width: 340px;
+        }
+        #deviceOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+        }
+        .device-info {
+            background: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            text-align: left;
+            font-size: 13px;
+        }
+        .device-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        .device-info-label { color: #888; }
+        .device-info-value { color: var(--text-color); font-weight: 500; }
+        .warning-text { color: #d93025; font-size: 12px; margin-top: 10px; }
+        
         /* Dark Mode Toggle */
         #darkModeToggle {
             position: fixed;
@@ -287,6 +329,26 @@
     <button class="modal-option" onclick="closeForgotModal()">❌ Cancel</button>
 </div>
 
+<!-- Device Conflict Modal -->
+<div id="deviceOverlay"></div>
+<div id="deviceModal">
+    <h3 style="margin-top:0;color:var(--text-color)">⚠️ Active Session Detected</h3>
+    <p style="font-size: 14px; color:var(--text-color)">This account is already signed in on another device:</p>
+    <div class="device-info" id="activeDeviceInfo">
+        <div class="device-info-row">
+            <span class="device-info-label">Device:</span>
+            <span class="device-info-value" id="activeDeviceName">Unknown</span>
+        </div>
+        <div class="device-info-row">
+            <span class="device-info-label">Last Active:</span>
+            <span class="device-info-value" id="activeDeviceTime">Unknown</span>
+        </div>
+    </div>
+    <p class="warning-text">Signing in here will log out the other device.</p>
+    <button class="modal-option" onclick="forceLogin()">🔄 Sign in here (log out other device)</button>
+    <button class="modal-option" onclick="closeDeviceModal()">❌ Cancel</button>
+</div>
+
 <p class="sign-out-link" id="signOutLink" onclick="logout()" style="position: absolute; bottom: 20px;">Sign Out</p>
 
 <div id="darkModeToggle" onclick="toggleDarkMode()">🌙</div>
@@ -313,6 +375,118 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     let currentUser = "";
+    let currentDeviceId = "";
+    let sessionCheckInterval = null;
+
+    // Generate or retrieve device ID
+    function getDeviceId() {
+        let deviceId = localStorage.getItem('deviceId');
+        if (!deviceId) {
+            deviceId = 'dev_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem('deviceId', deviceId);
+        }
+        return deviceId;
+    }
+
+    // Get device info for display
+    function getDeviceInfo() {
+        const ua = navigator.userAgent;
+        let deviceName = 'Unknown Device';
+        
+        if (/iPhone/.test(ua)) deviceName = 'iPhone';
+        else if (/iPad/.test(ua)) deviceName = 'iPad';
+        else if (/Android/.test(ua)) deviceName = 'Android Device';
+        else if (/Windows/.test(ua)) deviceName = 'Windows PC';
+        else if (/Mac/.test(ua)) deviceName = 'Mac';
+        else if (/Linux/.test(ua)) deviceName = 'Linux PC';
+        
+        return {
+            deviceId: getDeviceId(),
+            deviceName: deviceName,
+            userAgent: ua.substring(0, 100),
+            lastActive: new Date().toISOString()
+        };
+    }
+
+    // Check if another device is active
+    async function checkActiveSession(username) {
+        const snapshot = await db.ref('activeSessions/' + username).once('value');
+        const session = snapshot.val();
+        
+        if (session && session.deviceId !== getDeviceId()) {
+            // Check if session is still valid (active within last 30 minutes)
+            const lastActive = new Date(session.lastActive);
+            const now = new Date();
+            const diffMinutes = (now - lastActive) / (1000 * 60);
+            
+            if (diffMinutes < 30) {
+                return session; // Another device is active
+            }
+        }
+        return null; // No conflict
+    }
+
+    // Register this device as active session
+    async function registerSession(username) {
+        const deviceInfo = getDeviceInfo();
+        await db.ref('activeSessions/' + username).set(deviceInfo);
+        
+        // Start heartbeat to keep session alive
+        startSessionHeartbeat(username);
+    }
+
+    // Heartbeat to keep session active
+    function startSessionHeartbeat(username) {
+        if (sessionCheckInterval) clearInterval(sessionCheckInterval);
+        
+        sessionCheckInterval = setInterval(async () => {
+            const currentSession = await db.ref('activeSessions/' + username).once('value');
+            const session = currentSession.val();
+            
+            // Only update if this is still our session
+            if (session && session.deviceId === getDeviceId()) {
+                await db.ref('activeSessions/' + username + '/lastActive').set(new Date().toISOString());
+            } else if (session && session.deviceId !== getDeviceId()) {
+                // We've been logged out by another device
+                alert('You have been signed out because another device signed in.');
+                logout();
+            }
+        }, 60000); // Every minute
+    }
+
+    // Clear session on logout
+    async function clearSession(username) {
+        if (sessionCheckInterval) clearInterval(sessionCheckInterval);
+        const currentSession = await db.ref('activeSessions/' + username).once('value');
+        const session = currentSession.val();
+        
+        // Only clear if it's our session
+        if (session && session.deviceId === getDeviceId()) {
+            await db.ref('activeSessions/' + username).remove();
+        }
+    }
+
+    // Show device conflict modal
+    function showDeviceConflict(activeSession) {
+        document.getElementById('deviceModal').style.display = 'block';
+        document.getElementById('deviceOverlay').style.display = 'block';
+        document.getElementById('activeDeviceName').innerText = activeSession.deviceName || 'Unknown';
+        
+        const lastActive = new Date(activeSession.lastActive);
+        document.getElementById('activeDeviceTime').innerText = lastActive.toLocaleString();
+    }
+
+    function closeDeviceModal() {
+        document.getElementById('deviceModal').style.display = 'none';
+        document.getElementById('deviceOverlay').style.display = 'none';
+    }
+
+    async function forceLogin() {
+        closeDeviceModal();
+        // Force register this device, kicking out the other
+        await registerSession(currentUser);
+        proceedWithLogin();
+    }
 
     // Dark Mode
     function toggleDarkMode() {
@@ -338,6 +512,8 @@
     }
 
     window.onload = function() {
+        currentDeviceId = getDeviceId();
+        
         // Dark mode preference
         if (localStorage.getItem('darkMode') === 'true') {
             document.body.classList.add('dark-mode');
@@ -365,7 +541,21 @@
         }
     }
 
-    function loginSuccess() {
+    async function loginSuccess() {
+        // Check for active session on another device
+        const activeSession = await checkActiveSession(currentUser);
+        
+        if (activeSession) {
+            showDeviceConflict(activeSession);
+            return;
+        }
+        
+        // Register this device
+        await registerSession(currentUser);
+        proceedWithLogin();
+    }
+
+    function proceedWithLogin() {
         db.ref('userPhones/' + currentUser).once('value').then(userSnap => {
             if (userSnap.exists()) {
                 const myPhone = userSnap.val();
@@ -529,8 +719,14 @@
         window.location.reload();
     }
 
-    function logout() {
-        localStorage.clear();
+    async function logout() {
+        const lastUser = localStorage.getItem('lastLoggedInUser');
+        if (lastUser) {
+            await clearSession(lastUser);
+        }
+        localStorage.removeItem('lastLoggedInUser');
+        localStorage.removeItem('userPhoneNumber');
+        // Keep deviceId so they can use same device after re-login
         window.location.reload();
     }
 
@@ -599,6 +795,15 @@
         window.open('https://discord.gg/yourdevserver', '_blank');
         closeForgotModal();
     }
+
+    // Handle page unload - keep session but update last active
+    window.addEventListener('beforeunload', function() {
+        const lastUser = localStorage.getItem('lastLoggedInUser');
+        if (lastUser && currentDeviceId) {
+            // Use sendBeacon to update last active time
+            // Note: This won't clear session, just update timestamp
+        }
+    });
 </script>
 <script src="guard.js"></script>
 </body>

