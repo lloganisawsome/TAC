@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="guard.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAC - Browser</title>
@@ -716,7 +717,8 @@ openBlankBtn.addEventListener('click', () => {
             newWindow.document.write(`
                 <!DOCTYPE html>
                 <html>
-                <head><title>TAC Browser</title></head>
+                <head>
+<script src="guard.js"></script><title>TAC Browser</title></head>
                 <body style="margin:0;padding:0;overflow:hidden;">
                 <iframe 
                     style="width:100%;height:100vh;border:none;position:fixed;top:0;left:0;right:0;bottom:0;"
