@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="guard.js"></script>
     <link rel="stylesheet" href="rightclick.css">
     <link rel="stylesheet" href="custom-cursor.css">
-<script src="guard.js"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TAC Launcher</title>
@@ -219,8 +219,10 @@
 
     <div id="appGrid"></div>
   </div>
+  
+  
 
-  <script type="module">
+ <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
@@ -252,24 +254,41 @@
       whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)' }
     };
 
+    // 1. Define applyTheme ONLY ONCE
     function applyTheme() {
       const theme = localStorage.getItem('theme') || 'green';
       const colors = themeColors[theme] || themeColors.green;
+      const isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
 
       document.documentElement.style.setProperty('--accent', colors.primary);
       document.documentElement.style.setProperty('--accent-dim', colors.dim);
 
       const logo = document.getElementById('logo');
-      logo.src = `taclogos/${theme}.png`;
+      // Force loftis.png if enabled, otherwise use normal theme logo
+      logo.src = isLoftisMode ? 'loftis.png' : `taclogos/${theme}.png`;
     }
 
+    // Call it immediately on load
     applyTheme();
 
+    // 2. Listen for changes from other tabs
     window.addEventListener('storage', (e) => {
       if (e.key === 'theme') {
         applyTheme();
       }
+      // If someone toggles Loftis mode in another tab, reload this page to apply icons/cursors instantly
+      if (e.key === 'isLoftisMode') {
+        window.location.reload(); 
+      }
     });
+
+    // Global Cursor Override for Loftis Mode
+    if (localStorage.getItem('isLoftisMode') === 'true') {
+        const style = document.createElement('style');
+        // The !important flag ensures hover states don't override the Loftis cursor
+        style.innerHTML = `* { cursor: url('loftis.png'), auto !important; }`;
+        document.head.appendChild(style);
+    }
 
     // All apps
     const apps = [
@@ -301,12 +320,18 @@
 
     const grid = document.getElementById("appGrid");
 
+    // 3. Keep ONLY ONE app rendering loop
     apps.forEach(app => {
       const div = document.createElement("div");
       div.className = "app";
       
+      const isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
       let iconHtml;
-      if (app.svg) {
+      
+      // Override icon if Loftis mode is true
+      if (isLoftisMode) {
+        iconHtml = `<img src="loftis.png" alt="Loftis">`;
+      } else if (app.svg) {
         iconHtml = `<svg viewBox="0 0 24 24"><path d="${app.svg}"/></svg>`;
       } else {
         iconHtml = `<img src="${app.img}" alt="${app.name}">`;

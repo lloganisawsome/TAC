@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="guard.js"></script>
     <link rel="stylesheet" href="rightclick.css">
     <link rel="stylesheet" href="custom-cursor.css">
 <meta charset="UTF-8">
@@ -233,6 +234,12 @@ html, body {
             <button class="btn-preview">Action Button</button>
         </div>
     </div>
+    
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Loftis Mode</h2>
+        <p style="color: var(--muted); font-size: 13px;">Replace all icons, logos, and cursors with Loftis.</p>
+        <button class="btn-preview" id="loftisBtn">Enable Loftis Mode</button>
+    </div>
 </main>
 
 <script>
@@ -298,6 +305,32 @@ toggleBtn.addEventListener('click', () => {
     mainContent.classList.toggle('expanded');
 });
 
+// Loftis Mode Toggle Logic
+const loftisBtn = document.getElementById('loftisBtn');
+let isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
+
+function updateLoftisUI() {
+    if (isLoftisMode) {
+        loftisBtn.textContent = "Disable Loftis Mode";
+        loftisBtn.style.background = "var(--panel-hover)";
+        loftisBtn.style.color = "var(--accent)";
+        loftisBtn.style.border = "1px solid var(--accent)";
+    } else {
+        loftisBtn.textContent = "Enable Loftis Mode";
+        loftisBtn.style.background = "var(--accent)";
+        loftisBtn.style.color = "#000";
+        loftisBtn.style.border = "none";
+    }
+}
+
+loftisBtn.addEventListener('click', () => {
+    isLoftisMode = !isLoftisMode;
+    localStorage.setItem('isLoftisMode', isLoftisMode);
+    updateLoftisUI();
+});
+
+// Initialize Loftis UI state
+updateLoftisUI();
 // Start
 initThemeSelector();
 applyTheme();
@@ -308,7 +341,6 @@ window.addEventListener('storage', (e) => {
 });
 </script>
 
-<script src="guard.js"></script>
     <script src="custom-cursor.js"></script>
     <script src="rightclick.js"></script>
     <script src="panic-key.js"></script>

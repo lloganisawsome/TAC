@@ -10,7 +10,6 @@
         pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)' },
         purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)' },
         yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)' },
-        orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)' },
         white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)' },
         whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)' }
     };
