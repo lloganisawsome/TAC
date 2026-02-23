@@ -3,6 +3,8 @@
 <head>
     <link rel="stylesheet" href="rightclick.css">
     <link rel="stylesheet" href="custom-cursor.css">
+    <link rel="stylesheet" href__="rightclick.css">
+    <link rel="stylesheet" href__="custom-cursor.css">
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Developer Dashboard — TAC</title>
@@ -272,10 +274,21 @@
             border-bottom: 1px solid var(--border);
         }
         .feed-item:hover { background: var(--panel-hover); }
+        .feed-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
         .feed-content { flex: 1; min-width: 0; }
         .feed-text { font-size: 13px; line-height: 1.4; }
         .feed-text strong { color: #fff; }
         .feed-time { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        .feed-source { font-size: 10px; color: var(--muted); background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius: 4px; display: inline-block; margin-top: 2px; }
 
         .modal-overlay {
             position: fixed;
@@ -346,6 +359,21 @@
         .chat-text { font-size: 13px; color: rgba(255,255,255,0.8); }
         .chat-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
 
+        .room-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .room-tab {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .room-tab:hover { color: #fff; background: rgba(255,255,255,0.07); }
+        .room-tab.active { background: var(--accent-dim); border-color: rgba(34,197,94,0.3); color: var(--accent); }
+
         .date-group { margin-bottom: 20px; }
         .date-header {
             background: rgba(255,255,255,0.03);
@@ -396,6 +424,10 @@
             border-radius: 6px;
             margin-bottom: 4px;
         }
+
+        /* Failed login specific */
+        .device-info { font-size: 11px; color: var(--muted); margin-top: 4px; }
+        .useragent-text { font-size: 10px; color: var(--muted); font-family: monospace; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -435,6 +467,7 @@
         <button class="nav-tab" data-page="phone">📞 Phone</button>
         <button class="nav-tab" data-page="notifications">🔔 Notifications</button>
         <button class="nav-tab" data-page="moderation">🛡️ Moderation</button>
+        <button class="nav-tab" data-page="failedlogins">🚨 Failed Logins</button>
         <button class="nav-tab" data-page="security">🔐 Security</button>
         <button class="nav-tab" data-page="settings">⚙️ Settings</button>
     </nav>
@@ -476,9 +509,22 @@
                     <div class="panel-header">
                         <div>
                             <h3 class="panel-title">📜 Recent Activity</h3>
-                            <p class="panel-subtitle">Failed login attempts</p>
+                            <p class="panel-subtitle">Live DB writes across all collections</p>
                         </div>
-                        <button class="btn btn-secondary btn-sm" onclick="loadData()">Refresh</button>
+                        <div class="flex gap-2">
+                            <select id="activityFilter" style="width:160px;" onchange="renderActivityFeed()">
+                                <option value="all">All Activity</option>
+                                <option value="chat">Chat</option>
+                                <option value="forum">Forum</option>
+                                <option value="analytics">Analytics</option>
+                                <option value="videos">Videos</option>
+                                <option value="appUsage">App Usage</option>
+                                <option value="failed">Failed Logins</option>
+                                <option value="likes">LPC Likes</option>
+                                <option value="news">News</option>
+                            </select>
+                            <button class="btn btn-secondary btn-sm" onclick="loadData()">Refresh</button>
+                        </div>
                     </div>
                     <div class="feed" id="activityFeed">
                         <div class="empty-state">Loading...</div>
@@ -559,12 +605,13 @@
                 <div class="panel-header">
                     <div>
                         <h2 class="panel-title">💬 Public Chat</h2>
-                        <p class="panel-subtitle">From /chat/messages</p>
+                        <p class="panel-subtitle">All chat rooms</p>
                     </div>
                     <div class="flex gap-2">
-                        <button class="btn btn-danger" onclick="clearAllChat()">Clear All Chat</button>
+                        <button class="btn btn-danger" onclick="clearAllChat()">Clear Current Room</button>
                     </div>
                 </div>
+                <div class="room-tabs" id="chatRoomTabs"></div>
                 <div class="feed" id="chatFeed" style="max-height: 600px;">
                     <div class="empty-state">Loading...</div>
                 </div>
@@ -585,13 +632,13 @@
                         <h4 class="mb-2">Chat Rooms</h4>
                         <div class="table-wrap" style="max-height: 400px;">
                             <table id="privateChatRoomsTable">
-                                <thead><tr><th>Chat ID</th><th>Actions</th></tr></thead>
+                                <thead><tr><th>Participants</th><th>Messages</th><th>Actions</th></tr></thead>
                                 <tbody></tbody>
                             </table>
                         </div>
                     </div>
                     <div>
-                        <h4 class="mb-2">Selected Chat Messages</h4>
+                        <h4 class="mb-2" id="privateChatTitle">Selected Chat Messages</h4>
                         <div id="privateChatMessages" class="feed" style="max-height: 400px;">
                             <div class="empty-state">Select a chat to view messages</div>
                         </div>
@@ -790,7 +837,7 @@
             </div>
         </div>
 
-        <!-- MODERATION PAGE (Chat Settings) -->
+        <!-- MODERATION PAGE -->
         <div id="page-moderation" class="page">
             <div class="grid grid-2">
                 <div class="panel">
@@ -869,6 +916,38 @@
             </div>
         </div>
 
+        <!-- FAILED LOGINS PAGE (NEW) -->
+        <div id="page-failedlogins" class="page">
+            <div class="panel">
+                <div class="panel-header">
+                    <div>
+                        <h2 class="panel-title">🚨 Failed Login Attempts</h2>
+                        <p class="panel-subtitle">From /failedLogins — device, user agent, and attempt details</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="search" id="failedLoginSearch" placeholder="Search user..." style="width: 200px;" oninput="renderFailedLoginsPage(this.value)"/>
+                        <button class="btn btn-danger" onclick="clearAllFailedLogins()">Clear All</button>
+                    </div>
+                </div>
+                <div class="table-wrap" style="max-height: 700px;">
+                    <table id="failedLoginsPageTable">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Device Name</th>
+                                <th>Device ID</th>
+                                <th>Time</th>
+                                <th>User Agent</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- SECURITY PAGE -->
         <div id="page-security" class="page">
             <div class="panel mb-4">
@@ -913,29 +992,6 @@
                             <tbody></tbody>
                         </table>
                     </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">🚨 Failed Login Attempts</h3>
-                        <p class="panel-subtitle">From /failed</p>
-                    </div>
-                    <button class="btn btn-danger" onclick="clearAllFailedLogins()">Clear All</button>
-                </div>
-                <div class="table-wrap" style="max-height: 400px;">
-                    <table id="failedLoginsTable">
-                        <thead>
-                            <tr>
-                                <th>Username</th>
-                                <th>Tried Password</th>
-                                <th>Time</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
                 </div>
             </div>
         </div>
@@ -1069,17 +1125,19 @@
         let currentViewUser = null;
         let currentViewType = null;
         let lastFetchTime = null;
+        let currentChatRoom = null;
 
         // State
         let allowedUsers = {};
         let logins = {};
         let pending = {};
         let failed = {};
+        let failedLogins = {}; // /failedLogins node (new format)
         let members = {};
         let games = {};
         let helpResponses = {};
         let appUsage = {};
-        let chatMessages = {};
+        let chatRooms = {}; // { roomName: { messages: {...} } }
         let privateChats = {};
         let forum = {};
         let likes = {};
@@ -1092,6 +1150,11 @@
         let userPhones = {};
         let userPasswords = {};
         let userPins = {};
+        let analytics = {};
+        let videos = {};
+        let artifacts = {};
+        let attachments = {};
+        let bans = {};
         
         let totalLogins = 0;
         const sections = ["Developers", "Mods", "Members"];
@@ -1144,42 +1207,211 @@
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function showModal(id) { document.getElementById(id).classList.add('active'); }
 
+        // Extract names from private chat ID (format: "user1_user2" or "user1-user2")
+        function getChatDisplayName(chatId) {
+            // Try splitting by common separators
+            const parts = chatId.split(/[_\-]/).filter(p => p.length > 0);
+            if (parts.length >= 2) {
+                return parts.join(' & ');
+            }
+            return chatId;
+        }
+
         // ==================== OVERVIEW ====================
         function renderOverview() {
             document.getElementById('totalLogins').textContent = totalLogins.toLocaleString();
             document.getElementById('allowedCount').textContent = Object.keys(allowedUsers).length;
             document.getElementById('pendingCount').textContent = Object.keys(pending).length;
-            document.getElementById('failedCount').textContent = Object.keys(failed).length;
+            // Count from both /failed and /failedLogins
+            const totalFailed = Object.keys(failed).length + Object.keys(failedLogins).length;
+            document.getElementById('failedCount').textContent = totalFailed;
             document.getElementById('gamesCount').textContent = Object.keys(games).length;
-            document.getElementById('chatCount').textContent = Object.keys(chatMessages).length;
+            // Count chat messages across all rooms
+            let totalChat = 0;
+            Object.values(chatRooms).forEach(room => {
+                if (room && room.messages) totalChat += Object.keys(room.messages).length;
+                else if (room && typeof room === 'object') {
+                    // maybe direct messages
+                    const keys = Object.keys(room);
+                    if (keys.length > 0 && typeof room[keys[0]] === 'object') totalChat += keys.length;
+                }
+            });
+            document.getElementById('chatCount').textContent = totalChat;
         }
 
         function renderActivityFeed() {
             const feed = document.getElementById('activityFeed');
+            const filterVal = document.getElementById('activityFilter') ? document.getElementById('activityFilter').value : 'all';
             const activities = [];
-            
-            Object.entries(failed).forEach(([key, data]) => {
-                if (typeof data === 'object' && data.username) {
-                    activities.push({
-                        user: data.username,
-                        text: `failed login (tried: "${data.triedPassword || 'empty'}")`,
-                        time: data.time
-                    });
-                }
-            });
 
-            activities.sort((a, b) => new Date(b.time || 0) - new Date(a.time || 0));
+            // Chat messages across all rooms
+            if (filterVal === 'all' || filterVal === 'chat') {
+                Object.entries(chatRooms).forEach(([roomName, roomData]) => {
+                    const msgs = (roomData && roomData.messages) ? roomData.messages : (roomData || {});
+                    Object.entries(msgs).forEach(([key, msg]) => {
+                        if (msg && msg.text) {
+                            activities.push({
+                                icon: '💬',
+                                iconBg: 'rgba(59,130,246,0.2)',
+                                user: msg.user || 'Unknown',
+                                text: `sent a message in <strong>${roomName}</strong>: "${(msg.text || '').slice(0, 60)}"`,
+                                time: msg.timestamp || 0,
+                                source: 'chat/' + roomName
+                            });
+                        }
+                    });
+                });
+            }
+
+            // Forum posts
+            if (filterVal === 'all' || filterVal === 'forum') {
+                Object.entries(forum.posts || {}).forEach(([key, post]) => {
+                    activities.push({
+                        icon: '📋',
+                        iconBg: 'rgba(139,92,246,0.2)',
+                        user: post.authorName || post.author || 'Unknown',
+                        text: `posted in forum: <strong>"${(post.title || '').slice(0, 50)}"</strong>`,
+                        time: post.timestamp || post.createdAt || 0,
+                        source: 'forum'
+                    });
+                });
+            }
+
+            // Analytics events
+            if (filterVal === 'all' || filterVal === 'analytics') {
+                Object.entries(analytics).forEach(([key, event]) => {
+                    if (event && typeof event === 'object') {
+                        activities.push({
+                            icon: '📊',
+                            iconBg: 'rgba(34,197,94,0.2)',
+                            user: event.user || event.userId || 'App',
+                            text: `analytics event: <strong>${event.event || event.action || event.type || key}</strong>`,
+                            time: event.timestamp || event.time || 0,
+                            source: 'analytics'
+                        });
+                    }
+                });
+            }
+
+            // Videos — comments & interactions
+            if (filterVal === 'all' || filterVal === 'videos') {
+                Object.entries(videos).forEach(([videoId, video]) => {
+                    if (video && video.comments) {
+                        Object.entries(video.comments).forEach(([cKey, comment]) => {
+                            activities.push({
+                                icon: '🎬',
+                                iconBg: 'rgba(236,72,153,0.2)',
+                                user: comment.user || 'Unknown',
+                                text: `commented on <strong>"${(video.title || 'a video').slice(0, 40)}"</strong>: "${(comment.text || '').slice(0, 50)}"`,
+                                time: comment.timestamp || 0,
+                                source: 'videos'
+                            });
+                        });
+                    }
+                    if (video && video.title) {
+                        // video uploaded/added event approximation
+                    }
+                });
+            }
+
+            // App usage changes
+            if (filterVal === 'all' || filterVal === 'appUsage') {
+                Object.entries(appUsage).forEach(([appName, count]) => {
+                    if (typeof count === 'number' && count > 0) {
+                        activities.push({
+                            icon: '📱',
+                            iconBg: 'rgba(245,158,11,0.2)',
+                            user: 'User',
+                            text: `opened app <strong>${appName}</strong> (total: ${count} times)`,
+                            time: 0,
+                            source: 'appUsage'
+                        });
+                    }
+                });
+            }
+
+            // Failed logins (/failedLogins new format)
+            if (filterVal === 'all' || filterVal === 'failed') {
+                Object.entries(failedLogins).forEach(([key, data]) => {
+                    if (data && data.user) {
+                        activities.push({
+                            icon: '🚨',
+                            iconBg: 'rgba(239,68,68,0.2)',
+                            user: data.user,
+                            text: `failed login attempt (type: <strong>${data.type || 'unknown'}</strong>) from ${data.deviceName || 'Unknown Device'}`,
+                            time: data.time || 0,
+                            source: 'failedLogins'
+                        });
+                    }
+                });
+                // Also old /failed format
+                Object.entries(failed).forEach(([key, data]) => {
+                    if (data && data.username) {
+                        activities.push({
+                            icon: '🚨',
+                            iconBg: 'rgba(239,68,68,0.2)',
+                            user: data.username,
+                            text: `failed login (tried: "<strong>${data.triedPassword || 'empty'}</strong>")`,
+                            time: data.time || 0,
+                            source: 'failed'
+                        });
+                    }
+                });
+            }
+
+            // LPC Likes
+            if (filterVal === 'all' || filterVal === 'likes') {
+                Object.entries(likes).forEach(([key, like]) => {
+                    activities.push({
+                        icon: '💕',
+                        iconBg: 'rgba(236,72,153,0.2)',
+                        user: like.from || like.user || like.liker || 'Unknown',
+                        text: `liked <strong>${like.to || like.crush || like.liked || 'someone'}</strong> on LPC`,
+                        time: like.timestamp || like.time || 0,
+                        source: 'likes'
+                    });
+                });
+            }
+
+            // News posts
+            if (filterVal === 'all' || filterVal === 'news') {
+                Object.entries(news).forEach(([dateKey, posts]) => {
+                    if (typeof posts === 'object' && !Array.isArray(posts)) {
+                        Object.entries(posts).forEach(([key, post]) => {
+                            activities.push({
+                                icon: '📰',
+                                iconBg: 'rgba(59,130,246,0.15)',
+                                user: post.author || 'anon',
+                                text: `posted news on <strong>${dateKey}</strong>: "${(post.text || '').slice(0, 50)}"`,
+                                time: 0,
+                                source: 'news'
+                            });
+                        });
+                    }
+                });
+            }
+
+            // Sort by time desc, put 0-time items at end
+            activities.sort((a, b) => {
+                const ta = a.time ? new Date(a.time).getTime() : 0;
+                const tb = b.time ? new Date(b.time).getTime() : 0;
+                return tb - ta;
+            });
             
             if (activities.length === 0) {
-                feed.innerHTML = '<div class="empty-state">No failed login attempts</div>';
+                feed.innerHTML = '<div class="empty-state">No activity recorded yet</div>';
                 return;
             }
             
-            feed.innerHTML = activities.slice(0, 30).map(a => `
+            feed.innerHTML = activities.slice(0, 50).map(a => `
                 <div class="feed-item">
+                    <div class="feed-icon" style="background:${a.iconBg}">${a.icon}</div>
                     <div class="feed-content">
                         <div class="feed-text"><strong>${a.user}</strong> ${a.text}</div>
-                        <div class="feed-time">${timeAgo(a.time)}</div>
+                        <div class="flex gap-2 items-center" style="margin-top:4px;">
+                            <span class="feed-source">${a.source}</span>
+                            ${a.time ? `<span class="feed-time">${timeAgo(a.time)}</span>` : ''}
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -1200,6 +1432,9 @@
             Object.values(failed).forEach(f => {
                 if (f && f.username) failedPerUser[f.username] = (failedPerUser[f.username] || 0) + 1;
             });
+            Object.values(failedLogins).forEach(f => {
+                if (f && f.user) failedPerUser[f.user] = (failedPerUser[f.user] || 0) + 1;
+            });
 
             const sortedNames = Array.from(allUsers).sort((a, b) => (logins[b] || 0) - (logins[a] || 0));
             const q = filter.toLowerCase();
@@ -1214,7 +1449,7 @@
                 const c = logins[n] || 0;
                 const isAllowed = !!allowedUsers[n];
                 const isPending = !!pending[n];
-                const failedCount = failedPerUser[n] || 0;
+                const fc = failedPerUser[n] || 0;
 
                 tbody.innerHTML += `
                     <tr>
@@ -1222,7 +1457,7 @@
                         <td>${c}</td>
                         <td>${isAllowed ? '<span class="badge badge-success">✓ Allowed</span>' : '<span class="badge badge-danger">✗ Not Allowed</span>'}</td>
                         <td>${isPending ? '<span class="badge badge-warning">Pending</span>' : '—'}</td>
-                        <td>${failedCount > 0 ? `<span class="badge badge-danger">${failedCount}</span>` : '0'}</td>
+                        <td>${fc > 0 ? `<span class="badge badge-danger">${fc}</span>` : '0'}</td>
                         <td>
                             <div class="flex gap-2">
                                 ${isAllowed 
@@ -1259,7 +1494,7 @@
             a.click();
         });
 
-        // ==================== APP USAGE (FIXED - direct keys) ====================
+        // ==================== APP USAGE ====================
         function renderAppUsage() {
             const grid = document.getElementById('appUsageGrid');
             const entries = Object.entries(appUsage).sort((a, b) => b[1] - a[1]);
@@ -1281,15 +1516,46 @@
             if (confirm('Reset ALL app usage counts?')) db.ref('appUsage').remove();
         }
 
-        // ==================== CHAT (FIXED - /chat/messages with role) ====================
+        // ==================== CHAT (multi-room) ====================
+        function renderChatRoomTabs() {
+            const tabsEl = document.getElementById('chatRoomTabs');
+            const rooms = Object.keys(chatRooms);
+            if (rooms.length === 0) {
+                tabsEl.innerHTML = '<span class="text-muted text-sm">No rooms found</span>';
+                return;
+            }
+            if (!currentChatRoom || !chatRooms[currentChatRoom]) {
+                currentChatRoom = rooms[0];
+            }
+            tabsEl.innerHTML = rooms.map(r => `
+                <button class="room-tab ${r === currentChatRoom ? 'active' : ''}" onclick="selectChatRoom('${r}')">${r}</button>
+            `).join('');
+        }
+        function selectChatRoom(roomName) {
+            currentChatRoom = roomName;
+            renderChatRoomTabs();
+            renderChat();
+        }
         function renderChat() {
             const feed = document.getElementById('chatFeed');
-            const entries = Object.entries(chatMessages).sort((a, b) => {
-                return (b[1].timestamp || 0) - (a[1].timestamp || 0);
-            });
+            if (!currentChatRoom) {
+                feed.innerHTML = '<div class="empty-state">No chat rooms found</div>';
+                return;
+            }
+            const roomData = chatRooms[currentChatRoom];
+            let messages = {};
+            if (roomData && roomData.messages) messages = roomData.messages;
+            else if (roomData && typeof roomData === 'object') {
+                // check if it's directly messages
+                const keys = Object.keys(roomData);
+                if (keys.length > 0 && typeof roomData[keys[0]] === 'object' && roomData[keys[0]].text !== undefined) {
+                    messages = roomData;
+                }
+            }
+            const entries = Object.entries(messages).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
             
             if (entries.length === 0) {
-                feed.innerHTML = '<div class="empty-state">No chat messages</div>';
+                feed.innerHTML = '<div class="empty-state">No messages in this room</div>';
                 return;
             }
             
@@ -1298,7 +1564,7 @@
                     <div class="chat-sender">
                         ${msg.user || 'Unknown'}
                         <span class="chat-role">${msg.role || 'Member'}</span>
-                        <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="deleteChat('${key}')">Delete</button>
+                        <button class="btn btn-danger btn-sm" style="margin-left:auto;" onclick="deleteChat('${currentChatRoom}', '${key}')">Delete</button>
                     </div>
                     <div class="chat-text">${msg.text || ''}</div>
                     ${msg.attachmentId ? `<div class="text-sm text-muted">📎 Attachment: ${msg.attachmentId}</div>` : ''}
@@ -1306,11 +1572,18 @@
                 </div>
             `).join('');
         }
-        function deleteChat(key) {
-            db.ref('chat/messages/' + key).remove();
+        function deleteChat(room, key) {
+            db.ref('chat/' + room + '/messages/' + key).remove().catch(() => {
+                db.ref('chat/' + room + '/' + key).remove();
+            });
         }
         function clearAllChat() {
-            if (confirm('Delete ALL chat messages?')) db.ref('chat/messages').remove();
+            if (!currentChatRoom) return;
+            if (confirm('Delete ALL messages in ' + currentChatRoom + '?')) {
+                db.ref('chat/' + currentChatRoom + '/messages').remove().catch(() => {
+                    db.ref('chat/' + currentChatRoom).remove();
+                });
+            }
         }
 
         // ==================== PRIVATE CHATS ====================
@@ -1319,22 +1592,29 @@
             const entries = Object.entries(privateChats);
             
             if (entries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="2" class="empty-state">No private chats</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No private chats</td></tr>';
                 return;
             }
             
-            tbody.innerHTML = entries.map(([chatId, data]) => `
-                <tr>
-                    <td class="truncate" style="max-width:200px;"><code>${chatId}</code></td>
-                    <td>
-                        <button class="btn btn-secondary btn-sm" onclick="viewPrivateChat('${chatId}')">View</button>
-                        <button class="btn btn-danger btn-sm" onclick="deletePrivateChat('${chatId}')">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = entries.map(([chatId, data]) => {
+                const displayName = getChatDisplayName(chatId);
+                const msgCount = data && data.messages ? Object.keys(data.messages).length : 0;
+                return `
+                    <tr>
+                        <td><strong>${displayName}</strong></td>
+                        <td><span class="badge badge-info">${msgCount} msgs</span></td>
+                        <td>
+                            <button class="btn btn-secondary btn-sm" onclick="viewPrivateChat('${chatId}')">View</button>
+                            <button class="btn btn-danger btn-sm" onclick="deletePrivateChat('${chatId}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
         function viewPrivateChat(chatId) {
             const container = document.getElementById('privateChatMessages');
+            const title = document.getElementById('privateChatTitle');
+            title.textContent = '💬 ' + getChatDisplayName(chatId);
             const chatData = privateChats[chatId];
             
             if (!chatData || !chatData.messages) {
@@ -1358,9 +1638,81 @@
             if (confirm('Delete this private chat?')) db.ref('private_chats/' + chatId).remove();
         }
 
-        // ==================== FORUM (FIXED - subforums, posts, auditLogs) ====================
+        // ==================== FAILED LOGINS PAGE (NEW) ====================
+        function renderFailedLoginsPage(filter = '') {
+            const tbody = document.querySelector('#failedLoginsPageTable tbody');
+            const q = (filter || '').toLowerCase();
+
+            // Combine both /failedLogins (new format) and /failed (old format)
+            const entries = [];
+
+            Object.entries(failedLogins).forEach(([key, data]) => {
+                if (!data) return;
+                entries.push({
+                    key,
+                    source: 'failedLogins',
+                    user: data.user || '—',
+                    type: data.type || '—',
+                    deviceName: data.deviceName || 'Unknown Device',
+                    deviceId: data.deviceId || '—',
+                    time: data.time || null,
+                    userAgent: data.userAgent || '—'
+                });
+            });
+
+            Object.entries(failed).forEach(([key, data]) => {
+                if (!data || typeof data !== 'object') return;
+                entries.push({
+                    key,
+                    source: 'failed',
+                    user: data.username || '—',
+                    type: data.triedPassword ? 'password' : '—',
+                    deviceName: data.deviceName || '—',
+                    deviceId: data.deviceId || '—',
+                    time: data.time || null,
+                    userAgent: data.userAgent || '—'
+                });
+            });
+
+            entries.sort((a, b) => new Date(b.time || 0) - new Date(a.time || 0));
+            const filtered = q ? entries.filter(e => e.user.toLowerCase().includes(q)) : entries;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No failed login attempts</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(e => `
+                <tr>
+                    <td><strong>${e.user}</strong></td>
+                    <td><span class="badge ${e.type === 'pin' ? 'badge-warning' : e.type === 'password' ? 'badge-danger' : 'badge-muted'}">${e.type}</span></td>
+                    <td>${e.deviceName}</td>
+                    <td><code style="font-size:10px;">${e.deviceId.slice(0, 24)}${e.deviceId.length > 24 ? '…' : ''}</code></td>
+                    <td class="text-muted text-sm">${prettyTime(e.time)}</td>
+                    <td><span class="useragent-text" title="${e.userAgent}">${e.userAgent.slice(0, 60)}${e.userAgent.length > 60 ? '…' : ''}</span></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="deleteFailedLoginEntry('${e.source}', '${e.key}')">Delete</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteFailedLoginEntry(source, key) {
+            db.ref(source + '/' + key).remove();
+        }
+        function clearAllFailedLogins() {
+            if (confirm('Clear ALL failed logins?')) {
+                db.ref('failedLogins').remove();
+                db.ref('failed').remove();
+            }
+        }
+
+        // Security page old failed logins table (kept for security tab)
+        function renderFailedLogins() {
+            // This now just re-uses the page render for the security section if needed
+            renderFailedLoginsPage();
+        }
+
+        // ==================== FORUM ====================
         function renderForum() {
-            // Posts
             const postsTbody = document.querySelector('#forumPostsTable tbody');
             const posts = forum.posts || {};
             const postEntries = Object.entries(posts);
@@ -1379,7 +1731,6 @@
                 `).join('');
             }
             
-            // Subforums
             const subTbody = document.querySelector('#subforumsTable tbody');
             const subs = forum.subforums || {};
             const subEntries = Object.entries(subs);
@@ -1396,7 +1747,6 @@
                 `).join('');
             }
             
-            // Audit logs
             const auditTbody = document.querySelector('#forumAuditTable tbody');
             const logs = forum.auditLogs || {};
             const logEntries = Object.entries(logs).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
@@ -1421,9 +1771,7 @@
         // ==================== LPC LIKES ====================
         function renderLikes() {
             const tbody = document.querySelector('#likesTable tbody');
-            const entries = Object.entries(likes).sort((a, b) => {
-                return (b[1].timestamp || 0) - (a[1].timestamp || 0);
-            });
+            const entries = Object.entries(likes).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
             
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No likes recorded</td></tr>';
@@ -1442,11 +1790,9 @@
         function deleteLike(key) { db.ref('likes/' + key).remove(); }
         function clearAllLikes() { if (confirm('Delete ALL likes?')) db.ref('likes').remove(); }
 
-        // ==================== NEWS (FIXED - organized by date with dropdowns) ====================
+        // ==================== NEWS ====================
         function renderNews() {
             const container = document.getElementById('newsContainer');
-            
-            // news is organized by date keys like "2025-12-09"
             const dateKeys = Object.keys(news).filter(k => k.match(/^\d{4}-\d{2}-\d{2}$/)).sort().reverse();
             
             if (dateKeys.length === 0) {
@@ -1497,31 +1843,21 @@
             const content = document.getElementById('newsContentInput').value.trim();
             const author = document.getElementById('newsAuthorInput').value.trim() || 'anon';
             if (!dateKey || !content) return alert('Date and content required');
-            
             const now = new Date();
             const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            
             const key = db.ref('news/' + dateKey).push().key;
-            db.ref('news/' + dateKey + '/' + key).set({ 
-                text: content, 
-                author, 
-                time,
-                pinned: false
-            }).then(() => {
+            db.ref('news/' + dateKey + '/' + key).set({ text: content, author, time, pinned: false }).then(() => {
                 closeModal('newsModal');
                 document.getElementById('newsContentInput').value = '';
                 document.getElementById('newsAuthorInput').value = '';
             });
         }
-        function deleteNews(dateKey, postKey) {
-            db.ref('news/' + dateKey + '/' + postKey).remove();
-        }
+        function deleteNews(dateKey, postKey) { db.ref('news/' + dateKey + '/' + postKey).remove(); }
 
         // ==================== POLLS ====================
         function renderPolls() {
             const tbody = document.querySelector('#pollsTable tbody');
             const entries = Object.entries(polls);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No polls</td></tr>';
             } else {
@@ -1546,7 +1882,6 @@
         function renderPollVotes() {
             const tbody = document.querySelector('#pollVotesTable tbody');
             const entries = Object.entries(pollVotes);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No votes</td></tr>';
             } else {
@@ -1566,12 +1901,10 @@
         function renderUserPhones() {
             const tbody = document.querySelector('#userPhonesTable tbody');
             const entries = Object.entries(userPhones);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No phone numbers</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = entries.map(([user, phone]) => {
                 const displayPhone = isAdminVerified ? phone : '••••••••';
                 return `
@@ -1591,12 +1924,10 @@
         function renderSessions() {
             const tbody = document.querySelector('#sessionsTable tbody');
             const entries = Object.entries(sessions);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No sessions</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = entries.map(([key, session]) => `
                 <tr>
                     <td class="truncate" style="max-width:100px;"><code>${key}</code></td>
@@ -1611,12 +1942,10 @@
         function renderNotifications() {
             const tbody = document.querySelector('#notificationsTable tbody');
             const entries = Object.entries(notifications).sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No notifications</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = entries.map(([key, notif]) => `
                 <tr>
                     <td><strong>${notif.to || notif.user || 'All'}</strong></td>
@@ -1645,24 +1974,20 @@
         function deleteNotification(key) { db.ref('notifications/' + key).remove(); }
         function clearAllNotifications() { if (confirm('Delete ALL notifications?')) db.ref('notifications').remove(); }
 
-        // ==================== MODERATION (FIXED - chat settings) ====================
+        // ==================== MODERATION ====================
         function renderModeration() {
-            // Settings
             document.getElementById('modCommand').value = moderation.command || '!mod';
             document.getElementById('modText').value = moderation.text || '';
             document.getElementById('chatPaused').value = moderation.paused ? 'true' : 'false';
             document.getElementById('pinnedMessage').value = moderation.pinned || '';
             
-            // Spam settings
             const settings = moderation.settings || {};
             document.getElementById('spamThreshold').value = settings.threshold || 3;
             document.getElementById('spamWindowMs').value = settings.windowMs || 60000;
             document.getElementById('spamDurationMs').value = settings.durationMs || 36060000;
             
-            // Regex list
             const regexList = document.getElementById('regexList');
             const regexEntries = Object.entries(moderation.regex || {});
-            
             if (regexEntries.length === 0) {
                 regexList.innerHTML = '<div class="empty-state">No blocked words</div>';
             } else {
@@ -1674,10 +1999,8 @@
                 `).join('');
             }
             
-            // Mod chat
             const modChatFeed = document.getElementById('modChatFeed');
             const modChatEntries = Object.entries(moderation.modChat || {}).sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
-            
             if (modChatEntries.length === 0) {
                 modChatFeed.innerHTML = '<div class="empty-state">No mod chat messages</div>';
             } else {
@@ -1692,27 +2015,20 @@
         }
         
         function saveModerationSettings() {
-            const command = document.getElementById('modCommand').value;
-            const text = document.getElementById('modText').value;
-            const paused = document.getElementById('chatPaused').value === 'true';
-            const pinned = document.getElementById('pinnedMessage').value;
-            
-            db.ref('moderation/command').set(command);
-            db.ref('moderation/text').set(text);
-            db.ref('moderation/paused').set(paused);
-            db.ref('moderation/pinned').set(pinned);
+            db.ref('moderation/command').set(document.getElementById('modCommand').value);
+            db.ref('moderation/text').set(document.getElementById('modText').value);
+            db.ref('moderation/paused').set(document.getElementById('chatPaused').value === 'true');
+            db.ref('moderation/pinned').set(document.getElementById('pinnedMessage').value);
             alert('Settings saved!');
         }
-        
         function saveSpamSettings() {
-            const threshold = parseInt(document.getElementById('spamThreshold').value) || 3;
-            const windowMs = parseInt(document.getElementById('spamWindowMs').value) || 60000;
-            const durationMs = parseInt(document.getElementById('spamDurationMs').value) || 36060000;
-            
-            db.ref('moderation/settings').set({ threshold, windowMs, durationMs });
+            db.ref('moderation/settings').set({
+                threshold: parseInt(document.getElementById('spamThreshold').value) || 3,
+                windowMs: parseInt(document.getElementById('spamWindowMs').value) || 60000,
+                durationMs: parseInt(document.getElementById('spamDurationMs').value) || 36060000
+            });
             alert('Spam settings saved!');
         }
-        
         function addRegex() {
             const pattern = document.getElementById('newRegexInput').value.trim();
             if (!pattern) return alert('Enter a pattern');
@@ -1720,14 +2036,8 @@
                 document.getElementById('newRegexInput').value = '';
             });
         }
-        
-        function deleteRegex(key) {
-            db.ref('moderation/regex/' + key).remove();
-        }
-        
-        function clearModChat() {
-            if (confirm('Clear all mod chat?')) db.ref('moderation/modChat').remove();
-        }
+        function deleteRegex(key) { db.ref('moderation/regex/' + key).remove(); }
+        function clearModChat() { if (confirm('Clear all mod chat?')) db.ref('moderation/modChat').remove(); }
 
         // ==================== SECURITY ====================
         function verifyAdminCode() {
@@ -1747,12 +2057,10 @@
         function renderUserPasswords() {
             const tbody = document.querySelector('#userPasswordsTable tbody');
             const entries = Object.entries(userPasswords);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No passwords stored</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = entries.map(([user, pass]) => {
                 const displayPass = isAdminVerified ? pass : '••••••••••';
                 return `
@@ -1771,12 +2079,10 @@
         function renderUserPins() {
             const tbody = document.querySelector('#userPinsTable tbody');
             const entries = Object.entries(userPins);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No PINs stored</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = entries.map(([user, pin]) => {
                 const displayPin = isAdminVerified ? pin : '••••';
                 return `
@@ -1800,58 +2106,27 @@
             document.getElementById('revealCodeInput').value = '';
             showModal('viewPasswordModal');
         }
-        
         function revealPassword() {
             const code = document.getElementById('revealCodeInput').value;
-            if (code !== ADMIN_CODE) {
-                alert('Invalid admin code!');
-                return;
-            }
-            
+            if (code !== ADMIN_CODE) { alert('Invalid admin code!'); return; }
             let value = '';
             if (currentViewType === 'password') value = userPasswords[currentViewUser] || 'Not found';
             else if (currentViewType === 'pin') value = userPins[currentViewUser] || 'Not found';
             else if (currentViewType === 'phone') value = userPhones[currentViewUser] || 'Not found';
-            
             document.getElementById('revealedPasswordText').textContent = value;
             document.getElementById('revealedPassword').style.display = 'block';
         }
-        
         function resetUserPassword(user) { if (confirm(`Reset password for ${user}?`)) db.ref('userPasswords/' + user).remove(); }
         function resetUserPin(user) { if (confirm(`Reset PIN for ${user}?`)) db.ref('userPins/' + user).remove(); }
-        
-        function renderFailedLogins() {
-            const tbody = document.querySelector('#failedLoginsTable tbody');
-            const entries = Object.entries(failed).filter(([k, v]) => typeof v === 'object' && v.username).sort((a, b) => new Date(b[1].time || 0) - new Date(a[1].time || 0));
-            
-            if (entries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No failed login attempts</td></tr>';
-                return;
-            }
-            
-            tbody.innerHTML = entries.map(([key, data]) => `
-                <tr>
-                    <td><strong>${data.username}</strong></td>
-                    <td><code>${data.triedPassword || '(empty)'}</code></td>
-                    <td class="text-muted text-sm">${prettyTime(data.time)}</td>
-                    <td><button class="btn btn-danger btn-sm" onclick="deleteFailedLogin('${key}')">Delete</button></td>
-                </tr>
-            `).join('');
-        }
-        
-        function deleteFailedLogin(key) { db.ref('failed/' + key).remove(); }
-        function clearAllFailedLogins() { if (confirm('Clear ALL failed logins?')) db.ref('failed').remove(); }
 
         // ==================== MEMBERS ====================
         function renderMembers() {
             const tbody = document.querySelector('#membersTable tbody');
             const entries = Object.entries(members);
-            
             if (entries.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No members</td></tr>';
                 return;
             }
-            
             tbody.innerHTML = entries.map(([key, member]) => {
                 if (typeof member === 'string') member = { name: member, section: 'Members' };
                 const roleColor = member.section === 'Developers' ? 'badge-success' : member.section === 'Mods' ? 'badge-warning' : 'badge-info';
@@ -1965,11 +2240,12 @@
                 db.ref('allowedUsers').once('value'),
                 db.ref('pendingAccounts').once('value'),
                 db.ref('failed').once('value'),
+                db.ref('failedLogins').once('value'),
                 db.ref('members').once('value'),
                 db.ref('games').once('value'),
                 db.ref('helpResponses').once('value'),
                 db.ref('appUsage').once('value'),
-                db.ref('chat/messages').once('value'),
+                db.ref('chat').once('value'),
                 db.ref('private_chats').once('value'),
                 db.ref('forum').once('value'),
                 db.ref('likes').once('value'),
@@ -1981,39 +2257,59 @@
                 db.ref('sessions').once('value'),
                 db.ref('userPhones').once('value'),
                 db.ref('userPasswords').once('value'),
-                db.ref('userPins').once('value')
+                db.ref('userPins').once('value'),
+                db.ref('analytics').once('value'),
+                db.ref('videos').once('value'),
+                db.ref('artifacts').once('value'),
+                db.ref('attachments').once('value'),
+                db.ref('bans').once('value'),
             ]).then(snaps => {
                 logins = snaps[0].val() || {};
                 totalLogins = Object.values(logins).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
                 allowedUsers = snaps[1].val() || {};
                 pending = snaps[2].val() || {};
                 failed = snaps[3].val() || {};
-                members = snaps[4].val() || {};
-                games = snaps[5].val() || {};
-                helpResponses = snaps[6].val() || {};
-                appUsage = snaps[7].val() || {};
-                chatMessages = snaps[8].val() || {};
-                privateChats = snaps[9].val() || {};
-                forum = snaps[10].val() || {};
-                likes = snaps[11].val() || {};
-                news = snaps[12].val() || {};
-                polls = snaps[13].val() || {};
-                pollVotes = snaps[14].val() || {};
-                notifications = snaps[15].val() || {};
-                moderation = snaps[16].val() || {};
-                sessions = snaps[17].val() || {};
-                userPhones = snaps[18].val() || {};
-                userPasswords = snaps[19].val() || {};
-                userPins = snaps[20].val() || {};
+                failedLogins = snaps[4].val() || {};
+                members = snaps[5].val() || {};
+                games = snaps[6].val() || {};
+                helpResponses = snaps[7].val() || {};
+                appUsage = snaps[8].val() || {};
+                // chat is now the whole /chat node — rooms are direct children
+                const chatVal = snaps[9].val() || {};
+                // Filter out non-room keys; rooms have messages sub-key or are objects of message objects
+                chatRooms = {};
+                Object.entries(chatVal).forEach(([key, val]) => {
+                    if (typeof val === 'object' && val !== null) {
+                        chatRooms[key] = val;
+                    }
+                });
+                privateChats = snaps[10].val() || {};
+                forum = snaps[11].val() || {};
+                likes = snaps[12].val() || {};
+                news = snaps[13].val() || {};
+                polls = snaps[14].val() || {};
+                pollVotes = snaps[15].val() || {};
+                notifications = snaps[16].val() || {};
+                moderation = snaps[17].val() || {};
+                sessions = snaps[18].val() || {};
+                userPhones = snaps[19].val() || {};
+                userPasswords = snaps[20].val() || {};
+                userPins = snaps[21].val() || {};
+                analytics = snaps[22].val() || {};
+                videos = snaps[23].val() || {};
+                artifacts = snaps[24].val() || {};
+                attachments = snaps[25].val() || {};
+                bans = snaps[26].val() || {};
 
                 updateLastFetch();
-                console.log('Data loaded');
+                console.log('Data loaded. Chat rooms:', Object.keys(chatRooms));
 
                 renderOverview();
                 renderActivityFeed();
                 renderUsers();
                 renderMembers();
                 renderAppUsage();
+                renderChatRoomTabs();
                 renderChat();
                 renderPrivateChats();
                 renderForum();
@@ -2027,7 +2323,7 @@
                 renderSessions();
                 renderUserPasswords();
                 renderUserPins();
-                renderFailedLogins();
+                renderFailedLoginsPage();
                 renderGames();
                 renderHelp();
             }).catch(err => console.error('Error:', err));
@@ -2038,13 +2334,24 @@
             db.ref('logins').on('value', s => { logins = s.val() || {}; totalLogins = Object.values(logins).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0); renderOverview(); renderUsers(document.getElementById('userSearch').value); updateLastFetch(); });
             db.ref('allowedUsers').on('value', s => { allowedUsers = s.val() || {}; renderOverview(); renderUsers(document.getElementById('userSearch').value); });
             db.ref('pendingAccounts').on('value', s => { pending = s.val() || {}; renderOverview(); renderUsers(document.getElementById('userSearch').value); });
-            db.ref('failed').on('value', s => { failed = s.val() || {}; renderOverview(); renderActivityFeed(); renderFailedLogins(); });
-            db.ref('appUsage').on('value', s => { appUsage = s.val() || {}; renderAppUsage(); });
-            db.ref('chat/messages').on('value', s => { chatMessages = s.val() || {}; renderChat(); renderOverview(); });
+            db.ref('failed').on('value', s => { failed = s.val() || {}; renderOverview(); renderActivityFeed(); renderFailedLoginsPage(); });
+            db.ref('failedLogins').on('value', s => { failedLogins = s.val() || {}; renderOverview(); renderActivityFeed(); renderFailedLoginsPage(); });
+            db.ref('appUsage').on('value', s => { appUsage = s.val() || {}; renderAppUsage(); renderActivityFeed(); });
+            db.ref('chat').on('value', s => {
+                const chatVal = s.val() || {};
+                chatRooms = {};
+                Object.entries(chatVal).forEach(([key, val]) => {
+                    if (typeof val === 'object' && val !== null) chatRooms[key] = val;
+                });
+                renderChatRoomTabs();
+                renderChat();
+                renderOverview();
+                renderActivityFeed();
+            });
             db.ref('private_chats').on('value', s => { privateChats = s.val() || {}; renderPrivateChats(); });
-            db.ref('forum').on('value', s => { forum = s.val() || {}; renderForum(); });
-            db.ref('likes').on('value', s => { likes = s.val() || {}; renderLikes(); });
-            db.ref('news').on('value', s => { news = s.val() || {}; renderNews(); });
+            db.ref('forum').on('value', s => { forum = s.val() || {}; renderForum(); renderActivityFeed(); });
+            db.ref('likes').on('value', s => { likes = s.val() || {}; renderLikes(); renderActivityFeed(); });
+            db.ref('news').on('value', s => { news = s.val() || {}; renderNews(); renderActivityFeed(); });
             db.ref('polls').on('value', s => { polls = s.val() || {}; renderPolls(); });
             db.ref('pollVotes').on('value', s => { pollVotes = s.val() || {}; renderPollVotes(); });
             db.ref('notifications').on('value', s => { notifications = s.val() || {}; renderNotifications(); });
@@ -2056,6 +2363,8 @@
             db.ref('members').on('value', s => { members = s.val() || {}; renderMembers(); });
             db.ref('games').on('value', s => { games = s.val() || {}; renderGames(); renderOverview(); });
             db.ref('helpResponses').on('value', s => { helpResponses = s.val() || {}; renderHelp(); });
+            db.ref('analytics').on('value', s => { analytics = s.val() || {}; renderActivityFeed(); });
+            db.ref('videos').on('value', s => { videos = s.val() || {}; renderActivityFeed(); });
         }
 
         loadData();
