@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
+    <link rel="stylesheet" href__="rightclick.css">
+    <link rel="stylesheet" href__="custom-cursor.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Sign in – Google Accounts</title>
@@ -232,26 +232,67 @@
         .device-info-value { color: var(--text-color); font-weight: 500; }
         .warning-text { color: #d93025; font-size: 12px; margin-top: 10px; }
         
-        /* Dark Mode Toggle */
-        #darkModeToggle {
+        /* ── Theme Toggle ── */
+        #themeToggleWrap {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--container-bg);
-            border: 2px solid var(--input-border);
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            transition: all 0.3s;
+            bottom: 24px;
+            right: 24px;
             z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--container-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 999px;
+            padding: 6px 14px 6px 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
-        #darkModeToggle:hover { transform: scale(1.1); }
+        #themeToggleWrap:hover {
+            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
+        }
+        /* The sliding track */
+        .toggle-track {
+            width: 36px;
+            height: 20px;
+            border-radius: 999px;
+            background: #c8d6e5;
+            position: relative;
+            transition: background 0.3s;
+            flex-shrink: 0;
+        }
+        body.dark-mode .toggle-track {
+            background: #1a73e8;
+        }
+        /* The knob */
+        .toggle-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            line-height: 1;
+        }
+        body.dark-mode .toggle-knob {
+            transform: translateX(16px);
+        }
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: color 0.3s;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -353,7 +394,13 @@
 
 <p class="sign-out-link" id="signOutLink" onclick="logout()" style="position: absolute; bottom: 20px;">Sign Out</p>
 
-<div id="darkModeToggle" onclick="toggleDarkMode()">🌙</div>
+<!-- ── Integrated Theme Toggle ── -->
+<div id="themeToggleWrap" onclick="toggleDarkMode()" title="Toggle theme">
+    <div class="toggle-track">
+        <div class="toggle-knob" id="toggleKnob">☀️</div>
+    </div>
+    <span class="toggle-label" id="toggleLabel">Light</span>
+</div>
 
 <div id="videoOverlay">
     <video id="combinedVideo" playsinline preload="auto"></video>
@@ -410,30 +457,37 @@
         };
     }
 
+    // ── Track a failed login attempt to Firebase ──
+    function trackFailedLogin(username, type) {
+        const info = getDeviceInfo();
+        db.ref('failedLogins').push({
+            user: username,
+            type: type,           // 'password' | 'pin'
+            deviceName: info.deviceName,
+            deviceId: info.deviceId,
+            userAgent: info.userAgent,
+            time: new Date().toISOString()
+        });
+    }
+
     // Check if another device is active
     async function checkActiveSession(username) {
         const snapshot = await db.ref('activeSessions/' + username).once('value');
         const session = snapshot.val();
         
         if (session && session.deviceId !== getDeviceId()) {
-            // Check if session is still valid (active within last 30 minutes)
             const lastActive = new Date(session.lastActive);
             const now = new Date();
             const diffMinutes = (now - lastActive) / (1000 * 60);
-            
-            if (diffMinutes < 30) {
-                return session; // Another device is active
-            }
+            if (diffMinutes < 30) return session;
         }
-        return null; // No conflict
+        return null;
     }
 
     // Register this device as active session
     async function registerSession(username) {
         const deviceInfo = getDeviceInfo();
         await db.ref('activeSessions/' + username).set(deviceInfo);
-        
-        // Start heartbeat to keep session alive
         startSessionHeartbeat(username);
     }
 
@@ -445,15 +499,13 @@
             const currentSession = await db.ref('activeSessions/' + username).once('value');
             const session = currentSession.val();
             
-            // Only update if this is still our session
             if (session && session.deviceId === getDeviceId()) {
                 await db.ref('activeSessions/' + username + '/lastActive').set(new Date().toISOString());
             } else if (session && session.deviceId !== getDeviceId()) {
-                // We've been logged out by another device
                 alert('You have been signed out because another device signed in.');
                 logout();
             }
-        }, 60000); // Every minute
+        }, 60000);
     }
 
     // Clear session on logout
@@ -461,8 +513,6 @@
         if (sessionCheckInterval) clearInterval(sessionCheckInterval);
         const currentSession = await db.ref('activeSessions/' + username).once('value');
         const session = currentSession.val();
-        
-        // Only clear if it's our session
         if (session && session.deviceId === getDeviceId()) {
             await db.ref('activeSessions/' + username).remove();
         }
@@ -473,7 +523,6 @@
         document.getElementById('deviceModal').style.display = 'block';
         document.getElementById('deviceOverlay').style.display = 'block';
         document.getElementById('activeDeviceName').innerText = activeSession.deviceName || 'Unknown';
-        
         const lastActive = new Date(activeSession.lastActive);
         document.getElementById('activeDeviceTime').innerText = lastActive.toLocaleString();
     }
@@ -485,17 +534,21 @@
 
     async function forceLogin() {
         closeDeviceModal();
-        // Force register this device, kicking out the other
         await registerSession(currentUser);
         proceedWithLogin();
     }
 
-    // Dark Mode
+    // ── Dark Mode ──
     function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('darkMode', isDark);
-        document.getElementById('darkModeToggle').innerText = isDark ? '☀️' : '🌙';
+        updateToggleUI(isDark);
+    }
+
+    function updateToggleUI(isDark) {
+        document.getElementById('toggleKnob').textContent = isDark ? '🌙' : '☀️';
+        document.getElementById('toggleLabel').textContent = isDark ? 'Dark' : 'Light';
     }
 
     function hideAllSteps() {
@@ -517,10 +570,11 @@
         currentDeviceId = getDeviceId();
         
         // Dark mode preference
-        if (localStorage.getItem('darkMode') === 'true') {
+        const isDark = localStorage.getItem('darkMode') === 'true';
+        if (isDark) {
             document.body.classList.add('dark-mode');
-            document.getElementById('darkModeToggle').innerText = '☀️';
         }
+        updateToggleUI(isDark);
         
         if (!localStorage.getItem('newfile')) {
             document.getElementById('updatePopup').style.display = 'block';
@@ -544,15 +598,11 @@
     }
 
     async function loginSuccess() {
-        // Check for active session on another device
         const activeSession = await checkActiveSession(currentUser);
-        
         if (activeSession) {
             showDeviceConflict(activeSession);
             return;
         }
-        
-        // Register this device
         await registerSession(currentUser);
         proceedWithLogin();
     }
@@ -579,7 +629,6 @@
                         finalAction();
                     }
                 });
-
             } else {
                 showPhoneStep();
             }
@@ -638,9 +687,15 @@
         const pin = document.getElementById('pin-input').value.trim();
         db.ref('userPins/' + currentUser).once('value').then(snap => {
             const savedPin = snap.val();
-            if (!savedPin) { showSetPin(); }
-            else if (pin === savedPin) { loginSuccess(); }
-            else { document.getElementById('pin-error').innerText = 'Incorrect PIN.'; }
+            if (!savedPin) {
+                showSetPin();
+            } else if (pin === savedPin) {
+                loginSuccess();
+            } else {
+                // ── Track failed PIN attempt ──
+                trackFailedLogin(currentUser, 'pin');
+                document.getElementById('pin-error').innerText = 'Incorrect PIN.';
+            }
         });
     }
 
@@ -689,6 +744,8 @@
                     loginSuccess();
                 }
             } else {
+                // ── Track failed password attempt ──
+                trackFailedLogin(currentUser, 'password');
                 document.getElementById('password-error').innerText = 'Wrong password';
             }
         });
@@ -728,7 +785,6 @@
         }
         localStorage.removeItem('lastLoggedInUser');
         localStorage.removeItem('userPhoneNumber');
-        // Keep deviceId so they can use same device after re-login
         window.location.reload();
     }
 
@@ -741,11 +797,9 @@
         overlay.style.display = 'flex';
         
         if (hasWatchedBefore) {
-            // Show skip hint and play short version
             skipHint.style.display = 'block';
             videoEl.src = 'short.mp4';
             
-            // Listen for space key
             const spaceHandler = function(e) {
                 if (e.key === ' ' || e.keyCode === 32) {
                     videoEl.pause();
@@ -760,7 +814,6 @@
                 window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html'); 
             };
         } else {
-            // First time - play full video
             videoEl.src = 'combined.mp4';
             videoEl.onended = () => { 
                 localStorage.setItem('videoWatchedOnce', 'true');
@@ -793,18 +846,12 @@
     }
     
     function openDevChat() {
-        // Replace with your actual dev chat link (Discord, Telegram, etc.)
         window.open('https://discord.gg/yourdevserver', '_blank');
         closeForgotModal();
     }
 
-    // Handle page unload - keep session but update last active
     window.addEventListener('beforeunload', function() {
-        const lastUser = localStorage.getItem('lastLoggedInUser');
-        if (lastUser && currentDeviceId) {
-            // Use sendBeacon to update last active time
-            // Note: This won't clear session, just update timestamp
-        }
+        // session heartbeat handled by interval
     });
 </script>
 <script src="guard.js"></script>
