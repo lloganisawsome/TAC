@@ -1,0 +1,99 @@
+Failed to load resource: the server responded with a status of 404 ()
+grindcraft.min.js?v=3:6419 Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+b.CanvasTinter.checkInverseAlpha @ grindcraft.min.js?v=3:6419
+grindcraft.min.js?v=3:5166 Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+b.canUseNewCanvasBlendModes @ grindcraft.min.js?v=3:5166
+omweb-v1.js:84 Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.
+Yd @ omweb-v1.js:84
+omweb-v1.js:84 Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.
+Yd @ omweb-v1.js:84
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/json/internal.json?v=1736789167?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/json/internal.json?v=1736789167?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/json/contracted.json?v=1736789167?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/json/contracted.json?v=1736789167?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/json/special.json?v=1736789167?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/json/special.json?v=1736789167?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/json/sitelock.json?v=1736789167?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/json/sitelock.json?v=1736789167?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+api.gameanalytics.com/v2/4f3dbee6e98077af7e738aa3d79be0d0/init:1 
+        
+        
+       Failed to load resource: the server responded with a status of 403 ()
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/json/games.json?v=1736789167?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/json/games.json?v=1736789167?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/json/domains.json?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/json/domains.json?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/spine/fgs_monster_1.atlas?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/spine/fgs_monster_1.atlas?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/spine/fgs_monster_1.json?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/spine/fgs_monster_1.json?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to image at 'https://fbrq.io/orange-games-splash/assets/images/fgs_logo.png?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/images/fgs_logo.png?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to image at 'https://fbrq.io/orange-games-splash/assets/images/fgs_btn_play.png?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/images/fgs_btn_play.png?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/spine/fgs_monster_2.atlas?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/spine/fgs_monster_2.atlas?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/spine/fgs_monster_2.json?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/spine/fgs_monster_2.json?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/spine/fgs_monster_3.atlas?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/spine/fgs_monster_3.atlas?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/spine/fgs_monster_3.json?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/spine/fgs_monster_3.json?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grind-craft/:1 Access to XMLHttpRequest at 'https://fbrq.io/orange-games-splash/assets/sound/fgs_intro.ogg?v=3' from origin 'https://nintendoboi222.github.io' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+fbrq.io/orange-games-splash/assets/sound/fgs_intro.ogg?v=3:1 
+        
+        
+       Failed to load resource: net::ERR_FAILED
+grindcraft.min.js?v=3:27004 Uncaught TypeError: Cannot read properties of null (reading 'split')
+    at new spine.AtlasReader (grindcraft.min.js?v=3:27004:20)
+    at new spine.Atlas (grindcraft.min.js?v=3:26933:13)
+    at new c (grindcraft.min.js?v=3:27276:13)
+    at Phaser.GameObjectFactory.spine (grindcraft.min.js?v=3:27246:21)
+    at d.createObjects (grindcraft.min.js?v=3:29366:42)
+    at d.preload (grindcraft.min.js?v=3:29333:18)
+    at c.StateManager.preUpdate (grindcraft.min.js?v=3:8739:69)
+    at c.Game.updateLogic (grindcraft.min.js?v=3:10073:26)
+    at c.Game.update (grindcraft.min.js?v=3:10058:97)
+    at c.RequestAnimationFrame.updateRAF (grindcraft.min.js?v=3:16304:40)
