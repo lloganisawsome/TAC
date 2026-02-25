@@ -1,0 +1,222 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    overflow: hidden;
+}
+
+body,
+body * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    overflow: hidden;
+}
+
+@media (orientation: landscape) {
+    html,
+    body {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    body {
+        margin-top: 0.5px;
+    }
+}
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+.game {
+    display: block;
+    touch-action: none;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+.game_container {
+    display: block;
+    touch-action: none;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+}
+
+@media (orientation: landscape) {
+    .game {
+        width: 100vw;
+        height: 100vh;
+    }
+    .game_container {
+        width: 100vw;
+        height: calc(100vh - env(safe-area-inset-bottom, 0px));
+    }
+}
+
+.canvas_container {
+    position: relative;
+    margin: auto;
+}
+
+.canvas_overlay {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: black;
+    display: table;
+}
+
+@media (orientation: landscape) {
+    .canvas_overlay {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+
+.click_to_start {
+    cursor: pointer;
+    vertical-align: middle;
+    text-align: center;
+    display: table-cell;
+}
+
+.click_to_start .huge {
+    font-size: 1.5em;
+    color: white;
+    display: block;
+}
+
+.canvas_overlay .loader {
+    background: url(../img/loading.gif) no-repeat center center;
+    cursor: progress;
+    vertical-align: middle;
+    text-align: center;
+    display: none;
+}
+
+.loader .info {
+    position: relative;
+    top: 150px;
+    margin: 0 auto;
+}
+
+.loader .status {
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.ui-dialog {
+    overflow: visible;
+    max-width: 650px;
+    touch-action: none;
+}
+
+.ui-widget-content {
+    touch-action: none;
+}
+
+.dialog {
+    display: none;
+}
+
+.dialog input {
+    display: block;
+    width: calc(100% - 14px);
+    font-size: 1.2em;
+    padding: 5px;
+    outline: none;
+}
+
+.dialog .label, .dialog label {
+    display: block;
+    font-weight: bold;
+    margin: 2px 0;
+}
+
+.select-file-dialog-saves {
+    max-height: 150px;
+    overflow: auto;
+}
+
+.select-file-dialog-saves {
+    margin: 0;
+    padding: 5px 0;
+    background: #F0F0F0;
+    border: 1px solid #CCC;
+}
+
+.select-file-dialog-saves span {
+    text-align: center;
+    width: 100%;
+    display: inline-block;
+}
+
+.select-file-dialog-saves li {
+    padding: 0;
+    margin: 4px 0 0 20px;
+    list-style-type: none;
+    cursor: pointer;
+    text-decoration: underline;
+    color: black;
+}
+
+.opendune-house-container {
+    margin: 0 auto;
+    width: 510px;
+}
+
+.opendune-house {
+    float: left;
+    width: 124px;
+    height: 136px;
+    display: block;
+    cursor: pointer;
+    margin: 0 20px 30px 20px;
+    opacity: 1.0;
+    transition: opacity 300ms;
+    -webkit-transition: opacity 300ms;
+}
+
+.opendune-house:hover {
+    opacity: 1.0;
+}
+
+.opendune-h-house {
+    background: url("../img/h_house.png") no-repeat center center;
+}
+
+.opendune-a-house {
+    background: url("../img/a_house.png") no-repeat center center;
+}
+
+.opendune-o-house {
+    background: url("../img/o_house.png") no-repeat center center;
+}
+
+.opendune-select-house {
+    text-align: center;
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+.small .ui-dialog {
+    width: 100% !important;
+}
+
+.small .opendune-house-container {
+    width: 100%;
+}

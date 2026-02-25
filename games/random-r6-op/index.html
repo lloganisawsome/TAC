@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Random Siege OP</title>
+    <link rel="icon" type="image/jpg" href="/favicon.jpg?v2" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
+
+    <!--Google website stuff-->
+    <meta name="description" content="I made this website at school bc I wanted to play games">
+    <meta name="keywords" content="Games,nintendoboi2,github.io,nintendoboi22,github website, github game">
+    <meta name="author" content="Nintendoboi2">
+    <meta name="google-adsense-account" content="ca-pub-8650522196901208">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://randojs.com/1.0.0.js"></script>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            font-family: 'Oxanium', sans-serif;
+        }
+
+        /*https://getcssscan.com/css-buttons-examples#:~:text=by-,Typedream,-Button%2035*/
+        .cool-button {
+            background: #5E5DF0;
+            border-radius: 999px;
+            box-shadow: #5E5DF0 0 10px 20px -10px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            cursor: pointer;
+            font-family: Inter, Helvetica, "Apple Color Emoji", "Segoe UI Emoji", NotoColorEmoji, "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", EmojiSymbols, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px;
+            opacity: 1;
+            outline: 0 solid transparent;
+            padding: 8px 18px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: fit-content;
+            word-break: break-word;
+            border: 0;
+        }
+    </style>
+    <script>
+        const attackers = ["Striker","Sledge", "Thatcher", "Ash", "Thermite", "Twitch", "Montagne", "Glaz", "Fuze","Blitz","IQ","Buck","Blackbeard","Capitão","Hibana","Jackal","Ying","Zofia","Dokkaebi","Lion","Finka","Maverick","Nomad","Gridlock","Nøkk","Amaru","Kali","Iana","Ace","Zero","Flores","Osa","Sens","Grimm","Brava","Ram","Deimos"];
+        const defenders = ["Sentry","Smoke","Mute","Castle","Pulse","Doc","Rook","Kapkan","Tachanka","Jäger","Bandit","Frost","Valkyrie","Caveira","Echo","Mira","Lesion","Ela","Vigil","Maestro","Alibi","Clash","Kaid","Mozzie","Warden","Goyo","Wamai","Orax","Melusi","Aruni","Thunderbird","Thorn","Azami","Solis","Fenrir","Tubarão","Skopos"];
+
+        function getRandomOperator(list) {
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        function setOperators() {
+            document.getElementById("attacker").innerText = getRandomOperator(attackers);
+            document.getElementById("defender").innerText = getRandomOperator(defenders);
+        }
+    </script>
+</head>
+<body onload="setOperators()">
+    <div style="text-align: center;">
+        <br><br><br>
+        <h1 style="color:#aaaaaa;" class="title">Random Siege Op</h1>
+        <br><br>
+        <h2 style="color:#aaaaaa;">Attacker: <strong><span id="attacker"></span></strong><br><br>Defender: <strong><span id="defender"></span></strong></h2>
+        <br><button class="cool-button" role="button" onclick="setOperators()">New Op?</button>
+    </div>
+</body>
+</html>
