@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TAC - Home</title>
@@ -44,6 +42,17 @@ html, body {
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* Kinetic Dots Canvas */
+#dotsCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
 
 /* Sidebar */
 .sidebar {
@@ -179,6 +188,8 @@ html, body {
     margin-left: 100px;
     padding: 24px;
     transition: margin-left 0.3s ease;
+    position: relative;
+    z-index: 1;
 }
 
 .main-content.expanded {
@@ -200,6 +211,77 @@ html, body {
     font-size: 16px;
     color: var(--muted);
     font-weight: 500;
+}
+
+/* Top Info Row */
+.top-info-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: stretch;
+}
+
+/* Quote Box */
+.quote-box {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 0 14px var(--accent-dim);
+    min-height: 56px;
+    overflow: hidden;
+}
+
+.quote-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.quote-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    line-height: 1.5;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Time on TAC Box */
+.timeon-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-height: 56px;
+    gap: 2px;
+}
+
+.timeon-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+.timeon-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Panel */
@@ -383,10 +465,23 @@ html, body {
     .toggle-btn {
         display: none;
     }
+
+    .top-info-row {
+        grid-template-columns: 1fr;
+    }
+
+    .timeon-box {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 8px;
+    }
 }
 </style>
 </head>
 <body>
+
+<!-- Kinetic Dots Canvas -->
+<canvas id="dotsCanvas"></canvas>
 
 <!-- Sidebar -->
 <aside class="sidebar" id="sidebar">
@@ -395,14 +490,14 @@ html, body {
     </div>
 
     <nav class="nav-items">
-        <a href="index.html" class="nav-item active">
+        <a href__="index.html" class="nav-item active">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
             </svg>
             <span>Home</span>
         </a>
 
-        <a href="chat.html" class="nav-item">
+        <a href__="chat.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
                 <circle cx="8" cy="10" r="1.5"/>
@@ -412,21 +507,21 @@ html, body {
             <span>Chat</span>
         </a>
 
-        <a href="notgames.html" class="nav-item">
+        <a href__="notgames.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
             </svg>
             <span>Games</span>
         </a>
 
-        <a href="phone.html" class="nav-item">
+        <a href__="phone.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
             </svg>
             <span>Phone</span>
         </a>
 
-        <a href="apps.html" class="nav-item">
+        <a href__="apps.html" class="nav-item">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
             </svg>
@@ -446,6 +541,19 @@ html, body {
     <div class="header">
         <h1>Welcome to TAC</h1>
         <div class="datetime" id="datetime"></div>
+    </div>
+
+    <!-- Top Info Row: Quote + Time on TAC -->
+    <div class="top-info-row">
+        <div class="quote-box" id="quoteBox">
+                <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197-.485-1.938-.597.144c-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312C7.423 4.002 7.042 4.124 6.67 4.335c-.378.191-.752.4-1.078.692-.33.3-.651.62-.932.966-.285.354-.519.737-.75 1.142-.215.405-.416.847-.556 1.305-.124.455-.254.92-.31 1.402-.054.487-.073.98-.073 1.481C3 13.27 3.786 15 5.11 15.974 5.76 16.466 6.561 16.75 7.5 16.75c1.933 0 3.5-1.567 3.5-3.5C11 11.567 9.433 10 7.5 10H6.5zm9.5 0c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197-.485-1.938-.597.144c-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.33.135-.71.257-1.083.468-.378.191-.752.4-1.078.692-.33.3-.651.62-.932.966-.285.354-.519.737-.75 1.142-.215.405-.416.847-.556 1.305-.124.455-.254.92-.31 1.402-.054.487-.073.98-.073 1.481C12 13.27 12.786 15 14.11 15.974c.65.492 1.451.776 2.39.776 1.933 0 3.5-1.567 3.5-3.5C20 11.567 18.433 10 16.5 10H16z"/>
+            </svg>
+            <span class="quote-text" id="quoteText">Loading message...</span>
+        </div>
+        <div class="timeon-box">
+            <span class="timeon-label">You've used TAC for</span>
+            <span class="timeon-value" id="timeonValue">--:--:--</span>
+        </div>
     </div>
 
     <div class="grid">
@@ -507,7 +615,111 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Sidebar Toggle
+// ─── Kinetic Dots ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('dotsCanvas');
+const ctx = canvas.getContext('2d');
+
+let mouse = { x: -9999, y: -9999 };
+const NUM_DOTS = 80;
+const CONNECT_DIST = 120;
+const CURSOR_REPEL = 100;
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+document.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+document.addEventListener('mouseleave', () => {
+    mouse.x = -9999;
+    mouse.y = -9999;
+});
+
+function getAccentRGB() {
+    const style = getComputedStyle(document.documentElement);
+    const accent = style.getPropertyValue('--accent').trim();
+    // Parse hex
+    const hex = accent.replace('#', '');
+    const r = parseInt(hex.substring(0,2), 16) || 34;
+    const g = parseInt(hex.substring(2,4), 16) || 197;
+    const b = parseInt(hex.substring(4,6), 16) || 94;
+    return { r, g, b };
+}
+
+const dots = Array.from({ length: NUM_DOTS }, () => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    vx: (Math.random() - 0.5) * 0.6,
+    vy: (Math.random() - 0.5) * 0.6,
+    r: Math.random() * 2 + 1
+}));
+
+function animateDots() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const { r: cr, g: cg, b: cb } = getAccentRGB();
+
+    dots.forEach(dot => {
+        // Move
+        dot.x += dot.vx;
+        dot.y += dot.vy;
+
+        // Bounce off edges
+        if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
+        if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
+
+        // Repel from cursor
+        const dx = dot.x - mouse.x;
+        const dy = dot.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CURSOR_REPEL && dist > 0) {
+            const force = (CURSOR_REPEL - dist) / CURSOR_REPEL * 0.8;
+            dot.vx += (dx / dist) * force;
+            dot.vy += (dy / dist) * force;
+        }
+
+        // Speed cap
+        const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
+        if (speed > 2) {
+            dot.vx = (dot.vx / speed) * 2;
+            dot.vy = (dot.vy / speed) * 2;
+        }
+
+        // Draw dot
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, 0.55)`;
+        ctx.fill();
+    });
+
+    // Draw connecting lines
+    for (let i = 0; i < dots.length; i++) {
+        for (let j = i + 1; j < dots.length; j++) {
+            const dx = dots[i].x - dots[j].x;
+            const dy = dots[i].y - dots[j].y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < CONNECT_DIST) {
+                const alpha = (1 - dist / CONNECT_DIST) * 0.25;
+                ctx.beginPath();
+                ctx.moveTo(dots[i].x, dots[i].y);
+                ctx.lineTo(dots[j].x, dots[j].y);
+                ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            }
+        }
+    }
+
+    requestAnimationFrame(animateDots);
+}
+animateDots();
+
+// ─── Sidebar Toggle ────────────────────────────────────────────────────────────
 const sidebar = document.getElementById('sidebar');
 const toggleBtn = document.getElementById('toggleBtn');
 const mainContent = document.getElementById('mainContent');
@@ -518,7 +730,7 @@ toggleBtn.addEventListener('click', () => {
     mainContent.classList.toggle('expanded');
 });
 
-// Theme Colors
+// ─── Theme Colors ──────────────────────────────────────────────────────────────
 const themeColors = {
     green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
     blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
@@ -542,29 +754,26 @@ function applyTheme() {
     const logo = document.getElementById('logo');
     if (logo) logo.src = `taclogos/${theme}.png`;
 
-    // Update sidebar shadow
     if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+
+    // Update quote box border to match theme
+    const quoteBox = document.getElementById('quoteBox');
+    if (quoteBox) quoteBox.style.borderColor = colors.primary;
+    if (quoteBox) quoteBox.style.boxShadow = `0 0 14px ${colors.dim}`;
 }
 
 applyTheme();
 
 window.addEventListener('storage', (e) => {
-    if (e.key === 'theme') {
-        applyTheme();
-    }
+    if (e.key === 'theme') applyTheme();
 });
 
-// DateTime
+// ─── DateTime ──────────────────────────────────────────────────────────────────
 function updateDateTime() {
     const now = new Date();
     const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
     };
     const dtElem = document.getElementById('datetime');
     if (dtElem) dtElem.textContent = now.toLocaleDateString('en-US', options);
@@ -572,7 +781,47 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// Carousel
+// ─── Time on TAC ──────────────────────────────────────────────────────────────
+function formatTimeon(raw) {
+    // raw could be "HH:MM:SS" already, or seconds, or ms — handle gracefully
+    if (!raw) return '--:--:--';
+    // If already formatted like HH:MM:SS
+    if (/^\d{1,2}:\d{2}:\d{2}$/.test(raw.trim())) return raw.trim();
+    // If it's a number (seconds)
+    const secs = parseInt(raw);
+    if (!isNaN(secs)) {
+        const h = Math.floor(secs / 3600);
+        const m = Math.floor((secs % 3600) / 60);
+        const s = secs % 60;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    return raw;
+}
+
+function updateTimeon() {
+    const raw = localStorage.getItem('timeon');
+    const el = document.getElementById('timeonValue');
+    if (el) el.textContent = formatTimeon(raw);
+}
+updateTimeon();
+setInterval(updateTimeon, 1000);
+
+// ─── Homepage Quote ────────────────────────────────────────────────────────────
+fetch('homepage.txt')
+    .then(res => res.text())
+    .then(text => {
+        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        if (lines.length === 0) return;
+        const randomLine = lines[Math.floor(Math.random() * lines.length)];
+        const el = document.getElementById('quoteText');
+        if (el) el.textContent = randomLine;
+    })
+    .catch(() => {
+        const el = document.getElementById('quoteText');
+        if (el) el.textContent = 'Welcome to TAC.';
+    });
+
+// ─── Carousel ─────────────────────────────────────────────────────────────────
 const carouselImages = document.getElementById('carouselImages');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
@@ -581,16 +830,12 @@ let images = [];
 let currentImageIndex = 0;
 
 function loadCarouselImages() {
-    let loadedCount = 0;
     for (let i = 1; i <= 12; i++) {
         let img = new Image();
         img.src = `${i}.png`;
         img.onload = () => { 
             images.push(img.src); 
             renderCarousel(); 
-        };
-        img.onerror = () => {
-            // Silently handle missing images
         };
     }
 }
@@ -599,7 +844,6 @@ loadCarouselImages();
 function renderCarousel() {
     if (images.length === 0 || !carouselImages) return;
     carouselImages.innerHTML = '';
-    // Sort logically if needed, but here we just append as they load
     images.forEach(src => {
         const img = document.createElement('img');
         img.src = src;
@@ -630,11 +874,9 @@ function showPrevImage() {
 if (prevBtn) prevBtn.addEventListener('click', showPrevImage);
 if (nextBtn) nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
-
-// Auto-advance carousel every 5 seconds
 setInterval(showNextImage, 5000);
 
-// News Feed
+// ─── News Feed ─────────────────────────────────────────────────────────────────
 function getTodayDateString() {
     const today = new Date();
     const year = today.getFullYear();
@@ -679,7 +921,6 @@ function loadNews() {
             return;
         }
         
-        // Sort by time (newest first)
         newsItems.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
         
         newsFeed.innerHTML = newsItems.map(item => `
@@ -696,10 +937,5 @@ function loadNews() {
 loadNews();
 </script>
 
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
 </body>
 </html>
