@@ -10,7 +10,6 @@
     <title>Sign in – Google Accounts</title>
     <link rel="icon" type="image/png" href__="https://placehold.co/16x16/0a8c2d/ffffff?text=G" />
     <style>
-        /* General Setup */
         :root {
             --bg-color: #f1f1f1;
             --container-bg: #fff;
@@ -22,7 +21,6 @@
             --secondary-bg: #f0f0f0;
             --secondary-hover: #e8e8e8;
         }
-        
         body.dark-mode {
             --bg-color: #1a1a1a;
             --container-bg: #2d2d2d;
@@ -34,11 +32,8 @@
             --secondary-bg: #404040;
             --secondary-hover: #505050;
         }
-        
         html,body { height: 100%; margin: 0; font-family: 'Inter', Arial, Helvetica, sans-serif; }
         body { background: var(--bg-color); display: flex; justify-content: center; align-items: center; transition: background 0.3s; }
-
-        /* Container Styling */
         .container {
             width: 360px;
             max-width: 90%;
@@ -51,8 +46,6 @@
         }
         .google-logo { width: 75px; margin-bottom: 20px; }
         h2 { font-size: 24px; font-weight: 400; margin-bottom: 24px; color: var(--text-color); }
-
-        /* Form Elements */
         input {
             width: 100%;
             padding: 10px;
@@ -63,12 +56,10 @@
             transition: border-color 0.3s;
             background: var(--container-bg);
             color: var(--text-color);
+            box-sizing: border-box;
         }
         input:focus { outline: none; border-color: var(--input-focus); box-shadow: 0 0 0 1px var(--input-focus); }
-        
-        /* PIN Input specific styling (to center text) */
         .pin-input { text-align: center; font-size: 24px; letter-spacing: 5px; }
-
         button {
             width: 100%;
             padding: 10px;
@@ -83,20 +74,16 @@
             transition: background 0.3s;
         }
         button:hover { background: var(--button-hover); }
-        
         .secondary-button {
             background: var(--secondary-bg);
             color: var(--text-color);
             border: 1px solid var(--input-border);
         }
         .secondary-button:hover { background: var(--secondary-hover); }
-
-        /* Links and Messages */
         .error { color: #d93025; margin-top: 5px; font-size: 12px; }
-        .small-link { font-size: 12px; color:#1a73e8; cursor:pointer; margin-top: 10px; text-decoration: none; }
+        .small-link { font-size: 12px; color:#1a73e8; cursor:pointer; margin-top: 10px; text-decoration: none; display: inline-block; }
         .small-link:hover { text-decoration: underline; }
         p { color: var(--text-color); }
-
         .recent-account-info {
             display: flex;
             align-items: center;
@@ -106,17 +93,10 @@
             margin-bottom: 20px;
         }
         .user-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #c2e7ff;
-            color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 18px;
-            margin-right: 15px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: #c2e7ff; color: #000;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 18px; margin-right: 15px;
         }
         .user-name-text { font-size: 16px; font-weight: 500; color: var(--text-color); }
         .sign-out-link { margin-top: 20px; font-size: 12px; color: var(--text-color); cursor: pointer; }
@@ -126,175 +106,165 @@
         #videoOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;display:none;justify-content:center;align-items:center;z-index:9999;cursor:none;flex-direction:column}
         #videoOverlay video{width:100%;height:100%;object-fit:cover;display:block}
         #skipHint{position:absolute;bottom:30px;color:#fff;font-size:14px;background:rgba(0,0,0,0.7);padding:10px 20px;border-radius:5px;display:none}
+        #skipBtn{position:absolute;bottom:30px;right:30px;color:#fff;font-size:13px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.4);padding:8px 18px;border-radius:20px;cursor:pointer;display:none;z-index:10000}
+        #skipBtn:hover{background:rgba(0,0,0,0.85)}
 
-        /* Update Popup Styles */
+        /* Update Popup */
         #updatePopup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 30px;
-            background: var(--container-bg);
-            border-radius: 8px;
-            z-index: 10001;
-            text-align: center;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
-            width: 320px;
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); padding: 30px;
+            background: var(--container-bg); border-radius: 8px;
+            z-index: 10001; text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3); width: 320px;
         }
         #updateOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 10000;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000;
         }
-        
-        /* Forgot Password Modal */
+
+        /* Forgot / Help Modal */
         #forgotModal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 30px;
-            background: var(--container-bg);
-            border-radius: 8px;
-            z-index: 10001;
-            text-align: center;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
-            width: 320px;
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); padding: 30px;
+            background: var(--container-bg); border-radius: 8px;
+            z-index: 10001; text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3); width: 340px;
+            max-height: 90vh; overflow-y: auto;
         }
         #forgotOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 10000;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000;
         }
         .modal-option {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            background: var(--secondary-bg);
-            color: var(--text-color);
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background 0.3s;
+            width: 100%; padding: 12px; margin: 6px 0;
+            background: var(--secondary-bg); color: var(--text-color);
+            border: 1px solid var(--input-border); border-radius: 4px;
+            cursor: pointer; font-size: 14px; transition: background 0.3s;
+            display: flex; align-items: center; gap: 10px;
         }
         .modal-option:hover { background: var(--secondary-hover); }
-        
+        .modal-option svg { flex-shrink: 0; }
+
+        /* Pin Reset Modal */
+        #pinResetModal {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); padding: 30px;
+            background: var(--container-bg); border-radius: 8px;
+            z-index: 10002; text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3); width: 320px;
+        }
+        #pinResetOverlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10001;
+        }
+
         /* Device Conflict Modal */
         #deviceModal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 30px;
-            background: var(--container-bg);
-            border-radius: 8px;
-            z-index: 10001;
-            text-align: center;
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
-            width: 340px;
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); padding: 30px;
+            background: var(--container-bg); border-radius: 8px;
+            z-index: 10001; text-align: center;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3); width: 340px;
         }
         #deviceOverlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 10000;
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000;
         }
-        .device-info {
-            background: var(--secondary-bg);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            text-align: left;
-            font-size: 13px;
-        }
-        .device-info-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 5px 0;
-        }
+        .device-info { background: var(--secondary-bg); border-radius: 8px; padding: 15px; margin: 15px 0; text-align: left; font-size: 13px; }
+        .device-info-row { display: flex; justify-content: space-between; margin: 5px 0; }
         .device-info-label { color: #888; }
         .device-info-value { color: var(--text-color); font-weight: 500; }
         .warning-text { color: #d93025; font-size: 12px; margin-top: 10px; }
-        
-        /* ── Theme Toggle ── */
+
+        /* Create Account Steps */
+        .create-step { display: none; }
+        .create-step.active { display: block; }
+
+        /* Referral select */
+        select {
+            width: 100%; padding: 10px; margin: 12px 0;
+            border: 1px solid var(--input-border); border-radius: 4px;
+            font-size: 14px; background: var(--container-bg);
+            color: var(--text-color); cursor: pointer;
+            box-sizing: border-box;
+        }
+        select:focus { outline: none; border-color: var(--input-focus); }
+
+        /* Help tooltip / ? button */
+        .help-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 18px; height: 18px; border-radius: 50%;
+            background: #e8f0fe; color: #1a73e8;
+            font-size: 11px; font-weight: 700; cursor: pointer;
+            border: 1px solid #1a73e8; margin-left: 6px;
+            vertical-align: middle; position: relative;
+            transition: background 0.2s;
+        }
+        .help-btn:hover { background: #d2e3fc; }
+        .help-tooltip {
+            display: none; position: absolute;
+            left: 50%; transform: translateX(-50%);
+            bottom: 26px; background: #333; color: #fff;
+            font-size: 12px; font-weight: 400;
+            padding: 8px 12px; border-radius: 6px;
+            white-space: nowrap; z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+        .help-tooltip::after {
+            content: ''; position: absolute;
+            top: 100%; left: 50%; transform: translateX(-50%);
+            border: 5px solid transparent; border-top-color: #333;
+        }
+        .help-btn:hover .help-tooltip,
+        .help-btn:focus .help-tooltip { display: block; }
+
+        /* Label row for pin inputs */
+        .label-row {
+            display: flex; align-items: center; justify-content: center;
+            margin-top: 8px; margin-bottom: 2px;
+            font-size: 13px; color: var(--text-color);
+        }
+
+        /* Inline help modal */
+        #helpModal {
+            display: none; position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); padding: 30px;
+            background: var(--container-bg); border-radius: 8px;
+            z-index: 10003; text-align: left;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3); width: 320px;
+        }
+        #helpOverlay {
+            display: none; position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10002;
+        }
+
+        /* Theme Toggle */
         #themeToggleWrap {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--container-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 999px;
-            padding: 6px 14px 6px 10px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-            cursor: pointer;
-            user-select: none;
-            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+            display: flex; align-items: center; gap: 8px;
+            background: var(--container-bg); border: 1px solid var(--input-border);
+            border-radius: 999px; padding: 6px 14px 6px 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12); cursor: pointer;
+            user-select: none; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
-        #themeToggleWrap:hover {
-            box-shadow: 0 4px 18px rgba(0,0,0,0.18);
-        }
-        /* The sliding track */
+        #themeToggleWrap:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.18); }
         .toggle-track {
-            width: 36px;
-            height: 20px;
-            border-radius: 999px;
-            background: #c8d6e5;
-            position: relative;
-            transition: background 0.3s;
-            flex-shrink: 0;
+            width: 36px; height: 20px; border-radius: 999px;
+            background: #c8d6e5; position: relative;
+            transition: background 0.3s; flex-shrink: 0;
         }
-        body.dark-mode .toggle-track {
-            background: #1a73e8;
-        }
-        /* The knob */
-        .toggle-knob {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #fff;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        body.dark-mode .toggle-track { background: #1a73e8; }
+        .toggle-***** {
+            position: absolute; top: 2px; left: 2px;
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
             transition: transform 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            line-height: 1;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; line-height: 1;
         }
-        body.dark-mode .toggle-knob {
-            transform: translateX(16px);
-        }
-        .toggle-label {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-color);
-            transition: color 0.3s;
-            white-space: nowrap;
-        }
+        body.dark-mode .toggle-***** { transform: translateX(16px); }
+        .toggle-label { font-size: 13px; font-weight: 500; color: var(--text-color); transition: color 0.3s; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -303,48 +273,72 @@
     <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_92x30dp.png" class="google-logo" alt="Logo" />
     <h2>Sign in</h2>
 
+    <!-- Phone Number Step (was "extension") -->
     <div id="step-phone" style="display:none;">
-        <p style="font-size: 14px;">Choose your 3-digit extension.</p>
+        <p style="font-size: 14px;">
+            Choose your phone number
+            <span class="help-btn" tabindex="0" onclick="showHelp('phoneHelp')">?
+                <span class="help-tooltip">This is a 3-digit number used to identify you in the TAC system.</span>
+            </span>
+        </p>
         <input id="phone-input" type="number" pattern="\d{3}" maxlength="3" placeholder="e.g. 123" oninput="if(this.value.length>3)this.value=this.value.slice(0,3)" />
         <div class="error" id="phone-error"></div>
-        <button onclick="savePhoneNumber()">Confirm Extension</button>
+        <button onclick="savePhoneNumber()">Confirm Phone Number</button>
     </div>
 
+    <!-- Recent Account / PIN Login -->
     <div id="step-recent-account" style="display:none;">
         <div class="recent-account-info">
             <div class="user-icon" id="recent-user-icon">U</div>
             <span class="user-name-text" id="recent-user-name">User</span>
         </div>
-        <p style="font-size: 14px;">Unlock your account with your 4-digit PIN.</p>
+        <p style="font-size: 14px;">
+            Unlock your account with your 4-digit PIN.
+            <span class="help-btn" tabindex="0" onclick="showHelp('pinHelp')">?
+                <span class="help-tooltip">Enter the 4-digit PIN you set when you first logged in.</span>
+            </span>
+        </p>
         <input id="pin-input" class="pin-input" type="number" pattern="\d{4}" maxlength="4" placeholder="••••" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
         <div class="error" id="pin-error"></div>
         <button onclick="checkPin()">Unlock</button>
+        <p class="small-link" onclick="openForgotModal('pin')" style="margin-top:10px;display:block;">Forgot PIN?</p>
         <p class="small-link" onclick="goToStandardLogin()">Sign in with a different account</p>
     </div>
 
+    <!-- Set PIN Step -->
     <div id="step-set-pin" style="display:none;">
-        <p style="font-size: 14px;">Set a 4-digit PIN for quick access to <span id="set-pin-username" class="user-name-text"></span>.</p>
+        <p style="font-size: 14px;">
+            Set a 4-digit PIN for quick access to <span id="set-pin-username" class="user-name-text"></span>.
+            <span class="help-btn" tabindex="0" onclick="showHelp('setPinHelp')">?
+                <span class="help-tooltip">Your PIN lets you log in quickly without typing your full password every time.</span>
+            </span>
+        </p>
+        <div class="label-row">New PIN</div>
         <input id="new-pin-input" class="pin-input" type="number" pattern="\d{4}" maxlength="4" placeholder="••••" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
+        <div class="label-row">Confirm PIN</div>
         <input id="confirm-new-pin-input" class="pin-input" type="number" pattern="\d{4}" maxlength="4" placeholder="Confirm ••••" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" />
         <div class="error" id="set-pin-error"></div>
-        <button onclick="setPin()">Set PIN & Sign in</button>
+        <button onclick="setPin()">Set PIN &amp; Sign in</button>
     </div>
 
+    <!-- Username Step -->
     <div id="step-username">
         <input id="username" placeholder="Email or phone" autocomplete="username" />
         <div class="error" id="username-error"></div>
         <button onclick="checkUsername()">Next</button>
-        <p id="create-account-link" class="small-link" onclick="showCreateAccount()">Create account</p>
+        <p id="create-account-link" class="small-link" onclick="showCreateAccount()" style="margin-top:12px;display:block;">Create account</p>
         <p class="error" id="no-account-msg" style="display:none;margin-top:6px">You don't have an account! Try creating one.</p>
     </div>
 
+    <!-- Password Step -->
     <div id="step-password" style="display:none">
         <input id="password" type="password" placeholder="Enter your password" autocomplete="current-password"/>
         <div class="error" id="password-error"></div>
         <button onclick="checkPassword()">Next</button>
-        <p class="small-link" id="forgotBtn">Forgot password?</p>
+        <p class="small-link" id="forgotBtn" style="display:block;margin-top:10px;">Forgot password?</p>
     </div>
 
+    <!-- Change Password Step -->
     <div id="step-change-password" style="display:none">
         <input id="new-password" type="password" placeholder="New password" />
         <input id="confirm-password" type="password" placeholder="Confirm new password" />
@@ -352,32 +346,112 @@
         <button onclick="saveNewPassword()">Save Password</button>
     </div>
 
+    <!-- Create Account – Multi-step -->
     <div id="step-create" style="display:none">
-        <input id="new-username" placeholder="Choose your username" autocomplete="username" />
-        <div class="error" id="create-error"></div>
-        <button onclick="createAccount()">Submit</button>
-        <p style="margin-top:8px">Your request will be sent for approval.</p>
+        <!-- Step 1: First name -->
+        <div id="create-step-1" class="create-step active">
+            <p style="font-size:15px;font-weight:500;margin-bottom:4px;">What's your first name?</p>
+            <input id="new-firstname" placeholder="First name" autocomplete="given-name" />
+            <div class="error" id="create-error-1"></div>
+            <button onclick="createStep2()">Next</button>
+            <p class="small-link" onclick="cancelCreate()" style="display:block;margin-top:10px;">← Back</p>
+        </div>
+
+        <!-- Step 2: How did you hear about TAC -->
+        <div id="create-step-2" class="create-step">
+            <p style="font-size:15px;font-weight:500;margin-bottom:4px;">How did you hear about TAC?</p>
+            <select id="referral-select" onchange="toggleOtherInput()">
+                <option value="">Select an option…</option>
+                <option value="friend">Heard from a friend</option>
+                <option value="saw_someone">Saw someone using it</option>
+                <option value="social_media">Saw it on social media</option>
+                <option value="youtube">Previous user</option>
+                <option value="tiktok">Got it from a 6th grader</option>
+                <option value="instagram">Got the file somehow</option>
+                <option value="discord">I forgot</option>
+                <option value="reddit">Asked logan for it</option>
+                <option value="school">Heard about it at school</option>
+                <option value="work">Found the link</option>
+                <option value="other">Other (type below)</option>
+            </select>
+            <input id="referral-other" placeholder="Tell us how…" style="display:none;" />
+            <div class="error" id="create-error-2"></div>
+            <button onclick="createStep3()">Next</button>
+            <p class="small-link" onclick="backToCreateStep(1)" style="display:block;margin-top:10px;">← Back</p>
+        </div>
+
+        <!-- Step 3: Choose username -->
+        <div id="create-step-3" class="create-step">
+            <p style="font-size:15px;font-weight:500;margin-bottom:4px;">Choose a username</p>
+            <input id="new-username" placeholder="Username" autocomplete="username" />
+            <div class="error" id="create-error-3"></div>
+            <button onclick="createAccount()">Submit Request</button>
+            <p style="font-size:12px;color:var(--text-color);margin-top:8px;">Your request will be sent for approval.</p>
+            <p class="small-link" onclick="backToCreateStep(2)" style="display:block;margin-top:6px;">← Back</p>
+        </div>
     </div>
 </div>
 
+<!-- Update Popup -->
 <div id="updateOverlay"></div>
 <div id="updatePopup">
     <p style="font-size: 16px; margin-bottom: 20px;">You need to update to continue silly!</p>
     <button id="downloadBtn">download here</button>
 </div>
 
-<div id="forgotOverlay"></div>
+<!-- Forgot Password / PIN Modal -->
+<div id="forgotOverlay" onclick="closeForgotModal()"></div>
 <div id="forgotModal">
-    <h3 style="margin-top:0;color:var(--text-color)">Password Help</h3>
-    <p style="font-size: 14px; margin-bottom: 20px;color:var(--text-color)">Choose an option:</p>
-    <button class="modal-option" onclick="sendPasswordRequest()">📧 Send password reset request</button>
-    <button class="modal-option" onclick="closeForgotModal()">❌ Cancel</button>
+    <h3 style="margin-top:0;color:var(--text-color)" id="forgotModalTitle">Account Help</h3>
+    <p style="font-size: 14px; margin-bottom: 16px;color:var(--text-color)">What do you need help with?</p>
+
+    <!-- Password options -->
+    <div id="forgotPasswordOptions">
+        <button class="modal-option" onclick="sendResetRequest('password')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Reset my password
+        </button>
+        <button class="modal-option" onclick="sendResetRequest('username')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Recover my username
+        </button>
+        <button class="modal-option" onclick="sendResetRequest('pin')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/></svg>
+            Reset my PIN
+        </button>
+    </div>
+
+    <!-- PIN options (shown when opened from PIN screen) -->
+    <div id="forgotPinOptions" style="display:none;">
+        <button class="modal-option" onclick="sendResetRequest('pin')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"/></svg>
+            Send PIN reset request
+        </button>
+        <button class="modal-option" onclick="sendResetRequest('password')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Send password reset request
+        </button>
+        <button class="modal-option" onclick="sendResetRequest('username')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Recover my username
+        </button>
+    </div>
+
+    <div id="resetSentMsg" style="display:none;color:#0c5adb;font-size:13px;margin:10px 0;padding:10px;background:#e8f0fe;border-radius:6px;"></div>
+
+    <button class="modal-option" onclick="closeForgotModal()" style="margin-top:8px;border-color:#d93025;color:#d93025;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancel
+    </button>
 </div>
 
 <!-- Device Conflict Modal -->
 <div id="deviceOverlay"></div>
 <div id="deviceModal">
-    <h3 style="margin-top:0;color:var(--text-color)">⚠️ Active Session Detected</h3>
+    <h3 style="margin-top:0;color:var(--text-color)">
+        <svg style="vertical-align:middle;margin-right:6px" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Active Session Detected
+    </h3>
     <p style="font-size: 14px; color:var(--text-color)">This account is already signed in on another device:</p>
     <div class="device-info" id="activeDeviceInfo">
         <div class="device-info-row">
@@ -390,23 +464,49 @@
         </div>
     </div>
     <p class="warning-text">Signing in here will log out the other device.</p>
-    <button class="modal-option" onclick="forceLogin()">🔄 Sign in here (log out other device)</button>
-    <button class="modal-option" onclick="closeDeviceModal()">❌ Cancel</button>
+    <button class="modal-option" onclick="forceLogin()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        Sign in here (log out other device)
+    </button>
+    <button class="modal-option" onclick="closeDeviceModal()" style="border-color:#d93025;color:#d93025;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d93025" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Cancel
+    </button>
+</div>
+
+<!-- Help Modal -->
+<div id="helpOverlay" onclick="closeHelp()"></div>
+<div id="helpModal">
+    <h3 style="margin-top:0;color:var(--text-color);font-size:16px;" id="helpModalTitle">Help</h3>
+    <p style="font-size:14px;color:var(--text-color);margin-bottom:16px;" id="helpModalBody"></p>
+    <button onclick="closeHelp()">Got it</button>
+</div>
+
+<!-- UI Notification (replaces alert) -->
+<div id="uiNotifOverlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:20000;"></div>
+<div id="uiNotif" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--container-bg);border-radius:8px;padding:28px 32px;z-index:20001;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,0.25);width:300px;max-width:90%;">
+    <p id="uiNotifMsg" style="font-size:15px;margin:0 0 18px;color:var(--text-color);"></p>
+    <button onclick="closeNotif()" style="width:auto;padding:8px 28px;margin:0;">OK</button>
 </div>
 
 <p class="sign-out-link" id="signOutLink" onclick="logout()" style="position: absolute; bottom: 20px;">Sign Out</p>
 
-<!-- ── Integrated Theme Toggle ── -->
+<!-- Theme Toggle -->
 <div id="themeToggleWrap" onclick="toggleDarkMode()" title="Toggle theme">
     <div class="toggle-track">
-        <div class="toggle-knob" id="toggleKnob">☀️</div>
+        <div class="toggle-*****" id="toggleKnob">
+            <!-- Sun SVG -->
+            <svg id="sunIcon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg id="moonIcon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </div>
     </div>
     <span class="toggle-label" id="toggleLabel">Light</span>
 </div>
 
 <div id="videoOverlay">
     <video id="combinedVideo" playsinline preload="auto"></video>
-    <div id="skipHint">Press SPACE to skip</div>
+    <div id="skipHint">Press SPACE or click Skip to skip</div>
+    <button id="skipBtn" onclick="skipVideo()">Skip ›</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -429,7 +529,48 @@
     let currentDeviceId = "";
     let sessionCheckInterval = null;
 
-    // Generate or retrieve device ID
+    // ── UI Notification (replaces alert) ──
+    function showNotif(msg, onOk) {
+        document.getElementById('uiNotifMsg').textContent = msg;
+        document.getElementById('uiNotif').style.display = 'block';
+        document.getElementById('uiNotifOverlay').style.display = 'block';
+        window._notifCallback = onOk || null;
+    }
+    function closeNotif() {
+        document.getElementById('uiNotif').style.display = 'none';
+        document.getElementById('uiNotifOverlay').style.display = 'none';
+        if (window._notifCallback) { window._notifCallback(); window._notifCallback = null; }
+    }
+
+    // ── Help Modal ──
+    const helpContent = {
+        phoneHelp: {
+            title: 'Phone Number',
+            body: 'This is your unique 3-digit number used to identify you in the TAC phone system. It works like an extension — choose any 3-digit number that isn\'t already taken.'
+        },
+        pinHelp: {
+            title: '4-Digit PIN',
+            body: 'Your PIN is a quick 4-digit code you set the first time you log in. It lets you unlock your account fast without typing your full password every time.'
+        },
+        setPinHelp: {
+            title: 'Setting Your PIN',
+            body: 'Choose any 4-digit number you\'ll remember. You\'ll use this PIN every time you come back to log in quickly. Don\'t share it with others!'
+        }
+    };
+    function showHelp(key) {
+        const c = helpContent[key];
+        if (!c) return;
+        document.getElementById('helpModalTitle').textContent = c.title;
+        document.getElementById('helpModalBody').textContent = c.body;
+        document.getElementById('helpModal').style.display = 'block';
+        document.getElementById('helpOverlay').style.display = 'block';
+    }
+    function closeHelp() {
+        document.getElementById('helpModal').style.display = 'none';
+        document.getElementById('helpOverlay').style.display = 'none';
+    }
+
+    // ── Device helpers ──
     function getDeviceId() {
         let deviceId = localStorage.getItem('deviceId');
         if (!deviceId) {
@@ -438,102 +579,63 @@
         }
         return deviceId;
     }
-
-    // Get device info for display
     function getDeviceInfo() {
         const ua = navigator.userAgent;
         let deviceName = 'Unknown Device';
-        
         if (/iPhone/.test(ua)) deviceName = 'iPhone';
         else if (/iPad/.test(ua)) deviceName = 'iPad';
         else if (/Android/.test(ua)) deviceName = 'Android Device';
         else if (/Windows/.test(ua)) deviceName = 'Windows PC';
         else if (/Mac/.test(ua)) deviceName = 'Mac';
         else if (/Linux/.test(ua)) deviceName = 'Linux PC';
-        
-        return {
-            deviceId: getDeviceId(),
-            deviceName: deviceName,
-            userAgent: ua.substring(0, 100),
-            lastActive: new Date().toISOString()
-        };
+        return { deviceId: getDeviceId(), deviceName, userAgent: ua.substring(0, 100), lastActive: new Date().toISOString() };
     }
 
-    // ── Track a failed login attempt to Firebase ──
     function trackFailedLogin(username, type) {
         const info = getDeviceInfo();
-        db.ref('failedLogins').push({
-            user: username,
-            type: type,           // 'password' | 'pin'
-            deviceName: info.deviceName,
-            deviceId: info.deviceId,
-            userAgent: info.userAgent,
-            time: new Date().toISOString()
-        });
+        db.ref('failedLogins').push({ user: username, type, deviceName: info.deviceName, deviceId: info.deviceId, userAgent: info.userAgent, time: new Date().toISOString() });
     }
 
-    // Check if another device is active
     async function checkActiveSession(username) {
         const snapshot = await db.ref('activeSessions/' + username).once('value');
         const session = snapshot.val();
-        
         if (session && session.deviceId !== getDeviceId()) {
-            const lastActive = new Date(session.lastActive);
-            const now = new Date();
-            const diffMinutes = (now - lastActive) / (1000 * 60);
+            const diffMinutes = (new Date() - new Date(session.lastActive)) / (1000 * 60);
             if (diffMinutes < 30) return session;
         }
         return null;
     }
-
-    // Register this device as active session
     async function registerSession(username) {
-        const deviceInfo = getDeviceInfo();
-        await db.ref('activeSessions/' + username).set(deviceInfo);
+        await db.ref('activeSessions/' + username).set(getDeviceInfo());
         startSessionHeartbeat(username);
     }
-
-    // Heartbeat to keep session active
     function startSessionHeartbeat(username) {
         if (sessionCheckInterval) clearInterval(sessionCheckInterval);
-        
         sessionCheckInterval = setInterval(async () => {
-            const currentSession = await db.ref('activeSessions/' + username).once('value');
-            const session = currentSession.val();
-            
-            if (session && session.deviceId === getDeviceId()) {
+            const s = (await db.ref('activeSessions/' + username).once('value')).val();
+            if (s && s.deviceId === getDeviceId()) {
                 await db.ref('activeSessions/' + username + '/lastActive').set(new Date().toISOString());
-            } else if (session && session.deviceId !== getDeviceId()) {
-                alert('You have been signed out because another device signed in.');
-                logout();
+            } else if (s && s.deviceId !== getDeviceId()) {
+                showNotif('You have been signed out because another device signed in.', () => logout());
             }
         }, 60000);
     }
-
-    // Clear session on logout
     async function clearSession(username) {
         if (sessionCheckInterval) clearInterval(sessionCheckInterval);
-        const currentSession = await db.ref('activeSessions/' + username).once('value');
-        const session = currentSession.val();
-        if (session && session.deviceId === getDeviceId()) {
-            await db.ref('activeSessions/' + username).remove();
-        }
+        const s = (await db.ref('activeSessions/' + username).once('value')).val();
+        if (s && s.deviceId === getDeviceId()) await db.ref('activeSessions/' + username).remove();
     }
 
-    // Show device conflict modal
     function showDeviceConflict(activeSession) {
         document.getElementById('deviceModal').style.display = 'block';
         document.getElementById('deviceOverlay').style.display = 'block';
         document.getElementById('activeDeviceName').innerText = activeSession.deviceName || 'Unknown';
-        const lastActive = new Date(activeSession.lastActive);
-        document.getElementById('activeDeviceTime').innerText = lastActive.toLocaleString();
+        document.getElementById('activeDeviceTime').innerText = new Date(activeSession.lastActive).toLocaleString();
     }
-
     function closeDeviceModal() {
         document.getElementById('deviceModal').style.display = 'none';
         document.getElementById('deviceOverlay').style.display = 'none';
     }
-
     async function forceLogin() {
         closeDeviceModal();
         await registerSession(currentUser);
@@ -547,42 +649,36 @@
         localStorage.setItem('darkMode', isDark);
         updateToggleUI(isDark);
     }
-
     function updateToggleUI(isDark) {
-        document.getElementById('toggleKnob').textContent = isDark ? '🌙' : '☀️';
+        document.getElementById('sunIcon').style.display = isDark ? 'none' : 'block';
+        document.getElementById('moonIcon').style.display = isDark ? 'block' : 'none';
         document.getElementById('toggleLabel').textContent = isDark ? 'Dark' : 'Light';
     }
 
     function hideAllSteps() {
-        ['step-username', 'step-password', 'step-change-password', 'step-create', 'step-recent-account', 'step-set-pin', 'step-phone'].forEach(id => {
+        ['step-username','step-password','step-change-password','step-create','step-recent-account','step-set-pin','step-phone'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.style.display = 'none';
+            if (el) el.style.display = 'none';
         });
     }
-
     function resetErrors() {
-        ['username-error', 'password-error', 'create-error', 'change-error', 'pin-error', 'set-pin-error', 'phone-error'].forEach(id => {
+        ['username-error','password-error','create-error-1','create-error-2','create-error-3','change-error','pin-error','set-pin-error','phone-error'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.innerText = '';
+            if (el) el.innerText = '';
         });
         document.getElementById('no-account-msg').style.display = 'none';
     }
 
     window.onload = function() {
         currentDeviceId = getDeviceId();
-        
-        // Dark mode preference
         const isDark = localStorage.getItem('darkMode') === 'true';
-        if (isDark) {
-            document.body.classList.add('dark-mode');
-        }
+        if (isDark) document.body.classList.add('dark-mode');
         updateToggleUI(isDark);
-        
+
         if (!localStorage.getItem('newfile')) {
             document.getElementById('updatePopup').style.display = 'block';
             document.getElementById('updateOverlay').style.display = 'block';
         }
-
         document.getElementById('downloadBtn').addEventListener('click', function() {
             window.open('https://drive.google.com/drive/folders/1p4-CXbuG_BVVurAwz0AmQSFNrluu9FF0', '_blank');
             localStorage.setItem('newfile', 'true');
@@ -601,10 +697,7 @@
 
     async function loginSuccess() {
         const activeSession = await checkActiveSession(currentUser);
-        if (activeSession) {
-            showDeviceConflict(activeSession);
-            return;
-        }
+        if (activeSession) { showDeviceConflict(activeSession); return; }
         await registerSession(currentUser);
         proceedWithLogin();
     }
@@ -613,18 +706,11 @@
         db.ref('userPhones/' + currentUser).once('value').then(userSnap => {
             if (userSnap.exists()) {
                 const myPhone = userSnap.val();
-                
                 db.ref('userPhones').once('value').then(allSnaps => {
                     let isDuplicate = false;
-                    allSnaps.forEach(child => {
-                        if (child.val() === myPhone && child.key !== currentUser) {
-                            isDuplicate = true;
-                        }
-                    });
-
+                    allSnaps.forEach(child => { if (child.val() === myPhone && child.key !== currentUser) isDuplicate = true; });
                     if (isDuplicate) {
-                        alert("Conflict detected: Your extension ("+myPhone+") is claimed by another user. Please set a new one.");
-                        showPhoneStep(); 
+                        showNotif("Conflict detected: Your phone number (" + myPhone + ") is claimed by another user. Please set a new one.", showPhoneStep);
                     } else {
                         localStorage.setItem('lastLoggedInUser', currentUser);
                         localStorage.setItem('userPhoneNumber', myPhone);
@@ -649,17 +735,11 @@
             document.getElementById('phone-error').innerText = "Must be a 3-digit number.";
             return;
         }
-
         db.ref('userPhones').once('value').then(snapshot => {
             let isTaken = false;
-            snapshot.forEach(child => {
-                if (child.val() === phone && child.key !== currentUser) {
-                    isTaken = true;
-                }
-            });
-
+            snapshot.forEach(child => { if (child.val() === phone && child.key !== currentUser) isTaken = true; });
             if (isTaken) {
-                document.getElementById('phone-error').innerText = "Extension already in use. Please choose another.";
+                document.getElementById('phone-error').innerText = "That number is already in use. Please choose another.";
             } else {
                 db.ref('userPhones/' + currentUser).set(phone).then(() => {
                     localStorage.setItem('lastLoggedInUser', currentUser);
@@ -694,7 +774,6 @@
             } else if (pin === savedPin) {
                 loginSuccess();
             } else {
-                // ── Track failed PIN attempt ──
                 trackFailedLogin(currentUser, 'pin');
                 document.getElementById('pin-error').innerText = 'Incorrect PIN.';
             }
@@ -746,7 +825,6 @@
                     loginSuccess();
                 }
             } else {
-                // ── Track failed password attempt ──
                 trackFailedLogin(currentUser, 'password');
                 document.getElementById('password-error').innerText = 'Wrong password';
             }
@@ -761,18 +839,45 @@
         }
     }
 
-    function createAccount() {
-        const newUser = document.getElementById('new-username').value.trim();
-        if (newUser) {
-            db.ref('pendingAccounts/' + newUser).set({ requestedAt: new Date().toISOString() });
-            alert('Request sent.');
-            window.location.reload();
-        }
-    }
-
+    // ── Create Account Multi-Step ──
     function showCreateAccount() {
         hideAllSteps();
+        backToCreateStep(1);
         document.getElementById('step-create').style.display = 'block';
+    }
+    function cancelCreate() {
+        hideAllSteps();
+        document.getElementById('step-username').style.display = 'block';
+    }
+    function backToCreateStep(n) {
+        document.querySelectorAll('.create-step').forEach(el => el.classList.remove('active'));
+        document.getElementById('create-step-' + n).classList.add('active');
+    }
+    function createStep2() {
+        const name = document.getElementById('new-firstname').value.trim();
+        if (!name) { document.getElementById('create-error-1').innerText = 'Please enter your first name.'; return; }
+        backToCreateStep(2);
+    }
+    function toggleOtherInput() {
+        const sel = document.getElementById('referral-select').value;
+        document.getElementById('referral-other').style.display = sel === 'other' ? 'block' : 'none';
+    }
+    function createStep3() {
+        const sel = document.getElementById('referral-select').value;
+        if (!sel) { document.getElementById('create-error-2').innerText = 'Please select an option.'; return; }
+        if (sel === 'other' && !document.getElementById('referral-other').value.trim()) {
+            document.getElementById('create-error-2').innerText = 'Please describe how you heard about TAC.'; return;
+        }
+        backToCreateStep(3);
+    }
+    function createAccount() {
+        const newUser = document.getElementById('new-username').value.trim();
+        if (!newUser) { document.getElementById('create-error-3').innerText = 'Please choose a username.'; return; }
+        const firstName = document.getElementById('new-firstname').value.trim();
+        const sel = document.getElementById('referral-select').value;
+        const referral = sel === 'other' ? document.getElementById('referral-other').value.trim() : sel;
+        db.ref('pendingAccounts/' + newUser).set({ requestedAt: new Date().toISOString(), firstName, referral });
+        showNotif('Request sent! You\'ll be added once approved.', () => window.location.reload());
     }
 
     function goToStandardLogin() {
@@ -782,84 +887,97 @@
 
     async function logout() {
         const lastUser = localStorage.getItem('lastLoggedInUser');
-        if (lastUser) {
-            await clearSession(lastUser);
-        }
+        if (lastUser) await clearSession(lastUser);
         localStorage.removeItem('lastLoggedInUser');
         localStorage.removeItem('userPhoneNumber');
         window.location.reload();
     }
 
+    // ── Video Overlay ──
+    function skipVideo() {
+        const videoEl = document.getElementById('combinedVideo');
+        videoEl.pause();
+        document.removeEventListener('keydown', _spaceHandler);
+        window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html');
+    }
+
+    let _spaceHandler = null;
+
     function showVideoOverlay() {
         const overlay = document.getElementById('videoOverlay');
         const videoEl = document.getElementById('combinedVideo');
         const skipHint = document.getElementById('skipHint');
+        const skipBtn = document.getElementById('skipBtn');
         const hasWatchedBefore = localStorage.getItem('videoWatchedOnce') === 'true';
-        
+
         overlay.style.display = 'flex';
-        
+
         if (hasWatchedBefore) {
             skipHint.style.display = 'block';
+            skipBtn.style.display = 'block';
             videoEl.src = 'short.mp4';
-            
-            const spaceHandler = function(e) {
-                if (e.key === ' ' || e.keyCode === 32) {
-                    videoEl.pause();
-                    window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html');
-                    document.removeEventListener('keydown', spaceHandler);
-                }
+
+            _spaceHandler = function(e) {
+                if (e.key === ' ' || e.keyCode === 32) { skipVideo(); }
             };
-            document.addEventListener('keydown', spaceHandler);
-            
-            videoEl.onended = () => { 
-                document.removeEventListener('keydown', spaceHandler);
-                window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html'); 
+            document.addEventListener('keydown', _spaceHandler);
+
+            videoEl.onended = () => {
+                document.removeEventListener('keydown', _spaceHandler);
+                window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html');
             };
         } else {
             videoEl.src = 'combined.mp4';
-            videoEl.onended = () => { 
+            videoEl.onended = () => {
                 localStorage.setItem('videoWatchedOnce', 'true');
-                window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html'); 
+                window.location.replace(window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1) + 'index.html');
             };
         }
-        
-        videoEl.play();
+
+        videoEl.play().catch(() => {
+            // Autoplay blocked — show skip button so user can proceed
+            skipBtn.style.display = 'block';
+            skipBtn.textContent = 'Continue ›';
+        });
     }
 
-    // Forgot Password Modal
-    document.getElementById('forgotBtn').addEventListener('click', () => {
+    // ── Forgot / Reset Modal ──
+    function openForgotModal(context) {
         document.getElementById('forgotModal').style.display = 'block';
         document.getElementById('forgotOverlay').style.display = 'block';
-    });
-    
+        document.getElementById('resetSentMsg').style.display = 'none';
+        document.getElementById('resetSentMsg').textContent = '';
+        if (context === 'pin') {
+            document.getElementById('forgotModalTitle').textContent = 'PIN Help';
+            document.getElementById('forgotPasswordOptions').style.display = 'none';
+            document.getElementById('forgotPinOptions').style.display = 'block';
+        } else {
+            document.getElementById('forgotModalTitle').textContent = 'Account Help';
+            document.getElementById('forgotPasswordOptions').style.display = 'block';
+            document.getElementById('forgotPinOptions').style.display = 'none';
+        }
+    }
     function closeForgotModal() {
         document.getElementById('forgotModal').style.display = 'none';
         document.getElementById('forgotOverlay').style.display = 'none';
     }
-    
-    function sendPasswordRequest() {
-        db.ref('notifications').push({ 
-            type: 'forgotPassword', 
-            user: currentUser, 
-            time: new Date().toISOString() 
-        });
-        alert('Password reset request sent to support!');
-        closeForgotModal();
-    }
-    
-    function openDevChat() {
-        window.open('https://discord.gg/yourdevserver', '_blank');
-        closeForgotModal();
+    function sendResetRequest(type) {
+        db.ref('notifications').push({ type: 'resetRequest', resetType: type, user: currentUser, time: new Date().toISOString() });
+        const msgs = { password: 'Password reset request sent to support!', pin: 'PIN reset request sent to support!', username: 'Username recovery request sent to support!' };
+        const el = document.getElementById('resetSentMsg');
+        el.textContent = msgs[type] || 'Request sent!';
+        el.style.display = 'block';
     }
 
-    window.addEventListener('beforeunload', function() {
-        // session heartbeat handled by interval
-    });
+    // Attach forgot password button
+    document.getElementById('forgotBtn').addEventListener('click', () => openForgotModal('password'));
+
+    window.addEventListener('beforeunload', function() {});
 </script>
 <script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
+<script src="custom-cursor.js"></script>
+<script src="rightclick.js"></script>
+<script src="panic-key.js"></script>
+<script src="idle-dvd.js"></script>
 </body>
 </html>

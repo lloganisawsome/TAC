@@ -31,7 +31,12 @@
     --border: rgba(255,255,255,0.06);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* Loftis Mode Overrides - Add your custom loftis styles here */
+body.loftis-mode {
+    filter: contrast(1.1) saturate(1.2); /* Example effect */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
 
 html, body {
     height: 100%;
@@ -40,6 +45,20 @@ html, body {
     color: #fff;
     font-size: 14px;
     overflow-x: hidden;
+}
+
+/* Custom Cursor Styling */
+#custom-cursor {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
 }
 
 /* Sidebar Styling */
@@ -122,6 +141,48 @@ html, body {
     margin-bottom: 20px;
 }
 
+/* Shared Switch Styling */
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #27272a;
+    transition: .3s;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider { background-color: var(--accent-dim); border-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(20px); background-color: var(--accent); }
+
 /* Theme Selector Grid */
 .theme-grid {
     display: grid;
@@ -148,10 +209,7 @@ html, body {
     transform: translateY(-2px);
 }
 
-.theme-card.active {
-    border-color: var(--accent);
-    background: var(--accent-dim);
-}
+.theme-card.active { border-color: var(--accent); background: var(--accent-dim); }
 
 .swatch {
     width: 36px;
@@ -161,13 +219,8 @@ html, body {
     border: 2px solid rgba(255,255,255,0.1);
 }
 
-.theme-name {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: capitalize;
-}
+.theme-name { font-size: 12px; font-weight: 600; text-transform: capitalize; }
 
-/* Preview Box */
 .preview-box {
     margin-top: 20px;
     padding: 20px;
@@ -195,6 +248,8 @@ html, body {
 </head>
 <body>
 
+<div id="custom-cursor"></div>
+
 <aside class="sidebar" id="sidebar">
     <div class="logo-container">
         <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
@@ -204,7 +259,7 @@ html, body {
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
             <span>Home</span>
         </a>
-        </nav>
+    </nav>
 </aside>
 
 <button class="toggle-btn" id="toggleBtn">
@@ -220,29 +275,48 @@ html, body {
     </div>
 
     <div class="panel">
-        <h2 style="font-size: 18px; margin-bottom: 8px;">Interface Color</h2>
-        <p style="color: var(--muted); font-size: 13px;">Select a theme color to update the sidebar, icons, and highlights.</p>
+        <h2 style="font-size: 18px; margin-bottom: 16px;">System Modes</h2>
         
-        <div class="theme-grid" id="themeGrid">
+        <div class="setting-row" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+            <div>
+                <span style="font-weight: 600;">Clicky Mode</span>
+                <p style="color: var(--muted); font-size: 11px;">Use the original TAC cursor!</p>
             </div>
+            <label class="switch">
+                <input type="checkbox" id="clickyToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row" style="padding-top: 16px;">
+            <div>
+                <span style="font-weight: 600;">Loftis Mode</span>
+                <p style="color: var(--muted); font-size: 11px;">For the memes hehe</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="loftisToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Interface Color</h2>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 16px;">Select a theme color to update the sidebar, icons, and highlights.</p>
+        <div class="theme-grid" id="themeGrid"></div>
     </div>
 
     <div class="panel">
         <h2 style="font-size: 18px; margin-bottom: 8px;">Live Preview</h2>
         <div class="preview-box">
             <p style="color: var(--accent)">This is how your accent text will look.</p>
-            <button class="btn-preview">Action Button</button>
+            <button class="btn-preview clickable">Action Button</button>
         </div>
-    </div>
-    
-    <div class="panel">
-        <h2 style="font-size: 18px; margin-bottom: 8px;">Loftis Mode</h2>
-        <p style="color: var(--muted); font-size: 13px;">Replace all icons, logos, and cursors with Loftis.</p>
-        <button class="btn-preview" id="loftisBtn">Enable Loftis Mode</button>
     </div>
 </main>
 
 <script>
+/* --- THEME LOGIC --- */
 const themeColors = {
     red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
     green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
@@ -259,17 +333,12 @@ const themeColors = {
 function applyTheme() {
     const currentTheme = localStorage.getItem('theme') || 'green';
     const colors = themeColors[currentTheme] || themeColors.green;
-
     document.documentElement.style.setProperty('--accent', colors.primary);
     document.documentElement.style.setProperty('--accent-dim', colors.dim);
-
     const logo = document.getElementById('logo');
     if (logo) logo.src = `taclogos/${currentTheme}.png`;
-
     const sidebar = document.getElementById('sidebar');
     if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
-
-    // Update active class in UI
     document.querySelectorAll('.theme-card').forEach(card => {
         card.classList.remove('active');
         if(card.dataset.theme === currentTheme) card.classList.add('active');
@@ -280,70 +349,110 @@ function initThemeSelector() {
     const grid = document.getElementById('themeGrid');
     Object.keys(themeColors).forEach(key => {
         const card = document.createElement('div');
-        card.className = 'theme-card';
+        card.className = 'theme-card clickable';
         card.dataset.theme = key;
-        card.innerHTML = `
-            <div class="swatch" style="background: ${themeColors[key].primary}"></div>
-            <span class="theme-name">${key}</span>
-        `;
-        card.onclick = () => {
-            localStorage.setItem('theme', key);
-            applyTheme();
-        };
+        card.innerHTML = `<div class="swatch" style="background: ${themeColors[key].primary}"></div><span class="theme-name">${key}</span>`;
+        card.onclick = () => { localStorage.setItem('theme', key); applyTheme(); };
         grid.appendChild(card);
     });
 }
 
-// Sidebar Toggle Logic
+/* --- SIDEBAR TOGGLE --- */
 const sidebar = document.getElementById('sidebar');
 const toggleBtn = document.getElementById('toggleBtn');
 const mainContent = document.getElementById('mainContent');
-
 toggleBtn.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
     toggleBtn.classList.toggle('collapsed');
     mainContent.classList.toggle('expanded');
 });
 
-// Loftis Mode Toggle Logic
-const loftisBtn = document.getElementById('loftisBtn');
-let isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
+/* --- SETTINGS MODE LOGIC (Clicky & Loftis) --- */
+const clickyToggle = document.getElementById('clickyToggle');
+const loftisToggle = document.getElementById('loftisToggle');
 
-function updateLoftisUI() {
-    if (isLoftisMode) {
-        loftisBtn.textContent = "Disable Loftis Mode";
-        loftisBtn.style.background = "var(--panel-hover)";
-        loftisBtn.style.color = "var(--accent)";
-        loftisBtn.style.border = "1px solid var(--accent)";
+// Clicky Setup
+let isClickyMode = localStorage.getItem('clicky') === 'true';
+clickyToggle.checked = isClickyMode;
+clickyToggle.addEventListener('change', () => {
+    isClickyMode = clickyToggle.checked;
+    localStorage.setItem('clicky', isClickyMode);
+});
+
+// Loftis Setup
+let isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
+loftisToggle.checked = isLoftisMode;
+if(isLoftisMode) document.body.classList.add('loftis-mode');
+
+loftisToggle.addEventListener('change', () => {
+    const active = loftisToggle.checked;
+    localStorage.setItem('isLoftisMode', active);
+    document.body.classList.toggle('loftis-mode', active);
+});
+
+/* --- CUSTOM CURSOR LOGIC --- */
+const cursor = document.getElementById("custom-cursor");
+let isClicking = false;
+
+function updateCursor(e) {
+    if (isClicking) return;
+    if (isClickyMode) {
+        cursor.style.backgroundImage = "url('cursor.png')";
+        return;
+    }
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el) return;
+    if (el.closest("input, textarea")) {
+        cursor.style.backgroundImage = "url('text.png')";
+    } else if (el.closest("button, a, input[type='button'], input[type='submit'], .clickable, .nav-item, .toggle-btn, .switch, .theme-card")) {
+        cursor.style.backgroundImage = "url('hover.png')";
     } else {
-        loftisBtn.textContent = "Enable Loftis Mode";
-        loftisBtn.style.background = "var(--accent)";
-        loftisBtn.style.color = "#000";
-        loftisBtn.style.border = "none";
+        cursor.style.backgroundImage = "url('normal.png')";
     }
 }
 
-loftisBtn.addEventListener('click', () => {
-    isLoftisMode = !isLoftisMode;
-    localStorage.setItem('isLoftisMode', isLoftisMode);
-    updateLoftisUI();
+document.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+    updateCursor(e);
 });
 
-// Initialize Loftis UI state
-updateLoftisUI();
-// Start
+document.addEventListener("mousedown", () => {
+    isClicking = true;
+    cursor.style.backgroundImage = isClickyMode ? "url('clicky.png')" : "url('click.png')";
+    cursor.style.transform = "translate(-50%, -50%) scale(0.9)";
+});
+
+document.addEventListener("mouseup", (e) => {
+    isClicking = false;
+    cursor.style.transform = "translate(-50%, -50%) scale(1)";
+    updateCursor(e);
+});
+
+/* --- START --- */
 initThemeSelector();
 applyTheme();
 
-// Listen for changes from other tabs
 window.addEventListener('storage', (e) => {
     if (e.key === 'theme') applyTheme();
+    if (e.key === 'clicky') {
+        isClickyMode = localStorage.getItem('clicky') === 'true';
+        clickyToggle.checked = isClickyMode;
+    }
+    if (e.key === 'isLoftisMode') {
+        const active = localStorage.getItem('isLoftisMode') === 'true';
+        loftisToggle.checked = active;
+        document.body.classList.toggle('loftis-mode', active);
+    }
 });
 </script>
 
     <script src="custom-cursor.js"></script>
     <script src="rightclick.js"></script>
     <script src="panic-key.js"></script>
+</body>
+</html>="panic-key.js"></script>
     <script src="idle-dvd.js"></script>
+    <script src="panic-key.js"></script>
 </body>
 </html>

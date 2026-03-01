@@ -2,21 +2,26 @@ const cursor = document.createElement("div");
 cursor.id = "custom-cursor";
 document.body.appendChild(cursor);
 
+// Check localStorage for clicky mode
+const isClickyMode = localStorage.getItem('clicky') === 'true';
 let isClicking = false;
 
 function updateCursor(e) {
   if (isClicking) return;
 
-  const el = document.elementFromPoint(e.clientX, e.clientY);
+  // If clicky mode is on, use the specific cursor.png
+  if (isClickyMode) {
+    cursor.style.backgroundImage = "url('cursor.png')";
+    return;
+  }
 
+  const el = document.elementFromPoint(e.clientX, e.clientY);
   if (!el) return;
 
   if (el.closest("input, textarea")) {
     cursor.style.backgroundImage = "url('text.png')";
   } 
-  else if (
-    el.closest("button, a, input[type='button'], input[type='submit'], .clickable")
-  ) {
+  else if (el.closest("button, a, input[type='button'], input[type='submit'], .clickable")) {
     cursor.style.backgroundImage = "url('hover.png')";
   } 
   else {
@@ -32,12 +37,16 @@ document.addEventListener("mousemove", (e) => {
 
 document.addEventListener("mousedown", () => {
   isClicking = true;
-  cursor.style.backgroundImage = "url('click.png')";
+  
+  // Use clicky.png if mode is active, otherwise default to click.png
+  const clickImg = isClickyMode ? "url('clicky.png')" : "url('click.png')";
+  cursor.style.backgroundImage = clickImg;
+  
   cursor.style.transform = "translate(-50%, -50%) scale(0.9)";
 });
 
 document.addEventListener("mouseup", (e) => {
   isClicking = false;
   cursor.style.transform = "translate(-50%, -50%) scale(1)";
-  updateCursor(e); // immediately restore correct state
+  updateCursor(e); 
 });
