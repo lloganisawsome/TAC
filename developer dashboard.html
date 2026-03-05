@@ -927,37 +927,19 @@ sam,allowed
         return gameId;
     }
 
-    // ===================== ONLINE STATUS =====================
-    function isUserOnline(username) {
-        // Check activeUsers — format: activeUsers/{username}/lastSeen, timestamp
-        const u = activeUsers[username];
-        if (!u) return false;
-        // If timestamp exists, consider online if within last 5 minutes
-        const ts = u.timestamp || 0;
-        const now = Date.now();
-        return (now - ts) < 5 * 60 * 1000;
-    }
-    function getUserLastSeen(username) {
-        const u = activeUsers[username];
-        if (!u) return null;
-        if (u.timestamp) return u.timestamp;
-        if (u.lastSeen) return u.lastSeen;
-        return null;
-    }
-    function formatLastSeen(username) {
-        if (isUserOnline(username)) return null; // online — no need for last seen
-        const u = activeUsers[username];
-        if (!u) return 'Never';
-        const ts = u.timestamp;
-        const lastSeen = u.lastSeen; // e.g. "20:16"
-        if (ts) {
-            const ago = timeAgo(ts);
-            const timeStr = lastSeen || new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-            return timeStr + ' (' + ago + ')';
-        }
-        if (lastSeen) return lastSeen;
-        return 'Unknown';
-    }
+// ===================== ONLINE STATUS =====================
+function isUserOnline(username) {
+    const u = activeUsers[username];
+    if (!u) return false;
+    
+    // Check if user has a lastSeen timestamp or a generic timestamp
+    const lastSeen = u.lastSeen || u.timestamp || 0;
+    const now = Date.now();
+    
+    // 120,000ms equals 2 minutes. 
+    // Only returns true if they were seen in the last 2 minutes.
+    return (now - lastSeen) < 120000; 
+}
 
     // ===================== OVERVIEW RANGE =====================
     function setOverviewRange(range) {
@@ -1186,8 +1168,8 @@ sam,allowed
 
     // ===================== OVERVIEW =====================
     function renderOverview() {
-        document.getElementById('activeUsersCount').textContent = Object.keys(activeUsers).length;
-
+const onlineNowCount = Object.keys(activeUsers).filter(username => isUserOnline(username)).length;
+document.getElementById('activeUsersCount').textContent = onlineNowCount;
         // Logins
         if (overviewRange === 'today') {
             const todayData = loginsByDay[TODAY] || {};
@@ -2241,6 +2223,13 @@ sam,allowed
         db.ref('loginsByDay').on('value', s => { loginsByDay = s.val() || {}; renderOverview(); renderLoginTrend(); });
         db.ref('activeUserSnapshots').on('value', s => { activeUserSnapshots = s.val() || {}; renderActiveUsersChart(); });
     }
+    
+    // Refresh the UI every 30 seconds to ensure users who go inactive 
+// are marked offline without needing a page refresh.
+setInterval(() => {
+    renderOverview();
+    renderUsers(document.getElementById('userSearch').value);
+}, 30000);
 
     loadData();
     setupListeners();
