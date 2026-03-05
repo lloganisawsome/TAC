@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
     <link rel="stylesheet" href__="rightclick.css">
     <link rel="stylesheet" href__="custom-cursor.css">
     <meta charset="utf-8"/>
@@ -932,15 +930,11 @@ sam,allowed
 // ===================== ONLINE STATUS =====================
 function isUserOnline(username) {
     const u = activeUsers[username];
-    if (!u) return false;
+    if (!u || !u.timestamp) return false;
     
-    // Check if user has a lastSeen timestamp or a generic timestamp
-    const lastSeen = u.lastSeen || u.timestamp || 0;
-    const now = Date.now();
-    
-    // 120,000ms equals 2 minutes. 
-    // Only returns true if they were seen in the last 2 minutes.
-    return (now - lastSeen) < 120000; 
+    // Consider a user "online" if they were active in the last 5 minutes (300,000 ms)
+    const fiveMinutesAgo = Date.now() - 300000;
+    return u.timestamp > fiveMinutesAgo;
 }
 
     // ===================== OVERVIEW RANGE =====================
@@ -1417,8 +1411,7 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
             const isPending = !!pending[n];
             const fc = failedPerUser[n] || 0;
             const online = isUserOnline(n);
-            const lastSeenStr = online ? '—' : formatLastSeen(n);
-            const onlineHtml = online
+const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);            const onlineHtml = online
                 ? `<span class="badge badge-online"><span class="online-dot"></span>Online</span>`
                 : `<span class="badge badge-offline"><span class="offline-dot"></span>Offline</span>`;
             return `<tr>
@@ -1454,7 +1447,7 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
         Object.keys(activeUsers).forEach(u => allUsers.add(u));
         Array.from(allUsers).forEach(u => {
             const online = isUserOnline(u);
-            const ls = online ? 'Online' : (formatLastSeen(u) || 'Never');
+            const ls = online ? 'Online' : (timeAgo(u) || 'Never');
             csv += `${u},${logins[u]||0},${todayData[u]||0},${!!allowedUsers[u]},${!!pending[u]},${online},${ls}\n`;
         });
         const a = document.createElement('a');
@@ -2245,7 +2238,6 @@ setInterval(() => {
 <script src="panic-key.js"></script>
 <script src="idle-dvd.js"></script>
 <script src="timeTracker.js"></script>
-
 <script type="module" src="online.js"></script>
 </body>
 </html>
