@@ -18,7 +18,7 @@ const db = getDatabase(app);
 
 function updateActiveUserStatus() {
   // Get the username from local storage
-  const username = localStorage.getItem('lastActiveUser');
+  const username = localStorage.getItem('lastLoggedInUser');
 
   // Only run if a username actually exists
   if (username) {
