@@ -1,14 +1,7 @@
-import { initializeApp } from "firebase/app";
-import { 
-  getDatabase, 
-  ref, 
-  set, 
-  onValue, 
-  onDisconnect,
-  serverTimestamp 
-} from "firebase/database";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-// 1. Your Firebase Configuration
+// Your Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
   authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -19,34 +12,35 @@ const firebaseConfig = {
   appId: "1:937853298051:web:119ccc7b5499514bd442b6"
 };
 
-// 2. Initialize Firebase and Database
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 3. Presence Logic
-const username = localStorage.getItem("lastLoggedInUser");
+function updateActiveUserStatus() {
+  // Get the username from local storage
+  const username = localStorage.getItem('lastActiveUser');
 
-if (username) {
-  const activeUserRef = ref(db, "activeusers/" + username);
-  const lastOnlineRef = ref(db, "users/" + username + "/lastOnline");
-  const connectedRef = ref(db, ".info/connected");
+  // Only run if a username actually exists
+  if (username) {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const timeString = `${hours}:${minutes}`;
 
-  onValue(connectedRef, (snapshot) => {
-    if (snapshot.val() === true) {
-      console.log("Connected to Firebase!");
-
-      // Set up instructions for when the user closes the app
-      onDisconnect(activeUserRef).remove();
-      onDisconnect(lastOnlineRef).set(serverTimestamp());
-
-      // Set the user as active immediately upon connection
-      set(activeUserRef, true)
-        .then(() => console.log(`User ${username} is now online.`))
-        .catch((error) => console.error("Write failed:", error));
-    } else {
-      console.log("Disconnected from Firebase.");
-    }
-  });
-} else {
-  console.warn("No username found in localStorage.");
+    // Store in DB under activeUsers/Username
+    set(ref(db, 'activeUsers/' + username), {
+      lastSeen: timeString,
+      timestamp: now.getTime()
+    })
+    .then(() => console.log(`Pinged Firebase for: ${username}`))
+    .catch((err) => console.error("Firebase Error:", err));
+  } else {
+    console.warn("No 'lastActiveUser' found in localStorage. Skipping update.");
+  }
 }
+
+// Run immediately when page loads
+updateActiveUserStatus();
+
+// Then run every 60 seconds (60,000 milliseconds)
+setInterval(updateActiveUserStatus, 60000);
