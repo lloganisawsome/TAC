@@ -1,2 +1,3 @@
-Im not telling you how to use this because im not letting you copy!
-If you need help with the website i got you just ask me!
+This WILL NOT WORK if forked
+
+-- NOT FOR USE IN CALIFORNIA / COLORADO --
