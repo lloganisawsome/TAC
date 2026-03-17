@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
+    <link rel="stylesheet" href__="rightclick.css">
+    <link rel="stylesheet" href__="custom-cursor.css">
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>Developer Dashboard — TAC</title>
@@ -205,6 +205,27 @@
         .ban-card.banned { border: 1px solid rgba(239,68,68,0.35); }
         .ban-card.not-banned { border: 1px solid rgba(34,197,94,0.25); }
         .appeal-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
+        
+        .ban-apps-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            margin-bottom: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .ban-app-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -252,7 +273,6 @@
 
 <main class="main">
 
-<!-- OVERVIEW -->
 <div id="page-overview" class="page active">
     <div class="flex items-center gap-3 mb-4" style="flex-wrap:wrap;">
         <div class="time-range-btns">
@@ -361,7 +381,6 @@
     </div>
 </div>
 
-<!-- USERS PAGE -->
 <div id="page-users" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -381,7 +400,6 @@
     </div>
 </div>
 
-<!-- PENDING PAGE -->
 <div id="page-pending" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -395,7 +413,6 @@
     </div>
 </div>
 
-<!-- APP USAGE PAGE -->
 <div id="page-appusage" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -406,7 +423,6 @@
     </div>
 </div>
 
-<!-- CHAT PAGE -->
 <div id="page-chat" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -418,7 +434,6 @@
     </div>
 </div>
 
-<!-- PRIVATE CHATS PAGE -->
 <div id="page-privatechats" class="page">
     <div class="panel">
         <div class="panel-header"><div><h2 class="panel-title">🔒 Private Chats</h2><p class="panel-subtitle">From /private_chats</p></div></div>
@@ -440,7 +455,6 @@
     </div>
 </div>
 
-<!-- FORUM PAGE -->
 <div id="page-forum" class="page">
     <div class="grid grid-2">
         <div class="panel">
@@ -467,7 +481,6 @@
     </div>
 </div>
 
-<!-- LPC LIKES PAGE — updated with Posted By + likes/dislikes -->
 <div id="page-lpc" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -493,7 +506,6 @@
     </div>
 </div>
 
-<!-- NEWS PAGE -->
 <div id="page-news" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -504,7 +516,6 @@
     </div>
 </div>
 
-<!-- VIDEOS PAGE -->
 <div id="page-videos" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -515,7 +526,6 @@
     </div>
 </div>
 
-<!-- GAME PLAYS PAGE -->
 <div id="page-gameplays" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -530,7 +540,6 @@
     </div>
 </div>
 
-<!-- POLLS PAGE -->
 <div id="page-polls" class="page">
     <div class="grid grid-2">
         <div class="panel">
@@ -548,7 +557,6 @@
     </div>
 </div>
 
-<!-- PHONE PAGE -->
 <div id="page-phone" class="page">
     <div class="grid grid-2">
         <div class="panel">
@@ -566,7 +574,6 @@
     </div>
 </div>
 
-<!-- NOTIFICATIONS PAGE -->
 <div id="page-notifications" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -582,7 +589,6 @@
     </div>
 </div>
 
-<!-- MODERATION PAGE -->
 <div id="page-moderation" class="page">
     <div class="grid grid-2">
         <div class="panel">
@@ -613,7 +619,6 @@
     </div>
 </div>
 
-<!-- FAILED LOGINS PAGE -->
 <div id="page-failedlogins" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -632,7 +637,6 @@
     </div>
 </div>
 
-<!-- SECURITY PAGE -->
 <div id="page-security" class="page">
     <div class="panel mb-4">
         <div class="panel-header"><div><h2 class="panel-title">🔐 Admin Override</h2><p class="panel-subtitle">Enter admin code to view sensitive data</p></div></div>
@@ -658,7 +662,6 @@
     </div>
 </div>
 
-<!-- APP BANS PAGE (NEW) -->
 <div id="page-appbans" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -671,7 +674,6 @@
                 <button class="btn btn-primary" onclick="loadData()">Refresh</button>
             </div>
         </div>
-        <!-- Stats row -->
         <div class="grid grid-3 mb-4">
             <div class="stat-card red">
                 <div class="stat-label">Total Bans</div>
@@ -690,9 +692,7 @@
     </div>
 </div>
 
-<!-- CHARTS PAGE (NEW) -->
 <div id="page-charts" class="page">
-    <!-- Active Users Line Chart -->
     <div class="panel mb-4">
         <div class="panel-header">
             <div>
@@ -709,7 +709,6 @@
         <div id="activeUsersChartLegend" style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;"></div>
     </div>
 
-    <!-- Login Trend -->
     <div class="panel mb-4">
         <div class="panel-header">
             <div>
@@ -721,7 +720,6 @@
         <div id="loginTrendLabels" style="display:flex;gap:4px;margin-top:4px;"></div>
     </div>
 
-    <!-- Bar charts row 1 -->
     <div class="grid grid-2 mb-4">
         <div class="panel">
             <div class="panel-header"><h3 class="panel-title">🎮 Game Plays (Top 10)</h3></div>
@@ -732,7 +730,6 @@
             <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="videoViewsBarChart"></div></div>
         </div>
     </div>
-    <!-- Bar charts row 2 -->
     <div class="grid grid-2 mb-4">
         <div class="panel">
             <div class="panel-header"><h3 class="panel-title">📱 App Usage (Top 10)</h3></div>
@@ -743,7 +740,6 @@
             <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="lpcBarChart"></div></div>
         </div>
     </div>
-    <!-- Bar charts row 3 -->
     <div class="grid grid-2 mb-4">
         <div class="panel">
             <div class="panel-header"><h3 class="panel-title">💬 Chat Messages Per Room</h3></div>
@@ -756,7 +752,6 @@
     </div>
 </div>
 
-<!-- TOOLS PAGE -->
 <div id="page-tools" class="page">
     <div class="grid grid-2">
         <div class="panel">
@@ -775,28 +770,26 @@
         <div class="panel">
             <div class="panel-header">
                 <div>
-                    <h3 class="panel-title">📥 CSV User Import</h3>
-                    <p class="panel-subtitle">Import users into /allowedUsers from a CSV file</p>
+                    <h3 class="panel-title">📥 CSV Games Import</h3>
+                    <p class="panel-subtitle">Import games into /games from a CSV file</p>
                 </div>
                 <div class="tooltip-wrap">
                     <div class="tooltip-icon">?</div>
                     <div class="tooltip-box">Required CSV format:
-username,status
-logan,allowed
-alex,allowed
-sam,allowed
+title,iframe,logo
+Flappy Bird,https://example.com/game,https://example.com/logo.png
+Tetris,https://example.com/tetris,
 
-• First row must be the header: <strong>username,status</strong>
-• Each row: username (string), status (allowed)
-• No spaces around commas
-• File must end in .csv
-• Only users with status "allowed" will be imported</div>
+• First row must be the header: <strong>title,iframe,logo</strong>
+• Each row: title, iframe URL, logo URL (logo is optional but include the comma)
+• No spaces around commas unless part of the URL/Title
+• File must end in .csv</div>
                 </div>
             </div>
             <div class="csv-import-zone" id="csvDropZone" onclick="document.getElementById('csvFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleCsvDrop(event)">
                 <div style="font-size:32px;">📂</div>
                 <p>Click to select a CSV file or drag & drop here</p>
-                <p style="font-size:11px;margin-top:6px;">Required columns: <code>username</code>, <code>status</code></p>
+                <p style="font-size:11px;margin-top:6px;">Required columns: <code>title</code>, <code>iframe</code>, <code>logo</code></p>
             </div>
             <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleCsvFile(this.files[0])"/>
             <div id="csvImportStatus" style="margin-top:12px;"></div>
@@ -817,7 +810,6 @@ sam,allowed
     </div>
 </div>
 
-<!-- SETTINGS PAGE -->
 <div id="page-settings" class="page">
     <div class="grid grid-2">
         <div class="panel col-span-2">
@@ -835,7 +827,6 @@ sam,allowed
 
 </main>
 
-<!-- Modals -->
 <div class="modal-overlay" id="newsModal">
     <div class="modal">
         <div class="modal-header"><h3>Add News Post</h3><button class="modal-close" onclick="closeModal('newsModal')">✕</button></div>
@@ -872,14 +863,48 @@ sam,allowed
         </div>
     </div>
 </div>
-<!-- Ban User Modal -->
+
 <div class="modal-overlay" id="banUserModal">
     <div class="modal">
-        <div class="modal-header"><h3>🚫 Ban User</h3><button class="modal-close" onclick="closeModal('banUserModal')">✕</button></div>
+        <div class="modal-header"><h3>⛔ Issue a Ban</h3><button class="modal-close" onclick="closeModal('banUserModal')">✕</button></div>
         <div class="modal-body">
-            <input type="text" id="banUsernameInput" placeholder="Username to ban" class="mb-2"/>
-            <textarea id="banReasonInput" placeholder="Ban reason..." class="mb-4"></textarea>
-            <button class="btn btn-danger" onclick="confirmBanUser()">Ban User</button>
+            <input type="text" id="banUsername" placeholder="USERNAME" class="mb-2">
+            <textarea id="banReason" placeholder="REASON" class="mb-2"></textarea>
+            
+            <label class="ban-app-label" style="font-weight:bold; color:var(--danger); margin-bottom: 8px;">
+                <input type="checkbox" id="banAllApps" onchange="toggleBanAllApps(this)">
+                🚫 All Apps (Full Launcher Ban)
+            </label>
+            
+            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-top:12px;font-weight:600;">Banned From</div>
+            <div class="ban-apps-grid" id="banAppCheckboxes">
+                <label class="ban-app-label"><input type="checkbox" value="Games" class="ban-app-cb"> Games</label>
+                <label class="ban-app-label"><input type="checkbox" value="Members" class="ban-app-cb"> Members</label>
+                <label class="ban-app-label"><input type="checkbox" value="Apply Staff" class="ban-app-cb"> Apply Staff</label>
+                <label class="ban-app-label"><input type="checkbox" value="Help" class="ban-app-cb"> Help</label>
+                <label class="ban-app-label"><input type="checkbox" value="Home" class="ban-app-cb"> Home</label>
+                <label class="ban-app-label"><input type="checkbox" value="Browser" class="ban-app-cb"> Browser</label>
+                <label class="ban-app-label"><input type="checkbox" value="Developer" class="ban-app-cb"> Developer</label>
+                <label class="ban-app-label"><input type="checkbox" value="DVD Logo" class="ban-app-cb"> DVD Logo</label>
+                <label class="ban-app-label"><input type="checkbox" value="Calculator" class="ban-app-cb"> Calculator</label>
+                <label class="ban-app-label"><input type="checkbox" value="TACTube" class="ban-app-cb"> TACTube</label>
+                <label class="ban-app-label"><input type="checkbox" value="Memes" class="ban-app-cb"> Memes</label>
+                <label class="ban-app-label"><input type="checkbox" value="Chat" class="ban-app-cb"> Chat</label>
+                <label class="ban-app-label"><input type="checkbox" value="Clock" class="ban-app-cb"> Clock</label>
+                <label class="ban-app-label"><input type="checkbox" value="Notes" class="ban-app-cb"> Notes</label>
+                <label class="ban-app-label"><input type="checkbox" value="To-Do" class="ban-app-cb"> To-Do</label>
+                <label class="ban-app-label"><input type="checkbox" value="Leak Crush" class="ban-app-cb"> Leak Crush</label>
+                <label class="ban-app-label"><input type="checkbox" value="Spacebar Clicker" class="ban-app-cb"> Spacebar Clicker</label>
+                <label class="ban-app-label"><input type="checkbox" value="Forum" class="ban-app-cb"> Forum</label>
+                <label class="ban-app-label"><input type="checkbox" value="Casino" class="ban-app-cb"> Casino</label>
+                <label class="ban-app-label"><input type="checkbox" value="News" class="ban-app-cb"> News</label>
+                <label class="ban-app-label"><input type="checkbox" value="Loftis Button" class="ban-app-cb"> Loftis Button</label>
+                <label class="ban-app-label"><input type="checkbox" value="Phone" class="ban-app-cb"> Phone</label>
+                <label class="ban-app-label"><input type="checkbox" value="Draw" class="ban-app-cb"> Draw</label>
+                <label class="ban-app-label"><input type="checkbox" value="Theme" class="ban-app-cb"> Theme</label>
+            </div>
+            
+            <button class="btn btn-danger" style="margin-top:16px; width:100%; justify-content:center;" onclick="confirmBanUser()">Issue Ban</button>
         </div>
     </div>
 </div>
@@ -1500,8 +1525,8 @@ sam,allowed
         a.click();
     });
 
-    // ===================== CSV IMPORT =====================
-    const CSV_REQUIRED_HEADERS = ['username', 'status'];
+    // ===================== CSV GAMES IMPORT (UPDATED) =====================
+    const CSV_REQUIRED_HEADERS = ['title', 'iframe', 'logo'];
     function handleCsvDrop(e) {
         e.preventDefault();
         document.getElementById('csvDropZone').classList.remove('drag-over');
@@ -1529,47 +1554,55 @@ sam,allowed
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
             const missingHeaders = CSV_REQUIRED_HEADERS.filter(h => !headers.includes(h));
             if (missingHeaders.length > 0) {
-                statusEl.innerHTML = `<span style="color:var(--danger);">❌ Invalid CSV format. Missing columns: <strong>${missingHeaders.join(', ')}</strong><br>Required: <code>username,status</code></span>`;
+                statusEl.innerHTML = `<span style="color:var(--danger);">❌ Invalid CSV format. Missing columns: <strong>${missingHeaders.join(', ')}</strong><br>Required: <code>title,iframe,logo</code></span>`;
                 previewEl.innerHTML = '';
                 return;
             }
-            const usernameIdx = headers.indexOf('username');
-            const statusIdx = headers.indexOf('status');
+            const titleIdx = headers.indexOf('title');
+            const iframeIdx = headers.indexOf('iframe');
+            const logoIdx = headers.indexOf('logo');
             const rows = [];
             const errors = [];
+            
             for (let i = 1; i < lines.length; i++) {
-                const cols = lines[i].split(',').map(c => c.trim());
-                if (cols.length < 2) { errors.push('Row ' + i + ': not enough columns'); continue; }
-                const username = cols[usernameIdx];
-                const status = cols[statusIdx];
-                if (!username) { errors.push('Row ' + i + ': empty username'); continue; }
-                if (status !== 'allowed') { errors.push('Row ' + i + ': status must be "allowed" (got "' + status + '")'); continue; }
-                rows.push({ username, status });
+                const cols = lines[i].split(',');
+                if (cols.length < 3) { errors.push('Row ' + i + ': not enough columns'); continue; }
+                const title = cols[titleIdx].trim();
+                const iframe = cols[iframeIdx].trim();
+                const logo = cols.slice(logoIdx).join(',').trim(); // allow commas in the logo URL just in case
+                
+                if (!title) { errors.push('Row ' + i + ': empty title'); continue; }
+                if (!iframe) { errors.push('Row ' + i + ': empty iframe'); continue; }
+                
+                rows.push({ title, iframe, logo });
             }
             if (errors.length > 0 && rows.length === 0) {
                 statusEl.innerHTML = '<span style="color:var(--danger);">❌ No valid rows found.<br>' + errors.slice(0,5).join('<br>') + '</span>';
                 previewEl.innerHTML = '';
                 return;
             }
-            statusEl.innerHTML = `<span style="color:var(--accent);">✅ ${rows.length} valid user(s) found${errors.length > 0 ? ', ' + errors.length + ' row(s) skipped' : ''}. Review below and confirm import.</span>`;
+            statusEl.innerHTML = `<span style="color:var(--accent);">✅ ${rows.length} valid game(s) found${errors.length > 0 ? ', ' + errors.length + ' row(s) skipped' : ''}. Review below and confirm import.</span>`;
             previewEl.innerHTML = `
                 <div class="table-wrap" style="max-height:200px;margin-top:8px;">
                     <table>
-                        <thead><tr><th>Username</th><th>Status</th></tr></thead>
-                        <tbody>${rows.map(r => `<tr><td><strong>${r.username}</strong></td><td><span class="badge badge-success">${r.status}</span></td></tr>`).join('')}</tbody>
+                        <thead><tr><th>Title</th><th>Iframe</th><th>Logo</th></tr></thead>
+                        <tbody>${rows.map(r => `<tr><td><strong>${r.title}</strong></td><td><span class="truncate" style="max-width:150px;display:block;">${r.iframe}</span></td><td><span class="truncate" style="max-width:150px;display:block;">${r.logo || '—'}</span></td></tr>`).join('')}</tbody>
                     </table>
                 </div>
-                <button class="btn btn-primary mt-4" onclick="confirmCsvImport(${JSON.stringify(rows).replace(/"/g,'&quot;')})">Import ${rows.length} User(s) to /allowedUsers</button>
+                <button class="btn btn-primary mt-4" onclick="confirmCsvImport(${JSON.stringify(rows).replace(/"/g,'&quot;')})">Import ${rows.length} Game(s) to /games</button>
             `;
         };
         reader.readAsText(file);
     }
     function confirmCsvImport(rows) {
-        if (!confirm('Import ' + rows.length + ' user(s) into /allowedUsers?')) return;
+        if (!confirm('Import ' + rows.length + ' game(s) into /games?')) return;
         const updates = {};
-        rows.forEach(r => { updates['allowedUsers/' + r.username] = true; });
+        rows.forEach(r => { 
+            const newKey = db.ref('games').push().key;
+            updates['games/' + newKey] = r; 
+        });
         db.ref().update(updates).then(() => {
-            document.getElementById('csvImportStatus').innerHTML = '<span style="color:var(--accent);">✅ Successfully imported ' + rows.length + ' user(s)!</span>';
+            document.getElementById('csvImportStatus').innerHTML = '<span style="color:var(--accent);">✅ Successfully imported ' + rows.length + ' game(s)!</span>';
             document.getElementById('csvPreviewTable').innerHTML = '';
             document.getElementById('csvFileInput').value = '';
         }).catch(err => {
@@ -1803,7 +1836,7 @@ sam,allowed
     function deleteSubforum(key) { db.ref('forum/subforums/' + key).remove(); }
     function clearForumAuditLogs() { if (confirm('Clear all audit logs?')) db.ref('forum/auditLogs').remove(); }
 
-    // ===================== LPC LIKES (UPDATED) =====================
+    // ===================== LPC LIKES =====================
     function renderLikes() {
         const tbody = document.querySelector('#likesTable tbody');
         const entries = Object.entries(likes).sort((a, b) => (b[1].timestamp||0) - (a[1].timestamp||0));
@@ -2029,14 +2062,88 @@ sam,allowed
     function resetUserPassword(user) { if (confirm(`Reset password for ${user}?`)) db.ref('userPasswords/' + user).remove(); }
     function resetUserPin(user) { if (confirm(`Reset PIN for ${user}?`)) db.ref('userPins/' + user).remove(); }
 
-    // ===================== APP BANS (NEW) =====================
+    // ===================== APP BANS (UPDATED LOGIC) =====================
+    function toggleBanAllApps(cb) {
+        const checkboxes = document.querySelectorAll('.ban-app-cb');
+        checkboxes.forEach(c => {
+            c.disabled = cb.checked;
+            if (cb.checked) c.checked = false;
+        });
+    }
+
+    function showBanUserModal() {
+        document.getElementById('banUsername').value = '';
+        document.getElementById('banReason').value = '';
+        document.getElementById('banAllApps').checked = true;
+        toggleBanAllApps(document.getElementById('banAllApps'));
+        showModal('banUserModal');
+    }
+
+    function confirmBanUser() {
+        const username = document.getElementById('banUsername').value.trim();
+        const reason = document.getElementById('banReason').value.trim() || 'Violation of rules';
+        const isGlobal = document.getElementById('banAllApps').checked;
+        
+        if (!username) return alert('Enter a username to ban');
+        
+        const now = Date.now();
+
+        if (isGlobal) {
+            db.ref('appBans/' + username).update({
+                banned: true,
+                bannedApps: null, // Clear any app specific bans if giving a global ban
+                reason: reason,
+                bannedAt: now
+            }).then(() => {
+                closeModal('banUserModal');
+            });
+        } else {
+            const checkedApps = Array.from(document.querySelectorAll('.ban-app-cb:checked')).map(cb => cb.value);
+            if (checkedApps.length === 0) return alert('Select at least one app or "All Apps"');
+            
+            db.ref('appBans/' + username).update({
+                banned: false,
+                bannedApps: checkedApps,
+                reason: reason,
+                bannedAt: now
+            }).then(() => {
+                closeModal('banUserModal');
+            });
+        }
+    }
+
+    function unbanUser(username) {
+        if (!confirm('Unban ' + username + ' completely?')) return;
+        // Setting values to null effectively removes them
+        db.ref('appBans/' + username).update({
+            banned: null,
+            bannedApps: null
+        });
+    }
+
+    function quickBanUser(username) {
+        document.getElementById('banUsername').value = username;
+        document.getElementById('banReason').value = 'Violation of rules';
+        document.getElementById('banAllApps').checked = true;
+        toggleBanAllApps(document.getElementById('banAllApps'));
+        showModal('banUserModal');
+    }
+
     function renderAppBans() {
         const container = document.getElementById('appBansContainer');
         const entries = Object.entries(appBans);
 
         // Update stats
         const totalBans = entries.length;
-        const activeBans = entries.filter(([u, d]) => d && d.banned === true).length;
+        
+        // Count active bans (either full or partial)
+        const activeBans = entries.filter(([u, d]) => {
+            if (!d) return false;
+            const bannedApps = d.bannedApps || [];
+            const isPartiallyBanned = Array.isArray(bannedApps) ? bannedApps.length > 0 : Object.keys(bannedApps).length > 0;
+            return d.banned === true || isPartiallyBanned;
+        }).length;
+        
         let pendingAppeals = 0;
         entries.forEach(([u, d]) => {
             if (d && d.appeals) {
@@ -2055,18 +2162,35 @@ sam,allowed
             return;
         }
 
-        // Sort: banned first, then by username
+        // Sort: full bans first, then partial, then username
         entries.sort((a, b) => {
             const aBanned = a[1] && a[1].banned === true;
             const bBanned = b[1] && b[1].banned === true;
+            
+            const aApps = a[1] && a[1].bannedApps ? a[1].bannedApps : [];
+            const bApps = b[1] && b[1].bannedApps ? b[1].bannedApps : [];
+            
+            const aPartial = Array.isArray(aApps) ? aApps.length > 0 : Object.keys(aApps).length > 0;
+            const bPartial = Array.isArray(bApps) ? bApps.length > 0 : Object.keys(bApps).length > 0;
+
             if (aBanned && !bBanned) return -1;
             if (!aBanned && bBanned) return 1;
+            
+            if (aPartial && !bPartial) return -1;
+            if (!aPartial && bPartial) return 1;
+
             return a[0].localeCompare(b[0]);
         });
 
         container.innerHTML = entries.map(([username, data]) => {
             if (!data) return '';
             const isBanned = data.banned === true;
+            
+            // Handle array or object structure for bannedApps depending on how Firebase stores it
+            const rawBannedApps = data.bannedApps || [];
+            const appList = Array.isArray(rawBannedApps) ? rawBannedApps : Object.values(rawBannedApps);
+            const isPartiallyBanned = appList.length > 0;
+            
             const reason = data.reason || 'No reason given';
             const appeals = data.appeals || {};
             const appealEntries = Object.entries(appeals).sort((a, b) => (b[1].timestamp||0) - (a[1].timestamp||0));
@@ -2090,22 +2214,31 @@ sam,allowed
                     </div>`;
                 }).join('');
 
-            return `<div class="ban-card ${isBanned ? 'banned' : 'not-banned'}">
+            let banStatusBadge = '<span class="badge badge-success">✓ Not Banned</span>';
+            if (isBanned) {
+                banStatusBadge = '<span class="badge badge-danger">🚫 Full Ban</span>';
+            } else if (isPartiallyBanned) {
+                banStatusBadge = `<span class="badge badge-warning">🚫 Partial Ban (${appList.length} Apps)</span>`;
+            }
+
+            return `<div class="ban-card ${isBanned || isPartiallyBanned ? 'banned' : 'not-banned'}">
                 <div class="flex justify-between items-start flex-wrap gap-3 mb-3">
                     <div>
                         <div style="font-size:16px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                             ${username}
-                            ${isBanned
-                                ? '<span class="badge badge-danger">🚫 Banned</span>'
-                                : '<span class="badge badge-success">✓ Not Banned</span>'}
+                            ${banStatusBadge}
                             ${pendingCount > 0 ? `<span class="badge badge-warning">⚠️ ${pendingCount} Pending Appeal${pendingCount>1?'s':''}</span>` : ''}
                         </div>
                         <div style="font-size:12px;color:var(--muted);">
                             Reason: <span style="color:rgba(255,255,255,0.7);">${reason}</span>
                         </div>
+                        ${isPartiallyBanned ? `
+                        <div style="font-size:12px;color:var(--muted);margin-top:4px;">
+                            Banned from: <span style="color:rgba(245,158,11,0.9);">${appList.join(', ')}</span>
+                        </div>` : ''}
                     </div>
                     <div class="flex gap-2">
-                        ${isBanned
+                        ${(isBanned || isPartiallyBanned)
                             ? `<button class="btn btn-primary btn-sm" onclick="unbanUser('${username}')">✓ Unban</button>`
                             : `<button class="btn btn-danger btn-sm" onclick="quickBanUser('${username}')">🚫 Ban</button>`}
                         <button class="btn btn-secondary btn-sm" onclick="editBanReason('${username}','${reason.replace(/'/g,"\\'")}')">Edit Reason</button>
@@ -2122,31 +2255,6 @@ sam,allowed
         }).join('');
     }
 
-    function showBanUserModal() {
-        document.getElementById('banUsernameInput').value = '';
-        document.getElementById('banReasonInput').value = '';
-        showModal('banUserModal');
-    }
-    function confirmBanUser() {
-        const username = document.getElementById('banUsernameInput').value.trim();
-        const reason = document.getElementById('banReasonInput').value.trim();
-        if (!username) return alert('Enter a username');
-        if (!reason) return alert('Enter a ban reason');
-        db.ref('appBans/' + username).set({ banned: true, reason }).then(() => {
-            closeModal('banUserModal');
-        });
-    }
-    function quickBanUser(username) {
-        const reason = prompt('Ban reason for ' + username + ':', 'Violation of rules');
-        if (reason === null) return;
-        db.ref('appBans/' + username + '/banned').set(true);
-        if (reason) db.ref('appBans/' + username + '/reason').set(reason);
-    }
-    function unbanUser(username) {
-        if (confirm('Unban ' + username + '?')) {
-            db.ref('appBans/' + username + '/banned').set(false);
-        }
-    }
     function editBanReason(username, currentReason) {
         const newReason = prompt('Edit ban reason for ' + username + ':', currentReason);
         if (newReason === null) return;
@@ -2160,7 +2268,7 @@ sam,allowed
     function handleAppeal(username, appealKey, status) {
         db.ref('appBans/' + username + '/appeals/' + appealKey + '/status').set(status);
         if (status === 'approved') {
-            db.ref('appBans/' + username + '/banned').set(false);
+            unbanUser(username);
         }
     }
 
@@ -2422,15 +2530,5 @@ sam,allowed
 <script src="idle-dvd.js"></script>
 <script src="timeTracker.js"></script>
 <script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
-        .then(r => r.text())
-        .then(html => {
-            const container = document.getElementById('tac-phone-container');
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
 </body>
 </html>
