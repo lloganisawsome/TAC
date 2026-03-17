@@ -2308,5 +2308,15 @@ console.log("TAC Forum loaded.");
 
 
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
 </body>
 </html>

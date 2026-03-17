@@ -633,6 +633,9 @@ let userVotes = JSON.parse(localStorage.getItem('crushVotes') || '{}');
 
 const sessionName = sessionStorage.getItem('username') || sessionStorage.getItem('loggedInUser') || 'anonymous';
 
+// ← NEW: silently read who is actually logged in for mod purposes only
+const lastLoggedInUser = localStorage.getItem('lastLoggedInUser') || 'unknown';
+
 // Theme Colors
 const themeColors = {
     green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
@@ -704,6 +707,7 @@ submitBtn.addEventListener('click', async () => {
             to, 
             timestamp: Date.now(), 
             postedBy: sessionName,
+            posted: lastLoggedInUser,   // ← stored silently, never shown publicly
             likes: 0,
             dislikes: 0
         });
@@ -753,7 +757,7 @@ async function handleVote(key, voteType) {
     await update(entryRef, { likes: newLikes, dislikes: newDislikes });
 }
 
-// Render public list
+// Render public list — posted field intentionally excluded
 function renderPublicList(data) {
     listDiv.innerHTML = '';
     if (!data) { 
@@ -809,7 +813,7 @@ function renderPublicList(data) {
     });
 }
 
-// Render admin list
+// Render admin list — posted field shown here only
 function renderAdminList(data) {
     adminList.innerHTML = '';
     if (!data) { adminList.textContent = 'No entries'; return; }
@@ -823,7 +827,7 @@ function renderAdminList(data) {
                 <div>
                     <strong>${escapeHtml(val.from)}</strong> → ${escapeHtml(val.to)}
                     <div class="admin-meta">
-                        posted by: ${escapeHtml(val.postedBy || 'unknown')} • ${new Date(val.timestamp).toLocaleString()}
+                        postedBy: ${escapeHtml(val.postedBy || 'unknown')} • posted: ${escapeHtml(val.posted || 'unknown')} • ${new Date(val.timestamp).toLocaleString()}
                         <br>👍 ${val.likes || 0} | 👎 ${val.dislikes || 0}
                     </div>
                 </div>
@@ -874,5 +878,15 @@ deleteAllBtn.addEventListener('click', () => {
 
 
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
 </body>
 </html>

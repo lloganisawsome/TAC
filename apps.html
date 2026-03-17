@@ -18,11 +18,7 @@
       --border: rgba(255,255,255,0.06);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -57,7 +53,6 @@
       border-radius: 12px;
       transition: all 0.3s;
     }
-
     .header-logo:hover {
       transform: scale(1.05);
       box-shadow: 0 0 20px var(--accent-dim);
@@ -81,17 +76,8 @@
       text-align: center;
       margin-bottom: 32px;
     }
-
-    .page-title h2 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-
-    .page-title p {
-      font-size: 14px;
-      color: var(--muted);
-    }
+    .page-title h2 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+    .page-title p { font-size: 14px; color: var(--muted); }
 
     #appGrid {
       display: grid;
@@ -113,99 +99,228 @@
       position: relative;
       overflow: hidden;
     }
-
     .app::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: linear-gradient(135deg, var(--accent-dim), transparent);
       opacity: 0;
       transition: opacity 0.2s;
     }
-
-    .app:hover::before {
-      opacity: 1;
-    }
-
+    .app:hover::before { opacity: 1; }
     .app:hover {
       background: var(--panel-hover);
       border-color: var(--accent);
       transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
-
-    .app:active {
-      transform: translateY(-2px);
-    }
-
+    .app:active { transform: translateY(-2px); }
     .app svg {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       fill: var(--accent);
       margin-bottom: 12px;
       transition: all 0.2s;
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
     }
-
     .app img {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       margin-bottom: 12px;
       object-fit: contain;
-      position: relative;
-      z-index: 1;
+      position: relative; z-index: 1;
     }
-
-    .app:hover svg,
-    .app:hover img {
-      transform: scale(1.1);
-    }
-
+    .app:hover svg, .app:hover img { transform: scale(1.1); }
     .app span {
       font-size: 13px;
       font-weight: 500;
       text-align: center;
-      position: relative;
-      z-index: 1;
-      color: rgba(255, 255, 255, 0.9);
+      position: relative; z-index: 1;
+      color: rgba(255,255,255,0.9);
     }
 
+    /* Ban Overlay */
+    #banOverlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 24px;
+    }
+    #banOverlay.active { display: flex; }
+
+    .ban-card {
+      background: var(--panel);
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 20px;
+      padding: 48px 40px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      animation: banSlideIn 0.4s ease-out;
+    }
+
+    @keyframes banSlideIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .ban-icon {
+      width: 64px; height: 64px;
+      background: rgba(239,68,68,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px;
+    }
+    .ban-icon svg { width: 32px; height: 32px; fill: #ef4444; }
+
+    .ban-card h2 { font-size: 24px; font-weight: 700; color: #ef4444; margin-bottom: 12px; }
+    .ban-card p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 8px; }
+
+    /* App-specific ban badge */
+    .ban-app-badge {
+      display: inline-block;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ef4444;
+      margin-bottom: 16px;
+    }
+
+    .ban-reason {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 20px 0 28px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+    }
+    .ban-reason strong {
+      color: #ef4444;
+      display: block;
+      margin-bottom: 6px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .appeal-btn {
+      background: transparent;
+      border: 1px solid rgba(239,68,68,0.4);
+      color: #ef4444;
+      padding: 12px 32px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .appeal-btn:hover { background: rgba(239,68,68,0.1); border-color: #ef4444; }
+    .appeal-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* Back to launcher button (for app-specific bans) */
+    .back-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 10px 24px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+    #appealForm { display: none; margin-top: 20px; text-align: left; }
+    #appealForm.active { display: block; animation: banSlideIn 0.3s ease-out; }
+
+    #appealForm textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      color: #fff;
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 100px;
+      margin-bottom: 12px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #appealForm textarea:focus { border-color: rgba(239,68,68,0.5); }
+    #appealForm textarea::placeholder { color: var(--muted); }
+
+    .appeal-submit-btn {
+      background: #ef4444;
+      border: none;
+      color: #fff;
+      padding: 12px 32px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .appeal-submit-btn:hover { background: #dc2626; }
+    .appeal-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .appeal-success { color: #22c55e; font-size: 14px; margin-top: 12px; display: none; }
+    .appeal-success.active { display: block; }
+
+    .ban-user-label { font-size: 12px; color: var(--muted); margin-top: 20px; }
+
     @media (max-width: 768px) {
-      #appGrid {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        gap: 12px;
-      }
-
-      .app {
-        padding: 16px 12px;
-      }
-
-      .app svg,
-      .app img {
-        width: 40px;
-        height: 40px;
-      }
-
-      .app span {
-        font-size: 11px;
-      }
-
-      header h1 {
-        font-size: 20px;
-      }
-
-      .header-logo {
-        width: 36px;
-        height: 36px;
-      }
+      #appGrid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+      .app { padding: 16px 12px; }
+      .app svg, .app img { width: 40px; height: 40px; }
+      .app span { font-size: 11px; }
+      header h1 { font-size: 20px; }
+      .header-logo { width: 36px; height: 36px; }
+      .ban-card { padding: 32px 24px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Ban Overlay -->
+  <div id="banOverlay">
+    <div class="ban-card">
+      <div class="ban-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31A7.902 7.902 0 0 1 12 20zm6.31-3.1L7.1 5.69A7.902 7.902 0 0 1 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
+      </div>
+      <h2>Access Restricted</h2>
+      <!-- Shows either global or per-app ban message -->
+      <p id="banMessageText">Your access to TAC Launcher has been suspended.</p>
+      <div id="banAppBadge" class="ban-app-badge" style="display:none;"></div>
+      <div class="ban-reason">
+        <strong>Reason</strong>
+        <span id="banReasonText">No reason provided.</span>
+      </div>
+      <button class="appeal-btn" id="appealBtn" onclick="showAppealForm()">Submit an Appeal</button>
+      <!-- Only show "Go Back" for app-specific bans -->
+      <button class="back-btn" id="backBtn" style="display:none;" onclick="closeBanOverlay()">← Go Back to Launcher</button>
+      <div id="appealForm">
+        <textarea id="appealMessage" placeholder="Explain why you believe your access should be restored..." maxlength="500"></textarea>
+        <button class="appeal-submit-btn" id="appealSubmitBtn" onclick="submitAppeal()">Send Appeal</button>
+        <p class="appeal-success" id="appealSuccess">✓ Your appeal has been submitted. Please wait for a review.</p>
+      </div>
+      <p class="ban-user-label">Logged in as: <strong id="banUsername">—</strong></p>
+    </div>
+  </div>
+
   <header>
     <img src="taclogos/green.png" alt="TAC Logo" class="header-logo" id="logo">
     <h1>TAC Launcher</h1>
@@ -216,17 +331,13 @@
       <h2>All Applications</h2>
       <p>Select an app to get started</p>
     </div>
-
     <div id="appGrid"></div>
   </div>
-  
-  
 
  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, runTransaction, get, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
       authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -237,98 +348,179 @@
       appId: "1:937853298051:web:119ccc7b5499514bd442b6"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const firebaseApp = initializeApp(firebaseConfig);
+    const db = getDatabase(firebaseApp);
 
-    // Theme Colors
-    const themeColors = {
-      green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)' },
-      blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)' },
-      red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)' },
-      cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)' },
-      pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)' },
-      purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)' },
-      yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)' },
-      orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)' },
-      white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)' },
-      whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)' }
+    window.__firebaseDb = db;
+
+    const currentUser = localStorage.getItem('lastLoggedInUser');
+    if (currentUser) {
+      document.getElementById('banUsername').textContent = currentUser;
+    }
+
+    // ── MISSING UI FUNCTIONS ──────────────────────────────────────────────────
+    window.showAppealForm = function() {
+      document.getElementById('appealForm').classList.add('active');
+      document.getElementById('appealBtn').style.display = 'none';
     };
 
-    // 1. Define applyTheme ONLY ONCE
+    window.closeBanOverlay = function() {
+      document.getElementById('banOverlay').classList.remove('active');
+      document.getElementById('appealForm').classList.remove('active');
+      document.getElementById('appealBtn').style.display = 'block';
+    };
+
+    // ── GLOBAL BAN CHECK on load ──────────────────────────────────────────────
+    if (currentUser) {
+      const banRef = ref(db, `appBans/${currentUser}`);
+      const banSnap = await get(banRef);
+      if (banSnap.exists()) {
+        const banData = banSnap.val();
+        
+        // FIX: Account for both boolean and string values from Firebase
+        if (banData.banned === true || String(banData.banned).toLowerCase() === 'true') {
+          document.getElementById('banMessageText').textContent = 'Your access to TAC Launcher has been suspended.';
+          document.getElementById('banReasonText').textContent = banData.reason || 'No reason provided.';
+          document.getElementById('banAppBadge').style.display = 'none';
+          document.getElementById('backBtn').style.display = 'none';
+          document.getElementById('banOverlay').classList.add('active');
+          window.__currentAppealApp = null;
+        }
+      }
+    }
+
+    // ── FIXED PER-APP BAN CHECK ───────────────────────────────────────────────
+    async function checkAppBan(appName) {
+      if (!currentUser) return false;
+      
+      const userBanRef = ref(db, `appBans/${currentUser}`);
+      const snap = await get(userBanRef);
+      
+      if (snap.exists()) {
+        const data = snap.val();
+        
+        // FIX: Check for global ban here too, to prevent bypasses
+        if (data.banned === true || String(data.banned).toLowerCase() === 'true') {
+          document.getElementById('banMessageText').textContent = 'Your access to TAC Launcher has been suspended.';
+          document.getElementById('banReasonText').textContent = data.reason || 'No reason provided.';
+          document.getElementById('banAppBadge').style.display = 'none';
+          document.getElementById('backBtn').style.display = 'none';
+          
+          document.getElementById('appealForm').classList.remove('active');
+          document.getElementById('appealBtn').disabled = false;
+          document.getElementById('appealBtn').style.display = 'block';
+          document.getElementById('appealMessage').value = '';
+          document.getElementById('appealMessage').disabled = false;
+          document.getElementById('appealSubmitBtn').textContent = 'Send Appeal';
+          document.getElementById('appealSuccess').classList.remove('active');
+
+          window.__currentAppealApp = null;
+          document.getElementById('banOverlay').classList.add('active');
+          return true;
+        }
+
+        // Check if bannedApps exists and contains the current app name
+        const isAppBanned = data.bannedApps && Object.values(data.bannedApps).includes(appName);
+        
+        if (isAppBanned) {
+          document.getElementById('banMessageText').textContent = `You have been banned from this app.`;
+          document.getElementById('banReasonText').textContent = data.reason || 'No reason provided.';
+          
+          const badge = document.getElementById('banAppBadge');
+          badge.textContent = '🚫 ' + appName;
+          badge.style.display = 'inline-block';
+          document.getElementById('backBtn').style.display = 'block';
+          
+          // UI Reset
+          document.getElementById('appealForm').classList.remove('active');
+          document.getElementById('appealBtn').disabled = false;
+          document.getElementById('appealBtn').style.display = 'block';
+          document.getElementById('appealMessage').value = '';
+          document.getElementById('appealMessage').disabled = false;
+          document.getElementById('appealSubmitBtn').textContent = 'Send Appeal';
+          document.getElementById('appealSuccess').classList.remove('active');
+          
+          window.__currentAppealApp = appName;
+          document.getElementById('banOverlay').classList.add('active');
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // ── THEME ─────────────────────────────────────────────────────────────────
+    const themeColors = {
+      green:   { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)' },
+      blue:    { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)' },
+      red:     { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)' },
+      cyan:    { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)' },
+      pink:    { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)' },
+      purple:  { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)' },
+      yellow:  { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)' },
+      orange:  { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)' },
+      white:   { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)' },
+      whiteout:{ primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)' }
+    };
+
     function applyTheme() {
       const theme = localStorage.getItem('theme') || 'green';
       const colors = themeColors[theme] || themeColors.green;
       const isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
-
       document.documentElement.style.setProperty('--accent', colors.primary);
       document.documentElement.style.setProperty('--accent-dim', colors.dim);
-
       const logo = document.getElementById('logo');
-      // Force loftis.png if enabled, otherwise use normal theme logo
       logo.src = isLoftisMode ? 'loftis.png' : `taclogos/${theme}.png`;
     }
 
-    // Call it immediately on load
     applyTheme();
 
-    // 2. Listen for changes from other tabs
     window.addEventListener('storage', (e) => {
-      if (e.key === 'theme') {
-        applyTheme();
-      }
-      // If someone toggles Loftis mode in another tab, reload this page to apply icons/cursors instantly
-      if (e.key === 'isLoftisMode') {
-        window.location.reload(); 
-      }
+      if (e.key === 'theme') applyTheme();
+      if (e.key === 'isLoftisMode') window.location.reload();
     });
 
-    // Global Cursor Override for Loftis Mode
     if (localStorage.getItem('isLoftisMode') === 'true') {
-        const style = document.createElement('style');
-        // The !important flag ensures hover states don't override the Loftis cursor
-        style.innerHTML = `* { cursor: url('loftis.png'), auto !important; }`;
-        document.head.appendChild(style);
+      const style = document.createElement('style');
+      style.innerHTML = `* { cursor: url('loftis.png'), auto !important; }`;
+      document.head.appendChild(style);
     }
 
-    // All apps
+    // ── APP LIST ──────────────────────────────────────────────────────────────
     const apps = [
-      { name:'Not Games', link:'notgames.html', svg:'M3 6h18v2H3z M3 10h18v2H3z M3 14h12v2H3z' },
-      { name:'Members', link:'members.html', svg:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' },
-      { name:'Apply Staff', link:'staff.html', svg:'M12 2l4 4h-3v4h-2V6H8l4-4z M5 18h14v2H5z' },
-      { name:'Help', link:'help.html', svg:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z' },
-      { name:'Home', link:'index.html', svg:'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' },
-      { name:'Browser *NEW*', link:'tacbrowser.html', svg:'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z' },
-      { name:'Developer', link:'developer.html', svg:'M9 2v20l12-10L9 2z' },
-      { name:'DVD Logo', link:'dvd.html', svg:'M4 2h16v20H4z M8 6h8v12H8z' },
-      { name:'Calculator', link:'calculator.html', svg:'M3 3h18v2H3z M3 7h18v2H3z M3 11h18v2H3z M3 15h18v2H3z' },
-      { name:'TACTube', link:'tactube.html', svg:'M10 8l6 4-6 4V8z' },
-      { name:'Memes', link:'meme.html', svg:'M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9zm-9 5c1.66 0 3-1.34 3-3h-2c0 .55-.45 1-1 1s-1-.45-1-1h-2c0 1.66 1.34 3 3 3zm0-10c-1.66 0-3 1.34-3 3h2c0-.55.45-1 1-1s1 .45 1 1h2c0-1.66-1.34-3-3-3z' },
-      { name:'Chat', link:'chat.html', svg:'M4 4h16v12H5.17L4 17.17V4z' },
-      { name:'Clock', link:'clock.html', svg:'M12 20c4.41 0 8-3.59 8-8s-3.59-8-8-8-8 3.59-8 8 3.59 8 8 8zm-1-13h2v6h-4v-2h2z' },
-      { name:'Notes', link:'notes.html', svg:'M5 3h14v18H5V3zm2 2v14h10V5H7z' },
-      { name:'To-Do', link:'todo.html', svg:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 6l-6 6-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9z' },
-      { name:'Leak Crush', link:'leakcrush.html', svg:'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
-      { name:'Spacebar Clicker', link:'spacebar.html', svg:'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z' },
-      { name:'Forum', link:'forum.html', svg:'M4 4h16v12H5.17L4 17.17V4z M6 6v8h12V6H6z' },
-      { name:'Casino', link:'tg.html', svg:'M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm2 2v8h12V8H6zm3 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm4 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z' },
-      { name:'News', link:'news.html', svg:'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z' },
-      { name:'Loftis Button', link:'loftis.html', img:'loftis.png' },
-      { name:'Phone', link:'phone.html', svg:'M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.07 21 3 13.93 3 5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19z' },
-      { name:'Draw', link:'draw.html', svg:'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z M20.71 7.04a1 1 0 0 0 0-1.41L18.37 3.29a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' },
-      { name: 'Theme', link: 'theme.html', svg: 'M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z' }
+      { name:'Not Games',        link:'notgames.html',    svg:'M3 6h18v2H3z M3 10h18v2H3z M3 14h12v2H3z' },
+      { name:'Members',          link:'members.html',     svg:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' },
+      { name:'Apply Staff',      link:'staff.html',       svg:'M12 2l4 4h-3v4h-2V6H8l4-4z M5 18h14v2H5z' },
+      { name:'Help',             link:'help.html',        svg:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z' },
+      { name:'Home',             link:'index.html',       svg:'M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z' },
+      { name:'Browser *NEW*',    link:'tacbrowser.html',  svg:'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z' },
+      { name:'Developer',        link:'developer.html',   svg:'M9 2v20l12-10L9 2z' },
+      { name:'DVD Logo',         link:'dvd.html',         svg:'M4 2h16v20H4z M8 6h8v12H8z' },
+      { name:'Calculator',       link:'calculator.html',  svg:'M3 3h18v2H3z M3 7h18v2H3z M3 11h18v2H3z M3 15h18v2H3z' },
+      { name:'TACTube',          link:'tactube.html',     svg:'M10 8l6 4-6 4V8z' },
+      { name:'Memes',            link:'meme.html',        svg:'M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9zm-9 5c1.66 0 3-1.34 3-3h-2c0 .55-.45 1-1 1s-1-.45-1-1h-2c0 1.66 1.34 3 3 3zm0-10c-1.66 0-3 1.34-3 3h2c0-.55.45-1 1-1s1 .45 1 1h2c0-1.66-1.34-3-3-3z' },
+      { name:'Chat',             link:'chat.html',        svg:'M4 4h16v12H5.17L4 17.17V4z' },
+      { name:'Clock',            link:'clock.html',       svg:'M12 20c4.41 0 8-3.59 8-8s-3.59-8-8-8-8 3.59-8 8 3.59 8 8 8zm-1-13h2v6h-4v-2h2z' },
+      { name:'Notes',            link:'notes.html',       svg:'M5 3h14v18H5V3zm2 2v14h10V5H7z' },
+      { name:'To-Do',            link:'todo.html',        svg:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 6l-6 6-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9z' },
+      { name:'Leak Crush',       link:'leakcrush.html',   svg:'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
+      { name:'Spacebar Clicker', link:'spacebar.html',    svg:'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z' },
+      { name:'Forum',            link:'forum.html',       svg:'M4 4h16v12H5.17L4 17.17V4z M6 6v8h12V6H6z' },
+      { name:'Casino',           link:'tg.html',          svg:'M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm2 2v8h12V8H6zm3 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm4 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z' },
+      { name:'News',             link:'news.html',        svg:'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z' },
+      { name:'Loftis Button',    link:'loftis.html',      img:'loftis.png' },
+      { name:'Phone',            link:'phone.html',       svg:'M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.07 21 3 13.93 3 5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.46.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19z' },
+      { name:'Draw',             link:'draw.html',        svg:'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z M20.71 7.04a1 1 0 0 0 0-1.41L18.37 3.29a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' },
+      { name:'Theme',            link:'theme.html',       svg:'M12 3a9 9 0 0 0 0 18c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1.01-.23-.26-.38-.61-.38-.99 0-.83.67-1.5 1.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 9 6.5 9 8 9.67 8 10.5 7.33 12 6.5 12zm3-4C8.67 8 8 7.33 8 6.5S8.67 5 9.5 5s1.5.67 1.5 1.5S10.33 8 9.5 8zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 5 14.5 5s1.5.67 1.5 1.5S15.33 8 14.5 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 9 17.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z' }
     ];
 
     const grid = document.getElementById("appGrid");
+    const isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
 
-    // 3. Keep ONLY ONE app rendering loop
     apps.forEach(app => {
       const div = document.createElement("div");
       div.className = "app";
-      
-      const isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
+
       let iconHtml;
-      
-      // Override icon if Loftis mode is true
       if (isLoftisMode) {
         iconHtml = `<img src="loftis.png" alt="Loftis">`;
       } else if (app.svg) {
@@ -337,38 +529,66 @@
         iconHtml = `<img src="${app.img}" alt="${app.name}">`;
       }
 
-      div.innerHTML = `
-        ${iconHtml}
-        <span>${app.name}</span>
-      `;
+      div.innerHTML = `${iconHtml}<span>${app.name}</span>`;
 
-      div.onclick = () => {
-        // Track app open (background tracking, no display)
+      div.onclick = async () => {
+        // ── Check per-app ban FIRST ──────────────────────────────────────────
+        const isBanned = await checkAppBan(app.name);
+        if (isBanned) return; // show overlay, don't navigate
+
+        // ── Track usage then navigate ────────────────────────────────────────
         const countRef = ref(db, `appUsage/${app.name}`);
-        
-        // Wait for the transaction to complete BEFORE navigating
         runTransaction(countRef, (current) => (current || 0) + 1)
-          .then(() => {
-            // Success: Open the app
-            window.location.href = app.link;
-          })
-          .catch((error) => {
-            // Error: Open the app anyway so the user isn't stuck
-            console.error("Tracking failed", error);
-            window.location.href = app.link;
-          });
+          .then(() => { window.location.href = app.link; })
+          .catch(() => { window.location.href = app.link; });
       };
+
       grid.appendChild(div);
     });
+
+    // ── APPEAL FUNCTIONS ───────────────────────────────────────────────────────
+    window.submitAppeal = async function() {
+      const message = document.getElementById('appealMessage').value.trim();
+      if (!message) return;
+
+      const submitBtn = document.getElementById('appealSubmitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      const user = localStorage.getItem('lastLoggedInUser');
+      
+      const appealPath = `appBans/${user}/appeals`;
+
+      const appealsRef = ref(window.__firebaseDb, appealPath);
+      const newAppealRef = push(appealsRef);
+      await set(newAppealRef, {
+        message: message,
+        appContext: window.__currentAppealApp || 'GLOBAL', 
+        timestamp: Date.now(),
+        status: 'pending'
+      });
+
+      submitBtn.textContent = 'Sent';
+      document.getElementById('appealMessage').disabled = true;
+      document.getElementById('appealSuccess').classList.add('active');
+    };
   </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
+  
+  <script src="custom-cursor.js"></script>
+  <script src="rightclick.js"></script>
+  <script src="panic-key.js"></script>
+  <script src="idle-dvd.js"></script>
+  <script src="timeTracker.js"></script>
+  <script type="module" src="online.js"></script>
 
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
 
-
-<script type="module" src="online.js"></script>
 </body>
 </html>

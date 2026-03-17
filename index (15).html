@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC - Cursor Dance Party</title>
+<style>
+:root {
+    --bg: #0a0a0b;
+    --bg-alt: #060607;
+    --panel: #111113;
+    --panel-hover: #1a1a1c;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --muted: #71717a;
+    --border: rgba(255,255,255,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #fff;
+    font-size: 14px;
+    overflow: hidden;
+    cursor: none !important;
+}
+
+* { cursor: none !important; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+/* ─── Dance Floor Background ─── */
+#danceFloor {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    transition: background-color 2s ease;
+}
+
+.floor-tile {
+    position: absolute;
+    border-radius: 4px;
+    opacity: 0;
+    animation: tileGlow 3s ease-in-out infinite;
+}
+
+@keyframes tileGlow {
+    0%, 100% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 0.15; transform: scale(1); }
+}
+
+/* ─── Local Cursor (your own) ─── */
+#localCursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform-origin: top left;
+    will-change: transform;
+}
+
+#localCursor img {
+    display: block;
+    image-rendering: auto;
+}
+
+/* ─── Remote Cursor ─── */
+.remote-cursor {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: left 0.1s linear, top 0.1s linear;
+    image-rendering: auto;
+}
+
+.remote-cursor-label {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: var(--accent);
+    white-space: nowrap;
+    background: var(--panel);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--accent);
+}
+
+/* ─── Trail particles ─── */
+.trail-particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9990;
+    border-radius: 50%;
+    animation: trailFade 0.6s ease-out forwards;
+}
+
+@keyframes trailFade {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0); }
+}
+
+/* ─── Sidebar ─── */
+.sidebar {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px var(--accent-dim);
+}
+
+.sidebar.collapsed {
+    width: 0;
+    padding: 0;
+    border: none;
+    margin-left: -10px;
+    overflow: hidden;
+}
+
+.sidebar .logo-container {
+    margin-bottom: 16px;
+    padding: 4px;
+    transition: opacity 0.3s;
+}
+
+.sidebar.collapsed .logo-container,
+.sidebar.collapsed .nav-items {
+    opacity: 0;
+}
+
+.sidebar .logo {
+    width: 62px;
+    height: 62px;
+    border-radius: 8px;
+}
+
+.nav-items {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    padding: 0 8px;
+    transition: opacity 0.3s;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--accent);
+    transition: all 0.2s ease;
+}
+
+.nav-item:hover { background: var(--accent-dim); }
+.nav-item.active {
+    background: var(--accent-dim);
+    border: 1px solid var(--accent);
+}
+
+.nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
+.nav-item span { font-size: 9px; font-weight: 500; }
+
+.toggle-sidebar-btn {
+    position: fixed;
+    left: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 36px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toggle-sidebar-btn:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+}
+
+.toggle-sidebar-btn svg {
+    width: 14px; height: 14px;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+.toggle-sidebar-btn.collapsed { left: 10px; }
+.toggle-sidebar-btn.collapsed svg { transform: rotate(180deg); }
+
+/* ─── Bottom Bar ─── */
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--panel);
+    border-top: 1px solid var(--accent);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 -4px 20px var(--accent-dim);
+}
+
+.bottom-bar.collapsed {
+    transform: translateY(calc(100% - 32px));
+}
+
+.bottom-bar-toggle {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 28px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.bottom-bar-toggle:hover { background: var(--panel-hover); }
+
+.bottom-bar-toggle svg {
+    width: 16px; height: 16px;
+    color: var(--accent);
+    transition: transform 0.3s ease;
+}
+
+.bottom-bar.collapsed .bottom-bar-toggle svg {
+    transform: rotate(180deg);
+}
+
+.bottom-bar-content {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.cursor-list {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    flex: 1;
+    padding: 4px 0;
+    scroll-behavior: smooth;
+}
+
+.cursor-option {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    min-width: 64px;
+}
+
+.cursor-option:hover { background: var(--accent-dim); }
+
+.cursor-option.selected {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+}
+
+.cursor-option img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    image-rendering: auto;
+}
+
+.cursor-option span {
+    font-size: 9px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    padding-left: 16px;
+    border-left: 1px solid var(--border);
+}
+
+.volume-control svg { width: 18px; height: 18px; color: var(--accent); }
+
+.volume-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 80px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.15);
+    outline: none;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+/* ─── Online Count ─── */
+.online-count {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    z-index: 1000;
+    font-size: 13px;
+    color: var(--accent);
+    box-shadow: 0 0 14px var(--accent-dim);
+}
+
+.online-dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ─── Invite Banner ─── */
+.invite-banner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 500;
+    pointer-events: none;
+    animation: invitePulse 3s ease-in-out infinite;
+}
+
+.invite-banner h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px var(--accent-dim);
+}
+
+.invite-banner p {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+@keyframes invitePulse {
+    0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.02); }
+}
+
+/* ─── Controls HUD ─── */
+.controls-hud {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.control-badge {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 10px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.control-badge kbd {
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-family: monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-right: 4px;
+}
+
+/* ─── Move Name Popup ─── */
+.move-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--accent);
+    text-shadow: 0 0 40px var(--accent-dim);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9000;
+    transition: none;
+}
+
+.move-popup.show {
+    animation: movePopIn 0.8s ease-out forwards;
+}
+
+@keyframes movePopIn {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    60% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9) translateY(-20px); }
+}
+
+@media (max-width: 768px) {
+    .sidebar { display: none; }
+    .toggle-sidebar-btn { display: none; }
+    .controls-hud { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="danceFloor"></div>
+
+<!-- Your own local cursor -->
+<div id="localCursor">
+    <img id="localCursorImg" src="" width="32" height="32" alt="">
+</div>
+
+<div id="movePopup" class="move-popup"></div>
+
+<div class="online-count" id="onlineCount">
+    <span class="online-dot"></span>
+    <span id="onlineText">1 dancer</span>
+</div>
+
+<div class="invite-banner" id="inviteBanner">
+    <h2>🎶 Invite Friends!</h2>
+    <p>Looking empty...</p>
+</div>
+
+<div class="controls-hud">
+    <div class="control-badge"><kbd>S</kbd> Spin</div>
+    <div class="control-badge"><kbd>↑↓</kbd> Size</div>
+    <div class="control-badge"><kbd>W</kbd> Wobble</div>
+    <div class="control-badge"><kbd>B</kbd> Bounce</div>
+    <div class="control-badge"><kbd>F</kbd> Flip</div>
+    <div class="control-badge"><kbd>Space</kbd> Rainbow trail</div>
+    <div class="control-badge"><kbd>Click</kbd> Pulse</div>
+</div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    </div>
+    <nav class="nav-items">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Home</span>
+        </a>
+        <a href="chat.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                <circle cx="8" cy="10" r="1.5"/>
+                <circle cx="12" cy="10" r="1.5"/>
+                <circle cx="16" cy="10" r="1.5"/>
+            </svg>
+            <span>Chat</span>
+        </a>
+        <a href="notgames.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+            </svg>
+            <span>Games</span>
+        </a>
+        <a href="phone.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+            </svg>
+            <span>Phone</span>
+        </a>
+        <a href="apps.html" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+            </svg>
+            <span>All Apps</span>
+        </a>
+    </nav>
+</aside>
+
+<button class="toggle-sidebar-btn" id="toggleSidebarBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<div class="bottom-bar" id="bottomBar">
+    <div class="bottom-bar-toggle" id="bottomBarToggle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 15 12 9 18 15"/>
+        </svg>
+    </div>
+    <div class="bottom-bar-content">
+        <div class="cursor-list" id="cursorList"></div>
+        <div class="volume-control">
+            <svg viewBox="0 0 24 24" fill="currentColor" id="volumeIcon">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+            <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.5">
+        </div>
+    </div>
+</div>
+
+<audio id="bgMusic" loop preload="auto">
+    <source src="dance.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+// ─── Firebase ──────────────────────────────────────────────────────────────────
+const firebaseConfig = {
+    apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+    authDomain: "taclogin-ab38e.firebaseapp.com",
+    databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+    projectId: "taclogin-ab38e",
+    storageBucket: "taclogin-ab38e.firebasestorage.app",
+    messagingSenderId: "937853298051",
+    appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ─── Unique user ID ────────────────────────────────────────────────────────────
+let myId = localStorage.getItem('dance-uid');
+if (!myId) {
+    myId = 'user_' + Math.random().toString(36).substr(2, 9);
+    localStorage.setItem('dance-uid', myId);
+}
+
+// ─── Theme Colors ──────────────────────────────────────────────────────────────
+const themeColors = {
+    green:  { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)',  shadow: 'rgba(34, 197, 94, 0.15)',  bg: '#071a0e',  bgAlt: '#040f08' },
+    blue:   { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)', bg: '#070d1a',  bgAlt: '#040810' },
+    red:    { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)',  shadow: 'rgba(239, 68, 68, 0.15)',  bg: '#1a0707',  bgAlt: '#100404' },
+    cyan:   { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)',  shadow: 'rgba(6, 182, 212, 0.15)', bg: '#041518',  bgAlt: '#020d0f' },
+    pink:   { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)',bg: '#1a0712',  bgAlt: '#10040a' },
+    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)',bg: '#0e071a',  bgAlt: '#080410' },
+    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)',  shadow: 'rgba(234, 179, 8, 0.15)', bg: '#1a1507',  bgAlt: '#100d04' },
+    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)',bg: '#1a0f07',  bgAlt: '#100904' },
+    white:  { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)',shadow: 'rgba(255, 255, 255, 0.15)',bg: '#0e0e0e',  bgAlt: '#080808' },
+    whiteout:{ primary: '#ffffff',dim: 'rgba(255, 255, 255, 0.05)',shadow:'rgba(255, 255, 255, 0.1)', bg: '#0e0e0e',  bgAlt: '#080808' }
+};
+
+function applyTheme() {
+    const theme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[theme] || themeColors.green;
+    document.documentElement.style.setProperty('--accent', colors.primary);
+    document.documentElement.style.setProperty('--accent-dim', colors.dim);
+    document.documentElement.style.setProperty('--bg', colors.bg);
+    document.documentElement.style.setProperty('--bg-alt', colors.bgAlt);
+    const logo = document.getElementById('logo');
+    if (logo) logo.src = `taclogos/${theme}.png`;
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+}
+
+applyTheme();
+window.addEventListener('storage', (e) => { if (e.key === 'theme') applyTheme(); });
+
+// ─── Dance Floor Background ───────────────────────────────────────────────────
+const danceFloor = document.getElementById('danceFloor');
+let bgPhase = 0;
+
+function animateBackground() {
+    bgPhase += 0.005;
+    const theme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[theme] || themeColors.green;
+    const t = (Math.sin(bgPhase) + 1) / 2;
+    danceFloor.style.backgroundColor = t > 0.5 ? colors.bg : colors.bgAlt;
+    requestAnimationFrame(animateBackground);
+}
+animateBackground();
+
+function spawnFloorTiles() {
+    danceFloor.innerHTML = '';
+    for (let i = 0; i < 30; i++) {
+        const tile = document.createElement('div');
+        tile.className = 'floor-tile';
+        const size = Math.random() * 80 + 40;
+        tile.style.width = size + 'px';
+        tile.style.height = size + 'px';
+        tile.style.left = Math.random() * 100 + '%';
+        tile.style.top = Math.random() * 100 + '%';
+        tile.style.background = 'var(--accent)';
+        tile.style.animationDelay = (Math.random() * 3) + 's';
+        tile.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        danceFloor.appendChild(tile);
+    }
+}
+spawnFloorTiles();
+setInterval(spawnFloorTiles, 8000);
+
+// ─── Cursor List ──────────────────────────────────────────────────────────────
+const cursorFiles = [
+    'Default.png',
+    'Magnifying glass.png',
+    'Click.png',
+    'clicky.png',
+    'Wait.png',
+    'Point.png',
+    'Arrow.png',
+    'Fist.png',
+    'Hand.png',
+    'Type.png',
+    'Not Magnifying glass.png'
+];
+
+const cursorListEl = document.getElementById('cursorList');
+let selectedCursor = localStorage.getItem('dance-cursor') || cursorFiles[0];
+
+// Update local cursor image
+const localCursorImg = document.getElementById('localCursorImg');
+localCursorImg.src = 'cursors/' + selectedCursor;
+
+function renderCursorList() {
+    cursorListEl.innerHTML = '';
+    cursorFiles.forEach(file => {
+        const name = file.replace(/\.[^/.]+$/, '');
+        const option = document.createElement('div');
+        option.className = 'cursor-option' + (file === selectedCursor ? ' selected' : '');
+        option.innerHTML = `
+            <img src="cursors/${file}" alt="${name}">
+            <span>${name}</span>
+        `;
+        option.addEventListener('click', () => {
+            selectedCursor = file;
+            localStorage.setItem('dance-cursor', file);
+            localCursorImg.src = 'cursors/' + file;
+            renderCursorList();
+            db.ref('dance/users/' + myId).update({ cursor: file });
+        });
+        cursorListEl.appendChild(option);
+    });
+}
+renderCursorList();
+
+// ─── Sidebar Toggle ────────────────────────────────────────────────────────────
+const sidebar = document.getElementById('sidebar');
+const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+
+toggleSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleSidebarBtn.classList.toggle('collapsed');
+});
+
+// ─── Bottom Bar Toggle ─────────────────────────────────────────────────────────
+const bottomBar = document.getElementById('bottomBar');
+const bottomBarToggle = document.getElementById('bottomBarToggle');
+
+bottomBarToggle.addEventListener('click', () => {
+    bottomBar.classList.toggle('collapsed');
+});
+
+// ─── Audio ─────────────────────────────────────────────────────────────────────
+const bgMusic = document.getElementById('bgMusic');
+const volumeSlider = document.getElementById('volumeSlider');
+const volumeIcon = document.getElementById('volumeIcon');
+
+bgMusic.volume = parseFloat(volumeSlider.value);
+
+volumeSlider.addEventListener('input', () => {
+    bgMusic.volume = parseFloat(volumeSlider.value);
+    updateVolumeIcon();
+});
+
+function updateVolumeIcon() {
+    const vol = bgMusic.volume;
+    if (vol === 0) {
+        volumeIcon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+    } else if (vol < 0.5) {
+        volumeIcon.innerHTML = '<path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/>';
+    } else {
+        volumeIcon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+    }
+}
+
+let musicStarted = false;
+function startMusic() {
+    if (!musicStarted) {
+        bgMusic.play().catch(() => {});
+        musicStarted = true;
+    }
+}
+document.addEventListener('click', startMusic, { once: false });
+document.addEventListener('keydown', startMusic, { once: false });
+
+// ─── Cursor State ──────────────────────────────────────────────────────────────
+let cursorX = window.innerWidth / 2;
+let cursorY = window.innerHeight / 2;
+let cursorSize = 32;
+let cursorRotation = 0;
+let isSpinning = false;
+let isWobbling = false;
+let isBouncing = false;
+let isRainbow = false;
+let spinInterval = null;
+let wobbleInterval = null;
+let bouncePhase = 0;
+let trailHue = 0;
+
+// ─── Local Cursor Element ──────────────────────────────────────────────────────
+const localCursor = document.getElementById('localCursor');
+
+function updateLocalCursor() {
+    const size = cursorSize;
+    localCursorImg.style.width = size + 'px';
+    localCursorImg.style.height = size + 'px';
+    localCursorImg.style.transform = `rotate(${cursorRotation}deg)`;
+    localCursor.style.left = (cursorX - size / 2) + 'px';
+    localCursor.style.top = (cursorY - size / 2) + 'px';
+}
+
+document.addEventListener('mousemove', (e) => {
+    cursorX = e.clientX;
+    cursorY = e.clientY;
+    startMusic();
+});
+
+// ─── Render Loop ──────────────────────────────────────────────────────────────
+function renderLoop() {
+    if (isRainbow) {
+        trailHue = (trailHue + 5) % 360;
+        spawnTrailParticle(cursorX, cursorY, `hsl(${trailHue}, 100%, 60%)`);
+    }
+    updateLocalCursor();
+    sendPositionThrottled();
+    requestAnimationFrame(renderLoop);
+}
+renderLoop();
+
+function spawnTrailParticle(x, y, color) {
+    const p = document.createElement('div');
+    p.className = 'trail-particle';
+    p.style.left = (x - 4) + 'px';
+    p.style.top = (y - 4) + 'px';
+    p.style.width = '8px';
+    p.style.height = '8px';
+    p.style.background = color || 'var(--accent)';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 600);
+}
+
+// ─── Keyboard Controls ─────────────────────────────────────────────────────────
+const movePopup = document.getElementById('movePopup');
+
+function showMove(name) {
+    movePopup.textContent = name;
+    movePopup.classList.remove('show');
+    void movePopup.offsetWidth;
+    movePopup.classList.add('show');
+}
+
+document.addEventListener('keydown', (e) => {
+    const key = e.key.toLowerCase();
+
+    if (key === 's' && !isSpinning) {
+        isSpinning = true;
+        showMove('💫 SPIN!');
+        let spinSpeed = 0;
+        spinInterval = setInterval(() => {
+            spinSpeed += 2;
+            cursorRotation += spinSpeed > 30 ? 30 : spinSpeed;
+        }, 16);
+        setTimeout(() => {
+            clearInterval(spinInterval);
+            isSpinning = false;
+            const slowDown = setInterval(() => { cursorRotation += 10; }, 16);
+            setTimeout(() => clearInterval(slowDown), 500);
+        }, 1500);
+    }
+
+    if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        cursorSize = Math.min(cursorSize + 8, 128);
+        showMove('⬆️ GROW');
+    }
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        cursorSize = Math.max(cursorSize - 8, 16);
+        showMove('⬇️ SHRINK');
+    }
+
+    if (key === 'w' && !isWobbling) {
+        isWobbling = true;
+        showMove('🌀 WOBBLE!');
+        let wobbleAngle = 0;
+        wobbleInterval = setInterval(() => {
+            wobbleAngle += 0.3;
+            cursorRotation = Math.sin(wobbleAngle) * 30;
+        }, 16);
+        setTimeout(() => {
+            clearInterval(wobbleInterval);
+            isWobbling = false;
+            cursorRotation = 0;
+        }, 2000);
+    }
+
+    if (key === 'b' && !isBouncing) {
+        isBouncing = true;
+        bouncePhase = 0;
+        showMove('🏀 BOUNCE!');
+        setTimeout(() => { isBouncing = false; }, 2500);
+    }
+
+    if (key === 'f') {
+        showMove('🔄 FLIP!');
+        const startRot = cursorRotation;
+        let progress = 0;
+        const flipInterval = setInterval(() => {
+            progress += 15;
+            cursorRotation = startRot + progress;
+            if (progress >= 360) {
+                cursorRotation = startRot;
+                clearInterval(flipInterval);
+            }
+        }, 16);
+    }
+
+    if (key === ' ') {
+        e.preventDefault();
+        isRainbow = !isRainbow;
+        showMove(isRainbow ? '🌈 RAINBOW ON!' : '🌈 RAINBOW OFF');
+    }
+});
+
+document.addEventListener('click', (e) => {
+    showMove('💥 PULSE!');
+    const originalSize = cursorSize;
+    cursorSize = originalSize * 1.8;
+    setTimeout(() => { cursorSize = originalSize; }, 200);
+    for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 / 12) * i;
+        spawnTrailParticle(
+            cursorX + Math.cos(angle) * 30,
+            cursorY + Math.sin(angle) * 30,
+            'var(--accent)'
+        );
+    }
+});
+
+// ─── Firebase: Send position ───────────────────────────────────────────────────
+let lastSendTime = 0;
+
+function sendPositionThrottled() {
+    const now = Date.now();
+    if (now - lastSendTime < 50) return;
+    lastSendTime = now;
+
+    let yToSend = cursorY;
+    if (isBouncing) {
+        bouncePhase += 0.15;
+        yToSend += Math.abs(Math.sin(bouncePhase)) * -20;
+    }
+
+    db.ref('dance/users/' + myId).set({
+        x: cursorX / window.innerWidth,
+        y: yToSend / window.innerHeight,
+        cursor: selectedCursor,
+        size: cursorSize,
+        rotation: cursorRotation,
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+}
+
+const myRef = db.ref('dance/users/' + myId);
+myRef.onDisconnect().remove();
+
+// ─── Firebase: Remote cursors ──────────────────────────────────────────────────
+const remoteCursors = {};
+const inviteBanner = document.getElementById('inviteBanner');
+const onlineText = document.getElementById('onlineText');
+
+db.ref('dance/users').on('value', (snapshot) => {
+    const users = snapshot.val() || {};
+    const userIds = Object.keys(users);
+
+    const count = userIds.length;
+    onlineText.textContent = count === 1 ? '1 dancer' : count + ' dancers';
+    inviteBanner.style.display = count <= 1 ? 'block' : 'none';
+
+    Object.keys(remoteCursors).forEach(id => {
+        if (!users[id] || id === myId) {
+            if (remoteCursors[id]) {
+                remoteCursors[id].remove();
+                delete remoteCursors[id];
+            }
+        }
+    });
+
+    userIds.forEach(id => {
+        if (id === myId) return;
+        const data = users[id];
+        if (!data || !data.x) return;
+        if (data.timestamp && Date.now() - data.timestamp > 10000) return;
+
+        if (!remoteCursors[id]) {
+            const el = document.createElement('div');
+            el.className = 'remote-cursor';
+            el.innerHTML = `
+                <img src="cursors/${data.cursor || 'Default.png'}" width="32" height="32" style="pointer-events:none;">
+                <div class="remote-cursor-label">${id.slice(0, 8)}</div>
+            `;
+            document.body.appendChild(el);
+            remoteCursors[id] = el;
+        }
+
+        const el = remoteCursors[id];
+        const img = el.querySelector('img');
+        const x = data.x * window.innerWidth;
+        const y = data.y * window.innerHeight;
+        const size = data.size || 32;
+
+        el.style.left = (x - size / 2) + 'px';
+        el.style.top = (y - size / 2) + 'px';
+
+        if (img) {
+            img.src = 'cursors/' + (data.cursor || 'Default.png');
+            img.style.width = size + 'px';
+            img.style.height = size + 'px';
+            img.style.transform = `rotate(${data.rotation || 0}deg)`;
+        }
+    });
+});
+
+// ─── Cleanup stale users ───────────────────────────────────────────────────────
+setInterval(() => {
+    db.ref('dance/users').once('value', (snapshot) => {
+        const users = snapshot.val() || {};
+        const now = Date.now();
+        Object.entries(users).forEach(([id, data]) => {
+            if (data.timestamp && now - data.timestamp > 15000) {
+                db.ref('dance/users/' + id).remove();
+            }
+        });
+    });
+}, 15000);
+</script>
+
+</body>
+</html>

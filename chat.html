@@ -34,7 +34,6 @@
   ::-webkit-scrollbar-track{background:transparent}
   ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
   
-  /* Floating Sidebar */
   .sidebar{
     position:fixed;
     left:10px;
@@ -175,7 +174,6 @@
     display:none;
   }
   
-  /* Layout */
   .layout{
     display:grid;
     grid-template-columns:1fr 360px;
@@ -279,7 +277,6 @@
     border-color:#3b82f6;
   }
   
-  /* Chat Selector Dropdown */
   .chat-selector{
     position:relative;
     display:flex;
@@ -547,6 +544,12 @@
   
   .btn.danger:hover{
     background:#dc2626;
+  }
+
+  .btn.active-mode{
+    background:var(--accent);
+    color:#000;
+    border-color:var(--accent);
   }
   
   .composer{
@@ -823,7 +826,6 @@
     border-left:3px solid var(--accent);
   }
   
-  /* Announcement Modal */
   .announcement-overlay{
     position:fixed;
     top:0;
@@ -893,6 +895,12 @@
     color:var(--muted);
     font-size:12px;
     margin-left:4px;
+  }
+
+  .regex-mode-toggle{
+    display:flex;
+    gap:6px;
+    margin-bottom:6px;
   }
 
   @media(max-width:1200px){
@@ -1110,9 +1118,17 @@
 
       <h4>Regex Filters</h4>
       <div id="regexList" class="list small">loading…</div>
-      <div class="badword-input">
+      <div class="regex-mode-toggle">
+        <button id="regexModeManualBtn" class="btn active-mode" onclick="setRegexMode('manual')">Raw Regex</button>
+        <button id="regexModeWordBtn" class="btn" onclick="setRegexMode('word')">From Word</button>
+      </div>
+      <div class="badword-input" id="regexManualInputRow">
         <input id="regexInput" placeholder="Add regex (e.g. /test/i)" style="flex:1">
         <button id="regexAddBtn" class="btn">Add</button>
+      </div>
+      <div class="badword-input" id="regexWordInputRow" style="display:none">
+        <input id="regexWordField" placeholder="Type a word to auto-generate regex..." style="flex:1">
+        <button id="regexWordAddBtn" class="btn">Generate &amp; Add</button>
       </div>
 
       <h4>Custom Bot Responses</h4>
@@ -1171,7 +1187,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* ================== THEME SYSTEM (from localStorage) ================== */
+/* ================== THEME SYSTEM ================== */
 const themeColors = {
   green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
   blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
@@ -1188,13 +1204,10 @@ const themeColors = {
 function applyTheme() {
   const theme = localStorage.getItem('theme') || 'green';
   const colors = themeColors[theme] || themeColors.green;
-  
   document.documentElement.style.setProperty('--accent', colors.primary);
   document.documentElement.style.setProperty('--accent-dim', colors.dim);
-  
   const logo = document.getElementById('logo');
   if (logo) logo.src = `taclogos/${theme}.png`;
-  
   const sidebar = document.getElementById('sidebar');
   if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
 }
@@ -1272,13 +1285,9 @@ const privateChatsSection = document.getElementById('privateChatsSection');
 const newChatBtn = document.getElementById('newChatBtn');
 
 /* ================== LOGIN / MOD AUTH ================== */
-// Use lastLoggedInUser from localStorage instead of asking for username
 let username = (localStorage.getItem('lastLoggedInUser') || '').trim();
 if(!username){
-  // Fallback: if no lastLoggedInUser, redirect or show error
   alert('No user logged in. Please log in first.');
-  // Optionally redirect to login page:
-  // window.location.href = 'login.html';
 }
 
 const meNameEl = document.getElementById('meName');
@@ -1290,17 +1299,27 @@ meNameEl.textContent = username;
 modName.textContent = username;
 
 let myRole = "Member";
-const defaultRoleFor = (n)=>{
-  if(/^logan$/i.test(n)) return "Head Dev";
-  if(/^leonardo$/i.test(n)) return "Head Moderator";
-  return "Member";
-};
 
 const modPanel = document.getElementById('modPanel');
 let modAuthenticated = !!localStorage.getItem('modAuth');
 
-function canModerate(role){
-  return role === 'Head Dev' || role === 'Head Moderator' || modAuthenticated;
+/* ---- Role helpers ---- */
+function roleContainsMod(role) {
+  if (!role) return false;
+  const r = role.toLowerCase();
+  return r.includes('mod') || r.includes('dev');
+}
+
+function getRoleTagClass(role) {
+  if (!role) return '';
+  const r = role.toLowerCase();
+  if (r.includes('dev')) return 'dev';
+  if (r.includes('mod')) return 'mod';
+  return '';
+}
+
+function canModerate(role) {
+  return roleContainsMod(role) || !!modAuthenticated;
 }
 
 function updateModPanelVisibility(){
@@ -1321,12 +1340,28 @@ function updateModPanelVisibility(){
   }
 }
 
-db.ref('users/' + username + '/role').once('value').then(s=>{
-  myRole = s.val() || defaultRoleFor(username);
+/* Read role from Firebase users node, match by name field */
+db.ref('users').once('value').then(snap => {
+  const allUsers = snap.val() || {};
+  let foundRole = null;
+
+  // Try to find user where name matches lastLoggedInUser (case-insensitive)
+  Object.values(allUsers).forEach(userData => {
+    if (userData && userData.name && userData.name.toLowerCase() === username.toLowerCase()) {
+      if (userData.role) foundRole = userData.role;
+    }
+  });
+
+  // Fallback: try direct key lookup
+  if (!foundRole && allUsers[username] && allUsers[username].role) {
+    foundRole = allUsers[username].role;
+  }
+
+  myRole = foundRole || 'Member';
   meRoleEl.textContent = myRole;
   modRole.textContent = myRole;
-  meRoleEl.className = 'tag ' + (myRole === 'Head Dev' ? 'dev' : myRole === 'Head Moderator' ? 'mod' : '');
-  modRole.className = 'tag ' + (myRole === 'Head Dev' ? 'dev' : myRole === 'Head Moderator' ? 'mod' : '');
+  meRoleEl.className = 'tag ' + getRoleTagClass(myRole);
+  modRole.className = 'tag ' + getRoleTagClass(myRole);
   db.ref('users/' + username).update({ name: username, role: myRole }).catch(()=>{});
   updateModPanelVisibility();
 });
@@ -1393,7 +1428,6 @@ newChatBtn.addEventListener('click', () => {
 db.ref('moderation/announcement').on('value', snap => {
   const announcement = snap.val();
   const dismissedKey = 'announcement_dismissed_' + (announcement?.timestamp || '');
-  
   if (announcement && announcement.title && !localStorage.getItem(dismissedKey)) {
     announcementModalTitle.textContent = announcement.title;
     announcementModalText.textContent = announcement.text || '';
@@ -1418,14 +1452,12 @@ setAnnouncementBtn.addEventListener('click', async () => {
   const title = announcementTitle.value.trim();
   const text = announcementText.value.trim();
   if (!title) { showNotice('Title required'); return; }
-  
   await db.ref('moderation/announcement').set({
     title: title,
     text: text,
     timestamp: Date.now(),
     setBy: username
   });
-  
   announcementTitle.value = '';
   announcementText.value = '';
   showNotice('Announcement set');
@@ -1477,7 +1509,6 @@ let customRegexList = {};
 function rebuildProfanityRegexes(){
   const words = Object.values(badWordMap).length ? Object.values(badWordMap) : DEFAULT_BAD_WORDS;
   PROFANITY_REGEXES = words.map(wordToRegex);
-  
   Object.values(customRegexList).forEach(regexStr => {
     try {
       const parts = regexStr.match(/^\/(.*?)\/([gimsuy]*)$/);
@@ -1582,6 +1613,25 @@ function renderRegexUI() {
   });
 }
 
+/* ---- Regex mode toggle ---- */
+function setRegexMode(mode) {
+  const manualRow = document.getElementById('regexManualInputRow');
+  const wordRow = document.getElementById('regexWordInputRow');
+  const manualBtn = document.getElementById('regexModeManualBtn');
+  const wordBtn = document.getElementById('regexModeWordBtn');
+  if (mode === 'manual') {
+    manualRow.style.display = 'flex';
+    wordRow.style.display = 'none';
+    manualBtn.classList.add('active-mode');
+    wordBtn.classList.remove('active-mode');
+  } else {
+    manualRow.style.display = 'none';
+    wordRow.style.display = 'flex';
+    wordBtn.classList.add('active-mode');
+    manualBtn.classList.remove('active-mode');
+  }
+}
+
 regexAddBtn.addEventListener('click', async () => {
   if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
   const v = (regexInput.value || '').trim();
@@ -1599,6 +1649,19 @@ regexAddBtn.addEventListener('click', async () => {
   }
   await db.ref('moderation/regex').push(v);
   regexInput.value = '';
+});
+
+document.getElementById('regexWordAddBtn').addEventListener('click', async () => {
+  if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
+  const word = (document.getElementById('regexWordField').value || '').trim();
+  if (!word) return;
+  if (/\s/.test(word)) { showNotice('Single word only for auto-regex.'); return; }
+  // Escape special regex chars and build a case-insensitive pattern
+  const escaped = word.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
+  const regexStr = '/' + escaped + '/i';
+  await db.ref('moderation/regex').push(regexStr);
+  document.getElementById('regexWordField').value = '';
+  showNotice('Added regex: ' + regexStr);
 });
 
 /* ================== AUTO-BAN SETTINGS ================== */
@@ -1797,7 +1860,8 @@ function renderMessageObj(m, id, chatId='main', isPrivateBotMsg=false){
   const main = document.createElement('div');
   const meta = document.createElement('div'); meta.className='meta';
   const name = document.createElement('span'); name.className='name'; name.textContent = m.user;
-  const role = document.createElement('span'); role.className='tag ' + (m.role === 'Head Dev' ? 'dev' : m.role === 'Head Moderator' ? 'mod' : '');
+  const role = document.createElement('span');
+  role.className = 'tag ' + getRoleTagClass(m.role);
   role.textContent = m.role || 'Member';
   const when = document.createElement('span'); when.className='when'; when.textContent = fmtTime(m.timestamp || Date.now());
   const actions = document.createElement('div'); actions.className='bubble-actions';
@@ -1854,7 +1918,6 @@ function renderMessageObj(m, id, chatId='main', isPrivateBotMsg=false){
     const pollWrap = document.createElement('div'); pollWrap.className='poll'; pollWrap.id = 'poll_' + m.pollId;
     pollWrap.innerHTML = `<strong>Poll: ${m.text}</strong><div id="poll_opts_${m.pollId}" style="margin-top:8px"></div>`;
     main.appendChild(pollWrap);
-    
     db.ref('polls/' + m.pollId).on('value', s=>{
       const p = s.val();
       if(!p) return;
@@ -1863,32 +1926,17 @@ function renderMessageObj(m, id, chatId='main', isPrivateBotMsg=false){
       optEl.innerHTML = '';
       const votes = p.votes || {};
       const voteCounts = {};
-      Object.values(votes).forEach(opt => {
-        voteCounts[opt] = (voteCounts[opt] || 0) + 1;
-      });
-      
+      Object.values(votes).forEach(opt => { voteCounts[opt] = (voteCounts[opt] || 0) + 1; });
       Object.keys(p.options || {}).forEach(opt=>{
         const row = document.createElement('div');
-        row.style.display='flex';
-        row.style.gap='8px';
-        row.style.alignItems='center';
-        row.style.marginBottom='6px';
+        row.style.display='flex'; row.style.gap='8px'; row.style.alignItems='center'; row.style.marginBottom='6px';
         const optBtn = document.createElement('button');
-        optBtn.className='btn';
-        optBtn.textContent = opt;
-        optBtn.style.flex = '1';
-        optBtn.onclick = ()=> {
-          db.ref('polls/' + m.pollId + '/votes/' + username).set(opt);
-        };
-        if(votes[username] === opt) {
-          optBtn.style.background = 'var(--accent)';
-          optBtn.style.color = '#000';
-        }
+        optBtn.className='btn'; optBtn.textContent = opt; optBtn.style.flex = '1';
+        optBtn.onclick = ()=> { db.ref('polls/' + m.pollId + '/votes/' + username).set(opt); };
+        if(votes[username] === opt) { optBtn.style.background = 'var(--accent)'; optBtn.style.color = '#000'; }
         const count = document.createElement('span');
-        count.className='small muted';
-        count.textContent = `${voteCounts[opt] || 0} votes`;
-        row.appendChild(optBtn);
-        row.appendChild(count);
+        count.className='small muted'; count.textContent = `${voteCounts[opt] || 0} votes`;
+        row.appendChild(optBtn); row.appendChild(count);
         optEl.appendChild(row);
       });
     });
@@ -1922,10 +1970,7 @@ function loadChat(chatId) {
   detachAllChatListeners();
   activeChatId = chatId;
   scroller.innerHTML = '';
-  
-  // Update dropdown active states
   document.querySelectorAll('.chat-dropdown-item').forEach(el => el.classList.remove('active'));
-  
   if(chatId === 'main') {
     mainChatOption.classList.add('active');
     chatTitleText.textContent = '# general';
@@ -1953,11 +1998,7 @@ function loadChat(chatId) {
   } else {
     db.ref('private_chats/' + chatId).once('value').then(snap => {
       const chatData = snap.val();
-      if (!chatData) {
-        showNotice('Chat not found.');
-        loadChat('main');
-        return;
-      }
+      if (!chatData) { showNotice('Chat not found.'); loadChat('main'); return; }
       const displayName = chatData.members.filter(m => m !== username).join(', ') || 'Private Chat';
       chatTitleText.textContent = displayName;
       input.placeholder = 'Message ' + displayName;
@@ -1972,7 +2013,6 @@ function loadChat(chatId) {
     scroller.appendChild(el);
     scroller.scrollTop = scroller.scrollHeight;
   });
-  
   chatRef.on('child_removed', snap => {
     const id = snap.key;
     const el = document.getElementById('m_' + id);
@@ -1991,13 +2031,7 @@ db.ref('users/' + username + '/private_chats').on('value', snap => {
   const newChats = snap.val() || {};
   const previousChatIds = Object.keys(userChats);
   const newChatIds = Object.keys(newChats).filter(id => !previousChatIds.includes(id));
-
-  if(newChatIds.length > 0){
-    newChatIds.forEach(id => {
-      showNotice(`You've been added to a new chat!`);
-    });
-  }
-
+  if(newChatIds.length > 0){ newChatIds.forEach(() => { showNotice(`You've been added to a new chat!`); }); }
   userChats = newChats;
   renderPrivateChatsDropdown();
   if (activeChatId !== 'main' && activeChatId !== 'questions' && activeChatId !== 'help' && !userChats[activeChatId]) {
@@ -2014,23 +2048,15 @@ if (canModerate(myRole)) {
 
 function renderPrivateChatsDropdown() {
   privateChatOptions.innerHTML = '';
-  
   const entries = Object.entries(userChats);
-  if (entries.length === 0) {
-    privateChatsSection.style.display = 'none';
-    return;
-  }
-  
+  if (entries.length === 0) { privateChatsSection.style.display = 'none'; return; }
   privateChatsSection.style.display = 'block';
-  
   entries.forEach(([id, members]) => {
     const el = document.createElement('div');
     el.className = 'chat-dropdown-item';
     el.dataset.chat = id;
     if(id === activeChatId) el.classList.add('active');
-    
     const displayName = members.filter(m => m !== username).join(', ') || 'Private Chat';
-    
     el.innerHTML = `
       <div class="chat-icon">
         <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
@@ -2054,40 +2080,25 @@ function renderPrivateChatsDropdown() {
 function renderModPrivateChats(chats) {
   modPrivateChatsList.innerHTML = '';
   const entries = Object.entries(chats);
-  if (entries.length === 0) {
-    modPrivateChatsList.innerHTML = '<div class="small muted">No private chats.</div>';
-    return;
-  }
+  if (entries.length === 0) { modPrivateChatsList.innerHTML = '<div class="small muted">No private chats.</div>'; return; }
   entries.forEach(([id, data]) => {
     const el = document.createElement('div');
     el.className = 'mod-chat-item';
     el.innerHTML = `<div><strong>${data.members.join(', ')}</strong><br><span class="small muted">Last: ${new Date(data.lastMessageTimestamp||0).toLocaleString()}</span></div>`;
     const actions = document.createElement('div');
-    actions.style.display = 'flex';
-    actions.style.gap = '6px';
-    const viewBtn = document.createElement('button');
-    viewBtn.className = 'btn';
-    viewBtn.textContent = 'View';
-    viewBtn.onclick = () => {
-      loadChat(id);
-    };
-    const deleteBtn = document.createElement('button');
-    deleteBtn.className = 'btn danger';
-    deleteBtn.textContent = 'Delete';
+    actions.style.display = 'flex'; actions.style.gap = '6px';
+    const viewBtn = document.createElement('button'); viewBtn.className = 'btn'; viewBtn.textContent = 'View';
+    viewBtn.onclick = () => { loadChat(id); };
+    const deleteBtn = document.createElement('button'); deleteBtn.className = 'btn danger'; deleteBtn.textContent = 'Delete';
     deleteBtn.onclick = () => {
       const ok = prompt('Delete this chat? Type YES to confirm.');
       if(ok === 'YES'){
         db.ref('private_chats/' + id).remove();
-        data.members.forEach(member => {
-          db.ref('users/' + member + '/private_chats/' + id).remove();
-        });
-        if(activeChatId === id) {
-          loadChat('main');
-        }
+        data.members.forEach(member => { db.ref('users/' + member + '/private_chats/' + id).remove(); });
+        if(activeChatId === id) { loadChat('main'); }
       }
     };
-    actions.appendChild(viewBtn);
-    actions.appendChild(deleteBtn);
+    actions.appendChild(viewBtn); actions.appendChild(deleteBtn);
     el.appendChild(actions);
     modPrivateChatsList.appendChild(el);
   });
@@ -2096,23 +2107,12 @@ function renderModPrivateChats(chats) {
 /* ================== CREATE CHAT DROPDOWN ================== */
 let selectedUsers = [];
 
-cancelCreateChatBtn.addEventListener('click', () => {
-  createChatDropdown.classList.remove('visible');
-});
+cancelCreateChatBtn.addEventListener('click', () => { createChatDropdown.classList.remove('visible'); });
 
 confirmCreateChatBtn.addEventListener('click', async () => {
-  if (selectedUsers.length === 0) {
-    showNotice('Select at least one user.');
-    return;
-  }
-  
-  if (selectedUsers.length > 9) {
-    showNotice('Max 9 users.');
-    return;
-  }
-  
+  if (selectedUsers.length === 0) { showNotice('Select at least one user.'); return; }
+  if (selectedUsers.length > 9) { showNotice('Max 9 users.'); return; }
   const members = [...new Set([username.toLowerCase(), ...selectedUsers.map(u => u.toLowerCase())])].sort();
-  
   const existingChatSnap = await db.ref('private_chats').orderByChild('members_sorted').equalTo(members.join(',')).once('value');
   if (existingChatSnap.exists()){
     const chatId = Object.keys(existingChatSnap.val())[0];
@@ -2121,62 +2121,32 @@ confirmCreateChatBtn.addEventListener('click', async () => {
     showNotice('Chat already exists.');
     return;
   }
-  
   const newChatId = db.ref('private_chats').push().key;
-  const chatData = {
-    members: members,
-    members_sorted: members.join(','),
-    createdAt: Date.now(),
-    lastMessageTimestamp: Date.now()
-  };
-  
+  const chatData = { members: members, members_sorted: members.join(','), createdAt: Date.now(), lastMessageTimestamp: Date.now() };
   const updates = {};
   updates[`private_chats/${newChatId}`] = chatData;
-  members.forEach(m => {
-    updates[`users/${m}/private_chats/${newChatId}`] = members;
-  });
-  
+  members.forEach(m => { updates[`users/${m}/private_chats/${newChatId}`] = members; });
   await db.ref().update(updates);
-  
   loadChat(newChatId);
   createChatDropdown.classList.remove('visible');
   showNotice('Chat created!');
 });
 
-userSearch.addEventListener('input', () => {
-  renderUserListForDropdown(userSearch.value);
-});
+userSearch.addEventListener('input', () => { renderUserListForDropdown(userSearch.value); });
 
 function renderUserListForDropdown(searchTerm = '') {
   userListEl.innerHTML = '';
   const filteredUsers = allUsers.filter(u => u.toLowerCase() !== username.toLowerCase() && u.toLowerCase().includes(searchTerm.toLowerCase()));
-  
-  if(filteredUsers.length === 0){
-    userListEl.innerHTML = '<div class="small muted" style="padding:12px">No users found.</div>';
-    return;
-  }
-  
+  if(filteredUsers.length === 0){ userListEl.innerHTML = '<div class="small muted" style="padding:12px">No users found.</div>'; return; }
   filteredUsers.forEach(user => {
     const el = document.createElement('div');
     el.className = 'user-item';
     el.textContent = user;
-    if (selectedUsers.includes(user)) {
-      el.classList.add('selected');
-    }
-    
+    if (selectedUsers.includes(user)) el.classList.add('selected');
     el.onclick = () => {
       const index = selectedUsers.indexOf(user);
-      if (index > -1) {
-        selectedUsers.splice(index, 1);
-        el.classList.remove('selected');
-      } else {
-        if (selectedUsers.length < 9) {
-          selectedUsers.push(user);
-          el.classList.add('selected');
-        } else {
-          showNotice('Max 9 users.');
-        }
-      }
+      if (index > -1) { selectedUsers.splice(index, 1); el.classList.remove('selected'); }
+      else { if (selectedUsers.length < 9) { selectedUsers.push(user); el.classList.add('selected'); } else { showNotice('Max 9 users.'); } }
     };
     userListEl.appendChild(el);
   });
@@ -2216,15 +2186,10 @@ function getPlaceholderForChat(chatId) {
   return 'Message...';
 }
 
-/* ================== LOCAL BOT MESSAGE (only visible to current user) ================== */
+/* ================== LOCAL BOT MESSAGE ================== */
 function showLocalBotMessage(text) {
   const localId = 'local_' + Date.now();
-  const botMsg = {
-    user: 'ModBot',
-    text: text,
-    role: 'Head Dev',
-    timestamp: Date.now()
-  };
+  const botMsg = { user: 'ModBot', text: text, role: 'Head Dev', timestamp: Date.now() };
   const el = renderMessageObj(botMsg, localId, activeChatId, true);
   scroller.appendChild(el);
   scroller.scrollTop = scroller.scrollHeight;
@@ -2236,14 +2201,11 @@ sendBtn.addEventListener('click', async ()=>{
   if(isPaused && isPublicChannel){ showNotice('Chat is paused.'); return; }
   let text = input.value.trim();
   if(!text && !fileInput.files.length) return;
-  
   if(checkClientSpam()){ showNotice('Slow down!'); return; }
   if(containsProfanity(text)){ showNotice('Message contains profanity.'); recordOffense(username); return; }
   if(await isBanned(username)){ showNotice('You are banned.'); return; }
   if(await isTimedOut(username)){ showNotice('You are timed out.'); return; }
-  
   recordClientSend();
-  
   const parts = text.split(/\s+/);
   const cmd = parts[0].toLowerCase();
 
@@ -2257,14 +2219,12 @@ sendBtn.addEventListener('click', async ()=>{
   if(cmd === '!mod' && isPublicChannel){
     const message = parts.slice(1).join(' ').trim();
     if(!message) {
-      // Show placeholder hint to user
       showLocalBotMessage('Usage: !mod [Type message here]\nExample: !mod Someone is spamming in chat');
       input.value = '';
       return;
     }
     await db.ref('moderation/modNotifications').push({ user: username, message: message, timestamp: Date.now() });
     input.value = '';
-    // Show confirmation only to the user who sent it
     showLocalBotMessage('✓ Your message has been sent to the moderators.');
     return;
   }
@@ -2274,68 +2234,35 @@ sendBtn.addEventListener('click', async ()=>{
   const responses = snap.val() || {};
   const botResponse = Object.values(responses).find(res => res.command.toLowerCase() === cmd);
   if(botResponse && isPublicChannel){
-    // Show bot response only to the user who typed the command
     showLocalBotMessage(botResponse.text);
     input.value = '';
     return;
   }
 
-  // Determine which chat path to use
   let refPath = '';
-  if (activeChatId === 'main') {
-    refPath = 'chat/messages';
-  } else if (activeChatId === 'questions') {
-    refPath = 'chat/questions';
-  } else if (activeChatId === 'help') {
-    refPath = 'chat/help';
-  } else {
-    refPath = `private_chats/${activeChatId}/messages`;
-  }
+  if (activeChatId === 'main') { refPath = 'chat/messages'; }
+  else if (activeChatId === 'questions') { refPath = 'chat/questions'; }
+  else if (activeChatId === 'help') { refPath = 'chat/help'; }
+  else { refPath = `private_chats/${activeChatId}/messages`; }
 
   if(isPublicChannel){
-    try {
-      if(fileInput.files.length){
-        const file = fileInput.files[0];
-        const upload = await uploadAttachment(file);
-        if(upload){
-          await db.ref(refPath).push({
-            user: username,
-            text: text,
-            role: myRole,
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            attachmentId: upload.id
-          });
-          input.value = '';
-          fileInput.value = '';
-        }
-      } else if(text){
-        await db.ref(refPath).push({
-          user: username,
-          text: text,
-          role: myRole,
-          timestamp: firebase.database.ServerValue.TIMESTAMP
-        });
-        input.value = '';
+    if(fileInput.files.length){
+      const file = fileInput.files[0];
+      const upload = await uploadAttachment(file);
+      if(upload){
+        await db.ref(refPath).push({ user: username, text: text, role: myRole, timestamp: firebase.database.ServerValue.TIMESTAMP, attachmentId: upload.id });
+        input.value = ''; fileInput.value = '';
       }
-    } catch(e) {
-      showNotice('Failed: ' + e.message);
+    } else if(text){
+      await db.ref(refPath).push({ user: username, text: text, role: myRole, timestamp: firebase.database.ServerValue.TIMESTAMP });
+      input.value = '';
     }
   } else {
-    try {
-      const chatRef = db.ref('private_chats/' + activeChatId);
-      const messageRef = chatRef.child('messages').push();
-      await messageRef.set({
-        user: username,
-        text: text,
-        role: myRole,
-        timestamp: firebase.database.ServerValue.TIMESTAMP,
-        id: messageRef.key
-      });
-      await chatRef.update({ lastMessageTimestamp: Date.now() });
-      input.value = '';
-    } catch(e) {
-      showNotice('Failed: ' + e.message);
-    }
+    const chatRef = db.ref('private_chats/' + activeChatId);
+    const messageRef = chatRef.child('messages').push();
+    await messageRef.set({ user: username, text: text, role: myRole, timestamp: firebase.database.ServerValue.TIMESTAMP, id: messageRef.key });
+    await chatRef.update({ lastMessageTimestamp: Date.now() });
+    input.value = '';
   }
 });
 
@@ -2350,9 +2277,7 @@ function renderUserList(container, data, actionBtnText, onActionClick){
     const el = document.createElement('div');
     el.innerHTML = `<span>${name}</span>`;
     const actions = document.createElement('div');
-    const btn = document.createElement('button');
-    btn.className = 'btn danger';
-    btn.textContent = actionBtnText;
+    const btn = document.createElement('button'); btn.className = 'btn danger'; btn.textContent = actionBtnText;
     btn.onclick = () => onActionClick(name);
     actions.appendChild(btn);
     el.appendChild(actions);
@@ -2396,11 +2321,7 @@ function banPrompt(user){
   if(dur === null) return;
   if(dur.toLowerCase() === 'perm'){ db.ref('bans/'+user.toLowerCase()).set('perm'); showNotice(user + ' permanently banned.'); return; }
   const mins = parseInt(dur, 10);
-  if(mins > 0){
-    const until = Date.now() + mins * 60_000;
-    db.ref('bans/'+user.toLowerCase()).set(until);
-    showNotice(user + ' banned for ' + mins + ' min.');
-  }
+  if(mins > 0){ const until = Date.now() + mins * 60_000; db.ref('bans/'+user.toLowerCase()).set(until); showNotice(user + ' banned for ' + mins + ' min.'); }
 }
 
 togglePauseBtn.addEventListener('click', async()=>{
@@ -2415,8 +2336,7 @@ createPollBtn.addEventListener('click', async ()=>{
   const opts = pollOptionsEl.value.split(',').map(s=>s.trim()).filter(s=>s);
   if(!q || opts.length < 2){ showNotice('Need question and 2+ options.'); return; }
   await createPoll(q, opts);
-  pollQEl.value = '';
-  pollOptionsEl.value = '';
+  pollQEl.value = ''; pollOptionsEl.value = '';
   showNotice('Poll created.');
 });
 
@@ -2424,23 +2344,16 @@ db.ref('moderation/gameRequests').on('value', snap => {
   const reqs = snap.val() || {};
   gameRequestsList.innerHTML = '';
   const entries = Object.entries(reqs);
-  if (!entries.length) {
-    gameRequestsList.innerHTML = '<div class="small muted">No requests.</div>';
-    return;
-  }
+  if (!entries.length) { gameRequestsList.innerHTML = '<div class="small muted">No requests.</div>'; return; }
   entries.forEach(([k, req]) => {
-    const row = document.createElement('div');
-    row.className = 'game-req-item';
+    const row = document.createElement('div'); row.className = 'game-req-item';
     const content = document.createElement('div');
     content.innerHTML = `<span>${req.user}</span> <span class="small muted">${new Date(req.timestamp).toLocaleTimeString()}</span>`;
     const actions = document.createElement('div');
-    const dismissBtn = document.createElement('button');
-    dismissBtn.className = 'btn danger';
-    dismissBtn.textContent = 'Dismiss';
+    const dismissBtn = document.createElement('button'); dismissBtn.className = 'btn danger'; dismissBtn.textContent = 'Dismiss';
     dismissBtn.onclick = () => db.ref('moderation/gameRequests/' + k).remove();
     actions.appendChild(dismissBtn);
-    row.appendChild(content);
-    row.appendChild(actions);
+    row.appendChild(content); row.appendChild(actions);
     gameRequestsList.appendChild(row);
   });
 });
@@ -2449,28 +2362,17 @@ db.ref('moderation/modNotifications').on('value', snap => {
   const notifs = snap.val() || {};
   modNotificationsList.innerHTML = '';
   const entries = Object.entries(notifs);
-  if (!entries.length) {
-    modNotificationsList.innerHTML = '<div class="small muted">No notifications.</div>';
-    return;
-  }
+  if (!entries.length) { modNotificationsList.innerHTML = '<div class="small muted">No notifications.</div>'; return; }
   entries.forEach(([k, notif]) => {
-    const row = document.createElement('div');
-    row.className = 'mod-notif-item';
+    const row = document.createElement('div'); row.className = 'mod-notif-item';
     const content = document.createElement('div');
     content.innerHTML = `<strong>${notif.user}</strong> <span class="small muted">${new Date(notif.timestamp).toLocaleTimeString()}</span>`;
-    const msg = document.createElement('div');
-    msg.textContent = notif.message;
-    msg.style.marginTop = '4px';
-    const actions = document.createElement('div');
-    actions.style.marginTop = '6px';
-    const dismissBtn = document.createElement('button');
-    dismissBtn.className = 'btn danger';
-    dismissBtn.textContent = 'Dismiss';
+    const msg = document.createElement('div'); msg.textContent = notif.message; msg.style.marginTop = '4px';
+    const actions = document.createElement('div'); actions.style.marginTop = '6px';
+    const dismissBtn = document.createElement('button'); dismissBtn.className = 'btn danger'; dismissBtn.textContent = 'Dismiss';
     dismissBtn.onclick = () => db.ref('moderation/modNotifications/' + k).remove();
     actions.appendChild(dismissBtn);
-    row.appendChild(content);
-    row.appendChild(msg);
-    row.appendChild(actions);
+    row.appendChild(content); row.appendChild(msg); row.appendChild(actions);
     modNotificationsList.appendChild(row);
   });
 });
@@ -2479,11 +2381,7 @@ modChatSendBtn.addEventListener('click', async () => {
   if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
   const text = modChatInput.value.trim();
   if (!text) return;
-  await db.ref('moderation/modChat').push({
-    user: username,
-    text: text,
-    timestamp: firebase.database.ServerValue.TIMESTAMP
-  });
+  await db.ref('moderation/modChat').push({ user: username, text: text, timestamp: firebase.database.ServerValue.TIMESTAMP });
   modChatInput.value = '';
 });
 
@@ -2491,8 +2389,7 @@ db.ref('moderation/modChat').orderByChild('timestamp').on('child_added', snap =>
   const m = snap.val();
   const el = document.createElement('div');
   el.innerHTML = `<div><strong>${m.user}</strong> <span class="small muted">${fmtTime(m.timestamp)}</span></div><div style="margin-top:4px">${m.text}</div>`;
-  el.style.padding = '8px';
-  el.style.borderBottom = '1px solid var(--border)';
+  el.style.padding = '8px'; el.style.borderBottom = '1px solid var(--border)';
   modChatList.appendChild(el);
   modChatList.scrollTop = modChatList.scrollHeight;
 });
@@ -2501,23 +2398,14 @@ db.ref('moderation/customBotResponses').on('value', snap => {
   const responses = snap.val() || {};
   botResponsesList.innerHTML = '';
   const entries = Object.entries(responses);
-  if (!entries.length) {
-    botResponsesList.innerHTML = '<div class="small muted">No bot responses.</div>';
-    return;
-  }
+  if (!entries.length) { botResponsesList.innerHTML = '<div class="small muted">No bot responses.</div>'; return; }
   entries.forEach(([k, response]) => {
-    const row = document.createElement('div');
-    row.className = 'badword-list-item';
-    const lbl = document.createElement('div');
-    lbl.innerHTML = `<strong>${response.command}</strong>: ${response.text}`;
+    const row = document.createElement('div'); row.className = 'badword-list-item';
+    const lbl = document.createElement('div'); lbl.innerHTML = `<strong>${response.command}</strong>: ${response.text}`;
     const actions = document.createElement('div');
-    const del = document.createElement('button');
-    del.className = 'btn danger';
-    del.textContent = 'Delete';
+    const del = document.createElement('button'); del.className = 'btn danger'; del.textContent = 'Delete';
     del.onclick = () => { db.ref('moderation/customBotResponses/' + k).remove(); };
-    actions.appendChild(del);
-    row.appendChild(lbl);
-    row.appendChild(actions);
+    actions.appendChild(del); row.appendChild(lbl); row.appendChild(actions);
     botResponsesList.appendChild(row);
   });
 });
@@ -2526,13 +2414,9 @@ botResponseAddBtn.addEventListener('click', async () => {
   if (!canModerate(myRole)) { showNotice('Mod access required'); return; }
   const command = (botCommandInput.value || '').trim().toLowerCase();
   const response = (botResponseInput.value || '').trim();
-  if (!command.startsWith('!') || !response) {
-    showNotice('Command must start with "!" and response required.');
-    return;
-  }
+  if (!command.startsWith('!') || !response) { showNotice('Command must start with "!" and response required.'); return; }
   await db.ref('moderation/customBotResponses').push({ command, text: response });
-  botCommandInput.value = '';
-  botResponseInput.value = '';
+  botCommandInput.value = ''; botResponseInput.value = '';
   showNotice('Bot command added.');
 });
 
@@ -2547,9 +2431,16 @@ updateModPanelVisibility();
     <script src="panic-key.js"></script>
     <script src="idle-dvd.js"></script>
     <script src="timeTracker.js"></script>
-
-
-
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
 </body>
 </html>

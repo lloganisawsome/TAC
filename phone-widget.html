@@ -1,0 +1,249 @@
+<div id="tac-phone-widget" style="display:none; position:fixed; bottom:20px; left:20px; z-index:9999;">
+    <style>
+        #tac-phone-widget {
+            --pw-accent: #22c55e;
+            --pw-accent-dim: rgba(34,197,94,0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .pw-card {
+            width: 290px;
+            background: #111113;
+            border: 2px solid var(--pw-accent);
+            border-radius: 18px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 12px 50px rgba(0,0,0,0.85), 0 0 30px var(--pw-accent-dim);
+            animation: pw-in 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes pw-in {
+            from { transform: translateY(80px) scale(0.95); opacity: 0; }
+            to   { transform: translateY(0) scale(1); opacity: 1; }
+        }
+        .pw-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .pw-dot {
+            width: 8px; height: 8px;
+            background: var(--pw-accent);
+            border-radius: 50%;
+            animation: pw-blink 1.4s ease-in-out infinite;
+            flex-shrink: 0;
+        }
+        @keyframes pw-blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.4; transform: scale(0.8); }
+        }
+        .pw-label {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--pw-accent);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .pw-caller {
+            text-align: center;
+        }
+        .pw-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+        .pw-ext {
+            font-size: 13px;
+            color: #71717a;
+        }
+        .pw-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .pw-btn {
+            flex: 1;
+            padding: 13px;
+            border-radius: 11px;
+            border: none;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.15s, transform 0.15s;
+        }
+        .pw-btn:hover  { opacity: 0.88; transform: scale(1.02); }
+        .pw-btn:active { transform: scale(0.97); }
+        .pw-ignore  { background: #ef4444; color: #fff; }
+        .pw-answer  { background: var(--pw-accent); color: #000; }
+    </style>
+
+    <div class="pw-card">
+        <div class="pw-header">
+            <div class="pw-dot"></div>
+            <span class="pw-label">Incoming TAC Call</span>
+        </div>
+        <div class="pw-caller">
+            <div class="pw-name" id="w-name">Unknown</div>
+            <div class="pw-ext" id="w-ext">Ext ---</div>
+        </div>
+        <div class="pw-buttons">
+            <button class="pw-btn pw-ignore" id="w-ignore">Ignore</button>
+            <button class="pw-btn pw-answer" id="w-answer">Answer</button>
+        </div>
+    </div>
+</div>
+
+<audio id="widget-ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop style="display:none;"></audio>
+
+<script>
+// Uses a regular script + dynamic import() so it executes correctly
+// when re-created via DOM after fetch → innerHTML → re-append trick.
+(async function() {
+    // phone.html handles calls natively — don't duplicate
+    const path = window.location.pathname;
+    if (path.endsWith('phone.html') || path.endsWith('phone')) return;
+
+    const myExt = localStorage.getItem('userPhoneNumber');
+    if (!myExt) return;
+
+    const widgetRoot = document.getElementById('tac-phone-widget');
+    const ringtone   = document.getElementById('widget-ringtone');
+    if (!widgetRoot) return;
+
+    // --- Dynamic Firebase imports ---
+    let initializeApp, getApps, getDatabase, ref, onValue, remove, get, set, onDisconnect, update;
+    try {
+        ({ initializeApp, getApps } =
+            await import("https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js"));
+        ({ getDatabase, ref, onValue, remove, get, set, onDisconnect, update } =
+            await import("https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js"));
+    } catch(e) {
+        console.error('[TAC Widget] Firebase import failed:', e);
+        return;
+    }
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+        authDomain: "taclogin-ab38e.firebaseapp.com",
+        databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+        projectId: "taclogin-ab38e",
+        storageBucket: "taclogin-ab38e.firebasestorage.app",
+        messagingSenderId: "937853298051",
+        appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+    };
+
+    // Use a named instance to avoid conflicts with any other Firebase on the page
+    let db;
+    try {
+        const existing = getApps().find(a => a.name === 'tac-widget');
+        const app = existing || initializeApp(firebaseConfig, 'tac-widget');
+        db = getDatabase(app);
+    } catch(e) {
+        console.error('[TAC Widget] Firebase init failed:', e);
+        return;
+    }
+
+    // --- Register a session so callers can reach us on this page ---
+    const widgetSessionId = 'w-' + Math.random().toString(36).substr(2, 9);
+    const sessionRef = ref(db, `sessions/${myExt}/${widgetSessionId}`);
+
+    set(sessionRef, { active: true, lastSeen: Date.now(), isWidget: true });
+    onDisconnect(sessionRef).remove();
+
+    const heartbeat = setInterval(() => {
+        update(sessionRef, { lastSeen: Date.now() });
+    }, 10000);
+
+    // --- State ---
+    let activeRingingSession = null;
+
+    // --- Listen for any incoming call on our extension ---
+    onValue(ref(db, `calls/${myExt}`), async (snap) => {
+        const allCalls = snap.val();
+
+        if (!allCalls) {
+            hideWidget();
+            return;
+        }
+
+        // Find a ringing call
+        for (const [sid, data] of Object.entries(allCalls)) {
+            if (data && data.status === 'ringing') {
+                if (activeRingingSession === sid) return; // already showing for this call
+                activeRingingSession = sid;
+                await showCall(data);
+                return;
+            }
+        }
+
+        // No ringing calls remaining
+        hideWidget();
+    });
+
+    async function showCall(data) {
+        // Check if blocked
+        const snap = await get(ref(db, `users/${myExt}/contacts/${data.from}`));
+        const contact = snap.val();
+
+        if (contact && contact.blocked) {
+            remove(ref(db, `calls/${myExt}/${activeRingingSession}`));
+            hideWidget();
+            return;
+        }
+
+        document.getElementById('w-name').innerText = contact ? contact.name : 'Unknown Caller';
+        document.getElementById('w-ext').innerText = `Ext ${data.from}`;
+
+        widgetRoot.style.display = 'block';
+        if (ringtone) ringtone.play().catch(() => {});
+    }
+
+    function hideWidget() {
+        widgetRoot.style.display = 'none';
+        activeRingingSession = null;
+        if (ringtone) { ringtone.pause(); ringtone.currentTime = 0; }
+    }
+
+    // --- Answer: mic permission check then hand off to phone.html ---
+    document.getElementById('w-answer').onclick = async () => {
+        try {
+            // Request mic now so phone.html doesn't show a cold permission prompt
+            const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+            s.getTracks().forEach(t => t.stop());
+        } catch(e) {
+            alert('Microphone access is required to answer calls.');
+            return;
+        }
+        if (ringtone) ringtone.pause();
+        // The Firebase call signal is still live — phone.html will pick it up immediately
+        window.location.href = 'phone.html';
+    };
+
+    // --- Ignore: clear the call signal ---
+    document.getElementById('w-ignore').onclick = () => {
+        remove(ref(db, `calls/${myExt}`));
+        hideWidget();
+    };
+
+    // --- Theme sync ---
+    const themeMap = {
+        green:   '#22c55e', blue:  '#3b82f6', red:    '#ef4444',
+        purple:  '#8b5cf6', cyan:  '#06b6d4', pink:   '#ec4899',
+        yellow:  '#eab308', orange:'#f97316', white:  '#ffffff', whiteout:'#ffffff'
+    };
+
+    function applyTheme() {
+        const c = themeMap[localStorage.getItem('theme')] || themeMap.green;
+        widgetRoot.style.setProperty('--pw-accent', c);
+    }
+
+    window.addEventListener('storage', (e) => { if (e.key === 'theme') applyTheme(); });
+    applyTheme();
+
+    // --- Cleanup on page leave ---
+    window.addEventListener('beforeunload', () => {
+        clearInterval(heartbeat);
+        remove(sessionRef);
+    });
+})();
+</script>

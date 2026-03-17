@@ -455,6 +455,16 @@ window.addEventListener('storage', (e) => {
 
 
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
 </body>
 </html>="panic-key.js"></script>
     <script src="idle-dvd.js"></script>

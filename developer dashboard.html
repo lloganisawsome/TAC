@@ -154,7 +154,6 @@
         .regex-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: rgba(239,68,68,0.1); border-radius: 6px; margin-bottom: 4px; }
         .device-info { font-size: 11px; color: var(--muted); margin-top: 4px; }
         .useragent-text { font-size: 10px; color: var(--muted); font-family: monospace; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        /* Video cards */
         .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
         .video-card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s; }
         .video-card:hover { border-color: rgba(255,255,255,0.15); }
@@ -166,12 +165,10 @@
         .video-comment { padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
         .video-comment:last-child { border-bottom: none; }
         .video-comment-user { font-weight: 600; color: var(--accent); margin-right: 6px; }
-        /* Pending cards */
         .pending-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 12px; flex-wrap: wrap; }
         .pending-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
         .pending-meta { font-size: 12px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
         .pending-actions { display: flex; gap: 8px; }
-        /* Bar charts — FIXED */
         .bar-chart-container { position: relative; width: 100%; }
         .bar-chart-scroll { overflow-x: auto; overflow-y: visible; }
         .bar-chart-wrap { display: flex; align-items: flex-end; gap: 6px; height: 160px; padding: 4px 4px 0; min-width: 100%; }
@@ -182,34 +179,32 @@
         .bar-val { font-size: 10px; color: rgba(255,255,255,0.8); margin-bottom: 3px; font-weight: 600; }
         .bar-chart-y-labels { position: absolute; left: 0; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
         .bar-chart-y-label { font-size: 9px; color: var(--muted); padding-right: 4px; }
-        /* Active users line chart */
         .line-chart-wrap { position: relative; width: 100%; height: 220px; }
         .line-chart-canvas { width: 100%; height: 100%; }
-        /* Time range buttons */
         .time-range-btns { display: flex; gap: 6px; flex-wrap: wrap; }
         .time-btn { padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--muted); font-size: 12px; cursor: pointer; transition: all 0.2s; }
         .time-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
         .time-btn.active { background: var(--accent-dim); border-color: rgba(34,197,94,0.3); color: var(--accent); }
-        /* Today toggle */
         .today-toggle { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; cursor: pointer; user-select: none; transition: all 0.2s; }
         .today-toggle.on { background: var(--accent-dim); border-color: rgba(34,197,94,0.3); color: var(--accent); }
-        /* Login trend chart */
         .trend-chart { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
         .trend-bar { flex: 1; border-radius: 3px 3px 0 0; min-height: 3px; background: var(--accent); opacity: 0.7; transition: opacity 0.2s; cursor: default; position: relative; }
         .trend-bar:hover { opacity: 1; }
         .trend-bar-label { font-size: 8px; color: var(--muted); text-align: center; margin-top: 3px; }
-        /* Online dot */
         .online-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 2s infinite; margin-right: 4px; }
         .offline-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); margin-right: 4px; }
-        /* Tooltip */
         .tooltip-wrap { position: relative; display: inline-flex; align-items: center; }
         .tooltip-wrap .tooltip-box { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #1e1e22; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 11px; color: rgba(255,255,255,0.8); white-space: pre; z-index: 200; min-width: 260px; display: none; line-height: 1.7; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
         .tooltip-wrap:hover .tooltip-box { display: block; }
         .tooltip-icon { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border); background: rgba(255,255,255,0.06); color: var(--muted); font-size: 10px; display: inline-flex; align-items: center; justify-content: center; cursor: help; font-style: italic; font-weight: 700; flex-shrink: 0; }
-        /* CSV import */
         .csv-import-zone { border: 2px dashed var(--border); border-radius: 10px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
         .csv-import-zone:hover, .csv-import-zone.drag-over { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.04); }
         .csv-import-zone p { color: var(--muted); margin: 8px 0 0; font-size: 13px; }
+        /* App Ban styles */
+        .ban-card { background: rgba(255,255,255,0.02); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .ban-card.banned { border: 1px solid rgba(239,68,68,0.35); }
+        .ban-card.not-banned { border: 1px solid rgba(34,197,94,0.25); }
+        .appeal-card { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -218,7 +213,7 @@
         <div class="logo">T</div>
         <div class="header-title">
             <h1>TAC Developer Dashboard</h1>
-            <p>Full Control Center v3.1</p>
+            <p>Full Control Center v3.2</p>
         </div>
     </div>
     <div class="header-right">
@@ -249,6 +244,8 @@
     <button class="nav-tab" data-page="moderation">🛡️ Moderation</button>
     <button class="nav-tab" data-page="failedlogins">🚨 Failed Logins</button>
     <button class="nav-tab" data-page="security">🔐 Security</button>
+    <button class="nav-tab" data-page="appbans">🚫 App Bans</button>
+    <button class="nav-tab" data-page="charts">📈 Charts</button>
     <button class="nav-tab" data-page="tools">🛠️ Tools</button>
     <button class="nav-tab" data-page="settings">⚙️ Settings</button>
 </nav>
@@ -314,69 +311,6 @@
         <div class="stat-card blue">
             <div class="stat-label" id="chatLabel">Chat Messages</div>
             <div class="stat-value" id="chatCount">—</div>
-        </div>
-    </div>
-
-    <!-- Active Users Graph -->
-    <div class="panel mb-4">
-        <div class="panel-header">
-            <div>
-                <h3 class="panel-title">👥 Active Users Over Time</h3>
-                <p class="panel-subtitle">Snapshots saved every 5 minutes to /activeUserSnapshots</p>
-            </div>
-            <div class="time-range-btns">
-                <button class="time-btn active" id="auRangeToday" onclick="setActiveUsersRange('today')">Today (by hour)</button>
-                <button class="time-btn" id="auRangeYesterday" onclick="setActiveUsersRange('yesterday')">Yesterday</button>
-                <button class="time-btn" id="auRangeAllTime" onclick="setActiveUsersRange('alltime')">All Time (by day)</button>
-            </div>
-        </div>
-        <canvas id="activeUsersChart" class="line-chart-canvas" height="220"></canvas>
-        <div id="activeUsersChartLegend" style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;"></div>
-    </div>
-
-    <!-- Login trend (last 7 days) -->
-    <div class="panel mb-4">
-        <div class="panel-header">
-            <div>
-                <h3 class="panel-title">📈 Login Trend — Last 7 Days</h3>
-                <p class="panel-subtitle">Daily total logins stored in /loginsByDay</p>
-            </div>
-        </div>
-        <div id="loginTrendChart" class="trend-chart"></div>
-        <div id="loginTrendLabels" style="display:flex;gap:4px;margin-top:4px;"></div>
-    </div>
-
-    <!-- Bar charts row 1 -->
-    <div class="grid grid-2 mb-4">
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">🎮 Game Plays (Top 10)</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="gamePlaysBarChart"></div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">🎬 Video Views (Top 10)</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="videoViewsBarChart"></div></div>
-        </div>
-    </div>
-    <!-- Bar charts row 2 -->
-    <div class="grid grid-2 mb-4">
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">📱 App Usage (Top 10)</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="appUsageBarChart"></div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">💕 LPC Likes Per User</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="lpcBarChart"></div></div>
-        </div>
-    </div>
-    <!-- Bar charts row 3 -->
-    <div class="grid grid-2 mb-4">
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">💬 Chat Messages Per Room</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="chatBarChart"></div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">🔔 Notifications Per User</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="notifBarChart"></div></div>
         </div>
     </div>
 
@@ -533,7 +467,7 @@
     </div>
 </div>
 
-<!-- LPC LIKES PAGE -->
+<!-- LPC LIKES PAGE — updated with Posted By + likes/dislikes -->
 <div id="page-lpc" class="page">
     <div class="panel">
         <div class="panel-header">
@@ -541,7 +475,20 @@
             <button class="btn btn-danger" onclick="clearAllLikes()">Clear All Likes</button>
         </div>
         <div class="table-wrap" style="max-height: 600px;">
-            <table id="likesTable"><thead><tr><th>From User</th><th>Likes (Crush)</th><th>Time</th><th>Actions</th></tr></thead><tbody></tbody></table>
+            <table id="likesTable">
+                <thead>
+                    <tr>
+                        <th>From User</th>
+                        <th>Posted By</th>
+                        <th>Crush (To)</th>
+                        <th>👍 Likes</th>
+                        <th>👎 Dislikes</th>
+                        <th>Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
 </div>
@@ -711,10 +658,107 @@
     </div>
 </div>
 
-<!-- TOOLS PAGE (Games Manager + CSV Import) -->
+<!-- APP BANS PAGE (NEW) -->
+<div id="page-appbans" class="page">
+    <div class="panel">
+        <div class="panel-header">
+            <div>
+                <h2 class="panel-title">🚫 App Bans</h2>
+                <p class="panel-subtitle">From /appBans — manage banned users and handle ban appeals</p>
+            </div>
+            <div class="flex gap-2">
+                <button class="btn btn-danger" onclick="showBanUserModal()">🚫 Ban User</button>
+                <button class="btn btn-primary" onclick="loadData()">Refresh</button>
+            </div>
+        </div>
+        <!-- Stats row -->
+        <div class="grid grid-3 mb-4">
+            <div class="stat-card red">
+                <div class="stat-label">Total Bans</div>
+                <div class="stat-value" id="totalBansCount">—</div>
+            </div>
+            <div class="stat-card amber">
+                <div class="stat-label">Pending Appeals</div>
+                <div class="stat-value" id="pendingAppealsCount">—</div>
+            </div>
+            <div class="stat-card accent">
+                <div class="stat-label">Currently Banned</div>
+                <div class="stat-value" id="activeBansCount">—</div>
+            </div>
+        </div>
+        <div id="appBansContainer"><div class="empty-state">Loading...</div></div>
+    </div>
+</div>
+
+<!-- CHARTS PAGE (NEW) -->
+<div id="page-charts" class="page">
+    <!-- Active Users Line Chart -->
+    <div class="panel mb-4">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">👥 Active Users Over Time</h3>
+                <p class="panel-subtitle">Snapshots saved every 5 minutes to /activeUserSnapshots</p>
+            </div>
+            <div class="time-range-btns">
+                <button class="time-btn active" id="auRangeToday" onclick="setActiveUsersRange('today')">Today (by hour)</button>
+                <button class="time-btn" id="auRangeYesterday" onclick="setActiveUsersRange('yesterday')">Yesterday</button>
+                <button class="time-btn" id="auRangeAllTime" onclick="setActiveUsersRange('alltime')">All Time (by day)</button>
+            </div>
+        </div>
+        <canvas id="activeUsersChart" class="line-chart-canvas" height="220"></canvas>
+        <div id="activeUsersChartLegend" style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;"></div>
+    </div>
+
+    <!-- Login Trend -->
+    <div class="panel mb-4">
+        <div class="panel-header">
+            <div>
+                <h3 class="panel-title">📈 Login Trend — Last 7 Days</h3>
+                <p class="panel-subtitle">Daily total logins stored in /loginsByDay</p>
+            </div>
+        </div>
+        <div id="loginTrendChart" class="trend-chart"></div>
+        <div id="loginTrendLabels" style="display:flex;gap:4px;margin-top:4px;"></div>
+    </div>
+
+    <!-- Bar charts row 1 -->
+    <div class="grid grid-2 mb-4">
+        <div class="panel">
+            <div class="panel-header"><h3 class="panel-title">🎮 Game Plays (Top 10)</h3></div>
+            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="gamePlaysBarChart"></div></div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3 class="panel-title">🎬 Video Views (Top 10)</h3></div>
+            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="videoViewsBarChart"></div></div>
+        </div>
+    </div>
+    <!-- Bar charts row 2 -->
+    <div class="grid grid-2 mb-4">
+        <div class="panel">
+            <div class="panel-header"><h3 class="panel-title">📱 App Usage (Top 10)</h3></div>
+            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="appUsageBarChart"></div></div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3 class="panel-title">💕 LPC Likes Per User</h3></div>
+            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="lpcBarChart"></div></div>
+        </div>
+    </div>
+    <!-- Bar charts row 3 -->
+    <div class="grid grid-2 mb-4">
+        <div class="panel">
+            <div class="panel-header"><h3 class="panel-title">💬 Chat Messages Per Room</h3></div>
+            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="chatBarChart"></div></div>
+        </div>
+        <div class="panel">
+            <div class="panel-header"><h3 class="panel-title">🔔 Notifications Per User</h3></div>
+            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="notifBarChart"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOOLS PAGE -->
 <div id="page-tools" class="page">
     <div class="grid grid-2">
-        <!-- Games Manager -->
         <div class="panel">
             <div class="panel-header"><div><h3 class="panel-title">🎮 Games Manager</h3><p class="panel-subtitle">Add and manage games in /games</p></div></div>
             <div class="input-group">
@@ -728,7 +772,6 @@
             </div>
         </div>
 
-        <!-- CSV Import -->
         <div class="panel">
             <div class="panel-header">
                 <div>
@@ -761,7 +804,6 @@ sam,allowed
         </div>
     </div>
 
-    <!-- Help Responses -->
     <div class="panel">
         <div class="panel-header"><div><h3 class="panel-title">❓ Help Responses</h3></div></div>
         <div class="mb-4">
@@ -830,6 +872,17 @@ sam,allowed
         </div>
     </div>
 </div>
+<!-- Ban User Modal -->
+<div class="modal-overlay" id="banUserModal">
+    <div class="modal">
+        <div class="modal-header"><h3>🚫 Ban User</h3><button class="modal-close" onclick="closeModal('banUserModal')">✕</button></div>
+        <div class="modal-body">
+            <input type="text" id="banUsernameInput" placeholder="Username to ban" class="mb-2"/>
+            <textarea id="banReasonInput" placeholder="Ban reason..." class="mb-4"></textarea>
+            <button class="btn btn-danger" onclick="confirmBanUser()">Ban User</button>
+        </div>
+    </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -849,7 +902,7 @@ sam,allowed
     const ADMIN_CODE = "admincode1234";
     let isAdminVerified = false;
     let currentViewUser = null, currentViewType = null, lastFetchTime = null, currentChatRoom = null;
-    let overviewRange = 'today'; // 'today', 'yesterday', 'alltime'
+    let overviewRange = 'today';
     let activeUsersChartRange = 'today';
 
     // State
@@ -860,9 +913,10 @@ sam,allowed
     let sessions = {}, userPhones = {}, userPasswords = {}, userPins = {};
     let analytics = {}, videos = {}, artifacts = {}, attachments = {}, bans = {};
     let gamePlays = {}, activeUsers = {}, loginsByDay = {}, activeUserSnapshots = {};
+    let appBans = {};
     let totalLoginsAll = 0;
 
-    const TODAY = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const TODAY = new Date().toISOString().split('T')[0];
     function getYesterday() {
         const d = new Date(); d.setDate(d.getDate() - 1);
         return d.toISOString().split('T')[0];
@@ -888,6 +942,10 @@ sam,allowed
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             tab.classList.add('active');
             document.getElementById('page-' + tab.dataset.page).classList.add('active');
+            // Re-render charts when charts page becomes visible (canvas needs visible width)
+            if (tab.dataset.page === 'charts') {
+                setTimeout(renderChartsPage, 30);
+            }
         });
     });
 
@@ -927,15 +985,13 @@ sam,allowed
         return gameId;
     }
 
-// ===================== ONLINE STATUS =====================
-function isUserOnline(username) {
-    const u = activeUsers[username];
-    if (!u || !u.timestamp) return false;
-    
-    // Consider a user "online" if they were active in the last 5 minutes (300,000 ms)
-    const fiveMinutesAgo = Date.now() - 300000;
-    return u.timestamp > fiveMinutesAgo;
-}
+    // ===================== ONLINE STATUS =====================
+    function isUserOnline(username) {
+        const u = activeUsers[username];
+        if (!u || !u.timestamp) return false;
+        const fiveMinutesAgo = Date.now() - 300000;
+        return u.timestamp > fiveMinutesAgo;
+    }
 
     // ===================== OVERVIEW RANGE =====================
     function setOverviewRange(range) {
@@ -952,7 +1008,7 @@ function isUserOnline(username) {
         if (!ts) return overviewRange === 'alltime';
         if (overviewRange === 'today') return isOnDate(ts, TODAY);
         if (overviewRange === 'yesterday') return isOnDate(ts, YESTERDAY);
-        return true; // alltime
+        return true;
     }
 
     // ===================== ACTIVE USERS CHART RANGE =====================
@@ -963,7 +1019,7 @@ function isUserOnline(username) {
         renderActiveUsersChart();
     }
 
-    // ===================== BAR CHART (FIXED) =====================
+    // ===================== BAR CHART =====================
     function renderBarChart(containerId, data, color) {
         const el = document.getElementById(containerId);
         if (!el) return;
@@ -972,8 +1028,8 @@ function isUserOnline(username) {
             return;
         }
         const max = Math.max(...data.map(d => d.value), 1);
-        const chartHeight = 120; // px for the bar area
-        el.style.height = (chartHeight + 50) + 'px'; // bar + label space
+        const chartHeight = 120;
+        el.style.height = (chartHeight + 50) + 'px';
         el.style.alignItems = 'flex-end';
         el.innerHTML = data.map(d => {
             const barH = Math.max(Math.round((d.value / max) * chartHeight), 4);
@@ -1001,7 +1057,6 @@ function isUserOnline(username) {
 
         if (activeUsersChartRange === 'today' || activeUsersChartRange === 'yesterday') {
             const targetDate = activeUsersChartRange === 'today' ? TODAY : YESTERDAY;
-            // By hour — build 24 hourly slots
             const hourlyData = {};
             for (let h = 0; h < 24; h++) hourlyData[h] = 0;
 
@@ -1013,7 +1068,6 @@ function isUserOnline(username) {
                 }
             });
 
-            // If today, fill current hour with live count
             if (activeUsersChartRange === 'today') {
                 const curHour = new Date().getHours();
                 hourlyData[curHour] = Math.max(hourlyData[curHour], Object.keys(activeUsers).length);
@@ -1024,10 +1078,8 @@ function isUserOnline(username) {
             document.getElementById('activeUsersChartLegend').textContent =
                 'Hourly peak active users — ' + (activeUsersChartRange === 'today' ? 'Today ('+TODAY+')' : 'Yesterday ('+YESTERDAY+')');
         } else {
-            // All time — by day
             const dayKeys = Object.keys(activeUserSnapshots).sort();
             if (dayKeys.length === 0) {
-                // Fall back to loginsByDay keys
                 const lbdKeys = Object.keys(loginsByDay).sort();
                 if (lbdKeys.length > 0) {
                     labels = lbdKeys.slice(-30).map(d => d.slice(5));
@@ -1064,7 +1116,6 @@ function isUserOnline(username) {
         const max = Math.max(...values, 1);
         const min = 0;
 
-        // Grid
         ctx.strokeStyle = 'rgba(255,255,255,0.05)';
         ctx.lineWidth = 1;
         const gridLines = 4;
@@ -1084,9 +1135,8 @@ function isUserOnline(username) {
             y: padT + chartH - ((v - min) / (max - min || 1)) * chartH
         }));
 
-        // Gradient fill
         const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
-        grad.addColorStop(0, color.replace(')', ', 0.3)').replace('rgb', 'rgba'));
+        grad.addColorStop(0, 'rgba(34,197,94,0.3)');
         grad.addColorStop(1, 'rgba(34,197,94,0)');
         ctx.beginPath();
         ctx.moveTo(pts[0].x, padT + chartH);
@@ -1096,7 +1146,6 @@ function isUserOnline(username) {
         ctx.fillStyle = grad;
         ctx.fill();
 
-        // Line
         ctx.strokeStyle = color;
         ctx.lineWidth = 2;
         ctx.lineJoin = 'round';
@@ -1104,7 +1153,6 @@ function isUserOnline(username) {
         pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
         ctx.stroke();
 
-        // Dots
         pts.forEach(p => {
             ctx.beginPath();
             ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
@@ -1112,7 +1160,6 @@ function isUserOnline(username) {
             ctx.fill();
         });
 
-        // X labels — show every N to avoid overlap
         const step = Math.max(1, Math.ceil(labels.length / 12));
         ctx.fillStyle = 'rgba(255,255,255,0.4)';
         ctx.font = '9px sans-serif';
@@ -1139,6 +1186,7 @@ function isUserOnline(username) {
     function renderLoginTrend() {
         const chartEl = document.getElementById('loginTrendChart');
         const labelsEl = document.getElementById('loginTrendLabels');
+        if (!chartEl || !labelsEl) return;
         const days = [];
         for (let i = 6; i >= 0; i--) {
             const d = new Date();
@@ -1162,11 +1210,60 @@ function isUserOnline(username) {
         }).join('');
     }
 
+    // ===================== CHARTS PAGE RENDER =====================
+    function renderChartsPage() {
+        renderLoginTrend();
+        renderActiveUsersChart();
+
+        // Game plays
+        const gpData = Object.entries(gamePlays)
+            .map(([gameId, count]) => ({ label: getGameName(gameId), value: typeof count === 'number' ? count : 0 }))
+            .filter(d => d.value > 0).sort((a, b) => b.value - a.value).slice(0, 10);
+        renderBarChart('gamePlaysBarChart', gpData, '#8b5cf6');
+
+        // Video views
+        const videoData = Object.values(videos).filter(v => v && v.title)
+            .map(v => ({ label: v.title, value: v.views || 0 }))
+            .filter(d => d.value > 0).sort((a, b) => b.value - a.value).slice(0, 10);
+        renderBarChart('videoViewsBarChart', videoData, '#ec4899');
+
+        // App usage
+        const auData = Object.entries(appUsage)
+            .map(([app, count]) => ({ label: app, value: typeof count === 'number' ? count : 0 }))
+            .filter(d => d.value > 0).sort((a, b) => b.value - a.value).slice(0, 10);
+        renderBarChart('appUsageBarChart', auData, '#f59e0b');
+
+        // LPC per user
+        const lpcPerUser = {};
+        Object.values(likes).forEach(l => {
+            const u = l.from || l.user || l.liker || 'Unknown';
+            lpcPerUser[u] = (lpcPerUser[u] || 0) + 1;
+        });
+        const lpcData = Object.entries(lpcPerUser).map(([u, c]) => ({ label: u, value: c })).sort((a, b) => b.value - a.value).slice(0, 10);
+        renderBarChart('lpcBarChart', lpcData, '#ec4899');
+
+        // Chat per room
+        const chatRoomData = Object.entries(chatRooms).map(([room, roomData]) => {
+            const msgs = (roomData && roomData.messages) ? roomData.messages : (roomData || {});
+            return { label: room, value: Object.keys(msgs).length };
+        }).filter(d => d.value > 0).sort((a, b) => b.value - a.value).slice(0, 10);
+        renderBarChart('chatBarChart', chatRoomData, '#3b82f6');
+
+        // Notifications per user
+        const notifPerUser = {};
+        Object.values(notifications).forEach(n => {
+            const u = n.to || n.user || 'All';
+            notifPerUser[u] = (notifPerUser[u] || 0) + 1;
+        });
+        const notifData = Object.entries(notifPerUser).map(([u, c]) => ({ label: u, value: c })).sort((a, b) => b.value - a.value).slice(0, 10);
+        renderBarChart('notifBarChart', notifData, '#22c55e');
+    }
+
     // ===================== OVERVIEW =====================
     function renderOverview() {
-const onlineNowCount = Object.keys(activeUsers).filter(username => isUserOnline(username)).length;
-document.getElementById('activeUsersCount').textContent = onlineNowCount;
-        // Logins
+        const onlineNowCount = Object.keys(activeUsers).filter(username => isUserOnline(username)).length;
+        document.getElementById('activeUsersCount').textContent = onlineNowCount;
+
         if (overviewRange === 'today') {
             const todayData = loginsByDay[TODAY] || {};
             const todayTotal = Object.values(todayData).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
@@ -1191,13 +1288,11 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
         document.getElementById('videosCount').textContent = Object.keys(videos).length;
         document.getElementById('privateChatsCount').textContent = Object.keys(privateChats).length;
 
-        // Notifications
         let notifCount = Object.keys(notifications).length;
         if (overviewRange !== 'alltime') notifCount = Object.values(notifications).filter(n => n && filterByRange(n.timestamp)).length;
         document.getElementById('notificationsCount').textContent = notifCount;
         document.getElementById('notifLabel').textContent = overviewRange === 'alltime' ? 'Notifications' : (overviewRange === 'today' ? "Today's Notifs" : "Yesterday's Notifs");
 
-        // News
         let newsPostCount = 0;
         Object.entries(news).forEach(([dateKey, posts]) => {
             if (typeof posts !== 'object' || Array.isArray(posts)) return;
@@ -1208,13 +1303,11 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
         document.getElementById('newsCount').textContent = newsPostCount;
         document.getElementById('newsLabel').textContent = overviewRange === 'alltime' ? 'News Posts' : (overviewRange === 'today' ? "Today's News" : "Yesterday's News");
 
-        // LPC
         let lpcCount = Object.keys(likes).length;
         if (overviewRange !== 'alltime') lpcCount = Object.values(likes).filter(l => l && filterByRange(l.timestamp || l.time)).length;
         document.getElementById('lpcCount').textContent = lpcCount;
         document.getElementById('lpcLabel').textContent = overviewRange === 'alltime' ? 'LPC Likes' : (overviewRange === 'today' ? "Today's LPC" : "Yesterday's LPC");
 
-        // Chat
         let totalChat = 0;
         Object.entries(chatRooms).forEach(([room, roomData]) => {
             const msgs = (roomData && roomData.messages) ? roomData.messages : (roomData || {});
@@ -1226,55 +1319,6 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
         });
         document.getElementById('chatCount').textContent = totalChat;
         document.getElementById('chatLabel').textContent = overviewRange === 'alltime' ? 'Chat Messages' : (overviewRange === 'today' ? "Today's Chat Msgs" : "Yesterday's Chat Msgs");
-
-        renderLoginTrend();
-        renderActiveUsersChart();
-
-        // Game plays bar chart
-        const gpData = Object.entries(gamePlays)
-            .map(([gameId, count]) => ({ label: getGameName(gameId), value: typeof count === 'number' ? count : 0 }))
-            .filter(d => d.value > 0)
-            .sort((a, b) => b.value - a.value).slice(0, 10);
-        renderBarChart('gamePlaysBarChart', gpData, '#8b5cf6');
-
-        // Video views bar chart
-        const videoData = Object.values(videos).filter(v => v && v.title)
-            .map(v => ({ label: v.title, value: v.views || 0 }))
-            .filter(d => d.value > 0)
-            .sort((a, b) => b.value - a.value).slice(0, 10);
-        renderBarChart('videoViewsBarChart', videoData, '#ec4899');
-
-        // App usage bar chart
-        const auData = Object.entries(appUsage)
-            .map(([app, count]) => ({ label: app, value: typeof count === 'number' ? count : 0 }))
-            .filter(d => d.value > 0)
-            .sort((a, b) => b.value - a.value).slice(0, 10);
-        renderBarChart('appUsageBarChart', auData, '#f59e0b');
-
-        // LPC bar chart
-        const lpcPerUser = {};
-        Object.values(likes).forEach(l => {
-            const u = l.from || l.user || l.liker || 'Unknown';
-            lpcPerUser[u] = (lpcPerUser[u] || 0) + 1;
-        });
-        const lpcData = Object.entries(lpcPerUser).map(([u, c]) => ({ label: u, value: c })).sort((a, b) => b.value - a.value).slice(0, 10);
-        renderBarChart('lpcBarChart', lpcData, '#ec4899');
-
-        // Chat per room bar chart
-        const chatRoomData = Object.entries(chatRooms).map(([room, roomData]) => {
-            const msgs = (roomData && roomData.messages) ? roomData.messages : (roomData || {});
-            return { label: room, value: Object.keys(msgs).length };
-        }).filter(d => d.value > 0).sort((a, b) => b.value - a.value).slice(0, 10);
-        renderBarChart('chatBarChart', chatRoomData, '#3b82f6');
-
-        // Notifications per user bar chart
-        const notifPerUser = {};
-        Object.values(notifications).forEach(n => {
-            const u = n.to || n.user || 'All';
-            notifPerUser[u] = (notifPerUser[u] || 0) + 1;
-        });
-        const notifData = Object.entries(notifPerUser).map(([u, c]) => ({ label: u, value: c })).sort((a, b) => b.value - a.value).slice(0, 10);
-        renderBarChart('notifBarChart', notifData, '#22c55e');
     }
 
     // ===================== ACTIVITY FEED =====================
@@ -1391,11 +1435,10 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
         `).join('');
     }
 
-    // ===================== USERS (with online/last seen) =====================
+    // ===================== USERS =====================
     function renderUsers(filter = '') {
         const tbody = document.querySelector('#usersTable tbody');
         const allUsers = new Set([...Object.keys(logins), ...Object.keys(allowedUsers), ...Object.keys(pending)]);
-        // Also add from activeUsers
         Object.keys(activeUsers).forEach(u => allUsers.add(u));
         const failedPerUser = {};
         Object.values(failed).forEach(f => { if (f && f.username) failedPerUser[f.username] = (failedPerUser[f.username]||0)+1; });
@@ -1411,7 +1454,8 @@ document.getElementById('activeUsersCount').textContent = onlineNowCount;
             const isPending = !!pending[n];
             const fc = failedPerUser[n] || 0;
             const online = isUserOnline(n);
-const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);            const onlineHtml = online
+            const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);
+            const onlineHtml = online
                 ? `<span class="badge badge-online"><span class="online-dot"></span>Online</span>`
                 : `<span class="badge badge-offline"><span class="offline-dot"></span>Offline</span>`;
             return `<tr>
@@ -1483,7 +1527,6 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
                 return;
             }
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            // Validate headers
             const missingHeaders = CSV_REQUIRED_HEADERS.filter(h => !headers.includes(h));
             if (missingHeaders.length > 0) {
                 statusEl.innerHTML = `<span style="color:var(--danger);">❌ Invalid CSV format. Missing columns: <strong>${missingHeaders.join(', ')}</strong><br>Required: <code>username,status</code></span>`;
@@ -1508,7 +1551,6 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
                 previewEl.innerHTML = '';
                 return;
             }
-            // Show preview
             statusEl.innerHTML = `<span style="color:var(--accent);">✅ ${rows.length} valid user(s) found${errors.length > 0 ? ', ' + errors.length + ' row(s) skipped' : ''}. Review below and confirm import.</span>`;
             previewEl.innerHTML = `
                 <div class="table-wrap" style="max-height:200px;margin-top:8px;">
@@ -1761,14 +1803,17 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
     function deleteSubforum(key) { db.ref('forum/subforums/' + key).remove(); }
     function clearForumAuditLogs() { if (confirm('Clear all audit logs?')) db.ref('forum/auditLogs').remove(); }
 
-    // ===================== LPC LIKES =====================
+    // ===================== LPC LIKES (UPDATED) =====================
     function renderLikes() {
         const tbody = document.querySelector('#likesTable tbody');
         const entries = Object.entries(likes).sort((a, b) => (b[1].timestamp||0) - (a[1].timestamp||0));
-        tbody.innerHTML = entries.length === 0 ? '<tr><td colspan="4" class="empty-state">No likes recorded</td></tr>' :
+        tbody.innerHTML = entries.length === 0 ? '<tr><td colspan="7" class="empty-state">No likes recorded</td></tr>' :
             entries.map(([key, like]) => `<tr>
                 <td><strong>${like.from||like.user||like.liker||'Unknown'}</strong></td>
+                <td>${like.posted ? `<span class="badge badge-info">👤 ${like.posted}</span>` : '<span class="text-muted">—</span>'}</td>
                 <td><span class="badge badge-pink">💕 ${like.to||like.crush||like.liked||'Unknown'}</span></td>
+                <td>${like.likes !== undefined ? `<span style="color:#22c55e;">👍 ${like.likes}</span>` : '—'}</td>
+                <td>${like.dislikes !== undefined ? `<span style="color:#ef4444;">👎 ${like.dislikes}</span>` : '—'}</td>
                 <td class="text-muted text-sm">${prettyTime(like.timestamp||like.time)}</td>
                 <td><button class="btn btn-danger btn-sm" onclick="deleteLike('${key}')">Delete</button></td>
             </tr>`).join('');
@@ -1984,6 +2029,141 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
     function resetUserPassword(user) { if (confirm(`Reset password for ${user}?`)) db.ref('userPasswords/' + user).remove(); }
     function resetUserPin(user) { if (confirm(`Reset PIN for ${user}?`)) db.ref('userPins/' + user).remove(); }
 
+    // ===================== APP BANS (NEW) =====================
+    function renderAppBans() {
+        const container = document.getElementById('appBansContainer');
+        const entries = Object.entries(appBans);
+
+        // Update stats
+        const totalBans = entries.length;
+        const activeBans = entries.filter(([u, d]) => d && d.banned === true).length;
+        let pendingAppeals = 0;
+        entries.forEach(([u, d]) => {
+            if (d && d.appeals) {
+                Object.values(d.appeals).forEach(a => { if (a && a.status === 'pending') pendingAppeals++; });
+            }
+        });
+        const totalBansEl = document.getElementById('totalBansCount');
+        const pendingAppealsEl = document.getElementById('pendingAppealsCount');
+        const activeBansEl = document.getElementById('activeBansCount');
+        if (totalBansEl) totalBansEl.textContent = totalBans;
+        if (pendingAppealsEl) pendingAppealsEl.textContent = pendingAppeals;
+        if (activeBansEl) activeBansEl.textContent = activeBans;
+
+        if (entries.length === 0) {
+            container.innerHTML = '<div class="empty-state">No ban records found 🎉</div>';
+            return;
+        }
+
+        // Sort: banned first, then by username
+        entries.sort((a, b) => {
+            const aBanned = a[1] && a[1].banned === true;
+            const bBanned = b[1] && b[1].banned === true;
+            if (aBanned && !bBanned) return -1;
+            if (!aBanned && bBanned) return 1;
+            return a[0].localeCompare(b[0]);
+        });
+
+        container.innerHTML = entries.map(([username, data]) => {
+            if (!data) return '';
+            const isBanned = data.banned === true;
+            const reason = data.reason || 'No reason given';
+            const appeals = data.appeals || {};
+            const appealEntries = Object.entries(appeals).sort((a, b) => (b[1].timestamp||0) - (a[1].timestamp||0));
+            const pendingCount = appealEntries.filter(([k, a]) => a && a.status === 'pending').length;
+
+            const appealsHtml = appealEntries.length === 0
+                ? '<div style="color:var(--muted);font-size:12px;padding:6px 0;">No appeals submitted yet.</div>'
+                : appealEntries.map(([aKey, appeal]) => {
+                    const statusClass = appeal.status === 'pending' ? 'badge-warning' : appeal.status === 'approved' ? 'badge-success' : 'badge-danger';
+                    return `<div class="appeal-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="badge ${statusClass}">${appeal.status || 'pending'}</span>
+                            <span class="text-sm text-muted">${prettyTime(appeal.timestamp)}</span>
+                        </div>
+                        <div style="font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:10px;">"${appeal.message || '(No message)'}"</div>
+                        ${appeal.status === 'pending' ? `
+                            <div class="flex gap-2">
+                                <button class="btn btn-primary btn-sm" onclick="handleAppeal('${username}','${aKey}','approved')">✓ Approve & Unban</button>
+                                <button class="btn btn-danger btn-sm" onclick="handleAppeal('${username}','${aKey}','rejected')">✗ Reject</button>
+                            </div>` : ''}
+                    </div>`;
+                }).join('');
+
+            return `<div class="ban-card ${isBanned ? 'banned' : 'not-banned'}">
+                <div class="flex justify-between items-start flex-wrap gap-3 mb-3">
+                    <div>
+                        <div style="font-size:16px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            ${username}
+                            ${isBanned
+                                ? '<span class="badge badge-danger">🚫 Banned</span>'
+                                : '<span class="badge badge-success">✓ Not Banned</span>'}
+                            ${pendingCount > 0 ? `<span class="badge badge-warning">⚠️ ${pendingCount} Pending Appeal${pendingCount>1?'s':''}</span>` : ''}
+                        </div>
+                        <div style="font-size:12px;color:var(--muted);">
+                            Reason: <span style="color:rgba(255,255,255,0.7);">${reason}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        ${isBanned
+                            ? `<button class="btn btn-primary btn-sm" onclick="unbanUser('${username}')">✓ Unban</button>`
+                            : `<button class="btn btn-danger btn-sm" onclick="quickBanUser('${username}')">🚫 Ban</button>`}
+                        <button class="btn btn-secondary btn-sm" onclick="editBanReason('${username}','${reason.replace(/'/g,"\\'")}')">Edit Reason</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteAppBan('${username}')">🗑 Delete</button>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;font-weight:600;">
+                        Appeals (${appealEntries.length})
+                    </div>
+                    ${appealsHtml}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function showBanUserModal() {
+        document.getElementById('banUsernameInput').value = '';
+        document.getElementById('banReasonInput').value = '';
+        showModal('banUserModal');
+    }
+    function confirmBanUser() {
+        const username = document.getElementById('banUsernameInput').value.trim();
+        const reason = document.getElementById('banReasonInput').value.trim();
+        if (!username) return alert('Enter a username');
+        if (!reason) return alert('Enter a ban reason');
+        db.ref('appBans/' + username).set({ banned: true, reason }).then(() => {
+            closeModal('banUserModal');
+        });
+    }
+    function quickBanUser(username) {
+        const reason = prompt('Ban reason for ' + username + ':', 'Violation of rules');
+        if (reason === null) return;
+        db.ref('appBans/' + username + '/banned').set(true);
+        if (reason) db.ref('appBans/' + username + '/reason').set(reason);
+    }
+    function unbanUser(username) {
+        if (confirm('Unban ' + username + '?')) {
+            db.ref('appBans/' + username + '/banned').set(false);
+        }
+    }
+    function editBanReason(username, currentReason) {
+        const newReason = prompt('Edit ban reason for ' + username + ':', currentReason);
+        if (newReason === null) return;
+        db.ref('appBans/' + username + '/reason').set(newReason || 'No reason given');
+    }
+    function deleteAppBan(username) {
+        if (confirm('Delete entire ban record for ' + username + '? This removes bans AND appeals.')) {
+            db.ref('appBans/' + username).remove();
+        }
+    }
+    function handleAppeal(username, appealKey, status) {
+        db.ref('appBans/' + username + '/appeals/' + appealKey + '/status').set(status);
+        if (status === 'approved') {
+            db.ref('appBans/' + username + '/banned').set(false);
+        }
+    }
+
     // ===================== MEMBERS =====================
     function renderMembers() {
         const tbody = document.querySelector('#membersTable tbody');
@@ -2102,6 +2282,7 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
             db.ref('activeUsers').once('value'),
             db.ref('loginsByDay').once('value'),
             db.ref('activeUserSnapshots').once('value'),
+            db.ref('appBans').once('value'),
         ]).then(snaps => {
             logins = snaps[0].val() || {};
             totalLoginsAll = Object.values(logins).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
@@ -2137,6 +2318,7 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
             activeUsers = snaps[28].val() || {};
             loginsByDay = snaps[29].val() || {};
             activeUserSnapshots = snaps[30].val() || {};
+            appBans = snaps[31].val() || {};
 
             updateLastFetch();
             snapshotTodayLogins();
@@ -2167,8 +2349,8 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
             renderFailedLoginsPage();
             renderGames();
             renderHelp();
+            renderAppBans();
 
-            // init range labels
             setOverviewRange('today');
         }).catch(err => console.error('Error loading data:', err));
     }
@@ -2209,28 +2391,29 @@ const lastSeenStr = online ? '—' : prettyTime(activeUsers[n]?.lastSeen);      
         db.ref('helpResponses').on('value', s => { helpResponses = s.val() || {}; renderHelp(); });
         db.ref('analytics').on('value', s => { analytics = s.val() || {}; renderActivityFeed(); });
         db.ref('videos').on('value', s => { videos = s.val() || {}; renderVideos(); renderActivityFeed(); renderOverview(); });
-        db.ref('analytics/gamePlays').on('value', s => { gamePlays = s.val() || {}; renderGamePlays(); renderOverview(); renderActivityFeed(); });
+        db.ref('analytics/gamePlays').on('value', s => { gamePlays = s.val() || {}; renderGamePlays(); renderActivityFeed(); });
         db.ref('activeUsers').on('value', s => {
             activeUsers = s.val() || {};
             renderOverview();
             renderUsers(document.getElementById('userSearch').value);
         });
-        db.ref('loginsByDay').on('value', s => { loginsByDay = s.val() || {}; renderOverview(); renderLoginTrend(); });
-        db.ref('activeUserSnapshots').on('value', s => { activeUserSnapshots = s.val() || {}; renderActiveUsersChart(); });
+        db.ref('loginsByDay').on('value', s => { loginsByDay = s.val() || {}; renderOverview(); });
+        db.ref('activeUserSnapshots').on('value', s => { activeUserSnapshots = s.val() || {}; });
+        db.ref('appBans').on('value', s => { appBans = s.val() || {}; renderAppBans(); });
     }
-    
-    // Refresh the UI every 30 seconds to ensure users who go inactive 
-// are marked offline without needing a page refresh.
-setInterval(() => {
-    renderOverview();
-    renderUsers(document.getElementById('userSearch').value);
-}, 30000);
+
+    setInterval(() => {
+        renderOverview();
+        renderUsers(document.getElementById('userSearch').value);
+    }, 30000);
 
     loadData();
     setupListeners();
 
-    // Redraw chart on resize
-    window.addEventListener('resize', () => { renderActiveUsersChart(); });
+    window.addEventListener('resize', () => {
+        const chartsPageActive = document.getElementById('page-charts').classList.contains('active');
+        if (chartsPageActive) renderActiveUsersChart();
+    });
 </script>
 <script src="guard.js"></script>
 <script src="custom-cursor.js"></script>
@@ -2239,5 +2422,15 @@ setInterval(() => {
 <script src="idle-dvd.js"></script>
 <script src="timeTracker.js"></script>
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => {
+            const container = document.getElementById('tac-phone-container');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
 </body>
 </html>
