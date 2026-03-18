@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -293,6 +294,11 @@
     }
   </style>
 </head>
+
+<audio id="bgMusic" loop>
+    <source src="homepage.mp3" type="audio/mpeg">
+</audio>
+
 <body>
 
   <!-- Ban Overlay -->
@@ -546,6 +552,36 @@
       grid.appendChild(div);
     });
 
+    //music player
+    const bgMusic = document.getElementById('bgMusic');
+
+// Get volume from localStorage (bacvolume)
+let vol = localStorage.getItem('bacvolume');
+
+// If nothing saved, default to 50
+if (vol === null) {
+    vol = 50;
+}
+
+// Make sure it's a number
+vol = parseInt(vol);
+
+// Safety clamp (just in case)
+if (isNaN(vol) || vol < 0) vol = 50;
+if (vol > 100) vol = 100;
+
+// Convert to 0–1 for audio element
+bgMusic.volume = vol / 100;
+
+// Start on user interaction (browser rules)
+document.addEventListener('click', () => {
+    bgMusic.play().catch(() => {});
+}, { once: true });
+
+
+    
+    
+    
     // ── APPEAL FUNCTIONS ───────────────────────────────────────────────────────
     window.submitAppeal = async function() {
       const message = document.getElementById('appealMessage').value.trim();

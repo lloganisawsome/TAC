@@ -481,6 +481,11 @@ html, body {
 }
 </style>
 </head>
+
+<audio id="bgMusic" loop>
+    <source src="homepage.mp3" type="audio/mpeg">
+</audio>
+
 <body>
 
 <!-- Kinetic Dots Canvas -->
@@ -878,6 +883,33 @@ if (prevBtn) prevBtn.addEventListener('click', showPrevImage);
 if (nextBtn) nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
 setInterval(showNextImage, 5000);
+
+//--background music----
+const bgMusic = document.getElementById('bgMusic');
+
+// Get volume from localStorage (bacvolume)
+let vol = localStorage.getItem('bacvolume');
+
+// If nothing saved, default to 50
+if (vol === null) {
+    vol = 50;
+}
+
+// Make sure it's a number
+vol = parseInt(vol);
+
+// Safety clamp (just in case)
+if (isNaN(vol) || vol < 0) vol = 50;
+if (vol > 100) vol = 100;
+
+// Convert to 0–1 for audio element
+bgMusic.volume = vol / 100;
+
+// Start on user interaction (browser rules)
+document.addEventListener('click', () => {
+    bgMusic.play().catch(() => {});
+}, { once: true });
+
 
 // ─── News Feed ─────────────────────────────────────────────────────────────────
 function getTodayDateString() {
