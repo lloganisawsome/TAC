@@ -324,6 +324,7 @@
 
     <div class="controls">
         <input id="search" placeholder="Search games by title..."/>
+        <button id="randomBtn" class="btn secondary">Random Game</button>
         <button id="refreshBtn" class="btn secondary">Refresh</button>
     </div>
 
@@ -389,6 +390,7 @@
     const listArea = document.getElementById('listArea');
     const search = document.getElementById('search');
     const refreshBtn = document.getElementById('refreshBtn');
+    const randomBtn = document.getElementById('randomBtn');
     const emptyHint = document.getElementById('emptyHint');
     const gameView = document.getElementById('gameView');
     const gvTitle = document.getElementById('gvTitle');
@@ -692,110 +694,108 @@
     }
 
     // ─── Kinetic Dots ─────────────────────────────────────────────────────────────
-const canvas = document.getElementById('dotsCanvas');
-const ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('dotsCanvas');
+    const ctx = canvas.getContext('2d');
 
-let mouse = { x: -9999, y: -9999 };
-const NUM_DOTS = 80;
-const CONNECT_DIST = 120;
-const CURSOR_REPEL = 100;
+    let mouse = { x: -9999, y: -9999 };
+    const NUM_DOTS = 80;
+    const CONNECT_DIST = 120;
+    const CURSOR_REPEL = 100;
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-document.addEventListener('mousemove', e => {
-    mouse.x = e.clientX;
-    mouse.y = e.clientY;
-});
-
-document.addEventListener('mouseleave', () => {
-    mouse.x = -9999;
-    mouse.y = -9999;
-});
-
-function getAccentRGB() {
-    const style = getComputedStyle(document.documentElement);
-    // Added a fallback to the green accent just in case the variable isn't present
-    const accent = style.getPropertyValue('--accent').trim() || '#22c55e';
-    
-    // Parse hex
-    const hex = accent.replace('#', '');
-    const r = parseInt(hex.substring(0,2), 16) || 34;
-    const g = parseInt(hex.substring(2,4), 16) || 197;
-    const b = parseInt(hex.substring(4,6), 16) || 94;
-    return { r, g, b };
-}
-
-const dots = Array.from({ length: NUM_DOTS }, () => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    vx: (Math.random() - 0.5) * 0.6,
-    vy: (Math.random() - 0.5) * 0.6,
-    r: Math.random() * 2 + 1
-}));
-
-function animateDots() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const { r: cr, g: cg, b: cb } = getAccentRGB();
-
-    dots.forEach(dot => {
-        // Move
-        dot.x += dot.vx;
-        dot.y += dot.vy;
-
-        // Bounce off edges
-        if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
-        if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
-
-        // Repel from cursor
-        const dx = dot.x - mouse.x;
-        const dy = dot.y - mouse.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < CURSOR_REPEL && dist > 0) {
-            const force = (CURSOR_REPEL - dist) / CURSOR_REPEL * 0.8;
-            dot.vx += (dx / dist) * force;
-            dot.vy += (dy / dist) * force;
-        }
-
-        // Speed cap
-        const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
-        if (speed > 2) {
-            dot.vx = (dot.vx / speed) * 2;
-            dot.vy = (dot.vy / speed) * 2;
-        }
-
-        // Draw dot
-        ctx.beginPath();
-        ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, 0.55)`;
-        ctx.fill();
+    document.addEventListener('mousemove', e => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
     });
 
-    // Draw connecting lines
-    for (let i = 0; i < dots.length; i++) {
-        for (let j = i + 1; j < dots.length; j++) {
-            const dx = dots[i].x - dots[j].x;
-            const dy = dots[i].y - dots[j].y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            if (dist < CONNECT_DIST) {
-                const alpha = (1 - dist / CONNECT_DIST) * 0.25;
-                ctx.beginPath();
-                ctx.moveTo(dots[i].x, dots[i].y);
-                ctx.lineTo(dots[j].x, dots[j].y);
-                ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
-                ctx.lineWidth = 0.8;
-                ctx.stroke();
-            }
-        }
+    document.addEventListener('mouseleave', () => {
+        mouse.x = -9999;
+        mouse.y = -9999;
+    });
+
+    function getAccentRGB() {
+        const style = getComputedStyle(document.documentElement);
+        const accent = style.getPropertyValue('--accent').trim() || '#22c55e';
+        
+        const hex = accent.replace('#', '');
+        const r = parseInt(hex.substring(0,2), 16) || 34;
+        const g = parseInt(hex.substring(2,4), 16) || 197;
+        const b = parseInt(hex.substring(4,6), 16) || 94;
+        return { r, g, b };
     }
 
-    requestAnimationFrame(animateDots);
-}
-animateDots();
+    const dots = Array.from({ length: NUM_DOTS }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        r: Math.random() * 2 + 1
+    }));
+
+    function animateDots() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const { r: cr, g: cg, b: cb } = getAccentRGB();
+
+        dots.forEach(dot => {
+            // Move
+            dot.x += dot.vx;
+            dot.y += dot.vy;
+
+            // Bounce off edges
+            if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
+            if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
+
+            // Repel from cursor
+            const dx = dot.x - mouse.x;
+            const dy = dot.y - mouse.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < CURSOR_REPEL && dist > 0) {
+                const force = (CURSOR_REPEL - dist) / CURSOR_REPEL * 0.8;
+                dot.vx += (dx / dist) * force;
+                dot.vy += (dy / dist) * force;
+            }
+
+            // Speed cap
+            const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
+            if (speed > 2) {
+                dot.vx = (dot.vx / speed) * 2;
+                dot.vy = (dot.vy / speed) * 2;
+            }
+
+            // Draw dot
+            ctx.beginPath();
+            ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, 0.55)`;
+            ctx.fill();
+        });
+
+        // Draw connecting lines
+        for (let i = 0; i < dots.length; i++) {
+            for (let j = i + 1; j < dots.length; j++) {
+                const dx = dots[i].x - dots[j].x;
+                const dy = dots[i].y - dots[j].y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < CONNECT_DIST) {
+                    const alpha = (1 - dist / CONNECT_DIST) * 0.25;
+                    ctx.beginPath();
+                    ctx.moveTo(dots[i].x, dots[i].y);
+                    ctx.lineTo(dots[j].x, dots[j].y);
+                    ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        requestAnimationFrame(animateDots);
+    }
+    animateDots();
     
     
     // Event Listeners
@@ -803,6 +803,17 @@ animateDots();
     fsBtn.addEventListener('click', toggleFullscreen);
     refreshBtn.addEventListener('click', () => loadFromFirebase());
     search.addEventListener('input', () => renderList(search.value));
+
+    // Random Game Event Listener
+    randomBtn.addEventListener('click', () => {
+        const gameKeys = Object.keys(games);
+        if (gameKeys.length > 0) {
+            const randomId = gameKeys[Math.floor(Math.random() * gameKeys.length)];
+            loadGame(randomId);
+        } else {
+            alert('No games available to select right now.');
+        }
+    });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
@@ -871,6 +882,9 @@ animateDots();
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-
+            container.innerHTML = doc.body.innerHTML;
+        })
+        .catch(err => console.error("Error loading phone widget:", err));
+</script>
 </body>
 </html>

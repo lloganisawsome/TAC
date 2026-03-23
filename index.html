@@ -46,7 +46,6 @@ html, body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
 
-/* Kinetic Dots Canvas */
 #dotsCanvas {
     position: fixed;
     top: 0;
@@ -57,7 +56,6 @@ html, body {
     z-index: 0;
 }
 
-/* Sidebar */
 .sidebar {
     position: fixed;
     left: 10px;
@@ -186,7 +184,6 @@ html, body {
     transform: rotate(180deg);
 }
 
-/* Main Content */
 .main-content {
     margin-left: 100px;
     padding: 24px;
@@ -216,16 +213,14 @@ html, body {
     font-weight: 500;
 }
 
-/* Top Info Row */
 .top-info-row {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: 1fr auto auto;
     gap: 12px;
     margin-bottom: 20px;
     align-items: stretch;
 }
 
-/* Quote Box */
 .quote-box {
     background: var(--panel);
     border: 1px solid var(--accent);
@@ -256,7 +251,6 @@ html, body {
     text-overflow: ellipsis;
 }
 
-/* Time on TAC Box */
 .timeon-box {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -287,7 +281,305 @@ html, body {
     font-variant-numeric: tabular-nums;
 }
 
-/* Panel */
+/* Online indicator */
+.online-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-height: 56px;
+    gap: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.online-box:hover {
+    border-color: var(--accent);
+    background: var(--panel-hover);
+}
+
+.online-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+}
+
+.online-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.online-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+/* Online users dropdown */
+.online-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    min-width: 220px;
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 2000;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.online-dropdown.show {
+    display: block;
+}
+
+.online-dropdown-title {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+}
+
+.online-user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+}
+
+.online-user-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.online-user-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.online-user-dot.on { background: var(--accent); }
+.online-user-dot.off { background: #ef4444; }
+
+.online-user-time {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+/* Leaderboard */
+.leaderboard-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.leaderboard-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.leaderboard-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.leaderboard-panel h3 svg {
+    width: 16px;
+    height: 16px;
+    color: var(--accent);
+}
+
+.lb-list {
+    list-style: none;
+}
+
+.lb-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.lb-item:last-child {
+    border-bottom: none;
+}
+
+.lb-rank {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.lb-rank.gold { background: #eab308; color: #000; }
+.lb-rank.silver { background: #94a3b8; color: #000; }
+.lb-rank.bronze { background: #d97706; color: #000; }
+.lb-rank.normal { background: var(--border); color: var(--muted); }
+
+.lb-name {
+    flex: 1;
+    font-weight: 500;
+}
+
+.lb-value {
+    color: var(--accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.lb-left {
+    display: flex;
+    align-items: center;
+}
+
+/* Streak badge */
+.streak-box {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    min-height: 56px;
+    gap: 2px;
+}
+
+.streak-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Intro dialog overlay */
+.intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.intro-overlay.hidden {
+    display: none;
+}
+
+.intro-dialog {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 460px;
+    width: 90%;
+    box-shadow: 0 0 40px var(--accent-dim);
+    text-align: center;
+}
+
+.intro-dialog h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--accent);
+}
+
+.intro-dialog p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 8px;
+}
+
+.intro-dialog .intro-section {
+    text-align: left;
+    margin: 16px 0;
+    padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.intro-dialog .intro-section h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.intro-dialog .intro-section p {
+    font-size: 12px;
+    margin-bottom: 0;
+    color: rgba(255,255,255,0.65);
+}
+
+.intro-btn {
+    margin-top: 16px;
+    padding: 10px 32px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.intro-btn:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
 .panel {
     background: var(--panel);
     border: 1px solid var(--border);
@@ -315,7 +607,6 @@ html, body {
     margin-top: 4px;
 }
 
-/* Carousel */
 .image-carousel {
     position: relative;
     width: 100%;
@@ -362,7 +653,6 @@ html, body {
 .prev { left: 16px; }
 .next { right: 16px; }
 
-/* News Feed */
 .news-feed {
     max-height: 500px;
     overflow-y: auto;
@@ -478,6 +768,10 @@ html, body {
         justify-content: space-between;
         gap: 8px;
     }
+
+    .leaderboard-row {
+        grid-template-columns: 1fr;
+    }
 }
 </style>
 </head>
@@ -487,6 +781,36 @@ html, body {
 </audio>
 
 <body>
+
+<!-- Intro Dialog -->
+<div class="intro-overlay" id="introOverlay">
+    <div class="intro-dialog">
+        <h2>👋 Welcome to TAC!</h2>
+        <p>Here's a quick look at what's new on the homepage:</p>
+
+        <div class="intro-section">
+            <h3>🟢 Online Users</h3>
+            <p>See how many people are currently on TAC. Click it to see exactly who's online and when offline users were last seen.</p>
+        </div>
+
+        <div class="intro-section">
+            <h3>🔥 Login Streak</h3>
+            <p>Your login streak counts how many days in a row you've visited TAC. Come back every day to keep it going!</p>
+        </div>
+
+        <div class="intro-section">
+            <h3>🏆 Leaderboards</h3>
+            <p>Compete with others! The leaderboards show who has the longest login streak and who has spent the most total time on TAC.</p>
+        </div>
+
+        <div class="intro-section">
+            <h3>⏱️ Time on TAC</h3>
+            <p>Your total time spent on TAC is tracked and synced. It shows up in the top bar and on the leaderboard.</p>
+        </div>
+
+        <button class="intro-btn" id="introCloseBtn">Got it!</button>
+    </div>
+</div>
 
 <!-- Kinetic Dots Canvas -->
 <canvas id="dotsCanvas"></canvas>
@@ -551,16 +875,47 @@ html, body {
         <div class="datetime" id="datetime"></div>
     </div>
 
-    <!-- Top Info Row: Quote + Time on TAC -->
+    <!-- Top Info Row: Quote + Time on TAC + Online -->
     <div class="top-info-row">
         <div class="quote-box" id="quoteBox">
-                <path d="M6.5 10c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197-.485-1.938-.597.144c-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312C7.423 4.002 7.042 4.124 6.67 4.335c-.378.191-.752.4-1.078.692-.33.3-.651.62-.932.966-.285.354-.519.737-.75 1.142-.215.405-.416.847-.556 1.305-.124.455-.254.92-.31 1.402-.054.487-.073.98-.073 1.481C3 13.27 3.786 15 5.11 15.974 5.76 16.466 6.561 16.75 7.5 16.75c1.933 0 3.5-1.567 3.5-3.5C11 11.567 9.433 10 7.5 10H6.5zm9.5 0c-.223 0-.437.034-.65.065.069-.232.14-.468.254-.68.114-.308.292-.575.469-.844.148-.291.409-.488.601-.737.201-.242.475-.403.692-.604.213-.21.492-.315.714-.463.232-.133.434-.28.65-.35l.539-.222.474-.197-.485-1.938-.597.144c-.191.048-.424.104-.689.171-.271.05-.56.187-.882.312-.33.135-.71.257-1.083.468-.378.191-.752.4-1.078.692-.33.3-.651.62-.932.966-.285.354-.519.737-.75 1.142-.215.405-.416.847-.556 1.305-.124.455-.254.92-.31 1.402-.054.487-.073.98-.073 1.481C12 13.27 12.786 15 14.11 15.974c.65.492 1.451.776 2.39.776 1.933 0 3.5-1.567 3.5-3.5C20 11.567 18.433 10 16.5 10H16z"/>
-            </svg>
             <span class="quote-text" id="quoteText">Loading message...</span>
         </div>
         <div class="timeon-box">
-            <span class="timeon-label">You've used TAC for</span>
+            <span class="timeon-label">Time on TAC</span>
             <span class="timeon-value" id="timeonValue">--:--:--</span>
+        </div>
+        <div class="online-box" id="onlineBox">
+            <span class="online-label">Users</span>
+            <span class="online-value">
+                <span class="online-dot"></span>
+                <span id="onlineCount">0</span> Online
+            </span>
+            <div class="online-dropdown" id="onlineDropdown">
+                <div class="online-dropdown-title">All Users</div>
+                <div id="onlineUsersList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaderboards -->
+    <div class="leaderboard-row">
+        <div class="leaderboard-panel">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
+                Top Login Streaks
+            </h3>
+            <ul class="lb-list" id="streakLeaderboard">
+                <li class="lb-item" style="color:var(--muted)">Loading...</li>
+            </ul>
+        </div>
+        <div class="leaderboard-panel">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                Top Time on TAC
+            </h3>
+            <ul class="lb-list" id="timeLeaderboard">
+                <li class="lb-item" style="color:var(--muted)">Loading...</li>
+            </ul>
         </div>
     </div>
 
@@ -623,6 +978,24 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
+// Get current username from localStorage
+const currentUser = localStorage.getItem('username') || 'Unknown';
+
+// ─── Intro Dialog ──────────────────────────────────────────────────────────────
+(function() {
+    const introOverlay = document.getElementById('introOverlay');
+    const introCloseBtn = document.getElementById('introCloseBtn');
+    
+    if (localStorage.getItem('intro') === 'yes') {
+        introOverlay.classList.add('hidden');
+    }
+    
+    introCloseBtn.addEventListener('click', () => {
+        localStorage.setItem('intro', 'yes');
+        introOverlay.classList.add('hidden');
+    });
+})();
+
 // ─── Kinetic Dots ─────────────────────────────────────────────────────────────
 const canvas = document.getElementById('dotsCanvas');
 const ctx = canvas.getContext('2d');
@@ -652,7 +1025,6 @@ document.addEventListener('mouseleave', () => {
 function getAccentRGB() {
     const style = getComputedStyle(document.documentElement);
     const accent = style.getPropertyValue('--accent').trim();
-    // Parse hex
     const hex = accent.replace('#', '');
     const r = parseInt(hex.substring(0,2), 16) || 34;
     const g = parseInt(hex.substring(2,4), 16) || 197;
@@ -673,15 +1045,11 @@ function animateDots() {
     const { r: cr, g: cg, b: cb } = getAccentRGB();
 
     dots.forEach(dot => {
-        // Move
         dot.x += dot.vx;
         dot.y += dot.vy;
-
-        // Bounce off edges
         if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
         if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
 
-        // Repel from cursor
         const dx = dot.x - mouse.x;
         const dy = dot.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -691,21 +1059,18 @@ function animateDots() {
             dot.vy += (dy / dist) * force;
         }
 
-        // Speed cap
         const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
         if (speed > 2) {
             dot.vx = (dot.vx / speed) * 2;
             dot.vy = (dot.vy / speed) * 2;
         }
 
-        // Draw dot
         ctx.beginPath();
         ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, 0.55)`;
         ctx.fill();
     });
 
-    // Draw connecting lines
     for (let i = 0; i < dots.length; i++) {
         for (let j = i + 1; j < dots.length; j++) {
             const dx = dots[i].x - dots[j].x;
@@ -764,7 +1129,6 @@ function applyTheme() {
 
     if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
 
-    // Update quote box border to match theme
     const quoteBox = document.getElementById('quoteBox');
     if (quoteBox) quoteBox.style.borderColor = colors.primary;
     if (quoteBox) quoteBox.style.boxShadow = `0 0 14px ${colors.dim}`;
@@ -789,13 +1153,10 @@ function updateDateTime() {
 setInterval(updateDateTime, 1000);
 updateDateTime();
 
-// ─── Time on TAC ──────────────────────────────────────────────────────────────
+// ─── Time on TAC (localStorage → display + Firebase sync) ─────────────────────
 function formatTimeon(raw) {
-    // raw could be "HH:MM:SS" already, or seconds, or ms — handle gracefully
     if (!raw) return '--:--:--';
-    // If already formatted like HH:MM:SS
     if (/^\d{1,2}:\d{2}:\d{2}$/.test(raw.trim())) return raw.trim();
-    // If it's a number (seconds)
     const secs = parseInt(raw);
     if (!isNaN(secs)) {
         const h = Math.floor(secs / 3600);
@@ -806,6 +1167,13 @@ function formatTimeon(raw) {
     return raw;
 }
 
+function timeonToSeconds(str) {
+    if (!str || str === '--:--:--') return 0;
+    const parts = str.split(':').map(Number);
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    return 0;
+}
+
 function updateTimeon() {
     const raw = localStorage.getItem('timeon');
     const el = document.getElementById('timeonValue');
@@ -813,6 +1181,193 @@ function updateTimeon() {
 }
 updateTimeon();
 setInterval(updateTimeon, 1000);
+
+// Sync timeon to Firebase every 30 seconds
+function syncTimeonToFirebase() {
+    const raw = localStorage.getItem('timeon');
+    const formatted = formatTimeon(raw);
+    if (formatted !== '--:--:--' && currentUser && currentUser !== 'Unknown') {
+        database.ref('timeon/' + currentUser).set({
+            time: formatted,
+            seconds: timeonToSeconds(formatted),
+            timestamp: Date.now()
+        });
+    }
+}
+syncTimeonToFirebase();
+setInterval(syncTimeonToFirebase, 30000);
+
+// ─── Login Streak ──────────────────────────────────────────────────────────────
+function getTodayStr() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function getYesterdayStr() {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function updateLoginStreak() {
+    if (!currentUser || currentUser === 'Unknown') return;
+    
+    const streakRef = database.ref('streaks/' + currentUser);
+    
+    streakRef.once('value').then(snap => {
+        const data = snap.val() || {};
+        const today = getTodayStr();
+        const yesterday = getYesterdayStr();
+        const lastLogin = data.lastLogin || '';
+        let streak = data.streak || 0;
+        
+        if (lastLogin === today) {
+            // Already logged in today, do nothing
+            return;
+        } else if (lastLogin === yesterday) {
+            // Consecutive day — increment streak
+            streak += 1;
+        } else {
+            // Streak broken — reset to 1
+            streak = 1;
+        }
+        
+        streakRef.set({
+            streak: streak,
+            lastLogin: today,
+            timestamp: Date.now()
+        });
+    });
+}
+updateLoginStreak();
+
+// ─── Active Users / Online Status ──────────────────────────────────────────────
+function updateActiveStatus() {
+    if (!currentUser || currentUser === 'Unknown') return;
+    
+    const now = new Date();
+    const timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    
+    database.ref('activeUsers/' + currentUser).set({
+        lastSeen: timeStr,
+        timestamp: Date.now()
+    });
+}
+updateActiveStatus();
+setInterval(updateActiveStatus, 30000);
+
+// Listen for online users
+const onlineBox = document.getElementById('onlineBox');
+const onlineDropdown = document.getElementById('onlineDropdown');
+
+onlineBox.addEventListener('click', (e) => {
+    e.stopPropagation();
+    onlineDropdown.classList.toggle('show');
+});
+
+document.addEventListener('click', () => {
+    onlineDropdown.classList.remove('show');
+});
+
+onlineDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+database.ref('activeUsers').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    const now = Date.now();
+    const TWO_MINUTES = 2 * 60 * 1000;
+    
+    let onlineCount = 0;
+    const usersList = [];
+    
+    Object.keys(data).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase())).forEach(name => {
+        const user = data[name];
+        const isOnline = (now - user.timestamp) < TWO_MINUTES;
+        if (isOnline) onlineCount++;
+        
+        usersList.push({
+            name: name,
+            online: isOnline,
+            lastSeen: user.lastSeen || '??:??'
+        });
+    });
+    
+    document.getElementById('onlineCount').textContent = onlineCount;
+    
+    const listEl = document.getElementById('onlineUsersList');
+    listEl.innerHTML = usersList.map(u => `
+        <div class="online-user-item">
+            <div class="online-user-name">
+                <span class="online-user-dot ${u.online ? 'on' : 'off'}"></span>
+                <span>${u.name}</span>
+            </div>
+            <span class="online-user-time">${u.online ? 'Online now' : 'Last seen ' + u.lastSeen}</span>
+        </div>
+    `).join('');
+});
+
+// ─── Leaderboards ──────────────────────────────────────────────────────────────
+function getRankClass(i) {
+    if (i === 0) return 'gold';
+    if (i === 1) return 'silver';
+    if (i === 2) return 'bronze';
+    return 'normal';
+}
+
+// Streak leaderboard
+database.ref('streaks').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    const entries = Object.entries(data)
+        .map(([name, d]) => ({ name, streak: d.streak || 0 }))
+        .filter(e => e.streak > 0)
+        .sort((a, b) => b.streak - a.streak)
+        .slice(0, 10);
+    
+    const el = document.getElementById('streakLeaderboard');
+    
+    if (entries.length === 0) {
+        el.innerHTML = '<li class="lb-item" style="color:var(--muted)">No streaks yet</li>';
+        return;
+    }
+    
+    el.innerHTML = entries.map((e, i) => `
+        <li class="lb-item">
+            <div class="lb-left">
+                <span class="lb-rank ${getRankClass(i)}">${i + 1}</span>
+                <span class="lb-name">${e.name}</span>
+            </div>
+            <span class="lb-value">${e.streak} day${e.streak !== 1 ? 's' : ''} 🔥</span>
+        </li>
+    `).join('');
+});
+
+// Time on TAC leaderboard
+database.ref('timeon').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    const entries = Object.entries(data)
+        .map(([name, d]) => ({ name, time: d.time || '00:00:00', seconds: d.seconds || 0 }))
+        .filter(e => e.seconds > 0)
+        .sort((a, b) => b.seconds - a.seconds)
+        .slice(0, 10);
+    
+    const el = document.getElementById('timeLeaderboard');
+    
+    if (entries.length === 0) {
+        el.innerHTML = '<li class="lb-item" style="color:var(--muted)">No data yet</li>';
+        return;
+    }
+    
+    el.innerHTML = entries.map((e, i) => `
+        <li class="lb-item">
+            <div class="lb-left">
+                <span class="lb-rank ${getRankClass(i)}">${i + 1}</span>
+                <span class="lb-name">${e.name}</span>
+            </div>
+            <span class="lb-value">${e.time}</span>
+        </li>
+    `).join('');
+});
 
 // ─── Homepage Quote ────────────────────────────────────────────────────────────
 fetch('homepage.txt')
@@ -884,32 +1439,18 @@ if (nextBtn) nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
 setInterval(showNextImage, 5000);
 
-//--background music----
+// ─── Background Music ─────────────────────────────────────────────────────────
 const bgMusic = document.getElementById('bgMusic');
-
-// Get volume from localStorage (bacvolume)
 let vol = localStorage.getItem('bacvolume');
-
-// If nothing saved, default to 50
-if (vol === null) {
-    vol = 50;
-}
-
-// Make sure it's a number
+if (vol === null) vol = 50;
 vol = parseInt(vol);
-
-// Safety clamp (just in case)
 if (isNaN(vol) || vol < 0) vol = 50;
 if (vol > 100) vol = 100;
-
-// Convert to 0–1 for audio element
 bgMusic.volume = vol / 100;
 
-// Start on user interaction (browser rules)
 document.addEventListener('click', () => {
     bgMusic.play().catch(() => {});
 }, { once: true });
-
 
 // ─── News Feed ─────────────────────────────────────────────────────────────────
 function getTodayDateString() {
@@ -978,8 +1519,6 @@ loadNews();
     <script src="rightclick.js"></script>
     <script src="idle-dvd.js"></script>
 
-
-
 <script type="module" src="online.js"></script>
 
 <div id="tac-phone-container"></div>
@@ -990,6 +1529,8 @@ loadNews();
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+        });
+</script>
 
 </body>
 </html>
