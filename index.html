@@ -979,8 +979,7 @@ firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
 // Get current username from localStorage
-const currentUser = localStorage.getItem('username') || 'Unknown';
-
+const currentUser = localStorage.getItem('lastLoggedInUser') || 'Unknown';
 // ─── Intro Dialog ──────────────────────────────────────────────────────────────
 (function() {
     const introOverlay = document.getElementById('introOverlay');
@@ -1198,15 +1197,21 @@ syncTimeonToFirebase();
 setInterval(syncTimeonToFirebase, 30000);
 
 // ─── Login Streak ──────────────────────────────────────────────────────────────
+function getLocalYYYYMMDD(dateObj) {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 function getTodayStr() {
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    return getLocalYYYYMMDD(new Date());
 }
 
 function getYesterdayStr() {
     const d = new Date();
     d.setDate(d.getDate() - 1);
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    return getLocalYYYYMMDD(d);
 }
 
 function updateLoginStreak() {
@@ -1228,7 +1233,7 @@ function updateLoginStreak() {
             // Consecutive day — increment streak
             streak += 1;
         } else {
-            // Streak broken — reset to 1
+            // Streak broken (or first time) — reset to 1
             streak = 1;
         }
         
