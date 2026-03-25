@@ -651,15 +651,48 @@
         }
 
         const src = g.iframe || g.url || g.page || '';
+        
         if (!src) {
             gameFrame.removeAttribute('src');
+            gameFrame.removeAttribute('srcdoc');
             gameFrame.style.display = 'none';
             gameFrameWrap.innerHTML = '<div style="padding:18px;color:var(--muted);background:#111;border-radius:8px;">No playable URL found.</div>';
         } else {
             gameFrame.style.display = 'block';
             gameFrameWrap.innerHTML = '';
             gameFrameWrap.appendChild(gameFrame);
-            gameFrame.src = src;
+            
+            // Check if it's a raw GitHub link
+            if (src.startsWith('https://raw.githubusercontent.com/')) {
+                gameFrame.removeAttribute('src'); // Clear standard src
+                
+                // Fetch the code and compile it into the iframe
+                fetch(src)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response failed');
+                        return response.text();
+                    })
+                    .then(htmlCode => {
+                        // Inject a <base> tag so relative paths (like ./script.js) still load from the Github Repo
+                        const basePath = src.substring(0, src.lastIndexOf('/') + 1);
+                        let compiledCode = htmlCode;
+                        
+                        if (compiledCode.includes('<head>')) {
+                            compiledCode = compiledCode.replace('<head>', `<head><base href="${basePath}">`);
+                        } else {
+                            compiledCode = `<base href="${basePath}">` + compiledCode;
+                        }
+                        
+                        gameFrame.srcdoc = compiledCode;
+                    })
+                    .catch(error => {
+                        console.error('Error compiling raw code:', error);
+                        gameFrameWrap.innerHTML = '<div style="padding:18px;color:#ef4444;background:#111;border-radius:8px;">Error compiling raw game code from GitHub.</div>';
+                    });
+            } else {
+                gameFrame.removeAttribute('srcdoc'); // Clear raw code if standard link
+                gameFrame.src = src;
+            }
         }
 
         gameView.style.display = 'block';
@@ -668,7 +701,10 @@
     }
 
     function closeGame() {
-        try { gameFrame.src = 'about:blank'; } catch (e) {}
+        try { 
+            gameFrame.src = 'about:blank'; 
+            gameFrame.removeAttribute('srcdoc'); // Clear compiled code to stop background audio/processes
+        } catch (e) {}
         gameView.style.display = 'none';
         gameView.setAttribute('aria-hidden', 'true');
         const first = listArea.querySelector('.card');
