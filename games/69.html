@@ -1,17 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8">
-<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Sonic 3 A.I.R.</title>
-<base href="https://cdn.jsdelivr.net/gh/waycrosspublicmedia/assets/sonic3/">
-<link rel="apple-touch-icon" sizes="256x256" href="icon.png">
-<link rel="manifest" href="manifest.json">
-<style>
-body {background:black;color:white;font-family:arial;margin:0;padding:none;overflow:hidden;-webkit-user-select:none;}
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport">
+   <title>
+    Sonic 3 A.I.R.
+   </title>
+   <base href="https://cdn.jsdelivr.net/gh/waycrosspublicmedia/assets/sonic3/"/>
+   <link href="icon.png" rel="apple-touch-icon" sizes="256x256"/>
+   <link href="manifest.json" rel="manifest"/>
+   <style>
+    body {background:black;color:white;font-family:arial;margin:0;padding:none;overflow:hidden;-webkit-user-select:none;}
 .emscripten {padding-right:0;margin-left:auto;margin-right:auto;display:block;}
 div.emscripten{text-align:center;}
 div.emscripten_border{border:0 none;}
@@ -39,10 +41,11 @@ canvas.emscripten{border:0 none;background-color:#000;}
   font-size: 32px;
 }
 #root{color: black;}
-</style>
-<script src="browserfs.min.js"></script>
-<script>
-function startGame(){
+   </style>
+   <script src="browserfs.min.js">
+   </script>
+   <script>
+    function startGame(){
     callMain();
 
     // Resize canvas properly
@@ -145,22 +148,39 @@ function onDownloadsComplete(){
         startGame();
     }
 }
-</script>
-</head>
-<body>
-<div id="startup"><h2>Loading...</h2></div>
-<div class="spinner pageUI hidden" id=spinner></div>
-<div class="emscripten pageUI hidden" id=status>Downloading...</div>
-<div class="emscripten pageUI hidden"><progress hidden id=progress max=100 value=0></progress></div>
-<div class="restart hidden">
-    <button type="button" onclick="location.reload()">Restart Game</button> 
-</div>
-<div id="root" class="hidden"></div>
-<div id="gameView" class="emscripten_border">
-    <canvas class="emscripten" id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas>
-</div>
-<script>
-var statusElement = document.getElementById("status"),
+   </script>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="startup">
+   <h2>
+    Loading...
+   </h2>
+  </div>
+  <div class="spinner pageUI hidden" id="spinner">
+  </div>
+  <div class="emscripten pageUI hidden" id="status">
+   Downloading...
+  </div>
+  <div class="emscripten pageUI hidden">
+   <progress hidden="" id="progress" max="100" value="0">
+   </progress>
+  </div>
+  <div class="restart hidden">
+   <button onclick="location.reload()" type="button">
+    Restart Game
+   </button>
+  </div>
+  <div class="hidden" id="root">
+  </div>
+  <div class="emscripten_border" id="gameView">
+   <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1">
+   </canvas>
+  </div>
+  <script>
+   var statusElement = document.getElementById("status"),
     progressElement = document.getElementById("progress"),
     spinnerElement = document.getElementById("spinner");
 var Module = {
@@ -207,14 +227,18 @@ window.onerror=function(e){
     spinnerElement.style.display="none";
     Module.setStatus=function(e){ e && Module.printErr("[post-exception status] "+e) };
 }
-</script>
-<script async src="sonic3air_web.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script async="" src="sonic3air_web.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

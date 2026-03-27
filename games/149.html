@@ -1,84 +1,87 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/web-ports/vice-city@796678be4ed26a13c1256be98781ca9b90beb981/">
-    <meta charset="utf-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
-    <title>Grand Theft Auto: Vice City</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body
-    data-is-touch="0"
-    data-state-car="0"
-    data-state-car-gun="0"
-    data-state-gun="0"
-    data-state-bike="0"
-    data-state-menu="1"
-    data-state-cutscene="0"
-    data-state-mobring="0"
-    data-state-job="0"
-    data-state-disable-controls="0"
-    data-state-panzer="0"
-    data-state-car-with-weapon="0"
-    data-state-hunter="0"
-    data-state-scope-mode="0"
-    data-state-scope-gun="0"
->
-    <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
-    <div class="wasted-container" hidden>
-
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/web-ports/vice-city@796678be4ed26a13c1256be98781ca9b90beb981/"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" name="viewport">
+   <title>
+    Grand Theft Auto: Vice City
+   </title>
+   <link href="style.css" rel="stylesheet"/>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body data-is-touch="0" data-state-bike="0" data-state-car="0" data-state-car-gun="0" data-state-car-with-weapon="0" data-state-cutscene="0" data-state-disable-controls="0" data-state-gun="0" data-state-hunter="0" data-state-job="0" data-state-menu="1" data-state-mobring="0" data-state-panzer="0" data-state-scope-gun="0" data-state-scope-mode="0">
+  <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <div class="wasted-container" hidden="">
+  </div>
+  <div class="intro-container" hidden="">
+   <div class="loader-container">
+    <div class="progress-bar-container" id="spinner">
+     <div class="progress-bar-fill">
+     </div>
     </div>
-    <div class="intro-container" hidden>
-        </video>
-
-        <div class="loader-container">
-            <div class="progress-bar-container" id='spinner'>
-                <div class="progress-bar-fill"></div>
-            </div>
-            <div id="status">Downloading...</div>
-            <div>
-                <progress id="progress"></progress>
-            </div>
-        </div>
+    <div id="status">
+     Downloading...
     </div>
-
-    <input type="file" id="original-game-file" hidden>
-
-
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-
-    <div class="touch-controls-wrapper">
-        <div id="move"></div>
-        <div id="look"></div>
-
-        <div class="touch-control radio"></div>
-        <div class="touch-control weapon"></div>
-        <div class="touch-control menu"></div>
-        <div class="touch-control fist"></div>
-        <div class="touch-control drift"></div>
-        <div class="touch-control run"></div>
-        <div class="touch-control car getIn"></div>
-        <div class="touch-control left"></div>
-        <div class="touch-control right"></div>
-        <div class="touch-control jump"></div>
-        <div class="touch-control car getOut"></div>
-        <div class="touch-control camera"></div>
-        <div class="touch-control mobile"></div>
-        <div class="touch-control job"></div>
-        <div class="touch-control horn"></div>
-        <div class="touch-control fireRight"></div>
-        <div class="touch-control fireLeft"></div>
+    <div>
+     <progress id="progress">
+     </progress>
     </div>
-
-    <script>
-    </script>
-<script>
-alert("Thank you to bread for this port! Make sure to use gn-math for the best games and web ports, all links at discord.gg/gn-math or check out my partners page ❤️");
+   </div>
+  </div>
+  <input hidden="" id="original-game-file" type="file"/>
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()">
+  </canvas>
+  <div class="touch-controls-wrapper">
+   <div id="move">
+   </div>
+   <div id="look">
+   </div>
+   <div class="touch-control radio">
+   </div>
+   <div class="touch-control weapon">
+   </div>
+   <div class="touch-control menu">
+   </div>
+   <div class="touch-control fist">
+   </div>
+   <div class="touch-control drift">
+   </div>
+   <div class="touch-control run">
+   </div>
+   <div class="touch-control car getIn">
+   </div>
+   <div class="touch-control left">
+   </div>
+   <div class="touch-control right">
+   </div>
+   <div class="touch-control jump">
+   </div>
+   <div class="touch-control car getOut">
+   </div>
+   <div class="touch-control camera">
+   </div>
+   <div class="touch-control mobile">
+   </div>
+   <div class="touch-control job">
+   </div>
+   <div class="touch-control horn">
+   </div>
+   <div class="touch-control fireRight">
+   </div>
+   <div class="touch-control fireLeft">
+   </div>
+  </div>
+  <script>
+  </script>
+  <script>
+   alert("Thank you to bread for this port! Make sure to use gn-math for the best games and web ports, all links at discord.gg/gn-math or check out my partners page ❤️");
 const loadingText = document.querySelector("#loading-text");
 let loadedBytes = 0;
 const DB_NAME = "gameFilesDB";
@@ -235,15 +238,16 @@ Promise.all([
 
     loadingText.remove();
 });
-</script>
-
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

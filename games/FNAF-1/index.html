@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <style type="text/css">
-    h1 {
+ <style type="text/css">
+  h1 {
       font-family: Arial, Helvetica, sans-serif;
       color: #f00;
       font-size: x-large;
@@ -27,27 +27,24 @@
       width: 600px;
       margin-left: -260px;
     }
-  </style>
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css"> 
- <link rel="icon" type="image/jpg" href="logo.jpg" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
-    <!-- Enables full-screen on iOS devices -->
-    <meta
-      name="viewport"
-      content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi"
-    />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-    <meta name="HandheldFriendly" content="true" />
-
-    <title>Five Nights at Freddys 1</title>
-    <script src="src/Runtime.js"></script>
-
-    <script>
-      // Detection of when the html file is ran locally.
+ </style>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <link href="logo.jpg" rel="icon" type="image/jpg">
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <!-- Enables full-screen on iOS devices -->
+   <meta content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" name="viewport"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+   <meta content="true" name="HandheldFriendly"/>
+   <title>
+    Five Nights at Freddys 1
+   </title>
+   <script src="src/Runtime.js">
+   </script>
+   <script>
+    // Detection of when the html file is ran locally.
       // You can remove this code for the final version
       if (window.location.protocol == "file:") {
         document.write('<div id="bloctxt">');
@@ -67,20 +64,19 @@
         document.write("</div>");
         throw new error("Cannot run application... Maybe Refresh Or Something?");
       }
-    </script>
-  </head>
-
-  <body>
-    <div
-      style="display: inline-block; -webkit-user-select: none; text-align: left"
-    >
-      <canvas id="MMFCanvas" width="1280" height="720">
-        Your browser does not support Canvas, Please try again.
-      </canvas>
-    </div>
-
-    <script>
-      // RUNTIMESTART
+   </script>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div style="display: inline-block; -webkit-user-select: none; text-align: left">
+   <canvas height="720" id="MMFCanvas" width="1280">
+    Your browser does not support Canvas, Please try again.
+   </canvas>
+  </div>
+  <script>
+   // RUNTIMESTART
       // This is where the HTML5 runtime is actually started
       window.addEventListener("load", windowLoaded, false);
       function windowLoaded() {
@@ -91,13 +87,16 @@
         new Runtime("MFFCanvas", "/resources/FNAF1HTML5.cc1");
       }
       // RUNTIMESTARTEND
-    </script>
-       <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

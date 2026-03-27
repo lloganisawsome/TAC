@@ -1,14 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>TAC Mega Casino</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<style>
-  :root{
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   TAC Mega Casino
+  </title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&amp;display=swap" rel="stylesheet"/>
+  <style>
+   :root{
     --bg:#0a0a0b; --panel:#111113; --panel-hover:#1a1a1c; --card:#153e24; 
     --accent:#22c55e; --accent-dim:rgba(34,197,94,0.1); --muted:#71717a; 
     --glass:rgba(255,255,255,0.03); --border:rgba(255,255,255,0.06);
@@ -192,510 +194,985 @@
     .chess-board{grid-template-columns:repeat(8,40px);grid-template-rows:repeat(8,40px)}
     .chess-square{width:40px;height:40px;font-size:24px}
   }
-</style>
-</head>
-<body>
-
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-  <div class="logo-container">
-    <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
-  </div>
-  <nav class="nav-items">
-    <a href="index.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-      </svg>
-      <span>Home</span>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
     </a>
-    <a href="chat.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-        <circle cx="8" cy="10" r="1.5"/>
-        <circle cx="12" cy="10" r="1.5"/>
-        <circle cx="16" cy="10" r="1.5"/>
-      </svg>
-      <span>Chat</span>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+      <circle cx="8" cy="10" r="1.5">
+      </circle>
+      <circle cx="12" cy="10" r="1.5">
+      </circle>
+      <circle cx="16" cy="10" r="1.5">
+      </circle>
+     </svg>
+     <span>
+      Chat
+     </span>
     </a>
-    <a href="notgames.html" class="nav-item active">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-      </svg>
-      <span>Games</span>
+    <a class="nav-item active" href="notgames.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
+      </path>
+     </svg>
+     <span>
+      Games
+     </span>
     </a>
-    <a href="phone.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-      </svg>
-      <span>Phone</span>
+    <a class="nav-item" href="phone.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+      </path>
+     </svg>
+     <span>
+      Phone
+     </span>
     </a>
-    <a href="apps.html" class="nav-item">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-      </svg>
-      <span>All Apps</span>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      All Apps
+     </span>
     </a>
-  </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <polyline points="15 18 9 12 15 6"/>
-  </svg>
-</button>
-
-<div class="app" id="app">
-  <header>
-    <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#08b55a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#022;font-size:24px">TG</div>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <div class="app" id="app">
+   <header>
+    <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#08b55a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#022;font-size:24px">
+     TG
+    </div>
     <div>
-      <h1>TAC Gambling</h1>
-      <div class="small">Good luck.</div>
+     <h1>
+      TAC Gambling
+     </h1>
+     <div class="small">
+      Good luck.
+     </div>
     </div>
     <div class="status">
-      <div class="chips">Chips: <strong id="uiChips">0</strong></div>
-      <div class="small">High: <span id="uiHigh">0</span></div>
+     <div class="chips">
+      Chips:
+      <strong id="uiChips">
+       0
+      </strong>
+     </div>
+     <div class="small">
+      High:
+      <span id="uiHigh">
+       0
+      </span>
+     </div>
     </div>
-  </header>
-
-  <nav id="tabs">
-    <div class="tab" data-screen="slots">Slots</div>
-    <div class="tab inactive" data-screen="coins">Coin & Dice</div>
-    <div class="tab inactive" data-screen="wheel">Wheel</div>
-    <div class="tab inactive" data-screen="blackjack">Blackjack</div>
-    <div class="tab inactive" data-screen="chess">Chess</div>
-    <div class="tab inactive" data-screen="roulette">Roulette</div>
-    <div class="tab inactive" data-screen="horses">Horse Racing</div>
-    <div class="tab inactive" data-screen="texas">Texas Hold'em</div>
-    <div class="tab inactive" data-screen="poker">5-card Poker</div>
-    <div class="tab inactive" data-screen="crash">Crash</div>
-    <div class="tab inactive" data-screen="hilo">Hi-Lo</div>
-    <div class="tab inactive" data-screen="sports">Sports Hub</div>
-  </nav>
-
-  <div class="container">
+   </header>
+   <nav id="tabs">
+    <div class="tab" data-screen="slots">
+     Slots
+    </div>
+    <div class="tab inactive" data-screen="coins">
+     Coin &amp; Dice
+    </div>
+    <div class="tab inactive" data-screen="wheel">
+     Wheel
+    </div>
+    <div class="tab inactive" data-screen="blackjack">
+     Blackjack
+    </div>
+    <div class="tab inactive" data-screen="chess">
+     Chess
+    </div>
+    <div class="tab inactive" data-screen="roulette">
+     Roulette
+    </div>
+    <div class="tab inactive" data-screen="horses">
+     Horse Racing
+    </div>
+    <div class="tab inactive" data-screen="texas">
+     Texas Hold'em
+    </div>
+    <div class="tab inactive" data-screen="poker">
+     5-card Poker
+    </div>
+    <div class="tab inactive" data-screen="crash">
+     Crash
+    </div>
+    <div class="tab inactive" data-screen="hilo">
+     Hi-Lo
+    </div>
+    <div class="tab inactive" data-screen="sports">
+     Sports Hub
+    </div>
+   </nav>
+   <div class="container">
     <div class="row" style="margin-bottom:12px;align-items:center">
-      <div style="flex:1" class="card">
-        <div class="hud">
-          <div class="small">Bet amount</div>
-          <input id="betAmount" type="number" min="1" value="10" style="width:120px" />
-          <div class="bets">
-            <button id="bet10" class="secondary">+10</button>
-            <button id="bet50" class="secondary">+50</button>
-            <button id="bet100" class="secondary">+100</button>
-            <button id="addChips" class="secondary">Add 100 (demo)</button>
-          </div>
-        </div>
-        <div class="small" style="margin-top:6px">Difficulty: <select id="difficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option><option>Impossible</option></select></div>
+     <div class="card" style="flex:1">
+      <div class="hud">
+       <div class="small">
+        Bet amount
+       </div>
+       <input id="betAmount" min="1" style="width:120px" type="number" value="10"/>
+       <div class="bets">
+        <button class="secondary" id="bet10">
+         +10
+        </button>
+        <button class="secondary" id="bet50">
+         +50
+        </button>
+        <button class="secondary" id="bet100">
+         +100
+        </button>
+        <button class="secondary" id="addChips">
+         Add 100 (demo)
+        </button>
+       </div>
       </div>
-
-      <div style="width:260px" class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div>
-            <div class="small">Pot Progress (shared)</div>
-            <div class="bar" style="width:180px"><div id="potFill" class="bar-fill"></div></div>
-            <div class="small">Pot: <span id="pot">0</span></div>
-          </div>
-          <div style="text-align:right">
-            <div class="small">Cooldown</div>
-            <div id="cooldown" class="small">Ready</div>
-          </div>
-        </div>
+      <div class="small" style="margin-top:6px">
+       Difficulty:
+       <select id="difficulty">
+        <option>
+         Easy
+        </option>
+        <option selected="">
+         Medium
+        </option>
+        <option>
+         Hard
+        </option>
+        <option>
+         Impossible
+        </option>
+       </select>
       </div>
+     </div>
+     <div class="card" style="width:260px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+       <div>
+        <div class="small">
+         Pot Progress (shared)
+        </div>
+        <div class="bar" style="width:180px">
+         <div class="bar-fill" id="potFill">
+         </div>
+        </div>
+        <div class="small">
+         Pot:
+         <span id="pot">
+          0
+         </span>
+        </div>
+       </div>
+       <div style="text-align:right">
+        <div class="small">
+         Cooldown
+        </div>
+        <div class="small" id="cooldown">
+         Ready
+        </div>
+       </div>
+      </div>
+     </div>
     </div>
-
     <section id="screens">
-      <div id="slots" class="screen active">
-        <div class="game-title"><h2>Slots Hub</h2><div class="small">Multiple machines — different payouts & styles.</div></div>
-        <div class="row">
-          <div class="card">
-            <h3 class="small">Classic 3-reel</h3>
-            <div class="slot-row" id="classicReels">
-              <div class="reel" id="c1">🍒</div>
-              <div class="reel" id="c2">🍋</div>
-              <div class="reel" id="c3">🔔</div>
-            </div>
-            <div style="margin-top:10px">
-              <button id="spinClassic">Spin Classic</button>
-              <div class="message small" id="classicMsg">—</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="small">High Roller 3-reel</h3>
-            <div style="display:flex;gap:6px">
-              <div class="reel" id="h1">🍒</div>
-              <div class="reel" id="h2">🍋</div>
-              <div class="reel" id="h3">🔔</div>
-            </div>
-            <div style="margin-top:10px">
-              <button id="spinHigh">Spin High Roller</button>
-              <div class="message small" id="highMsg">—</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="small">Mega Jackpot</h3>
-            <div style="display:flex;justify-content:center;margin-top:8px;gap:6px">
-              <div class="reel" id="m1">💎</div>
-              <div class="reel" id="m2">7️⃣</div>
-              <div class="reel" id="m3">⭐</div>
-            </div>
-            <div style="margin-top:10px">
-              <button id="spinMega">Spin Mega</button>
-              <div class="message small" id="megaMsg">—</div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="row" style="margin-top:12px">
-          <div class="card">
-            <h3 class="small">Diamond 5-reel</h3>
-            <div style="display:flex;gap:6px">
-              <div class="reel" id="d1">💎</div>
-              <div class="reel" id="d2">💎</div>
-              <div class="reel" id="d3">💎</div>
-              <div class="reel" id="d4">💎</div>
-              <div class="reel" id="d5">💎</div>
-            </div>
-            <div style="margin-top:10px">
-              <button id="spinDiamond">Spin Diamond</button>
-              <div class="message small" id="diamondMsg">—</div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3 class="small">Lucky 7s</h3>
-            <div style="display:flex;gap:6px;justify-content:center">
-              <div class="reel" id="l1">7️⃣</div>
-              <div class="reel" id="l2">🍀</div>
-              <div class="reel" id="l3">7️⃣</div>
-            </div>
-            <div style="margin-top:10px">
-              <button id="spinLucky">Spin Lucky</button>
-              <div class="message small" id="luckyMsg">—</div>
-            </div>
-          </div>
-        </div>
+     <div class="screen active" id="slots">
+      <div class="game-title">
+       <h2>
+        Slots Hub
+       </h2>
+       <div class="small">
+        Multiple machines — different payouts &amp; styles.
+       </div>
       </div>
-
-      <div id="coins" class="screen">
-        <div class="game-title"><h2>Coin Flip & Dice</h2><div class="small">Simple, fast, fair.</div></div>
-        <div class="row">
-          <div class="card">
-            <h3 class="small">Coin Flip</h3>
-            <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
-              <button id="coinFlip">Flip Coin</button><div class="small">Last: <span id="coinLast">—</span></div>
-            </div>
-            <div class="message small" id="coinMsg">—</div>
-          </div>
-
-          <div class="card">
-            <h3 class="small">Dice (Higher / Lower)</h3>
-            <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
-              <button id="rollHigh">Bet High (4-6)</button>
-              <button id="rollLow">Bet Low (1-3)</button>
-            </div>
-            <div class="message small" id="diceMsg">—</div>
-          </div>
-
-          <div class="card">
-            <h3 class="small">Quick Bets</h3>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <button id="betAllIn" class="secondary">All In (demo)</button>
-              <button id="half" class="secondary">Half Bet</button>
-            </div>
-            <div class="message small" id="qbMsg">—</div>
-          </div>
+      <div class="row">
+       <div class="card">
+        <h3 class="small">
+         Classic 3-reel
+        </h3>
+        <div class="slot-row" id="classicReels">
+         <div class="reel" id="c1">
+          🍒
+         </div>
+         <div class="reel" id="c2">
+          🍋
+         </div>
+         <div class="reel" id="c3">
+          🔔
+         </div>
         </div>
+        <div style="margin-top:10px">
+         <button id="spinClassic">
+          Spin Classic
+         </button>
+         <div class="message small" id="classicMsg">
+          —
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <h3 class="small">
+         High Roller 3-reel
+        </h3>
+        <div style="display:flex;gap:6px">
+         <div class="reel" id="h1">
+          🍒
+         </div>
+         <div class="reel" id="h2">
+          🍋
+         </div>
+         <div class="reel" id="h3">
+          🔔
+         </div>
+        </div>
+        <div style="margin-top:10px">
+         <button id="spinHigh">
+          Spin High Roller
+         </button>
+         <div class="message small" id="highMsg">
+          —
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <h3 class="small">
+         Mega Jackpot
+        </h3>
+        <div style="display:flex;justify-content:center;margin-top:8px;gap:6px">
+         <div class="reel" id="m1">
+          💎
+         </div>
+         <div class="reel" id="m2">
+          7️⃣
+         </div>
+         <div class="reel" id="m3">
+          ⭐
+         </div>
+        </div>
+        <div style="margin-top:10px">
+         <button id="spinMega">
+          Spin Mega
+         </button>
+         <div class="message small" id="megaMsg">
+          —
+         </div>
+        </div>
+       </div>
       </div>
-
-      <div id="wheel" class="screen">
-        <div class="game-title"><h2>Wheel of Fortune</h2><div class="small">Spin to win big prizes!</div></div>
-        <div class="row">
-          <div class="card" style="text-align:center">
-            <div class="wheel-container">
-              <canvas id="wheelCanvas" width="400" height="400" style="max-width:100%"></canvas>
-              <div class="wheel-label">SPIN</div>
-            </div>
-            <div style="margin-top:12px">
-              <button id="spinWheel">Spin Wheel</button>
-              <div class="message small" id="wheelMsg">—</div>
-            </div>
-          </div>
-          <div class="card">
-            <h3 class="small">Prizes</h3>
-            <div class="small" style="line-height:1.8">
-              🟢 WIN x2 <br>
-              🔵 WIN x5 <br>
-              🟣 WIN x10 <br>
-              🟡 JACKPOT x50 <br>
-              🔴 LOSE <br>
-              ⚪ BONUS SPIN
-            </div>
-          </div>
+      <div class="row" style="margin-top:12px">
+       <div class="card">
+        <h3 class="small">
+         Diamond 5-reel
+        </h3>
+        <div style="display:flex;gap:6px">
+         <div class="reel" id="d1">
+          💎
+         </div>
+         <div class="reel" id="d2">
+          💎
+         </div>
+         <div class="reel" id="d3">
+          💎
+         </div>
+         <div class="reel" id="d4">
+          💎
+         </div>
+         <div class="reel" id="d5">
+          💎
+         </div>
         </div>
+        <div style="margin-top:10px">
+         <button id="spinDiamond">
+          Spin Diamond
+         </button>
+         <div class="message small" id="diamondMsg">
+          —
+         </div>
+        </div>
+       </div>
+       <div class="card">
+        <h3 class="small">
+         Lucky 7s
+        </h3>
+        <div style="display:flex;gap:6px;justify-content:center">
+         <div class="reel" id="l1">
+          7️⃣
+         </div>
+         <div class="reel" id="l2">
+          🍀
+         </div>
+         <div class="reel" id="l3">
+          7️⃣
+         </div>
+        </div>
+        <div style="margin-top:10px">
+         <button id="spinLucky">
+          Spin Lucky
+         </button>
+         <div class="message small" id="luckyMsg">
+          —
+         </div>
+        </div>
+       </div>
       </div>
-
-      <div id="blackjack" class="screen">
-        <div class="game-title"><h2>Blackjack PvP</h2><div class="small">Play against another player! One is dealer, one is player. Winner takes both bets!</div></div>
-        
-        <div class="multiplayer-panel">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-            <div class="small">Multiplayer Mode (2 players max)</div>
-            <div style="display:flex;gap:8px">
-              <input id="bjBetInput" type="number" min="10" value="50" placeholder="Bet" style="width:80px" />
-              <button id="bjCreateRoom" class="secondary">Create Room</button>
-              <button id="bjJoinRoom" class="secondary">Join Room</button>
-            </div>
-          </div>
-          <input id="bjRoomCode" type="text" placeholder="Room code" style="width:150px;margin-top:8px" />
-          <div id="bjRoomInfo" class="small" style="margin-top:8px">Not in a room</div>
-          <div class="player-list" id="bjPlayerList"></div>
-        </div>
-
-        <div class="row" style="margin-top:12px">
-          <div class="card" id="bjTable">
-            <div><strong>Your Hand</strong></div>
-            <div class="cards" id="bjPlayerCards"></div>
-            <div class="small">Player total: <span id="bjPlayerTotal">0</span></div>
-            <hr>
-            <div><strong>Opponent</strong></div>
-            <div class="cards" id="bjDealerCards"></div>
-            <div class="small">Opponent total: <span id="bjDealerTotal">?</span></div>
-            <div style="margin-top:8px">
-              <button id="bjHit" class="secondary">Hit</button>
-              <button id="bjStand" class="secondary">Stand</button>
-              <button id="bjReady" class="secondary">Ready</button>
-              <div class="message small" id="bjMsg">—</div>
-            </div>
-          </div>
-        </div>
+     </div>
+     <div class="screen" id="coins">
+      <div class="game-title">
+       <h2>
+        Coin Flip &amp; Dice
+       </h2>
+       <div class="small">
+        Simple, fast, fair.
+       </div>
       </div>
-
-      <div id="chess" class="screen">
-        <div class="game-title"><h2>Chess PvP</h2><div class="small">Play chess against another player! Winner takes both bets!</div></div>
-        
-        <div class="multiplayer-panel">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
-            <div class="small">Chess Match (2 players, equal bets)</div>
-            <div style="display:flex;gap:8px">
-              <input id="chessBetInput" type="number" min="10" value="50" placeholder="Bet" style="width:80px" />
-              <button id="chessCreateRoom" class="secondary">Create Room</button>
-              <button id="chessJoinRoom" class="secondary">Join Room</button>
-            </div>
-          </div>
-          <input id="chessRoomCode" type="text" placeholder="Room code" style="width:150px;margin-top:8px" />
-          <div id="chessRoomInfo" class="small" style="margin-top:8px">Not in a room</div>
-          <div class="player-list" id="chessPlayerList"></div>
-          <button id="chessReady" class="secondary" style="margin-top:8px">Ready to Play</button>
+      <div class="row">
+       <div class="card">
+        <h3 class="small">
+         Coin Flip
+        </h3>
+        <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+         <button id="coinFlip">
+          Flip Coin
+         </button>
+         <div class="small">
+          Last:
+          <span id="coinLast">
+           —
+          </span>
+         </div>
         </div>
-
-        <div class="row" style="margin-top:12px">
-          <div class="card">
-            <div id="chessBoard" class="chess-board"></div>
-            <div class="message small" id="chessMsg" style="text-align:center">Create or join a room to start</div>
-            <div style="text-align:center;margin-top:12px">
-              <button id="chessResign" class="secondary">Resign</button>
-            </div>
-          </div>
+        <div class="message small" id="coinMsg">
+         —
         </div>
+       </div>
+       <div class="card">
+        <h3 class="small">
+         Dice (Higher / Lower)
+        </h3>
+        <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+         <button id="rollHigh">
+          Bet High (4-6)
+         </button>
+         <button id="rollLow">
+          Bet Low (1-3)
+         </button>
+        </div>
+        <div class="message small" id="diceMsg">
+         —
+        </div>
+       </div>
+       <div class="card">
+        <h3 class="small">
+         Quick Bets
+        </h3>
+        <div style="display:flex;gap:8px;margin-top:8px">
+         <button class="secondary" id="betAllIn">
+          All In (demo)
+         </button>
+         <button class="secondary" id="half">
+          Half Bet
+         </button>
+        </div>
+        <div class="message small" id="qbMsg">
+         —
+        </div>
+       </div>
       </div>
-
-      <div id="roulette" class="screen">
-        <div class="game-title"><h2>Roulette</h2><div class="small">Bet on numbers, red/black, odd/even.</div></div>
-        <div class="row">
-          <div class="card">
-            <div class="small">Pick type</div>
-            <div style="display:flex;gap:6px;margin-top:8px">
-              <button id="betRed">Red</button>
-              <button id="betBlack">Black</button>
-              <button id="betEven">Even</button>
-              <button id="betOdd">Odd</button>
-            </div>
-            <div style="margin-top:12px">
-              <div class="small">Or pick a number (0-36)</div>
-              <input id="rouletteNumber" type="number" min="0" max="36" value="7"/>
-              <button id="betNumber">Bet Number</button>
-            </div>
-            <div class="message small" id="rouletteMsg">—</div>
-          </div>
-        </div>
+     </div>
+     <div class="screen" id="wheel">
+      <div class="game-title">
+       <h2>
+        Wheel of Fortune
+       </h2>
+       <div class="small">
+        Spin to win big prizes!
+       </div>
       </div>
-
-      <div id="horses" class="screen">
-        <div class="game-title"><h2>Horse Racing</h2><div class="small">Pick a horse, watch the race!</div></div>
-        <div class="row">
-          <div class="card" style="flex:1">
-            <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
-              <div class="small">Pick Horse</div>
-              <select id="horsePick"></select>
-              <div class="small">Race Mode</div>
-              <select id="raceMode">
-                <option value="sprint">Sprint</option>
-                <option value="lap" selected>Standard</option>
-                <option value="long">Marathon</option>
-              </select>
-              <button id="startRace">Start Race</button>
-            </div>
-            <div style="margin-top:12px" class="track" id="track"></div>
-            <div class="message small" id="horseMsg">—</div>
-          </div>
+      <div class="row">
+       <div class="card" style="text-align:center">
+        <div class="wheel-container">
+         <canvas height="400" id="wheelCanvas" style="max-width:100%" width="400">
+         </canvas>
+         <div class="wheel-label">
+          SPIN
+         </div>
         </div>
-      </div>
-
-      <div id="texas" class="screen">
-        <div class="game-title"><h2>Texas Hold'em</h2><div class="small">Heads-up vs AI</div></div>
-        <div class="row">
-          <div class="card">
-            <div class="small">Your hole cards</div>
-            <div class="cards" id="thPlayerCards"></div>
-            <div class="small">Community</div>
-            <div class="cards" id="thCommunity"></div>
-            <div style="margin-top:8px">
-              <button id="thDeal">Deal Hand</button>
-              <button id="thNext" class="secondary">Next Stage</button>
-              <div class="message small" id="thMsg">—</div>
-            </div>
-          </div>
+        <div style="margin-top:12px">
+         <button id="spinWheel">
+          Spin Wheel
+         </button>
+         <div class="message small" id="wheelMsg">
+          —
+         </div>
         </div>
-      </div>
-
-      <div id="poker" class="screen">
-        <div class="game-title"><h2>5-Card Poker</h2><div class="small">Draw up to 3 cards.</div></div>
-        <div class="row">
-          <div class="card">
-            <div class="small">Your hand</div>
-            <div class="cards" id="pokerPlayer"></div>
-            <div style="margin-top:8px">
-              <button id="pokerDeal">Deal</button>
-              <button id="pokerDraw" class="secondary">Draw Selected</button>
-              <div class="message small" id="pokerMsg">—</div>
-            </div>
-          </div>
+       </div>
+       <div class="card">
+        <h3 class="small">
+         Prizes
+        </h3>
+        <div class="small" style="line-height:1.8">
+         🟢 WIN x2
+         <br/>
+         🔵 WIN x5
+         <br/>
+         🟣 WIN x10
+         <br/>
+         🟡 JACKPOT x50
+         <br/>
+         🔴 LOSE
+         <br/>
+         ⚪ BONUS SPIN
         </div>
+       </div>
       </div>
-
-      <div id="crash" class="screen">
-        <div class="game-title"><h2>Crash Game</h2><div class="small">Cash out before it crashes!</div></div>
-        <div class="row">
-          <div class="card" style="text-align:center">
-            <div style="font-size:64px;font-weight:800;color:var(--accent);margin:20px 0" id="crashMultiplier">1.00x</div>
-            <div style="margin-top:20px">
-              <button id="crashStart">Start Game</button>
-              <button id="crashCashout" class="secondary">Cash Out</button>
-              <div class="message small" id="crashMsg">—</div>
-            </div>
-          </div>
+     </div>
+     <div class="screen" id="blackjack">
+      <div class="game-title">
+       <h2>
+        Blackjack PvP
+       </h2>
+       <div class="small">
+        Play against another player! One is dealer, one is player. Winner takes both bets!
+       </div>
+      </div>
+      <div class="multiplayer-panel">
+       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="small">
+         Multiplayer Mode (2 players max)
         </div>
-      </div>
-
-      <div id="hilo" class="screen">
-        <div class="game-title"><h2>Hi-Lo Card Game</h2><div class="small">Guess if next card is higher or lower!</div></div>
-        <div class="row">
-          <div class="card">
-            <div style="text-align:center">
-              <div class="card-face" style="width:120px;height:160px;font-size:48px;margin:0 auto" id="hiloCard">?</div>
-              <div class="small" style="margin-top:12px">Current: <span id="hiloValue">—</span></div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:20px;justify-content:center">
-              <button id="hiloHigher">Higher</button>
-              <button id="hiloLower">Lower</button>
-              <button id="hiloStart" class="secondary">New Game</button>
-            </div>
-            <div class="message small" id="hiloMsg">—</div>
-            <div class="small" style="margin-top:8px">Streak: <span id="hiloStreak">0</span> | Multiplier: <span id="hiloMult">1.0x</span></div>
-          </div>
+        <div style="display:flex;gap:8px">
+         <input id="bjBetInput" min="10" placeholder="Bet" style="width:80px" type="number" value="50"/>
+         <button class="secondary" id="bjCreateRoom">
+          Create Room
+         </button>
+         <button class="secondary" id="bjJoinRoom">
+          Join Room
+         </button>
         </div>
+       </div>
+       <input id="bjRoomCode" placeholder="Room code" style="width:150px;margin-top:8px" type="text"/>
+       <div class="small" id="bjRoomInfo" style="margin-top:8px">
+        Not in a room
+       </div>
+       <div class="player-list" id="bjPlayerList">
+       </div>
       </div>
-
-      <div id="sports" class="screen">
-        <div class="game-title"><h2>Sports Betting Hub</h2><div class="small">Live odds on major sports!</div></div>
-        <div class="row">
-          <div class="card">
-            <h3 class="small">🏈 NFL</h3>
-            <div class="sports-matchup">
-              <div class="small">Phoenix Firebirds vs Seattle Slayers</div>
-              <button data-sport="nfl" data-team="Firebirds" data-odds="2.1">Firebirds (2.1x)</button>
-              <button data-sport="nfl" data-team="Slayers" data-odds="1.7">Slayers (1.7x)</button>
-            </div>
-            <div class="sports-matchup">
-              <div class="small">Dallas Mavericks vs Green Bay Guardians</div>
-              <button data-sport="nfl" data-team="Mavericks" data-odds="1.9">Mavericks (1.9x)</button>
-              <button data-sport="nfl" data-team="Guardians" data-odds="2.3">Guardians (2.3x)</button>
-            </div>
-
-            <h3 class="small" style="margin-top:16px">🏀 NBA</h3>
-            <div class="sports-matchup">
-              <div class="small">LA Lakers vs Boston Celtics</div>
-              <button data-sport="nba" data-team="Lakers" data-odds="1.5">Lakers (1.5x)</button>
-              <button data-sport="nba" data-team="Celtics" data-odds="2.5">Celtics (2.5x)</button>
-            </div>
-            <div class="sports-matchup">
-              <div class="small">Golden State Warriors vs Miami Heat</div>
-              <button data-sport="nba" data-team="Warriors" data-odds="1.8">Warriors (1.8x)</button>
-              <button data-sport="nba" data-team="Heat" data-odds="2.2">Heat (2.2x)</button>
-            </div>
-            <div class="sports-matchup">
-              <div class="small">Brooklyn Nets vs Phoenix Suns</div>
-              <button data-sport="nba" data-team="Nets" data-odds="2.0">Nets (2.0x)</button>
-              <button data-sport="nba" data-team="Suns" data-odds="1.9">Suns (1.9x)</button>
-            </div>
-
-            <h3 class="small" style="margin-top:16px">🏈 NCAAF</h3>
-            <div class="sports-matchup">
-              <div class="small">Ohio State vs Michigan</div>
-              <button data-sport="ncaaf" data-team="Buckeyes" data-odds="1.3">Buckeyes (1.3x)</button>
-              <button data-sport="ncaaf" data-team="Wolverines" data-odds="3.0">Wolverines (3.0x)</button>
-            </div>
-            <div class="sports-matchup">
-              <div class="small">Alabama Crimson Tide vs Georgia Bulldogs</div>
-              <button data-sport="ncaaf" data-team="Tide" data-odds="1.6">Tide (1.6x)</button>
-              <button data-sport="ncaaf" data-team="Bulldogs" data-odds="2.4">Bulldogs (2.4x)</button>
-            </div>
-
-            <h3 class="small" style="margin-top:16px">⚽ Soccer</h3>
-            <div class="sports-matchup">
-              <div class="small">Manchester United vs Liverpool</div>
-              <button data-sport="soccer" data-team="United" data-odds="2.1">Man Utd (2.1x)</button>
-              <button data-sport="soccer" data-team="Liverpool" data-odds="1.8">Liverpool (1.8x)</button>
-            </div>
-            <div class="sports-matchup">
-              <div class="small">Real Madrid vs Barcelona</div>
-              <button data-sport="soccer" data-team="Madrid" data-odds="1.7">Madrid (1.7x)</button>
-              <button data-sport="soccer" data-team="Barcelona" data-odds="2.3">Barca (2.3x)</button>
-            </div>
-
-            <h3 class="small" style="margin-top:16px">⚾ MLB</h3>
-            <div class="sports-matchup">
-              <div class="small">New York Yankees vs Boston Red Sox</div>
-              <button data-sport="mlb" data-team="Yankees" data-odds="1.9">Yankees (1.9x)</button>
-              <button data-sport="mlb" data-team="RedSox" data-odds="2.0">Red Sox (2.0x)</button>
-            </div>
-
-            <h3 class="small" style="margin-top:16px">🏒 NHL</h3>
-            <div class="sports-matchup">
-              <div class="small">Toronto Maple Leafs vs Montreal Canadiens</div>
-              <button data-sport="nhl" data-team="Leafs" data-odds="1.6">Leafs (1.6x)</button>
-              <button data-sport="nhl" data-team="Canadiens" data-odds="2.5">Canadiens (2.5x)</button>
-            </div>
-
-            <div class="message small" id="sportsMsg">Select a match and team.</div>
-          </div>
+      <div class="row" style="margin-top:12px">
+       <div class="card" id="bjTable">
+        <div>
+         <strong>
+          Your Hand
+         </strong>
         </div>
+        <div class="cards" id="bjPlayerCards">
+        </div>
+        <div class="small">
+         Player total:
+         <span id="bjPlayerTotal">
+          0
+         </span>
+        </div>
+        <hr/>
+        <div>
+         <strong>
+          Opponent
+         </strong>
+        </div>
+        <div class="cards" id="bjDealerCards">
+        </div>
+        <div class="small">
+         Opponent total:
+         <span id="bjDealerTotal">
+          ?
+         </span>
+        </div>
+        <div style="margin-top:8px">
+         <button class="secondary" id="bjHit">
+          Hit
+         </button>
+         <button class="secondary" id="bjStand">
+          Stand
+         </button>
+         <button class="secondary" id="bjReady">
+          Ready
+         </button>
+         <div class="message small" id="bjMsg">
+          —
+         </div>
+        </div>
+       </div>
       </div>
-
+     </div>
+     <div class="screen" id="chess">
+      <div class="game-title">
+       <h2>
+        Chess PvP
+       </h2>
+       <div class="small">
+        Play chess against another player! Winner takes both bets!
+       </div>
+      </div>
+      <div class="multiplayer-panel">
+       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div class="small">
+         Chess Match (2 players, equal bets)
+        </div>
+        <div style="display:flex;gap:8px">
+         <input id="chessBetInput" min="10" placeholder="Bet" style="width:80px" type="number" value="50"/>
+         <button class="secondary" id="chessCreateRoom">
+          Create Room
+         </button>
+         <button class="secondary" id="chessJoinRoom">
+          Join Room
+         </button>
+        </div>
+       </div>
+       <input id="chessRoomCode" placeholder="Room code" style="width:150px;margin-top:8px" type="text"/>
+       <div class="small" id="chessRoomInfo" style="margin-top:8px">
+        Not in a room
+       </div>
+       <div class="player-list" id="chessPlayerList">
+       </div>
+       <button class="secondary" id="chessReady" style="margin-top:8px">
+        Ready to Play
+       </button>
+      </div>
+      <div class="row" style="margin-top:12px">
+       <div class="card">
+        <div class="chess-board" id="chessBoard">
+        </div>
+        <div class="message small" id="chessMsg" style="text-align:center">
+         Create or join a room to start
+        </div>
+        <div style="text-align:center;margin-top:12px">
+         <button class="secondary" id="chessResign">
+          Resign
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="roulette">
+      <div class="game-title">
+       <h2>
+        Roulette
+       </h2>
+       <div class="small">
+        Bet on numbers, red/black, odd/even.
+       </div>
+      </div>
+      <div class="row">
+       <div class="card">
+        <div class="small">
+         Pick type
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px">
+         <button id="betRed">
+          Red
+         </button>
+         <button id="betBlack">
+          Black
+         </button>
+         <button id="betEven">
+          Even
+         </button>
+         <button id="betOdd">
+          Odd
+         </button>
+        </div>
+        <div style="margin-top:12px">
+         <div class="small">
+          Or pick a number (0-36)
+         </div>
+         <input id="rouletteNumber" max="36" min="0" type="number" value="7"/>
+         <button id="betNumber">
+          Bet Number
+         </button>
+        </div>
+        <div class="message small" id="rouletteMsg">
+         —
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="horses">
+      <div class="game-title">
+       <h2>
+        Horse Racing
+       </h2>
+       <div class="small">
+        Pick a horse, watch the race!
+       </div>
+      </div>
+      <div class="row">
+       <div class="card" style="flex:1">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px">
+         <div class="small">
+          Pick Horse
+         </div>
+         <select id="horsePick">
+         </select>
+         <div class="small">
+          Race Mode
+         </div>
+         <select id="raceMode">
+          <option value="sprint">
+           Sprint
+          </option>
+          <option selected="" value="lap">
+           Standard
+          </option>
+          <option value="long">
+           Marathon
+          </option>
+         </select>
+         <button id="startRace">
+          Start Race
+         </button>
+        </div>
+        <div class="track" id="track" style="margin-top:12px">
+        </div>
+        <div class="message small" id="horseMsg">
+         —
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="texas">
+      <div class="game-title">
+       <h2>
+        Texas Hold'em
+       </h2>
+       <div class="small">
+        Heads-up vs AI
+       </div>
+      </div>
+      <div class="row">
+       <div class="card">
+        <div class="small">
+         Your hole cards
+        </div>
+        <div class="cards" id="thPlayerCards">
+        </div>
+        <div class="small">
+         Community
+        </div>
+        <div class="cards" id="thCommunity">
+        </div>
+        <div style="margin-top:8px">
+         <button id="thDeal">
+          Deal Hand
+         </button>
+         <button class="secondary" id="thNext">
+          Next Stage
+         </button>
+         <div class="message small" id="thMsg">
+          —
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="poker">
+      <div class="game-title">
+       <h2>
+        5-Card Poker
+       </h2>
+       <div class="small">
+        Draw up to 3 cards.
+       </div>
+      </div>
+      <div class="row">
+       <div class="card">
+        <div class="small">
+         Your hand
+        </div>
+        <div class="cards" id="pokerPlayer">
+        </div>
+        <div style="margin-top:8px">
+         <button id="pokerDeal">
+          Deal
+         </button>
+         <button class="secondary" id="pokerDraw">
+          Draw Selected
+         </button>
+         <div class="message small" id="pokerMsg">
+          —
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="crash">
+      <div class="game-title">
+       <h2>
+        Crash Game
+       </h2>
+       <div class="small">
+        Cash out before it crashes!
+       </div>
+      </div>
+      <div class="row">
+       <div class="card" style="text-align:center">
+        <div id="crashMultiplier" style="font-size:64px;font-weight:800;color:var(--accent);margin:20px 0">
+         1.00x
+        </div>
+        <div style="margin-top:20px">
+         <button id="crashStart">
+          Start Game
+         </button>
+         <button class="secondary" id="crashCashout">
+          Cash Out
+         </button>
+         <div class="message small" id="crashMsg">
+          —
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="hilo">
+      <div class="game-title">
+       <h2>
+        Hi-Lo Card Game
+       </h2>
+       <div class="small">
+        Guess if next card is higher or lower!
+       </div>
+      </div>
+      <div class="row">
+       <div class="card">
+        <div style="text-align:center">
+         <div class="card-face" id="hiloCard" style="width:120px;height:160px;font-size:48px;margin:0 auto">
+          ?
+         </div>
+         <div class="small" style="margin-top:12px">
+          Current:
+          <span id="hiloValue">
+           —
+          </span>
+         </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:20px;justify-content:center">
+         <button id="hiloHigher">
+          Higher
+         </button>
+         <button id="hiloLower">
+          Lower
+         </button>
+         <button class="secondary" id="hiloStart">
+          New Game
+         </button>
+        </div>
+        <div class="message small" id="hiloMsg">
+         —
+        </div>
+        <div class="small" style="margin-top:8px">
+         Streak:
+         <span id="hiloStreak">
+          0
+         </span>
+         | Multiplier:
+         <span id="hiloMult">
+          1.0x
+         </span>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="screen" id="sports">
+      <div class="game-title">
+       <h2>
+        Sports Betting Hub
+       </h2>
+       <div class="small">
+        Live odds on major sports!
+       </div>
+      </div>
+      <div class="row">
+       <div class="card">
+        <h3 class="small">
+         🏈 NFL
+        </h3>
+        <div class="sports-matchup">
+         <div class="small">
+          Phoenix Firebirds vs Seattle Slayers
+         </div>
+         <button data-odds="2.1" data-sport="nfl" data-team="Firebirds">
+          Firebirds (2.1x)
+         </button>
+         <button data-odds="1.7" data-sport="nfl" data-team="Slayers">
+          Slayers (1.7x)
+         </button>
+        </div>
+        <div class="sports-matchup">
+         <div class="small">
+          Dallas Mavericks vs Green Bay Guardians
+         </div>
+         <button data-odds="1.9" data-sport="nfl" data-team="Mavericks">
+          Mavericks (1.9x)
+         </button>
+         <button data-odds="2.3" data-sport="nfl" data-team="Guardians">
+          Guardians (2.3x)
+         </button>
+        </div>
+        <h3 class="small" style="margin-top:16px">
+         🏀 NBA
+        </h3>
+        <div class="sports-matchup">
+         <div class="small">
+          LA Lakers vs Boston Celtics
+         </div>
+         <button data-odds="1.5" data-sport="nba" data-team="Lakers">
+          Lakers (1.5x)
+         </button>
+         <button data-odds="2.5" data-sport="nba" data-team="Celtics">
+          Celtics (2.5x)
+         </button>
+        </div>
+        <div class="sports-matchup">
+         <div class="small">
+          Golden State Warriors vs Miami Heat
+         </div>
+         <button data-odds="1.8" data-sport="nba" data-team="Warriors">
+          Warriors (1.8x)
+         </button>
+         <button data-odds="2.2" data-sport="nba" data-team="Heat">
+          Heat (2.2x)
+         </button>
+        </div>
+        <div class="sports-matchup">
+         <div class="small">
+          Brooklyn Nets vs Phoenix Suns
+         </div>
+         <button data-odds="2.0" data-sport="nba" data-team="Nets">
+          Nets (2.0x)
+         </button>
+         <button data-odds="1.9" data-sport="nba" data-team="Suns">
+          Suns (1.9x)
+         </button>
+        </div>
+        <h3 class="small" style="margin-top:16px">
+         🏈 NCAAF
+        </h3>
+        <div class="sports-matchup">
+         <div class="small">
+          Ohio State vs Michigan
+         </div>
+         <button data-odds="1.3" data-sport="ncaaf" data-team="Buckeyes">
+          Buckeyes (1.3x)
+         </button>
+         <button data-odds="3.0" data-sport="ncaaf" data-team="Wolverines">
+          Wolverines (3.0x)
+         </button>
+        </div>
+        <div class="sports-matchup">
+         <div class="small">
+          Alabama Crimson Tide vs Georgia Bulldogs
+         </div>
+         <button data-odds="1.6" data-sport="ncaaf" data-team="Tide">
+          Tide (1.6x)
+         </button>
+         <button data-odds="2.4" data-sport="ncaaf" data-team="Bulldogs">
+          Bulldogs (2.4x)
+         </button>
+        </div>
+        <h3 class="small" style="margin-top:16px">
+         ⚽ Soccer
+        </h3>
+        <div class="sports-matchup">
+         <div class="small">
+          Manchester United vs Liverpool
+         </div>
+         <button data-odds="2.1" data-sport="soccer" data-team="United">
+          Man Utd (2.1x)
+         </button>
+         <button data-odds="1.8" data-sport="soccer" data-team="Liverpool">
+          Liverpool (1.8x)
+         </button>
+        </div>
+        <div class="sports-matchup">
+         <div class="small">
+          Real Madrid vs Barcelona
+         </div>
+         <button data-odds="1.7" data-sport="soccer" data-team="Madrid">
+          Madrid (1.7x)
+         </button>
+         <button data-odds="2.3" data-sport="soccer" data-team="Barcelona">
+          Barca (2.3x)
+         </button>
+        </div>
+        <h3 class="small" style="margin-top:16px">
+         ⚾ MLB
+        </h3>
+        <div class="sports-matchup">
+         <div class="small">
+          New York Yankees vs Boston Red Sox
+         </div>
+         <button data-odds="1.9" data-sport="mlb" data-team="Yankees">
+          Yankees (1.9x)
+         </button>
+         <button data-odds="2.0" data-sport="mlb" data-team="RedSox">
+          Red Sox (2.0x)
+         </button>
+        </div>
+        <h3 class="small" style="margin-top:16px">
+         🏒 NHL
+        </h3>
+        <div class="sports-matchup">
+         <div class="small">
+          Toronto Maple Leafs vs Montreal Canadiens
+         </div>
+         <button data-odds="1.6" data-sport="nhl" data-team="Leafs">
+          Leafs (1.6x)
+         </button>
+         <button data-odds="2.5" data-sport="nhl" data-team="Canadiens">
+          Canadiens (2.5x)
+         </button>
+        </div>
+        <div class="message small" id="sportsMsg">
+         Select a match and team.
+        </div>
+       </div>
+      </div>
+     </div>
     </section>
-
-    <div class="footer">Copyright 2025 TAC Gambling</div>
+    <div class="footer">
+     Copyright 2025 TAC Gambling
+    </div>
+   </div>
   </div>
-</div>
-
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-<script>
-/* Firebase Init */
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+  </script>
+  <script>
+   /* Firebase Init */
 const firebaseConfig = {
   apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
   authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -2182,26 +2659,45 @@ chessBoard = getInitialChessBoard();
 renderChessBoard();
 applyTheme();
 setInterval(()=>{ updateUI(); }, 1200);
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

@@ -1,28 +1,32 @@
 <!DOCTYPE html>
-<html lang=en>
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/294/">
-    <meta charset=UTF-8>
-    <meta name=viewport content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1">
-    <link rel=manifest href=manifest.json>
-    <link rel=icon href=assets/img/icon/icon32.png>
-    <link rel=apple-touch-icon sizes=32x32 href=assets/img/icon/icon32.png>
-    <link rel=apple-touch-icon sizes=64x64 href=assets/img/icon/icon64.png>
-    <link rel=apple-touch-icon sizes=96x96 href=assets/img/icon/icon96.png>
-    <link rel=apple-touch-icon sizes=128x128 href=assets/img/icon/icon128.png>
-    <link rel=apple-touch-icon sizes=168x168 href=assets/img/icon/icon168.png>
-    <link rel=apple-touch-icon sizes=192x192 href=assets/img/icon/icon192.png>
-    <link rel=apple-touch-icon sizes=256x256 href=assets/img/icon/icon256.png>
-    <link rel=apple-touch-icon sizes=512x512 href=assets/img/icon/icon512.png>
-    <title>Idle Dice</title>
-    <script src=cordova.js></script>
-    <script src=js/app.js></script>
-    <script src=js/sdk.js></script>
-    <style>
-        body {
+<html lang="en">
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/294/"/>
+  <meta charset="utf-8"/>
+  <meta content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1" name="viewport"/>
+  <link href="manifest.json" rel="manifest"/>
+  <link href="assets/img/icon/icon32.png" rel="icon"/>
+  <link href="assets/img/icon/icon32.png" rel="apple-touch-icon" sizes="32x32"/>
+  <link href="assets/img/icon/icon64.png" rel="apple-touch-icon" sizes="64x64"/>
+  <link href="assets/img/icon/icon96.png" rel="apple-touch-icon" sizes="96x96"/>
+  <link href="assets/img/icon/icon128.png" rel="apple-touch-icon" sizes="128x128"/>
+  <link href="assets/img/icon/icon168.png" rel="apple-touch-icon" sizes="168x168"/>
+  <link href="assets/img/icon/icon192.png" rel="apple-touch-icon" sizes="192x192"/>
+  <link href="assets/img/icon/icon256.png" rel="apple-touch-icon" sizes="256x256"/>
+  <link href="assets/img/icon/icon512.png" rel="apple-touch-icon" sizes="512x512"/>
+  <title>
+   Idle Dice
+  </title>
+  <script src="cordova.js">
+  </script>
+  <script src="js/app.js">
+  </script>
+  <script src="js/sdk.js">
+  </script>
+  <style>
+   body {
             margin: 0;
             background: white;
         }
@@ -108,25 +112,57 @@
             font-weight: normal;
             font-style: normal;
         }
-    </style>
-</head>
-
-<body onload=init();>
-    <div style="font-family:regular; position:absolute; left:-10000px">Font Loaded</div>
-    <div style="font-family:text; position:absolute; left:-10000px">Font Loaded</div>
-    <div style="font-family:med; position:absolute; left:-10000px">Font Loaded</div>
-    <div id=debug></div>
-    <div id=savePrompt>
-        <div id=promptWindow><span id=saveInstruction>Copy this and save it somewhere.</span> <span id=loadInstruction>Paste the savedata here and click load.</span> <textarea id=save></textarea> <button id=copy>Copy</button> <button id=load>Load</button> <input id=file type=file> <button id=close>Close</button></div>
-    </div>
-    <div id=turn><span id=text>Turn your Device</span></div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body onload="init();">
+  <div style="font-family:regular; position:absolute; left:-10000px">
+   Font Loaded
+  </div>
+  <div style="font-family:text; position:absolute; left:-10000px">
+   Font Loaded
+  </div>
+  <div style="font-family:med; position:absolute; left:-10000px">
+   Font Loaded
+  </div>
+  <div id="debug">
+  </div>
+  <div id="savePrompt">
+   <div id="promptWindow">
+    <span id="saveInstruction">
+     Copy this and save it somewhere.
+    </span>
+    <span id="loadInstruction">
+     Paste the savedata here and click load.
+    </span>
+    <textarea id="save"></textarea>
+    <button id="copy">
+     Copy
+    </button>
+    <button id="load">
+     Load
+    </button>
+    <input id="file" type="file"/>
+    <button id="close">
+     Close
+    </button>
+   </div>
+  </div>
+  <div id="turn">
+   <span id="text">
+    Turn your Device
+   </span>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

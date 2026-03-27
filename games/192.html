@@ -1,35 +1,46 @@
-<Module>
-<!DOCTYPE html><html lang="en-us"><head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<script src="https://cdn.jsdelivr.net/gh/laparda14/Ragdoll-archers@62504c9570ea720c6367e7debe1e110c68f77c2d/vs/gameloader-helper.js"></script>
-<meta charset="utf-8">
-<script src=""></script>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Ragdoll Archers</title>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bubbls/ruffle@04dd5345a30d6ebf4b0e2cc385568750cd56ed5a/styyyle.css">
-<body>
-  
-</div>
-<div id="unity-container" class="unity-desktop">
-<canvas id="unity-canvas"></canvas>
-</div>
-<div id="loading-cover">
-<div id="unity-loading-bar">
-<div id="unity-logo"><img src="logo.jpeg"></div>
-<div class="progress-spinner-container">
-<div class="spinner-left"><img src="spinner.png"></div>
-<div id="unity-progress-bar-empty">
-<div id="unity-progress-bar-full"></div>
-</div>
-<div class="spinner-right"><img src="spinner.png"></div>
-</div>
-</div>
-</div>
-<script>
-    const buildUrl = "Build";
+<module>
+ <!DOCTYPE html>
+ <html lang="en-us">
+  <head>
+   <link href="rightclick.css" rel="stylesheet"/>
+   <link href="custom-cursor.css" rel="stylesheet"/>
+   <script src="https://cdn.jsdelivr.net/gh/laparda14/Ragdoll-archers@62504c9570ea720c6367e7debe1e110c68f77c2d/vs/gameloader-helper.js">
+   </script>
+   <meta charset="utf-8"/>
+   <script src="">
+   </script>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+   <title>
+    Ragdoll Archers
+   </title>
+   <link href="https://cdn.jsdelivr.net/gh/bubbls/ruffle@04dd5345a30d6ebf4b0e2cc385568750cd56ed5a/styyyle.css" rel="stylesheet"/>
+   <body>
+    <div class="unity-desktop" id="unity-container">
+     <canvas id="unity-canvas">
+     </canvas>
+    </div>
+    <div id="loading-cover">
+     <div id="unity-loading-bar">
+      <div id="unity-logo">
+       <img src="logo.jpeg"/>
+      </div>
+      <div class="progress-spinner-container">
+       <div class="spinner-left">
+        <img src="spinner.png"/>
+       </div>
+       <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full">
+        </div>
+       </div>
+       <div class="spinner-right">
+        <img src="spinner.png"/>
+       </div>
+      </div>
+     </div>
+    </div>
+    <script>
+     const buildUrl = "Build";
     const loaderUrl = "https://cdn.jsdelivr.net/gh/bubbls/ruffle@7117cc5006472d782b65d96abd375597d6273242/v11121212.js";
 const config = {
   dataUrl: "https://cdn.jsdelivr.net/gh/bubbls/ruffle@04dd5345a30d6ebf4b0e2cc385568750cd56ed5a/6697b6deba8b617c67b69c55dcd07cb1.data.unityweb",
@@ -74,13 +85,20 @@ const config = {
       window.focus();
       canvas.focus();
     });
-
-  </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body></html>
+    </script>
+    <script src="custom-cursor.js">
+    </script>
+    <script src="rightclick.js">
+    </script>
+    <script src="panic-key.js">
+    </script>
+    <script src="idle-dvd.js">
+    </script>
+    <script src="online.js" type="module">
+    </script>
+   </body>
+   <script src="app-presence.js">
+   </script>
+  </head>
+ </html>
+</module>

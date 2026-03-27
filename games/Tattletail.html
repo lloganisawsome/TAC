@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-        <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@latest/tattletail/">
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Tattletail</title>
-    <script src="Build/UnityLoader.js"></script>
-    <style>
-      html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@latest/tattletail/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Tattletail
+  </title>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <style>
+   html,
       body {
         margin: 0;
         padding: 0;
@@ -32,25 +35,24 @@
         height: 100%;
         display: block;
       }
-    </style>
-  </head>
-
-  <body>
-    <div
-      id="loading-text"
-      style="
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="
         color: white;
         font-size: 48px;
         font-family: cursive;
         text-align: center;
         margin-top: 20px;
-      "
-    >
-      LOADING...
-    </div>
-    <div id="gameContainer" hidden></div>
-    <script>
-      const loadingText = document.querySelector("#loading-text");
+      ">
+   LOADING...
+  </div>
+  <div hidden="" id="gameContainer">
+  </div>
+  <script>
+   const loadingText = document.querySelector("#loading-text");
       let totalBytes = 64246251.52;
       let loadedBytes = 0;
 
@@ -143,13 +145,16 @@
           },
         });
       })();
-    </script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

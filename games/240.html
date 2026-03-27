@@ -1,34 +1,28 @@
 <!DOCTYPE html>
-
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ --> 
-
-
+<!-- Ultimate Game Stash file-->
+<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
 <html lang="en">
-<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@5d03e63d760d24f4d1a0d3d7757cfae820b58814/fruit%20ninja/">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8" /> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-
-  <meta name="theme-color" content="#000000" />
-
-  <link rel="manifest" href="manifest.json" />
-
-  <script src=poki-sdk.js></script>
-
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="application-name" content="Fruit Ninja" />
-  <meta name="apple-mobile-web-app-title" content="Fruit Ninja" />
-  <meta name="msapplication-starturl" content="./" />
-  <!-- <script type="text/javascript" src="https://storms.com/lib/h5Sdk/v1/h5Sdk.js"></script> -->
-
-  <title>Fruit Ninja</title>
-  <style>
+ <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@5d03e63d760d24f4d1a0d3d7757cfae820b58814/fruit%20ninja/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+  <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="#000000" name="theme-color"/>
+  <link href="manifest.json" rel="manifest">
+   <script src="poki-sdk.js">
+   </script>
+   <meta content="yes" name="mobile-web-app-capable"/>
+   <meta content="yes" name="apple-mobile-web-app-capable"/>
+   <meta content="Fruit Ninja" name="application-name"/>
+   <meta content="Fruit Ninja" name="apple-mobile-web-app-title"/>
+   <meta content="./" name="msapplication-starturl"/>
+   <!-- <script type="text/javascript" src="https://storms.com/lib/h5Sdk/v1/h5Sdk.js"></script> -->
+   <title>
+    Fruit Ninja
+   </title>
+   <style>
     @font-face {
       font-family: gangofchinese;
       src: url('assets/font/gangofchinese.ttf');
@@ -114,11 +108,11 @@
         /* background-color: aquamarine; */
       }
     }
-  </style>
-
-  <noscript>Please enable javascript to continue using this application.</noscript>
-
-  <!-- <script async
+   </style>
+   <noscript>
+    Please enable javascript to continue using this application.
+   </noscript>
+   <!-- <script async
         data-ad-client="ca-pub-6934234812187351"
         data-ad-frequency-hint= "30s"
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
@@ -126,38 +120,49 @@
     <script>window.adsbygoogle = window.adsbygoogle || [];
         const adBreak =  adConfig = function(o) {adsbygoogle.push(o);}
     </script> -->
-  <!-- installs the serviceWorker -->
-  <!-- <script>
+   <!-- installs the serviceWorker -->
+   <!-- <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('./sw.js')
         })
       }
     </script> -->
-</head>
-
-<body>
-  <div class="fontLoader" style="font-family: gangofchinese;">-</div>
-  <div class="fontLoader" style="font-family: gangofchinese;">-</div>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="fontLoader" style="font-family: gangofchinese;">
+   -
+  </div>
+  <div class="fontLoader" style="font-family: gangofchinese;">
+   -
+  </div>
   <div id="content">
-    <div id="phaser-canvas"></div>
+   <div id="phaser-canvas">
+   </div>
   </div>
   <!-- <div id="phaser-game"></div> -->
   <style id="injectStyles">
-    html,
+   html,
     body {
       background: none !important;
     }
   </style>
-  <script type="text/javascript" src="https://rawcdn.githack.com/bubbls/UGS-Assets/5d03e63d760d24f4d1a0d3d7757cfae820b58814/fruit%20ninja/vendors.bundle.js"></script>
-  <script type="text/javascript" src="main.bundle.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  <script src="https://rawcdn.githack.com/bubbls/UGS-Assets/5d03e63d760d24f4d1a0d3d7757cfae820b58814/fruit%20ninja/vendors.bundle.js" type="text/javascript">
+  </script>
+  <script src="main.bundle.js" type="text/javascript">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

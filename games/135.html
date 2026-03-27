@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <script src="//www.google.com/jsapi"></script>
-    <style>
-        body {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <script src="//www.google.com/jsapi">
+  </script>
+  <style>
+   body {
             overflow: hidden;
             background: #000000;
             margin: 0;
@@ -28,14 +29,18 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
-    </style>
-</head>
-<body>
-    <div id="loading">Loading Portal...</div>
-    <div id="game"></div>
-
-    <script>
-        alert("The camera controls are a little weird - make sure you look over them/edit them");
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading">
+   Loading Portal...
+  </div>
+  <div id="game">
+  </div>
+  <script>
+   alert("The camera controls are a little weird - make sure you look over them/edit them");
 
         EJS_player = "#game";
         EJS_core = "n64";
@@ -51,13 +56,16 @@
         setTimeout(function() {
             document.getElementById("loading").style.display = "none";
         }, 2000);
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

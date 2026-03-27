@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8"/>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Unity WebGL Player | Granny 2</title>
-    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/favicon.ico"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/styles.css"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity WebGL Player | Granny 2
+  </title>
+  <link href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/favicon.ico" rel="shortcut icon">
+   <link href="https://cdn.jsdelivr.net/gh/forms-docs-slides-glgl/ngng@main/TemplateData/styles.css" rel="stylesheet">
     <!-- GameMonetize SDK Entegrasyonu -->
     <script type="text/javascript">
-        window.SDK_OPTIONS = {
+     window.SDK_OPTIONS = {
             gameId: "jp112o3o4hzgrnc7zaewjkrfk282pul8",
             onEvent: function (a) {
                 switch (a.name) {
@@ -37,21 +39,28 @@
             a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "https://cdn.jsdelivr.net/gh/testamalame/sef@main/sedk.js", d.parentNode.insertBefore(a, d));
         })(document, "script", "gamemonetize-sdk");
     </script>
-</head>
-<body>
-    <div id="unity-container" style="position: absolute; width: 100%; height: 100%; left: 0%; top: 0%;">
-        <canvas id="unity-canvas" style="position: absolute; width: 100%; height: 100%"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-        </div>
-        <div id="unity-warning"> </div>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="unity-container" style="position: absolute; width: 100%; height: 100%; left: 0%; top: 0%;">
+   <canvas id="unity-canvas" style="position: absolute; width: 100%; height: 100%">
+   </canvas>
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
     </div>
-
-    <script>
-        YaGames.init().then(ysdk => {
+    <div id="unity-progress-bar-empty">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+   </div>
+   <div id="unity-warning">
+   </div>
+  </div>
+  <script>
+   YaGames.init().then(ysdk => {
             console.log('Yandex SDK initialized');
             window.ysdk = ysdk;
             initPlayer();
@@ -65,10 +74,9 @@
                 return player;
             });
         }
-    </script>
-
-    <script>
-        var container = document.querySelector("#unity-container");
+  </script>
+  <script>
+   var container = document.querySelector("#unity-container");
         var canvas = document.querySelector("#unity-canvas");
         var loadingBar = document.querySelector("#unity-loading-bar");
         var progressBarFull = document.querySelector("#unity-progress-bar-full");
@@ -198,13 +206,16 @@
         }
 
         initializeGame();
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

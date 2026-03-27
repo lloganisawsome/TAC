@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/baldi-remaster/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Baldi's Basics Classic Remastered</title>
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/baldi-remaster/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity WebGL Player | Baldi's Basics Classic Remastered
+  </title>
+  <style>
+   html,
         body {
             margin: 0;
             padding: 0;
@@ -25,15 +26,20 @@
             height: 100%;
             display: block;
         }
-    </style>
-</head>
-
-<body>
-    <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
-    <canvas id="unity-canvas" tabindex="-1"></canvas>
-    <script src="Build/WebGL.loader.js"></script>
-    <script>
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <canvas id="unity-canvas" tabindex="-1">
+  </canvas>
+  <script src="Build/WebGL.loader.js">
+  </script>
+  <script>
+   if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
             var meta = document.createElement('meta');
             meta.name = 'viewport';
             meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
@@ -125,14 +131,16 @@
                 loadingText.remove();
             });
         })();
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

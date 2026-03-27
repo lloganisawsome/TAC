@@ -1,66 +1,101 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <base href="https://cdn.jsdelivr.net/gh/technonyte00/deltarune@main/">
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/technonyte00/deltarune@main/"/>
+  <meta charset="utf-8"/>
+  <link href="style.css" rel="stylesheet"/>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <div class="logo-container">
-    <img src="logo.png" alt="Logo" class="logo">
+   <img alt="Logo" class="logo" src="logo.png"/>
   </div>
-  
   <div class="menu">
-    <a href="javascript:loadChapter(1)" class="row">
-      <span class="chapter">Chapter 1</span>
-      <span class="title">The Beginning</span>
-      <img src="icons/1.png">
-    </a>
-    <a href="javascript:loadChapter(2)" class="row">
-      <span class="chapter">Chapter 2</span>
-      <span class="title">A Cyber's World</span>
-      <img src="icons/2.png">
-    </a>
-    <a href="javascript:loadChapter(3)" class="row">
-      <span class="chapter">Chapter 3</span>
-      <span class="title">Late Night</span>
-      <img src="icons/3.png">
-    </a>
-    <a href="javascript:loadChapter(4)" class="row">
-      <span class="chapter">Chapter 4</span>
-      <span class="title">Prophecy</span>
-      <img src="icons/4.png">
-    </a>
-    <a href="javascript:alert('Chapter 5 coming soon!')" class="disabled-row">
-      <span class="chapter">Chapter 5</span>
-      <span class="disabled-title">--</span>
-      <img src="icons/0.png">
-    </a>
-    <a href="javascript:alert('Chapter 6 coming soon!')" class="disabled-row">
-      <span class="chapter">Chapter 6</span>
-      <span class="disabled-title">--</span>
-      <img src="icons/0.png">
-    </a>
-    <a href="javascript:alert('Chapter 7 coming soon!')" class="disabled-row">
-      <span class="chapter">Chapter 7</span>
-      <span class="disabled-title">--</span>
-      <img src="icons/0.png">
-    </a>
-    <a href="javascript:window.open('https://truffled.lol', '_blank')" class="row">
-      <span class="chapter"></span>
-      <span class="title">port by bog :o</span>
-      <span class="badge"></span>
-    </a>
+   <a class="row" href="javascript:loadChapter(1)">
+    <span class="chapter">
+     Chapter 1
+    </span>
+    <span class="title">
+     The Beginning
+    </span>
+    <img src="icons/1.png"/>
+   </a>
+   <a class="row" href="javascript:loadChapter(2)">
+    <span class="chapter">
+     Chapter 2
+    </span>
+    <span class="title">
+     A Cyber's World
+    </span>
+    <img src="icons/2.png"/>
+   </a>
+   <a class="row" href="javascript:loadChapter(3)">
+    <span class="chapter">
+     Chapter 3
+    </span>
+    <span class="title">
+     Late Night
+    </span>
+    <img src="icons/3.png"/>
+   </a>
+   <a class="row" href="javascript:loadChapter(4)">
+    <span class="chapter">
+     Chapter 4
+    </span>
+    <span class="title">
+     Prophecy
+    </span>
+    <img src="icons/4.png"/>
+   </a>
+   <a class="disabled-row" href="javascript:alert('Chapter 5 coming soon!')">
+    <span class="chapter">
+     Chapter 5
+    </span>
+    <span class="disabled-title">
+     --
+    </span>
+    <img src="icons/0.png"/>
+   </a>
+   <a class="disabled-row" href="javascript:alert('Chapter 6 coming soon!')">
+    <span class="chapter">
+     Chapter 6
+    </span>
+    <span class="disabled-title">
+     --
+    </span>
+    <img src="icons/0.png"/>
+   </a>
+   <a class="disabled-row" href="javascript:alert('Chapter 7 coming soon!')">
+    <span class="chapter">
+     Chapter 7
+    </span>
+    <span class="disabled-title">
+     --
+    </span>
+    <img src="icons/0.png"/>
+   </a>
+   <a class="row" href="javascript:window.open('https://truffled.lol', '_blank')">
+    <span class="chapter">
+    </span>
+    <span class="title">
+     port by bog :o
+    </span>
+    <span class="badge">
+    </span>
+   </a>
   </div>
-  <audio id="drone" controls loop autoplay hidden>
-    <source src="audios/AUDIO_DRONE.ogg" type="audio/ogg">
-    your slow ass browser doesnt support AUDIO?
+  <audio autoplay="" controls="" hidden="" id="drone" loop="">
+   <source src="audios/AUDIO_DRONE.ogg" type="audio/ogg"/>
+   your slow ass browser doesnt support AUDIO?
   </audio>
-  <button id="mute">🔊</button>
+  <button id="mute">
+   🔊
+  </button>
   <script>
-    const audio = document.getElementById('drone');
+   const audio = document.getElementById('drone');
     const mute = document.getElementById('mute');
     let gamestarted = false;
   
@@ -159,12 +194,15 @@
       }
     });
   </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

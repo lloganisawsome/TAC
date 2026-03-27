@@ -1,14 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TAC Launcher</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC Launcher
+  </title>
   <style>
-    body {
+   body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #0d0d0d;
@@ -145,37 +146,53 @@
       color: #111;
     }
   </style>
-</head>
-<body>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <header>
-    <h1>TAC Launcher</h1>
+   <h1>
+    TAC Launcher
+   </h1>
   </header>
-
-  <div id="appGrid"></div>
-
+  <div id="appGrid">
+  </div>
   <!-- Start Menu -->
   <div id="startMenu">
-    <h3>Notifications</h3>
-    <div id="notifList"></div>
-    <div id="quickSettings">
-      <button>Wi-Fi</button>
-      <button>Volume</button>
-      <button>Brightness</button>
-    </div>
+   <h3>
+    Notifications
+   </h3>
+   <div id="notifList">
+   </div>
+   <div id="quickSettings">
+    <button>
+     Wi-Fi
+    </button>
+    <button>
+     Volume
+    </button>
+    <button>
+     Brightness
+    </button>
+   </div>
   </div>
-
   <div class="taskbar">
-    <span id="startBtn">Start</span>
-    <span id="datetime"></span>
-    <div class="window-controls">
-      <div class="control-btn minimize"></div>
-      <div class="control-btn fullscreen"></div>
-      <div class="control-btn close"></div>
+   <span id="startBtn">
+    Start
+   </span>
+   <span id="datetime">
+   </span>
+   <div class="window-controls">
+    <div class="control-btn minimize">
     </div>
+    <div class="control-btn fullscreen">
+    </div>
+    <div class="control-btn close">
+    </div>
+   </div>
   </div>
-
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     // Firebase config
@@ -270,12 +287,15 @@
     setInterval(updateDateTime, 1000);
     updateDateTime();
   </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

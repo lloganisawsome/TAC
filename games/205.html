@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
 <html>
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/gladihoppper/">
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Gladihoppers</title>
-	      <script>
-      window.fileMergerConfig = {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/gladihoppper/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Gladihoppers
+  </title>
+  <script>
+   window.fileMergerConfig = {
         files: [
           { name: 'Gladihoppers.data.unityweb', parts: 2 },
 		  { name: 'Gladihoppers.wasm.code.unityweb', parts: 2 },
@@ -22,11 +20,11 @@
         basePath: 'Build/',
         debug: true
       };
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js"></script>
-	<script>
-	window.config = {
+  </script>
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js">
+  </script>
+  <script>
+   window.config = {
 		loader: 'unity',
 		debug: false,
 		maxRatio: 16 / 9,
@@ -46,16 +44,22 @@
 			'Gladihoppers.wasm.framework.unityweb':  91463 ,
 		},
 	};
-	</script>
-</head>
-<body>
-	<script src="patch/js/poki-master-loader.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <script src="patch/js/poki-master-loader.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <title>Dune II - The Building of A Dynasty</title>
-    <meta charset="UTF-8"/>
-    <meta name="description" content="Dune II reimplementation written in HTML5 / JavaScript"/>
-    <meta name="viewport"
-          content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0.0, viewport-fit=cover"/>
-    <meta name="mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-    <meta name="apple-mobile-web-app-title" content="Dune2"/>
-    <link rel="icon" type="image/png" href="img/favicon.png"/>
-    <link rel="shortcut icon" type="image/png" href="img/touch-icon-152.png"/>
-    <link rel="apple-touch-icon" href="img/touch-icon-152.png"/>
-    <link rel="apple-touch-icon" sizes="152x152" href="img/touch-icon-152.png"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="img/touch-icon-180.png"/>
-    <link rel="manifest" href="site.webmanifest"/>
-    <link type="text/css" rel="stylesheet" href="css/game.css"/>
-    <link type="text/css" rel="stylesheet" media="all" href="css/aristo.css"/>
-    <script type="text/javascript" src="js/jquery.js"></script>
-    <script type="text/javascript" src="js/jquery-ui.min.js"></script>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <title>
+   Dune II - The Building of A Dynasty
+  </title>
+  <meta charset="utf-8"/>
+  <meta content="Dune II reimplementation written in HTML5 / JavaScript" name="description"/>
+  <meta content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0.0, viewport-fit=cover" name="viewport"/>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="Dune2" name="apple-mobile-web-app-title"/>
+  <link href="img/favicon.png" rel="icon" type="image/png">
+   <link href="img/touch-icon-152.png" rel="shortcut icon" type="image/png">
+    <link href="img/touch-icon-152.png" rel="apple-touch-icon"/>
+    <link href="img/touch-icon-152.png" rel="apple-touch-icon" sizes="152x152"/>
+    <link href="img/touch-icon-180.png" rel="apple-touch-icon" sizes="180x180"/>
+    <link href="site.webmanifest" rel="manifest"/>
+    <link href="css/game.css" rel="stylesheet" type="text/css"/>
+    <link href="css/aristo.css" media="all" rel="stylesheet" type="text/css"/>
+    <script src="js/jquery.js" type="text/javascript">
+    </script>
+    <script src="js/jquery-ui.min.js" type="text/javascript">
+    </script>
     <script type="text/javascript">
-      var Epicport = {}; // Namespace
+     var Epicport = {}; // Namespace
       Epicport.i18n = {
         html_login_success_title: "You successfully logged in",
         html_can_save_desc: "Now you can save games",
@@ -43,13 +46,18 @@
         identity: query.get("profile") || "public"
       };
     </script>
-    <script type="text/javascript" src="js/async.js"></script>
-    <script type="text/javascript" src="js/dialog.js"></script>
-    <script type="text/javascript" src="js/canvas.js"></script>
-    <script type="text/javascript" src="js/dune2.js"></script>
-    <script type="text/javascript" src="js/api.js"></script>
+    <script src="js/async.js" type="text/javascript">
+    </script>
+    <script src="js/dialog.js" type="text/javascript">
+    </script>
+    <script src="js/canvas.js" type="text/javascript">
+    </script>
+    <script src="js/dune2.js" type="text/javascript">
+    </script>
+    <script src="js/api.js" type="text/javascript">
+    </script>
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
       import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
       import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
       import { getDatabase, serverTimestamp, ref, query, get, set, push, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
@@ -81,46 +89,65 @@
         limitToLast,
       };
     </script>
-</head>
-<body oncontextmenu="return false;">
-<div class="game">
-    <div class="dune2-select-house-dialog dialog" title="Choose your side">
-        <div class="opendune-house-container">
-            <p class="opendune-select-house">Choose your side</p>
-            <p class="opendune-house opendune-a-house" title="House Atreides"></p>
-            <p class="opendune-house opendune-o-house" title="House Ordos"></p>
-            <p class="opendune-house opendune-h-house" title="House Harkonnen"></p>
-        </div>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body oncontextmenu="return false;">
+  <div class="game">
+   <div class="dune2-select-house-dialog dialog" title="Choose your side">
+    <div class="opendune-house-container">
+     <p class="opendune-select-house">
+      Choose your side
+     </p>
+     <p class="opendune-house opendune-a-house" title="House Atreides">
+     </p>
+     <p class="opendune-house opendune-o-house" title="House Ordos">
+     </p>
+     <p class="opendune-house opendune-h-house" title="House Harkonnen">
+     </p>
     </div>
-    <div class="game_container opendune">
-        <canvas id="canvas"></canvas>
-        <div id="output" class="canvas_overlay">
-            <div class="click_to_start">
-                <span class="huge">Press to Start</span>
-            </div>
-            <div class="loader">
-                <div class="info">
-                    <div id="status" class="status">Loading...</div>
-                </div>
-            </div>
-        </div>
+   </div>
+   <div class="game_container opendune">
+    <canvas id="canvas">
+    </canvas>
+    <div class="canvas_overlay" id="output">
+     <div class="click_to_start">
+      <span class="huge">
+       Press to Start
+      </span>
+     </div>
+     <div class="loader">
+      <div class="info">
+       <div class="status" id="status">
+        Loading...
+       </div>
+      </div>
+     </div>
     </div>
-    <div class="select-file-dialog dialog" title="Select file">
-        <p class="label">
-            Select file
-        </p>
-        <ul class="select-file-dialog-saves">
-            <span>No saved games found</span>
-        </ul>
-        <p></p>
-        <p class="select-file-input">
-            <label for="select-file-dialog-file">Enter file name</label>
-            <input id="select-file-dialog-file" type="text" value="">
-        </p>
-    </div>
-</div>
-<script type="text/javascript">
-  Epicport.API = new Epicport.API({
+   </div>
+   <div class="select-file-dialog dialog" title="Select file">
+    <p class="label">
+     Select file
+    </p>
+    <ul class="select-file-dialog-saves">
+     <span>
+      No saved games found
+     </span>
+    </ul>
+    <p>
+    </p>
+    <p class="select-file-input">
+     <label for="select-file-dialog-file">
+      Enter file name
+     </label>
+     <input id="select-file-dialog-file" type="text" value=""/>
+    </p>
+   </div>
+  </div>
+  <script type="text/javascript">
+   Epicport.API = new Epicport.API({
     game: "opendune",
     arguments: ["-a"],
     preRun: function () {
@@ -225,13 +252,16 @@
       Epicport.API.autoSave();
     }
   });
-</script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

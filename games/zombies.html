@@ -1,15 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://rawcdn.githack.com/gn-math/assets/main/308/">
-    <meta charset="utf-8">
-    <title>NZ: Portable</title>
-    <link rel="icon" href="nzportable.ico">
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://rawcdn.githack.com/gn-math/assets/main/308/"/>
+  <meta charset="utf-8"/>
+  <title>
+   NZ: Portable
+  </title>
+  <link href="nzportable.ico" rel="icon"/>
+  <style>
+   html,
         body {
             background-color: #000000;
             color: #808080;
@@ -40,19 +41,28 @@
             padding: 0;
             margin: 0;
         }
-    </style>
-</head>
-
-<body ondrop="gotdrop(event);" ondragover="event.preventDefault()">
-    <div class="emscripten" id="status">Please allow/unblock our javascript to play.</div>
-    <div id="dropzone" ondrop="gotdrop(event);" ondragover="event.preventDefault()" hidden=1>Drop Zone</div>
-    <button type="button" onclick="begin()" id="begin" hidden=1>Click To Begin!</button>
-    <div class="emscripten">
-        <progress value="0" max="100" id="progress" hidden=1></progress>
-    </div>
-    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" hidden=1></canvas>
-    <script type='text/javascript'>
-        // connect to canvas
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body ondragover="event.preventDefault()" ondrop="gotdrop(event);">
+  <div class="emscripten" id="status">
+   Please allow/unblock our javascript to play.
+  </div>
+  <div hidden="1" id="dropzone" ondragover="event.preventDefault()" ondrop="gotdrop(event);">
+   Drop Zone
+  </div>
+  <button hidden="1" id="begin" onclick="begin()" type="button">
+   Click To Begin!
+  </button>
+  <div class="emscripten">
+   <progress hidden="1" id="progress" max="100" value="0">
+   </progress>
+  </div>
+  <canvas class="emscripten" hidden="1" id="canvas" oncontextmenu="event.preventDefault()">
+  </canvas>
+  <script type="text/javascript">
+   // connect to canvas
         var Module = {
             files: {
                 "default.fmf": "default.fmf",
@@ -189,15 +199,17 @@
         }
         if (window.location.hash != "" || Object.keys(Module.files).length) begin(); //if the url has a #foo.fmf then just begin instantly, 
         else showfiles(); //otherwise show our lame file dropper and wait for the user to click 'go'.
-    </script>
-    <img src="https://hits.sh/hits.sh/nzp-team.github.io/latest/game.html/hits.svg" style="opacity:0;width:0px;">
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <img src="https://hits.sh/hits.sh/nzp-team.github.io/latest/game.html/hits.svg" style="opacity:0;width:0px;"/>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

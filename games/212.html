@@ -1,12 +1,7 @@
-
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-
-
-</style><style type="text/css">#button {
+<style type="text/css">
+ #button {
   display:none;
 }
 .imgb_vis {
@@ -25,8 +20,15 @@
   100% {
     transform: translateX(0);
   }
-}</style></head><body dir="ltr" style="background-color:black"> <script src="https://cdn.jsdelivr.net/gh/malpig/HTML-Games-V2@c80f20e7b02c5a026c9fede3366477ff7efa628c/blocky-snakes/UnityProgress.js"></script><script src="https://cdn.jsdelivr.net/gh/malpig/HTML-Games-V2@c80f20e7b02c5a026c9fede3366477ff7efa628c/blocky-snakes/UnityLoader.js"></script><script type="text/javascript">
-      var adInitialized = false;
+}
+</style>
+<body dir="ltr" style="background-color:black">
+ <script src="https://cdn.jsdelivr.net/gh/malpig/HTML-Games-V2@c80f20e7b02c5a026c9fede3366477ff7efa628c/blocky-snakes/UnityProgress.js">
+ </script>
+ <script src="https://cdn.jsdelivr.net/gh/malpig/HTML-Games-V2@c80f20e7b02c5a026c9fede3366477ff7efa628c/blocky-snakes/UnityLoader.js">
+ </script>
+ <script type="text/javascript">
+  var adInitialized = false;
       var gameInstance = UnityLoader.instantiate("gameContainer", "https://cdn.jsdelivr.net/gh/malpig/HTML-Games-V2@c80f20e7b02c5a026c9fede3366477ff7efa628c/blocky-snakes/build.json", {onProgress: UnityProgress});
       var showAdsCalled = false;
       window["GD_OPTIONS"] = {
@@ -82,13 +84,41 @@
           document.querySelector("canvas").focus();
         }
       }
-      
-    </script><div class="webgl-content"><div id="gameContainer" style="width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; position: relative; background: rgb(35, 31, 32);"><canvas id="#canvas" style="cursor: default;" width="1303" height="931"></canvas><div class="logo Dark" style="display: none;"></div><div class="progress Dark" style="display: none;"><div class="empty" style="width: 0%;"></div><div class="full" style="width: 100%;"></div></div></div></div><script src=""></script><script>gadgets.util.runOnLoadHandlers();</script><script>window.google.csi.tickDl();
-</script><script src=""></script>    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body></html>
+ </script>
+ <div class="webgl-content">
+  <div id="gameContainer" style="width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; position: relative; background: rgb(35, 31, 32);">
+   <canvas height="931" id="#canvas" style="cursor: default;" width="1303">
+   </canvas>
+   <div class="logo Dark" style="display: none;">
+   </div>
+   <div class="progress Dark" style="display: none;">
+    <div class="empty" style="width: 0%;">
+    </div>
+    <div class="full" style="width: 100%;">
+    </div>
+   </div>
+  </div>
+ </div>
+ <script src="">
+ </script>
+ <script>
+  gadgets.util.runOnLoadHandlers();
+ </script>
+ <script>
+  window.google.csi.tickDl();
+ </script>
+ <script src="">
+ </script>
+ <script src="custom-cursor.js">
+ </script>
+ <script src="rightclick.js">
+ </script>
+ <script src="panic-key.js">
+ </script>
+ <script src="idle-dvd.js">
+ </script>
+ <script src="online.js" type="module">
+ </script>
+ <script src="app-presence.js">
+ </script>
+</body>

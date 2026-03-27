@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/cg-rip@main/steal-brainrot-online/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  </head>
-  <body style="margin:0;padding:0" class="noselect">
-    <div id="loading-text" style="color: black; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">LOADING...</div>
-    <canvas id="unity-canvas"
-      style="position:fixed;top:0;left:0;width:100%;height:100%;outline:none"></canvas>
-
-    <script>
-    const SPLIT_MAP = {"StealMeme_Crazy.wasm": null};
-    </script>
-
-    <script>
-    // Added confirmation popup
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/cg-rip@main/steal-brainrot-online/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body class="noselect" style="margin:0;padding:0">
+  <div id="loading-text" style="color: black; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <canvas id="unity-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;outline:none">
+  </canvas>
+  <script>
+   const SPLIT_MAP = {"StealMeme_Crazy.wasm": null};
+  </script>
+  <script>
+   // Added confirmation popup
     alert("Make sure you are using an internet other than the schools wifi, use a hotspot please.");
     
     async function mergeParts(baseUrl) {
@@ -124,10 +126,9 @@
       };
       document.body.appendChild(script);
     })();
-    </script>
-
-    <script>
-    function resizeCanvas() {
+  </script>
+  <script>
+   function resizeCanvas() {
       const canvas = document.getElementById("unity-canvas");
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -136,13 +137,16 @@
     }
     window.addEventListener("load", resizeCanvas);
     window.addEventListener("resize", resizeCanvas);
-    </script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

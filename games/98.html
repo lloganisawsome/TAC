@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html xmlns='https://www.w3.org/1999/xhtml' lang='' xml:lang=''>
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-	<meta name="robots" content="noindex,nofollow" />
-	<meta charset='utf-8' />
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@027a7fc4b20820dc401547a74cf4f2ee875cd3e2/super%20liquid%20soccer/"
-	<meta name='viewport' content='width=device-width, user-scalable=no' />
-	<title>Super Liquid Soccer</title>
-	<style type='text/css'>
-		body {
+<html lang="" xml:lang="" xmlns="https://www.w3.org/1999/xhtml">
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta content="noindex,nofollow" name="robots"/>
+  <meta charset="utf-8"/>
+  <base <meta="" content="width=device-width, user-scalable=no" href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@027a7fc4b20820dc401547a74cf4f2ee875cd3e2/super%20liquid%20soccer/" name="viewport"/>
+  <title>
+   Super Liquid Soccer
+  </title>
+  <style type="text/css">
+   body {
 			touch-action: none;
 			margin: 0;
 			border: 0 none;
@@ -142,51 +142,62 @@
 			padding: 4px 6px;
 			visibility: visible;
 		}
-	</style>
-	<!-- Poki SDK include -->
-	<script src="poki-sdk.js"></script>
-	<script>
-		window.addEventListener('keydown', ev => {
+  </style>
+  <!-- Poki SDK include -->
+  <script src="poki-sdk.js">
+  </script>
+  <script>
+   window.addEventListener('keydown', ev => {
 			if (['ArrowDown', 'ArrowUp', ' '].includes(ev.key)) {
 				ev.preventDefault();
 			}
 		});
 		window.addEventListener('wheel', ev => ev.preventDefault(), { passive: false });
-	</script>
-
-	<link id='-gd-engine-icon' rel='icon' type='image/png' href='index.icon.png' />
-	<link rel='apple-touch-icon' href='index.apple-touch-icon.png' />
-	<link rel='manifest' href='index.manifest.json'>
-
-
-
-</head>
-
-<body>
-	<canvas id='canvas'>
-		HTML5 canvas appears to be unsupported in the current browser.<br />
-		Please try updating or use a different browser.
-	</canvas>
-		<div id='status'>
-			<div id='status-progress' style='display: none;' oncontextmenu='event.preventDefault();'>
-				<div id='status-progress-inner'></div>
-			</div>
-			<div id='status-indeterminate' style='display: none;' oncontextmenu='event.preventDefault();'>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-				<div></div>
-			</div>
-			<div id='status-notice' class='godot' style='display: none;'></div>
-		</div>
-
-		<script type='text/javascript' src='index.js'></script>
-		<script type='text/javascript'>
-			//<![CDATA[
+  </script>
+  <link href="index.icon.png" id="-gd-engine-icon" rel="icon" type="image/png">
+   <link href="index.apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="index.manifest.json" rel="manifest"/>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas">
+   HTML5 canvas appears to be unsupported in the current browser.
+   <br/>
+   Please try updating or use a different browser.
+  </canvas>
+  <div id="status">
+   <div id="status-progress" oncontextmenu="event.preventDefault();" style="display: none;">
+    <div id="status-progress-inner">
+    </div>
+   </div>
+   <div id="status-indeterminate" oncontextmenu="event.preventDefault();" style="display: none;">
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+   </div>
+   <div class="godot" id="status-notice" style="display: none;">
+   </div>
+  </div>
+  <script src="index.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   //<![CDATA[
 
 		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":13430320,"index.wasm":13789463},"focusCanvas":true,"gdnativeLibs":[],"serviceWorker":"index.service.worker.js"};
 		var engine = new Engine(GODOT_CONFIG);
@@ -306,15 +317,16 @@
 			PokiSDK.setDebug(true)
 		}
 //]]>
-		</script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-	<base href="https://cdn.jsdelivr.net/gh/genizy/web-port@master/yandere-simulator/">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>YandereSimulator</title>
-    <script src="Build/UnityLoader.js"></script>
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@master/yandere-simulator/"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   YandereSimulator
+  </title>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <style>
+   html,
         body {
             margin: 0;
             padding: 0;
@@ -45,10 +47,9 @@
             font-family: cursive;
             text-align: center;
         }
-    </style>
-
-    <script>
-        let max = 0,
+  </style>
+  <script>
+   let max = 0,
             done = 0;
 
         function mergeFiles(fileParts) {
@@ -125,27 +126,32 @@
             window.addEventListener("resize", resize);
             resize();
         });
-    </script>
-</head>
-
-<body>
-    <div id="loading-text" style="
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="
 					color: white;
 					font-size: 48px;
 					font-family: 'Comic Sans MS', cursive;
 					text-align: center;
 					margin-top: 20px;
 				">
-        LOADING...
-    </div>LOADING...</div>
-    <div id="unityContainer"></div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+   LOADING...
+  </div>
+  LOADING...
+  <div id="unityContainer">
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

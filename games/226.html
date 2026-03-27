@@ -1,41 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-	
-    
-    
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@ed57fd6dbc91143221b05fdf61be73bacc375843/hill-climb-racing-lite/">
-	<meta charset="ut-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui, shrink-to-fit=no">
-	<meta name="mobile-web-app-capable" content="yes">
-	<script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="TPIafyWGMIB2_8Gk5HFfiA"></script>
-	<!-- <script src="dmloader.js"></script> -->
-	<!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-   
-       <!-- Store values in a hidden div or data attributes -->
-	   <div id="engine-config"
-	   data-engine-arguments="--verify-graphics-calls=false,"
-	   data-custom-heap-size= "33554432"
-	   data-exe-name= "HCRLite"
-	   data-display-width= "470"
-	   data-display-height= "836"></div>
-	   <!-- <div id="engine-config"
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@ed57fd6dbc91143221b05fdf61be73bacc375843/hill-climb-racing-lite/"/>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, minimal-ui, shrink-to-fit=no" name="viewport"/>
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <script nonce="TPIafyWGMIB2_8Gk5HFfiA" src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js">
+  </script>
+  <!-- <script src="dmloader.js"></script> -->
+  <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <!-- Store values in a hidden div or data attributes -->
+  <div data-custom-heap-size="33554432" data-display-height="836" data-display-width="470" data-engine-arguments="--verify-graphics-calls=false," data-exe-name="HCRLite" id="engine-config">
+  </div>
+  <!-- <div id="engine-config"
 	   data-engine-arguments="test"
 	   data-custom-heap-size= 128 
 	   data-exe-name= "HCRLite"
 	   data-display-width= 470 
 	   data-display-height= 836 ></div> -->
-
-	<!--<script src="dmloader.js"></script>-->
-	<script src="loader.js" nonce="TPIafyWGMIB2_8Gk5HFfiA"></script>
-	<script src="yt-functions.js" nonce="TPIafyWGMIB2_8Gk5HFfiA"></script>
- 
-	<title>HCR Lite 1.0</title>
-	<style type='text/css'>
-	/* Disable user selection to avoid strange bug in Chrome on Windows:
+  <!--<script src="dmloader.js"></script>-->
+  <script nonce="TPIafyWGMIB2_8Gk5HFfiA" src="loader.js">
+  </script>
+  <script nonce="TPIafyWGMIB2_8Gk5HFfiA" src="yt-functions.js">
+  </script>
+  <title>
+   HCR Lite 1.0
+  </title>
+  <style type="text/css">
+   /* Disable user selection to avoid strange bug in Chrome on Windows:
 	* Selecting a text outside the canvas, then clicking+draging would
 	* drag the selected text but block mouse down/up events to the engine.
 	*/
@@ -89,21 +84,26 @@
 		-ms-user-select: none;
 		user-select: none;
 	}
-	</style>
-</head>
-
-<body>
-	<div id="app-container" class="canvas-app-container">
-		<div id="canvas-container" class="canvas-app-canvas-container">
-			<canvas id="canvas" class="canvas-app-canvas" tabindex="1" width="470" height="836"></canvas>
-		</div>
-	</div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="canvas-app-container" id="app-container">
+   <div class="canvas-app-canvas-container" id="canvas-container">
+    <canvas class="canvas-app-canvas" height="836" id="canvas" tabindex="1" width="470">
+    </canvas>
+   </div>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

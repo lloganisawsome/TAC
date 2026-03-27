@@ -1,14 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loftis Button</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Loftis Button
+  </title>
   <style>
-    * {
+   * {
       box-sizing: border-box;
       user-select: none;
     }
@@ -141,32 +142,45 @@
       pointer-events: none;
     }
   </style>
-</head>
-<body>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <div class="title">
-    <img src="loftis.png" alt="Loftis">
-    <span>Loftis Button</span>
-    <img src="loftis.png" alt="Loftis">
+   <img alt="Loftis" src="loftis.png"/>
+   <span>
+    Loftis Button
+   </span>
+   <img alt="Loftis" src="loftis.png"/>
   </div>
-
   <div class="emoji-board">
-    <button data-text="lizard">🦎</button>
-    <button data-text="stop">⛔</button>
-    <button data-text="skull">💀</button>
-    <button data-text="cool">😎</button>
-    <button data-text="mic drop 1 2 1 2 loftis!">🎤</button>
-
+   <button data-text="lizard">
+    🦎
+   </button>
+   <button data-text="stop">
+    ⛔
+   </button>
+   <button data-text="skull">
+    💀
+   </button>
+   <button data-text="cool">
+    😎
+   </button>
+   <button data-text="mic drop 1 2 1 2 loftis!">
+    🎤
+   </button>
   </div>
-
   <div id="inputArea">
-    <input type="text" id="sayInput" placeholder="Type something...">
-    <button id="sayBtn">Say it</button>
+   <input id="sayInput" placeholder="Type something..." type="text"/>
+   <button id="sayBtn">
+    Say it
+   </button>
   </div>
-
-  <button id="loftisBtn">LOFTIS</button>
-
+  <button id="loftisBtn">
+   LOFTIS
+  </button>
   <script>
-    const emojis = document.querySelectorAll('.emoji-board button');
+   const emojis = document.querySelectorAll('.emoji-board button');
     const loftisBtn = document.getElementById('loftisBtn');
     const sayBtn = document.getElementById('sayBtn');
     const sayInput = document.getElementById('sayInput');
@@ -216,25 +230,44 @@
 
     // Removed keyboard listener
   </script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

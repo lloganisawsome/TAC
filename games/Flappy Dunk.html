@@ -1,35 +1,40 @@
-
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  
-  
-  
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/flappy%20dunk/">
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Flappy Dunk</title>
-  <link rel="stylesheet" href="TemplateData/style.css" nonce="CRrAvEtnTYz2xyLLghZb0w">
-  <script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="qdhAB9vIEyxuPCqnXvX_tA"></script>
-</head>
-
-<body style="background-color: black !important;">
-  <div id="unity-container" class="unity-desktop">
-    <canvas id="unity-canvas" width=100% height=100% tabindex="-1"></canvas>
-    <div id="unity-loading-bar">
-      <div id="unity-logo"></div>
-      <div id="unity-progress-bar-empty">
-        <div id="unity-progress-bar-full"></div>
-      </div>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/flappy%20dunk/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Flappy Dunk
+  </title>
+  <link href="TemplateData/style.css" nonce="CRrAvEtnTYz2xyLLghZb0w" rel="stylesheet"/>
+  <script nonce="qdhAB9vIEyxuPCqnXvX_tA" src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js">
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body style="background-color: black !important;">
+  <div class="unity-desktop" id="unity-container">
+   <canvas height="100%" id="unity-canvas" tabindex="-1" width="100%">
+   </canvas>
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
     </div>
-    <div id="unity-warning"> </div>
+    <div id="unity-progress-bar-empty">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+   </div>
+   <div id="unity-warning">
+   </div>
   </div>
-  <script src="unarchiver.min.js" nonce="CRrAvEtnTYz2xyLLghZb0w">// used for decompression if zip files are used</script>
+  <script nonce="CRrAvEtnTYz2xyLLghZb0w" src="unarchiver.min.js">
+   // used for decompression if zip files are used
+  </script>
   <script nonce="CRrAvEtnTYz2xyLLghZb0w">
-      /*custom unity script*/
+   /*custom unity script*/
       var canvas = document.querySelector("#unity-canvas");
       var gameInstance = null; 
       var defaultRemoteData = "Total Hoops In Endless:::0|||white state:::1|||wingRed state:::1|||hoopYellowBack state:::1|||buoy state:::0|||purple state:::1|||baseball state:::1|||black state:::1|||hoopPurpleBack state:::1|||christmashat state:::1|||wingOrange state:::1|||hoopPinkBack state:::1|||moon state:::1|||earth state:::1|||RedFever state:::1|||wingRainbow state:::1|||normal state:::4|||bowling state:::1|||green state:::1|||brain state:::0|||cd state:::1|||BlueFever state:::1|||hypnotic state:::1|||tennis state:::1|||GreenFever state:::1|||hoopCheeseBack state:::1|||wingBlue state:::1|||pizza state:::0|||blue state:::1|||yinyang state:::1|||hoopWhiteBack state:::1|||hoopBack state:::4|||hoopSmileBack state:::1|||football state:::1|||wingGreen state:::1|||YellowFever state:::1|||pink state:::1|||beachball state:::1|||red state:::1|||PinkFever state:::1|||hoopRainbowBack state:::1|||wingBlack state:::1|||wingPink state:::1|||poker state:::1|||wingYellow state:::1|||hoopOrangeBack state:::1|||wing state:::4|||rainbow state:::1|||eye state:::1|||poolball state:::1|||watermelon state:::1|||hoopBlackBack state:::1|||PurpleFever state:::1|||yellow state:::1|||volley state:::1|||wingPurple state:::1|||smiley state:::1|||NormalFever state:::4|||hoopBlueBack state:::1|||wingSmile state:::1|||hoopGreenBack state:::1|||fdban state:::1|||wingInfinity state:::1|||analyticsSession:::Active Users (1.6.4)|||Audio On:::1";
@@ -164,15 +169,16 @@
       }
 
       window.addEventListener("load", onPageLoaded);
-
   </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

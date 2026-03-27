@@ -1,26 +1,27 @@
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-<base href="https://cdn.jsdelivr.net/gh/bubbls/gunspin/">
+<base href="https://cdn.jsdelivr.net/gh/bubbls/gunspin/"/>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>google.com</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <script src="TemplateData/UnityProgress.js"></script>
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-      //var unityInstance = UnityLoader.instantiate("unityContainer", "Build/GunSpin WebGL FinalVersion.json", {onProgress: UnityProgress});
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   google.com
+  </title>
+  <link href="TemplateData/favicon.ico" rel="shortcut icon"/>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <script src="TemplateData/UnityProgress.js">
+  </script>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <script>
+   //var unityInstance = UnityLoader.instantiate("unityContainer", "Build/GunSpin WebGL FinalVersion.json", {onProgress: UnityProgress});
 	  window.gameInstance = UnityLoader.instantiate("unityContainer", "Build/GunSpin%20WebGL%20FinalVersion.json");
-    </script>
-	<style>
-		* { 
+  </script>
+  <style>
+   * { 
 			margin: 0; padding: 0; 
 		} 
 		body { 
@@ -41,23 +42,33 @@
 		.footer {
 		display:none 
 		}
-	</style>
-  </head>
-  <body style="overflow:hidden;">
-    <div class="webgl-content">
-      <div id="unityContainer"></div>
-      <div class="footer">
-        <div class="webgl-logo"></div>
-        <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
-        <div class="title">GunSpin</div>
-      </div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body style="overflow:hidden;">
+  <div class="webgl-content">
+   <div id="unityContainer">
+   </div>
+   <div class="footer">
+    <div class="webgl-logo">
     </div>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+    <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)">
+    </div>
+    <div class="title">
+     GunSpin
+    </div>
+   </div>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

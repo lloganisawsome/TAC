@@ -1,14 +1,16 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>TAC Calendar</title>
-<link rel="apple-touch-icon" href="#" />
-<style>
-/* =========================
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   TAC Calendar
+  </title>
+  <link href="#" rel="apple-touch-icon">
+   <style>
+    /* =========================
    TAC Calendar - Ultra (single-file)
    - Clean, readable, well-commented
    - Local-only: username in cookie, events in localStorage
@@ -126,176 +128,314 @@ body{
 .kbd { border:1px solid rgba(255,255,255,0.06); padding:4px 6px; border-radius:6px; font-weight:700; font-size:12px }
 .hidden { display:none }
 .footer { text-align:center; color:var(--muted); font-size:12px; margin-top:12px }
-</style>
-</head>
-<body>
+   </style>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <div class="app-shell">
-    <!-- HEADER -->
-    <div class="header">
-      <div class="brand">
-        <div class="logo">TAC</div>
-        <div>
-          <div class="title">TAC Calendar</div>
-          <div class="subtitle small">Ultra Deluxe</div>
-        </div>
+   <!-- HEADER -->
+   <div class="header">
+    <div class="brand">
+     <div class="logo">
+      TAC
+     </div>
+     <div>
+      <div class="title">
+       TAC Calendar
       </div>
-
-      <div class="controls">
-        <div id="whoBadge" class="small"></div>
-        <button id="homeBtn" class="btn">Home</button>
-        <button id="todayBtn" class="btn primary" title="Jump to today (T)">Today</button>
-        <button id="viewToggle" class="btn">Month View</button>
-        <button id="newEventShortcut" class="btn">New (N)</button>
-        <button id="settingsBtn" class="btn">Settings</button>
-        <button id="exportBtn" class="btn">Export</button>
-        <button id="importBtn" class="btn">Import</button>
-        <button id="printBtn" class="btn">Print</button>
+      <div class="subtitle small">
+       Ultra Deluxe
       </div>
+     </div>
     </div>
-
-    <!-- MAIN -->
-    <div class="main">
-      <!-- LEFT: Calendar -->
-      <div class="left">
-        <div class="panel">
-          <div class="nav">
-            <div class="row">
-              <button id="prevBtn" class="btn">◀</button>
-              <div class="monthYear" id="monthYear">Loading…</div>
-              <button id="nextBtn" class="btn">▶</button>
-            </div>
-            <div style="flex:1"></div>
-            <div class="row">
-              <input id="searchInput" class="input" placeholder="Search events (press /)" style="max-width:300px"/>
-            </div>
-          </div>
-
-          <div class="weekdays" id="weekdays"></div>
-          <div class="calendar" id="calendarGrid"></div>
-        </div>
-      </div>
-
-      <!-- RIGHT: Sidebar -->
-      <div class="right">
-        <div class="panel">
-          <div style="display:flex; justify-content:space-between; align-items:center">
-            <div><strong>Quick Stats</strong></div>
-            <div class="small" id="statRange">—</div>
-          </div>
-          <div class="sep" style="height:8px"></div>
-          <div style="display:flex; gap:10px; margin-bottom:6px">
-            <div class="small">Events this month</div><div style="margin-left:auto; font-weight:800" id="monthCount">0</div>
-          </div>
-          <div style="display:flex; gap:10px;">
-            <div class="small">Events this week</div><div style="margin-left:auto; font-weight:800" id="weekCount">0</div>
-          </div>
-        </div>
-
-        <div class="panel">
-          <div style="display:flex; justify-content:space-between; align-items:center">
-            <div><strong>Next 5 Events</strong></div><div class="small muted">All users local</div>
-          </div>
-          <div class="sep" style="height:8px"></div>
-          <div class="list" id="upcomingList">No events</div>
-        </div>
-
-        <div class="panel">
-          <div style="display:flex; justify-content:space-between; align-items:center">
-            <div><strong>Theme</strong></div>
-            <div class="small muted">saved in cookie</div>
-          </div>
-          <div class="sep" style="height:8px"></div>
-          <div id="themePreview" style="display:flex; gap:8px; flex-wrap:wrap"></div>
-          <div style="margin-top:10px; display:flex; gap:8px">
-            <button id="openSettings" class="btn">Open Settings</button>
-            <button id="logoutBtn" class="btn">Logout</button>
-          </div>
-        </div>
-      </div>
+    <div class="controls">
+     <div class="small" id="whoBadge">
+     </div>
+     <button class="btn" id="homeBtn">
+      Home
+     </button>
+     <button class="btn primary" id="todayBtn" title="Jump to today (T)">
+      Today
+     </button>
+     <button class="btn" id="viewToggle">
+      Month View
+     </button>
+     <button class="btn" id="newEventShortcut">
+      New (N)
+     </button>
+     <button class="btn" id="settingsBtn">
+      Settings
+     </button>
+     <button class="btn" id="exportBtn">
+      Export
+     </button>
+     <button class="btn" id="importBtn">
+      Import
+     </button>
+     <button class="btn" id="printBtn">
+      Print
+     </button>
     </div>
-
-    <div class="footer">TAC Calendar - Keyboard: <span class="kbd">T</span> Today, <span class="kbd">N</span> New event, <span class="kbd">/</span> Search.</div>
+   </div>
+   <!-- MAIN -->
+   <div class="main">
+    <!-- LEFT: Calendar -->
+    <div class="left">
+     <div class="panel">
+      <div class="nav">
+       <div class="row">
+        <button class="btn" id="prevBtn">
+         ◀
+        </button>
+        <div class="monthYear" id="monthYear">
+         Loading…
+        </div>
+        <button class="btn" id="nextBtn">
+         ▶
+        </button>
+       </div>
+       <div style="flex:1">
+       </div>
+       <div class="row">
+        <input class="input" id="searchInput" placeholder="Search events (press /)" style="max-width:300px"/>
+       </div>
+      </div>
+      <div class="weekdays" id="weekdays">
+      </div>
+      <div class="calendar" id="calendarGrid">
+      </div>
+     </div>
+    </div>
+    <!-- RIGHT: Sidebar -->
+    <div class="right">
+     <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center">
+       <div>
+        <strong>
+         Quick Stats
+        </strong>
+       </div>
+       <div class="small" id="statRange">
+        —
+       </div>
+      </div>
+      <div class="sep" style="height:8px">
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:6px">
+       <div class="small">
+        Events this month
+       </div>
+       <div id="monthCount" style="margin-left:auto; font-weight:800">
+        0
+       </div>
+      </div>
+      <div style="display:flex; gap:10px;">
+       <div class="small">
+        Events this week
+       </div>
+       <div id="weekCount" style="margin-left:auto; font-weight:800">
+        0
+       </div>
+      </div>
+     </div>
+     <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center">
+       <div>
+        <strong>
+         Next 5 Events
+        </strong>
+       </div>
+       <div class="small muted">
+        All users local
+       </div>
+      </div>
+      <div class="sep" style="height:8px">
+      </div>
+      <div class="list" id="upcomingList">
+       No events
+      </div>
+     </div>
+     <div class="panel">
+      <div style="display:flex; justify-content:space-between; align-items:center">
+       <div>
+        <strong>
+         Theme
+        </strong>
+       </div>
+       <div class="small muted">
+        saved in cookie
+       </div>
+      </div>
+      <div class="sep" style="height:8px">
+      </div>
+      <div id="themePreview" style="display:flex; gap:8px; flex-wrap:wrap">
+      </div>
+      <div style="margin-top:10px; display:flex; gap:8px">
+       <button class="btn" id="openSettings">
+        Open Settings
+       </button>
+       <button class="btn" id="logoutBtn">
+        Logout
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="footer">
+    TAC Calendar - Keyboard:
+    <span class="kbd">
+     T
+    </span>
+    Today,
+    <span class="kbd">
+     N
+    </span>
+    New event,
+    <span class="kbd">
+     /
+    </span>
+    Search.
+   </div>
   </div>
-
   <!-- Event Modal -->
   <div class="backdrop" id="eventBackdrop">
-    <div class="modal" id="eventModal">
-      <header>
-        <div><strong id="modalTitle">Events</strong><div class="small" id="modalSub"></div></div>
-        <div><button id="closeEventModal" class="btn">Close</button></div>
-      </header>
-
-      <div id="eventListInModal" style="max-height:260px; overflow:auto"></div>
-
-      <div style="margin-top:10px">
-        <input id="newTitle" class="input" placeholder="Event title"/>
-        <textarea id="newDesc" placeholder="Description (optional)" style="height:80px"></textarea>
-        <div style="display:flex; gap:8px; margin-top:8px; align-items:center">
-          <select id="newRecurrence" class="input" style="max-width:160px">
-            <option value="none">No recurrence</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
-          <select id="newTag" class="input" style="max-width:140px">
-            <option value="">No tag</option>
-            <option value="Work">Work</option>
-            <option value="School">School</option>
-            <option value="Fun">Fun</option>
-            <option value="Personal">Personal</option>
-          </select>
-          <select id="newPriority" class="input" style="max-width:120px">
-            <option value="low">Low</option>
-            <option value="medium" selected>Medium</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-        <div style="display:flex; gap:8px; margin-top:10px">
-          <button id="addEventBtn" class="btn primary">Add Event</button>
-          <button id="clearInputs" class="btn">Clear</button>
-        </div>
+   <div class="modal" id="eventModal">
+    <header>
+     <div>
+      <strong id="modalTitle">
+       Events
+      </strong>
+      <div class="small" id="modalSub">
       </div>
-
+     </div>
+     <div>
+      <button class="btn" id="closeEventModal">
+       Close
+      </button>
+     </div>
+    </header>
+    <div id="eventListInModal" style="max-height:260px; overflow:auto">
     </div>
+    <div style="margin-top:10px">
+     <input class="input" id="newTitle" placeholder="Event title"/>
+     <textarea id="newDesc" placeholder="Description (optional)" style="height:80px"></textarea>
+     <div style="display:flex; gap:8px; margin-top:8px; align-items:center">
+      <select class="input" id="newRecurrence" style="max-width:160px">
+       <option value="none">
+        No recurrence
+       </option>
+       <option value="daily">
+        Daily
+       </option>
+       <option value="weekly">
+        Weekly
+       </option>
+       <option value="monthly">
+        Monthly
+       </option>
+       <option value="yearly">
+        Yearly
+       </option>
+      </select>
+      <select class="input" id="newTag" style="max-width:140px">
+       <option value="">
+        No tag
+       </option>
+       <option value="Work">
+        Work
+       </option>
+       <option value="School">
+        School
+       </option>
+       <option value="Fun">
+        Fun
+       </option>
+       <option value="Personal">
+        Personal
+       </option>
+      </select>
+      <select class="input" id="newPriority" style="max-width:120px">
+       <option value="low">
+        Low
+       </option>
+       <option selected="" value="medium">
+        Medium
+       </option>
+       <option value="high">
+        High
+       </option>
+      </select>
+     </div>
+     <div style="display:flex; gap:8px; margin-top:10px">
+      <button class="btn primary" id="addEventBtn">
+       Add Event
+      </button>
+      <button class="btn" id="clearInputs">
+       Clear
+      </button>
+     </div>
+    </div>
+   </div>
   </div>
-
   <!-- Settings Modal -->
   <div class="backdrop" id="settingsBackdrop">
-    <div class="modal" id="settingsModal">
-      <header>
-        <div><strong>Settings</strong><div class="small">Themes, export/import, and account</div></div>
-        <div><button id="closeSettingsBtn" class="btn">Close</button></div>
-      </header>
-
-      <div style="margin-top:6px">
-        <div class="small">Choose a theme</div>
-        <div class="themes" id="themesGrid"></div>
+   <div class="modal" id="settingsModal">
+    <header>
+     <div>
+      <strong>
+       Settings
+      </strong>
+      <div class="small">
+       Themes, export/import, and account
       </div>
-
-      <div style="margin-top:10px">
-        <div class="small">Account</div>
-        <div style="display:flex; gap:8px; margin-top:6px;">
-          <button id="changeName" class="btn">Switch User</button>
-          <button id="clearEventsBtn" class="btn">Clear All My Events</button>
-          <button id="mergeBtn" class="btn">Merge Import</button>
-        </div>
-      </div>
-
-      <div style="margin-top:12px; display:flex; justify-content:flex-end">
-        <button id="saveSettings" class="btn primary">Save & Close</button>
-      </div>
+     </div>
+     <div>
+      <button class="btn" id="closeSettingsBtn">
+       Close
+      </button>
+     </div>
+    </header>
+    <div style="margin-top:6px">
+     <div class="small">
+      Choose a theme
+     </div>
+     <div class="themes" id="themesGrid">
+     </div>
     </div>
+    <div style="margin-top:10px">
+     <div class="small">
+      Account
+     </div>
+     <div style="display:flex; gap:8px; margin-top:6px;">
+      <button class="btn" id="changeName">
+       Switch User
+      </button>
+      <button class="btn" id="clearEventsBtn">
+       Clear All My Events
+      </button>
+      <button class="btn" id="mergeBtn">
+       Merge Import
+      </button>
+     </div>
+    </div>
+    <div style="margin-top:12px; display:flex; justify-content:flex-end">
+     <button class="btn primary" id="saveSettings">
+      Save &amp; Close
+     </button>
+    </div>
+   </div>
   </div>
-
   <!-- Dev Key Icon -->
-  <div id="devKey" style="position:fixed; left:10px; bottom:10px; font-size:26px; cursor:pointer;">🔑</div>
-
+  <div id="devKey" style="position:fixed; left:10px; bottom:10px; font-size:26px; cursor:pointer;">
+   🔑
+  </div>
   <!-- Printable area -->
-  <div id="printable" style="display:none; padding:14px"></div>
-
-<script>
-/* =========================
+  <div id="printable" style="display:none; padding:14px">
+  </div>
+  <script>
+   /* =========================
    TAC Calendar JS - Ultra
    ========================= */
 
@@ -1039,26 +1179,45 @@ function buildThemesUI(){ /* already built by buildThemesUI() invocation earlier
    Final: small utilities to avoid linter warnings
    ------------------------- */
 function openModalForKeyInternal(key){} // placeholder (overridden earlier)
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

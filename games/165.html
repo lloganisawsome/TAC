@@ -1,23 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<base href="https://cdn.jsdelivr.net/gh/web-ports/terraria@main/">
-	<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-		<meta charset="UTF-8" />
-		<link rel="icon" href="./app.ico" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta property="og:title" content="Terrarium" />
-		<meta
-			property="og:description"
-			content="Terraria port for WebAssembly. Play Terraria online in the browser."
-		/>
-		<meta
-			name="description"
-			content="Terraria port for WebAssembly. Play Terraria online in the browser."
-		/>
-		<style>
-			html, body {
+ <base href="https://cdn.jsdelivr.net/gh/web-ports/terraria@main/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <link href="./app.ico" rel="icon">
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <meta content="Terrarium" property="og:title"/>
+   <meta content="Terraria port for WebAssembly. Play Terraria online in the browser." property="og:description"/>
+   <meta content="Terraria port for WebAssembly. Play Terraria online in the browser." name="description"/>
+   <style>
+    html, body {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -34,23 +28,32 @@
   border: none;
   display: block;
 }
-		</style>
-		<link rel="canonical" href="https://terraria.mercurywork.shop" />
-		<title>Terrarium</title>
-		<script type="module" crossorigin src="main.js"></script>
-	</head>
-
-	<body>
-		<div id="app"></div>
-		<canvas id="canvas" style="width: 100%">
-
-		</canvas>
-	    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+   </style>
+   <link href="https://terraria.mercurywork.shop" rel="canonical">
+    <title>
+     Terrarium
+    </title>
+    <script crossorigin="" src="main.js" type="module">
+    </script>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="app">
+  </div>
+  <canvas id="canvas" style="width: 100%">
+  </canvas>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

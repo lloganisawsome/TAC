@@ -1,15 +1,17 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<script src="guard.js"></script>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TAC Launcher</title>
+ <head>
+  <script src="guard.js">
+  </script>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC Launcher
+  </title>
   <style>
-    :root {
+   :root {
       --bg: #0a0a0b;
       --panel: #111113;
       --panel-hover: #1a1a1c;
@@ -293,55 +295,83 @@
       .ban-card { padding: 32px 24px; }
     }
   </style>
-</head>
-
-<audio id="bgMusic" loop>
-    <source src="homepage.mp3" type="audio/mpeg">
-</audio>
-
-<body>
-
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <audio id="bgMusic" loop="">
+  <source src="homepage.mp3" type="audio/mpeg"/>
+ </audio>
+ <body>
   <!-- Ban Overlay -->
   <div id="banOverlay">
-    <div class="ban-card">
-      <div class="ban-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31A7.902 7.902 0 0 1 12 20zm6.31-3.1L7.1 5.69A7.902 7.902 0 0 1 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z"/></svg>
-      </div>
-      <h2>Access Restricted</h2>
-      <!-- Shows either global or per-app ban message -->
-      <p id="banMessageText">Your access to TAC Launcher has been suspended.</p>
-      <div id="banAppBadge" class="ban-app-badge" style="display:none;"></div>
-      <div class="ban-reason">
-        <strong>Reason</strong>
-        <span id="banReasonText">No reason provided.</span>
-      </div>
-      <button class="appeal-btn" id="appealBtn" onclick="showAppealForm()">Submit an Appeal</button>
-      <!-- Only show "Go Back" for app-specific bans -->
-      <button class="back-btn" id="backBtn" style="display:none;" onclick="closeBanOverlay()">← Go Back to Launcher</button>
-      <div id="appealForm">
-        <textarea id="appealMessage" placeholder="Explain why you believe your access should be restored..." maxlength="500"></textarea>
-        <button class="appeal-submit-btn" id="appealSubmitBtn" onclick="submitAppeal()">Send Appeal</button>
-        <p class="appeal-success" id="appealSuccess">✓ Your appeal has been submitted. Please wait for a review.</p>
-      </div>
-      <p class="ban-user-label">Logged in as: <strong id="banUsername">—</strong></p>
+   <div class="ban-card">
+    <div class="ban-icon">
+     <svg viewbox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31A7.902 7.902 0 0 1 12 20zm6.31-3.1L7.1 5.69A7.902 7.902 0 0 1 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z">
+      </path>
+     </svg>
     </div>
+    <h2>
+     Access Restricted
+    </h2>
+    <!-- Shows either global or per-app ban message -->
+    <p id="banMessageText">
+     Your access to TAC Launcher has been suspended.
+    </p>
+    <div class="ban-app-badge" id="banAppBadge" style="display:none;">
+    </div>
+    <div class="ban-reason">
+     <strong>
+      Reason
+     </strong>
+     <span id="banReasonText">
+      No reason provided.
+     </span>
+    </div>
+    <button class="appeal-btn" id="appealBtn" onclick="showAppealForm()">
+     Submit an Appeal
+    </button>
+    <!-- Only show "Go Back" for app-specific bans -->
+    <button class="back-btn" id="backBtn" onclick="closeBanOverlay()" style="display:none;">
+     ← Go Back to Launcher
+    </button>
+    <div id="appealForm">
+     <textarea id="appealMessage" maxlength="500" placeholder="Explain why you believe your access should be restored..."></textarea>
+     <button class="appeal-submit-btn" id="appealSubmitBtn" onclick="submitAppeal()">
+      Send Appeal
+     </button>
+     <p class="appeal-success" id="appealSuccess">
+      ✓ Your appeal has been submitted. Please wait for a review.
+     </p>
+    </div>
+    <p class="ban-user-label">
+     Logged in as:
+     <strong id="banUsername">
+      —
+     </strong>
+    </p>
+   </div>
   </div>
-
   <header>
-    <img src="taclogos/green.png" alt="TAC Logo" class="header-logo" id="logo">
-    <h1>TAC Launcher</h1>
+   <img alt="TAC Logo" class="header-logo" id="logo" src="taclogos/green.png"/>
+   <h1>
+    TAC Launcher
+   </h1>
   </header>
-
   <div class="container">
-    <div class="page-title">
-      <h2>All Applications</h2>
-      <p>Select an app to get started</p>
-    </div>
-    <div id="appGrid"></div>
+   <div class="page-title">
+    <h2>
+     All Applications
+    </h2>
+    <p>
+     Select an app to get started
+    </p>
+   </div>
+   <div id="appGrid">
+   </div>
   </div>
-
- <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, runTransaction, get, push, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -609,22 +639,42 @@ document.addEventListener('click', () => {
       document.getElementById('appealSuccess').classList.add('active');
     };
   </script>
-  
-  <script src="custom-cursor.js"></script>
-  <script src="rightclick.js"></script>
-  <script src="panic-key.js"></script>
-  <script src="idle-dvd.js"></script>
-  <script src="timeTracker.js"></script>
-  <script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

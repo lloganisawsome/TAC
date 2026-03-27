@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8"/>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/awaiblecomponent/575@main/style.css"/>
-
-<style>
-        /* Убираем выделение по нажатию клавиш */
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+  <link href="https://cdn.jsdelivr.net/gh/awaiblecomponent/575@main/style.css" rel="stylesheet">
+   <style>
+    /* Убираем выделение по нажатию клавиш */
         canvas:focus {
             outline: none;
         }
@@ -31,25 +29,33 @@
             /* Ставим высоту на 100% */
             height: 100%;
         }
-    </style>
-<!-- Additional head modules -->
-</head>
-<body class="dark">
-<div id="unity-container" class="unity-desktop">
-<canvas id="unity-canvas" tabindex="-1"></canvas>
-</div>
-<div id="loading-cover" style="display:none;">
-<div id="unity-loading-bar">
-<div id="unity-logo"><img src="https://cdn.jsdelivr.net/gh/awaiblecomponent/575@main/logo.png"/></div>
-<div id="unity-progress-bar-empty" style="display: none;">
-<div id="unity-progress-bar-full"></div>
-</div>
-<div class="spinner"></div>
-</div>
-</div>
-<!-- Additional body modules -->
-<script>
-    const hideFullScreenButton = "";
+   </style>
+   <!-- Additional head modules -->
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body class="dark">
+  <div class="unity-desktop" id="unity-container">
+   <canvas id="unity-canvas" tabindex="-1">
+   </canvas>
+  </div>
+  <div id="loading-cover" style="display:none;">
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
+     <img src="https://cdn.jsdelivr.net/gh/awaiblecomponent/575@main/logo.png"/>
+    </div>
+    <div id="unity-progress-bar-empty" style="display: none;">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+    <div class="spinner">
+    </div>
+   </div>
+  </div>
+  <!-- Additional body modules -->
+  <script>
+   const hideFullScreenButton = "";
     const buildUrl = "https://cdn.jsdelivr.net/gh/awaiblecomponent/575@main/Build";
     const loaderUrl = buildUrl + "/zombieshooterdone.loader.js";
     const config = {
@@ -269,13 +275,16 @@ function RewardedShow(rewardId) {
             console.warn("Hata es geçildi:", event.reason);
             event.preventDefault();
         });
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

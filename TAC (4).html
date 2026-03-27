@@ -1,109 +1,17 @@
-//<---CLICK THE DOWNLOAD BUTTON--->//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!doctype html>
+//&lt;---CLICK THE DOWNLOAD BUTTON---&gt;//
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Classlink</title>
-    <link rel="icon" href="https://clouddrivecdn.classlink.com/favicons/2051/icon/apple-touch-icon.png?1721076899121">
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-    <style>
-        html, body { height: 100%; margin: 0; background: #000; overflow: hidden; }
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Classlink
+  </title>
+  <link href="https://clouddrivecdn.classlink.com/favicons/2051/icon/apple-touch-icon.png?1721076899121" rel="icon"/>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js">
+  </script>
+  <style>
+   html, body { height: 100%; margin: 0; background: #000; overflow: hidden; }
         iframe { position: fixed; inset: 0; border: 0; width: 100%; height: 100%; display: block; z-index: 1; }
         
         #mini-call-popup {
@@ -142,26 +50,35 @@
             z-index: 9998;
             box-shadow: 0 0 8px #25ffa0;
         }
-    </style>
-</head>
-<body>
-
-<iframe id="main_iframe"></iframe>
-
-<div id="mini-call-popup">
-    <div class="popup-header">Incoming Secure Call</div>
-    <div class="caller-name" id="popup-caller">Unknown</div>
-    <div class="action-row">
-        <button class="btn-answer" id="btn-answer">Answer</button>
-        <button class="btn-decline" id="btn-decline">Decline</button>
-    </div>
-</div>
-
-<div id="active-indicator" title="Call Connected"></div>
-<audio id="ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop></audio>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <iframe id="main_iframe">
+  </iframe>
+  <div id="mini-call-popup">
+   <div class="popup-header">
+    Incoming Secure Call
+   </div>
+   <div class="caller-name" id="popup-caller">
+    Unknown
+   </div>
+   <div class="action-row">
+    <button class="btn-answer" id="btn-answer">
+     Answer
+    </button>
+    <button class="btn-decline" id="btn-decline">
+     Decline
+    </button>
+   </div>
+  </div>
+  <div id="active-indicator" title="Call Connected">
+  </div>
+  <audio id="ringtone" loop="" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3">
+  </audio>
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, onValue, set, remove, onDisconnect, update, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
     const TAC_URL = 'https://lloganisawsome.github.io/TAC/home.html';
@@ -304,6 +221,12 @@
     }
 
     checkLogin();
-</script>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
 </body>
 </html>

@@ -1,48 +1,51 @@
 <!DOCTYPE html>
-
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@latest/crossy-road/">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Crossy Road</title>
-
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@latest/crossy-road/"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="ie=edge" http-equiv="X-UA-Compatible"/>
+  <title>
+   Crossy Road
+  </title>
   <!-- Load the YouTube Playables SDK as the first script -->
-  <script src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js" nonce="2KHli9LrFFijH2jCb5SkMw"></script>
-
+  <script nonce="2KHli9LrFFijH2jCb5SkMw" src="https://cdn.jsdelivr.net/gh/bubbls/youtube-playables@main/ytgame.js">
+  </script>
   <!-- Load game's CSS file. -->
-  <link rel="stylesheet" href="style.css" nonce="2KHli9LrFFijH2jCb5SkMw">
-
-   <!-- Core libraries like Three.js -->
-  <script src="scripts/three.min.js" nonce="2KHli9LrFFijH2jCb5SkMw"></script>
-
+  <link href="style.css" nonce="2KHli9LrFFijH2jCb5SkMw" rel="stylesheet"/>
+  <!-- Core libraries like Three.js -->
+  <script nonce="2KHli9LrFFijH2jCb5SkMw" src="scripts/three.min.js">
+  </script>
   <!-- Main game script -->
-  <script src="scripts/game.min.js" nonce="2KHli9LrFFijH2jCb5SkMw"></script>
-
+  <script nonce="2KHli9LrFFijH2jCb5SkMw" src="scripts/game.min.js">
+  </script>
   <!-- Additional scripts -->
-  <script src="scripts/extra.min.js" nonce="2KHli9LrFFijH2jCb5SkMw"></script>
-  <script src="scripts/bootstrap.min.js" nonce="2KHli9LrFFijH2jCb5SkMw"></script>
-</head>
-
-<body>
-  <canvas id="canvas"></canvas>
-  <div id="build-number"></div>  <!-- delete this when not in testing -->
-
-  
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  <script nonce="2KHli9LrFFijH2jCb5SkMw" src="scripts/extra.min.js">
+  </script>
+  <script nonce="2KHli9LrFFijH2jCb5SkMw" src="scripts/bootstrap.min.js">
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas">
+  </canvas>
+  <div id="build-number">
+  </div>
+  <!-- delete this when not in testing -->
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

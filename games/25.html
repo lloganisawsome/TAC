@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8" />
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Blade Ball</title>
-	
-    
-    
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   Blade Ball
+  </title>
   <style>
-    html {
+   html {
       box-sizing: border-box
     }
 
@@ -129,7 +127,7 @@
     }
   </style>
   <style>
-    body {
+   body {
       overflow: hidden;
       -webkit-touch-callout: none;
       -webkit-user-select: none;
@@ -140,18 +138,22 @@
       -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
     }
   </style>
-
-<body class=dark>
-  <div id=unity-container class=unity-desktop><canvas id=unity-canvas></canvas></div>
-  <div id=loading-cover style=display:none>
-    <div id=unity-loading-bar>
-      <div id=unity-progress-bar-empty style=display:none>
-        <div id=unity-progress-bar-full></div>
+  <body class="dark">
+   <div class="unity-desktop" id="unity-container">
+    <canvas id="unity-canvas">
+    </canvas>
+   </div>
+   <div id="loading-cover" style="display:none">
+    <div id="unity-loading-bar">
+     <div id="unity-progress-bar-empty" style="display:none">
+      <div id="unity-progress-bar-full">
       </div>
-      <div class=spinner></div>
+     </div>
+     <div class="spinner">
+     </div>
     </div>
-  </div>
-  <script type="text/javascript">
+   </div>
+   <script type="text/javascript">
     window.SDK_OPTIONS = {
       gameId: "r2tzpy9cgrn2u4xgzc9z0zbtvxm16mby",
       onEvent: function(a) {
@@ -169,8 +171,8 @@
       var d = a.getElementsByTagName(b)[0];
       a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "https://cdn.jsdelivr.net/gh/st39/sdk@main/sdkjs.js", d.parentNode.insertBefore(a, d))
     })(document, "script", "gamemonetize-sdk");
-  </script>
-  <script type="text/javascript">
+   </script>
+   <script type="text/javascript">
     let isAdShown = false;
 
     function onClick(e) {
@@ -181,8 +183,8 @@
       window.removeEventListener("click", onClick)
     }
     window.addEventListener("click", onClick);
-  </script>
-  <script>
+   </script>
+   <script>
     const hideFullScreenButton = "";
     const buildUrl = "https://cdn.jsdelivr.net/gh/Loddypof/gitapp@581c119c1d6222694218df114c2da57271ab67e7/template";
     const loaderUrl = buildUrl + "/blb.js";
@@ -643,14 +645,19 @@
 
     function StaticRBTDeactivate() {}
     document.body.appendChild(script);
+   </script>
+   <script src="custom-cursor.js">
+   </script>
+   <script src="rightclick.js">
+   </script>
+   <script src="panic-key.js">
+   </script>
+   <script src="idle-dvd.js">
+   </script>
+   <script src="online.js" type="module">
+   </script>
+  </body>
+  <script src="app-presence.js">
   </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+ </head>
 </html>

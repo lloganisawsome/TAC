@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-	<base href="https://cdn.jsdelivr.net/gh/genizy/Quake3@master/">
-    <meta charset="UTF-8">
-    <title>Quake III Arena</title>
-    <link rel="stylesheet" href="Quake3.css">
-</head>
-
-<body>
-	<div id="loading-text" style="color: black; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
-    <div id="viewport-frame"></div>
-    <script src="alertCustom.js"></script>
-    <script>
-        var userLanguage = window.navigator.userLanguage || window.navigator.language;
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/Quake3@master/"/>
+  <meta charset="utf-8"/>
+  <title>
+   Quake III Arena
+  </title>
+  <link href="Quake3.css" rel="stylesheet"/>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="color: black; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <div id="viewport-frame">
+  </div>
+  <script src="alertCustom.js">
+  </script>
+  <script>
+   var userLanguage = window.navigator.userLanguage || window.navigator.language;
         var STRING_ERROR_TITLE = "";
         var STRING_ERROR_MESSAGE = "";
         var STRING_ERROR_OK = "";
@@ -208,14 +214,16 @@
                 ioq3.setCanvasSize(ioq3.viewport.offsetWidth, ioq3.viewport.offsetHeight);
             } catch (err) {}
         });
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

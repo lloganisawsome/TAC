@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <title>Granny Original</title>
-    <meta charset="utf-8">
-    <meta name="robots" content="noindex, nofollow">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/gru6nny/ohd@main/TemplateData/style.css">
-    <script src="https://cdn.jsdelivr.net/gh/gru6nny/ohd@main/sdk.js"></script>
-    <!-- GameMonetize SDK Entegrasyonu -->
-    <script type="text/javascript">
-        window.SDK_OPTIONS = {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <title>
+   Granny Original
+  </title>
+  <meta charset="utf-8"/>
+  <meta content="noindex, nofollow" name="robots"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <link href="https://cdn.jsdelivr.net/gh/gru6nny/ohd@main/TemplateData/style.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/gh/gru6nny/ohd@main/sdk.js">
+  </script>
+  <!-- GameMonetize SDK Entegrasyonu -->
+  <script type="text/javascript">
+   window.SDK_OPTIONS = {
             gameId: "jp112o3o4hzgrnc7zaewjkrfk282pul8",
             onEvent: function (a) {
                 switch (a.name) {
@@ -37,9 +40,9 @@
             var d = a.getElementsByTagName(b)[0];
             a.getElementById(c) || (a = a.createElement(b), a.id = c, a.src = "https://cdn.jsdelivr.net/gh/testamalame/sef@main/sedk.js", d.parentNode.insertBefore(a, d));
         })(document, "script", "gamemonetize-sdk");
-    </script>
-    <style>
-        body {
+  </script>
+  <style>
+   body {
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -103,23 +106,28 @@
             border: 1px solid #ccc;
             border-radius: 5px;
         }
-    </style>
-</head>
-<body>
-    <div id="unity-container">
-        <canvas id="unity-canvas" style="position: absolute; width: 100%; height: 100%"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo">
-                <img src="https://cdn.jsdelivr.net/gh/gru6nny/ohd@main/logo.png" alt="Granny Logo">
-            </div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-        </div>
-        <div id="unity-warning"></div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="unity-container">
+   <canvas id="unity-canvas" style="position: absolute; width: 100%; height: 100%">
+   </canvas>
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
+     <img alt="Granny Logo" src="https://cdn.jsdelivr.net/gh/gru6nny/ohd@main/logo.png"/>
     </div>
-    <script>
-        async function mergeUnityWebFiles(baseUrl, filePrefix, totalParts, extension) {
+    <div id="unity-progress-bar-empty">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+   </div>
+   <div id="unity-warning">
+   </div>
+  </div>
+  <script>
+   async function mergeUnityWebFiles(baseUrl, filePrefix, totalParts, extension) {
             const partUrls = [];
             for (let i = 1; i <= totalParts; i++) {
                 partUrls.push(`${baseUrl}/${filePrefix}_part${i}.${extension}`);
@@ -229,13 +237,16 @@
         }
 
         initializeGame();
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

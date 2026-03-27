@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escape Road</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <style>
-        body, html {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Escape Road
+  </title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+  <style>
+   body, html {
             margin: 0;
             padding: 0;
             width: 100%;
@@ -49,19 +51,22 @@
             height: 100%;
             border: none;
         }
-    </style>
-</head>
-<body>
-    <div id="launcher">
-        <span>▶ PLAY ESCAPE ROAD</span>
-    </div>
-
-    <div class="game-container" id="gameContainer">
-        <iframe id="gameFrame" src=""></iframe>
-    </div>
-
-    <script>
-        const launcher = document.getElementById('launcher');
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="launcher">
+   <span>
+    ▶ PLAY ESCAPE ROAD
+   </span>
+  </div>
+  <div class="game-container" id="gameContainer">
+   <iframe id="gameFrame" src="">
+   </iframe>
+  </div>
+  <script>
+   const launcher = document.getElementById('launcher');
         const gameContainer = document.getElementById('gameContainer');
         const gameFrame = document.getElementById('gameFrame');
 
@@ -72,13 +77,16 @@
             gameContainer.style.display = 'block';
             gameFrame.src = gameUrl;
         });
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

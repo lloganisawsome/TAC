@@ -1,25 +1,27 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="UTF-8" />
-    <title>Random Siege OP</title>
-    <link rel="icon" type="image/jpg" href="/favicon.jpg?v2" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
-
-    <!--Google website stuff-->
-    <meta name="description" content="I made this website at school bc I wanted to play games">
-    <meta name="keywords" content="Games,nintendoboi2,github.io,nintendoboi22,github website, github game">
-    <meta name="author" content="Nintendoboi2">
-    <meta name="google-adsense-account" content="ca-pub-8650522196901208">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://randojs.com/1.0.0.js"></script>
-    <style>
-        body {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <title>
+   Random Siege OP
+  </title>
+  <link href="/favicon.jpg?v2" rel="icon" type="image/jpg">
+   <link href="https://fonts.googleapis.com" rel="preconnect"/>
+   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&amp;display=swap" rel="stylesheet"/>
+   <!--Google website stuff-->
+   <meta content="I made this website at school bc I wanted to play games" name="description"/>
+   <meta content="Games,nintendoboi2,github.io,nintendoboi22,github website, github game" name="keywords"/>
+   <meta content="Nintendoboi2" name="author"/>
+   <meta content="ca-pub-8650522196901208" name="google-adsense-account"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <script src="https://randojs.com/1.0.0.js">
+   </script>
+   <style>
+    body {
             background-color: #1a1a1a;
             font-family: 'Oxanium', sans-serif;
         }
@@ -46,9 +48,9 @@
             word-break: break-word;
             border: 0;
         }
-    </style>
-    <script>
-        const attackers = ["Striker","Sledge", "Thatcher", "Ash", "Thermite", "Twitch", "Montagne", "Glaz", "Fuze","Blitz","IQ","Buck","Blackbeard","Capitão","Hibana","Jackal","Ying","Zofia","Dokkaebi","Lion","Finka","Maverick","Nomad","Gridlock","Nøkk","Amaru","Kali","Iana","Ace","Zero","Flores","Osa","Sens","Grimm","Brava","Ram","Deimos"];
+   </style>
+   <script>
+    const attackers = ["Striker","Sledge", "Thatcher", "Ash", "Thermite", "Twitch", "Montagne", "Glaz", "Fuze","Blitz","IQ","Buck","Blackbeard","Capitão","Hibana","Jackal","Ying","Zofia","Dokkaebi","Lion","Finka","Maverick","Nomad","Gridlock","Nøkk","Amaru","Kali","Iana","Ace","Zero","Flores","Osa","Sens","Grimm","Brava","Ram","Deimos"];
         const defenders = ["Sentry","Smoke","Mute","Castle","Pulse","Doc","Rook","Kapkan","Tachanka","Jäger","Bandit","Frost","Valkyrie","Caveira","Echo","Mira","Lesion","Ela","Vigil","Maestro","Alibi","Clash","Kaid","Mozzie","Warden","Goyo","Wamai","Orax","Melusi","Aruni","Thunderbird","Thorn","Azami","Solis","Fenrir","Tubarão","Skopos"];
 
         function getRandomOperator(list) {
@@ -59,22 +61,49 @@
             document.getElementById("attacker").innerText = getRandomOperator(attackers);
             document.getElementById("defender").innerText = getRandomOperator(defenders);
         }
-    </script>
-</head>
-<body onload="setOperators()">
-    <div style="text-align: center;">
-        <br><br><br>
-        <h1 style="color:#aaaaaa;" class="title">Random Siege Op</h1>
-        <br><br>
-        <h2 style="color:#aaaaaa;">Attacker: <strong><span id="attacker"></span></strong><br><br>Defender: <strong><span id="defender"></span></strong></h2>
-        <br><button class="cool-button" role="button" onclick="setOperators()">New Op?</button>
-    </div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+   </script>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body onload="setOperators()">
+  <div style="text-align: center;">
+   <br/>
+   <br/>
+   <br/>
+   <h1 class="title" style="color:#aaaaaa;">
+    Random Siege Op
+   </h1>
+   <br/>
+   <br/>
+   <h2 style="color:#aaaaaa;">
+    Attacker:
+    <strong>
+     <span id="attacker">
+     </span>
+    </strong>
+    <br/>
+    <br/>
+    Defender:
+    <strong>
+     <span id="defender">
+     </span>
+    </strong>
+   </h2>
+   <br/>
+   <button class="cool-button" onclick="setOperators()" role="button">
+    New Op?
+   </button>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

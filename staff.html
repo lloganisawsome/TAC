@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TAC - Staff Application</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC - Staff Application
+  </title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+  <style>
+   :root {
             --bg: #0a0a0b;
             --panel: #111113;
             --panel-hover: #1a1a1c;
@@ -488,386 +490,572 @@
                 padding: 24px;
             }
         }
-    </style>
-</head>
-<body>
-
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+      <circle cx="8" cy="10" r="1.5">
+      </circle>
+      <circle cx="12" cy="10" r="1.5">
+      </circle>
+      <circle cx="16" cy="10" r="1.5">
+      </circle>
+     </svg>
+     <span>
+      Chat
+     </span>
+    </a>
+    <a class="nav-item" href="notgames.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
+      </path>
+     </svg>
+     <span>
+      Games
+     </span>
+    </a>
+    <a class="nav-item" href="phone.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+      </path>
+     </svg>
+     <span>
+      Phone
+     </span>
+    </a>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      All Apps
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+   <div class="application-container">
+    <div class="header-section">
+     <img alt="TAC Logo" id="headerLogo" src="https://placehold.co/140x140/4CAF50/fff?text=TAC"/>
+     <h1>
+      TAC Staff Application
+     </h1>
+     <p id="user-id-display">
+     </p>
     </div>
-
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <a href="chat.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                <circle cx="8" cy="10" r="1.5"/>
-                <circle cx="12" cy="10" r="1.5"/>
-                <circle cx="16" cy="10" r="1.5"/>
-            </svg>
-            <span>Chat</span>
-        </a>
-
-        <a href="notgames.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-            </svg>
-            <span>Games</span>
-        </a>
-
-        <a href="phone.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-            </svg>
-            <span>Phone</span>
-        </a>
-
-        <a href="apps.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-            </svg>
-            <span>All Apps</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<!-- Main Content -->
-<main class="main-content" id="mainContent">
-    <div class="application-container">
-        <div class="header-section">
-            <img src="https://placehold.co/140x140/4CAF50/fff?text=TAC" alt="TAC Logo" id="headerLogo">
-            <h1>TAC Staff Application</h1>
-            <p id="user-id-display"></p>
+    <form id="application-form">
+     <div class="form-group">
+      <label class="form-label">
+       Your Name
+      </label>
+      <input class="form-input" id="name" required="" type="text"/>
+     </div>
+     <div class="form-group">
+      <label class="form-label">
+       What role are you applying for?
+      </label>
+      <select class="form-select" id="role" required="">
+       <option disabled="" selected="" value="">
+        Select a role...
+       </option>
+       <option value="Developer">
+        Developer (Monitor &amp; Control)
+       </option>
+       <option value="Moderator">
+        Moderator
+       </option>
+       <option value="Beta Tester">
+        Beta Tester
+       </option>
+       <option value="Other">
+        Other
+       </option>
+      </select>
+     </div>
+     <!-- Developer Section -->
+     <div class="hidden" id="developer-section">
+      <div class="form-group">
+       <label class="form-label">
+        Developer Skills Assessment
+       </label>
+       <div class="checkbox-group">
+        <input id="monitor-systems" type="checkbox"/>
+        <label>
+         I can effectively monitor system performance and user activity
+        </label>
+       </div>
+       <div class="checkbox-group">
+        <input id="handle-requests" type="checkbox"/>
+        <label>
+         I can review and approve/deny user requests efficiently
+        </label>
+       </div>
+       <div class="checkbox-group">
+        <input id="analytics" type="checkbox"/>
+        <label>
+         I can analyze data and make informed decisions
+        </label>
+       </div>
+       <p class="warning-text" id="dev-warning">
+        All skills must be confirmed to proceed
+       </p>
+      </div>
+      <div class="test-container">
+       <div class="test-title">
+        Developer Control Panel Test (3 Rounds)
+       </div>
+       <!-- Round 1 -->
+       <div class="test-round" id="dev-round-1">
+        <div class="test-round-title">
+         Round 1: User Request Management
         </div>
-
-        <form id="application-form">
-            <div class="form-group">
-                <label class="form-label">Your Name</label>
-                <input type="text" id="name" class="form-input" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">What role are you applying for?</label>
-                <select id="role" class="form-select" required>
-                    <option value="" disabled selected>Select a role...</option>
-                    <option value="Developer">Developer (Monitor & Control)</option>
-                    <option value="Moderator">Moderator</option>
-                    <option value="Beta Tester">Beta Tester</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-
-            <!-- Developer Section -->
-            <div id="developer-section" class="hidden">
-                <div class="form-group">
-                    <label class="form-label">Developer Skills Assessment</label>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="monitor-systems">
-                        <label>I can effectively monitor system performance and user activity</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="handle-requests">
-                        <label>I can review and approve/deny user requests efficiently</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="analytics">
-                        <label>I can analyze data and make informed decisions</label>
-                    </div>
-                    <p class="warning-text" id="dev-warning">All skills must be confirmed to proceed</p>
-                </div>
-
-                <div class="test-container">
-                    <div class="test-title">Developer Control Panel Test (3 Rounds)</div>
-                    
-                    <!-- Round 1 -->
-                    <div class="test-round" id="dev-round-1">
-                        <div class="test-round-title">Round 1: User Request Management</div>
-                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
-                            You receive 3 user requests. Approve or deny each based on TAC guidelines.
-                        </p>
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
-                            <strong style="color: var(--accent);">Request #1:</strong> User "Logan" wants admin privileges to help moderate
-                            <div class="message-actions">
-                                <button type="button" data-round="1" data-request="1" data-action="approve">Approve</button>
-                                <button type="button" data-round="1" data-request="1" data-action="deny">Deny</button>
-                            </div>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
-                            <strong style="color: var(--accent);">Request #2:</strong> User "SpamBot123" requests access to post links in chat
-                            <div class="message-actions">
-                                <button type="button" data-round="1" data-request="2" data-action="approve">Approve</button>
-                                <button type="button" data-round="1" data-request="2" data-action="deny">Deny</button>
-                            </div>
-                        </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
-                            <strong style="color: var(--accent);">Request #3:</strong> Established user "Loftis" requests password reset
-                            <div class="message-actions">
-                                <button type="button" data-round="1" data-request="3" data-action="approve">Approve</button>
-                                <button type="button" data-round="1" data-request="3" data-action="deny">Deny</button>
-                            </div>
-                        </div>
-                        <div class="status-message" id="dev-round-1-status"></div>
-                    </div>
-
-                    <!-- Round 2 -->
-                    <div class="test-round hidden" id="dev-round-2">
-                        <div class="test-round-title">Round 2: System Monitoring</div>
-                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
-                            Review the system alerts and identify which requires immediate action.
-                        </p>
-                        <div class="message-actions" style="flex-direction: column; gap: 8px;">
-                            <button type="button" data-round="2" data-alert="cpu" style="width: 100%; text-align: left;">
-                                Login count +100 in a day
-                            </button>
-                            <button type="button" data-round="2" data-alert="login" style="width: 100%; text-align: left;">
-                                Failed Login Attempts: 247 from single person in 5 minutes
-                            </button>
-                            <button type="button" data-round="2" data-alert="storage" style="width: 100%; text-align: left;">
-                                40 chat messages sent
-                            </button>
-                        </div>
-                        <div class="status-message" id="dev-round-2-status"></div>
-                    </div>
-
-                    <!-- Round 3 -->
-                    <div class="test-round hidden" id="dev-round-3">
-                        <div class="test-round-title">Round 3: User Data Analysis</div>
-                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
-                            Based on the data below, what action should be taken?
-                        </p>
-                        <pre style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; font-size: 11px; overflow-x: auto; margin-bottom: 12px;">
+        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+         You receive 3 user requests. Approve or deny each based on TAC guidelines.
+        </p>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+         <strong style="color: var(--accent);">
+          Request #1:
+         </strong>
+         User "Logan" wants admin privileges to help moderate
+         <div class="message-actions">
+          <button data-action="approve" data-request="1" data-round="1" type="button">
+           Approve
+          </button>
+          <button data-action="deny" data-request="1" data-round="1" type="button">
+           Deny
+          </button>
+         </div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+         <strong style="color: var(--accent);">
+          Request #2:
+         </strong>
+         User "SpamBot123" requests access to post links in chat
+         <div class="message-actions">
+          <button data-action="approve" data-request="2" data-round="1" type="button">
+           Approve
+          </button>
+          <button data-action="deny" data-request="2" data-round="1" type="button">
+           Deny
+          </button>
+         </div>
+        </div>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; margin-bottom: 8px;">
+         <strong style="color: var(--accent);">
+          Request #3:
+         </strong>
+         Established user "Loftis" requests password reset
+         <div class="message-actions">
+          <button data-action="approve" data-request="3" data-round="1" type="button">
+           Approve
+          </button>
+          <button data-action="deny" data-request="3" data-round="1" type="button">
+           Deny
+          </button>
+         </div>
+        </div>
+        <div class="status-message" id="dev-round-1-status">
+        </div>
+       </div>
+       <!-- Round 2 -->
+       <div class="test-round hidden" id="dev-round-2">
+        <div class="test-round-title">
+         Round 2: System Monitoring
+        </div>
+        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+         Review the system alerts and identify which requires immediate action.
+        </p>
+        <div class="message-actions" style="flex-direction: column; gap: 8px;">
+         <button data-alert="cpu" data-round="2" style="width: 100%; text-align: left;" type="button">
+          Login count +100 in a day
+         </button>
+         <button data-alert="login" data-round="2" style="width: 100%; text-align: left;" type="button">
+          Failed Login Attempts: 247 from single person in 5 minutes
+         </button>
+         <button data-alert="storage" data-round="2" style="width: 100%; text-align: left;" type="button">
+          40 chat messages sent
+         </button>
+        </div>
+        <div class="status-message" id="dev-round-2-status">
+        </div>
+       </div>
+       <!-- Round 3 -->
+       <div class="test-round hidden" id="dev-round-3">
+        <div class="test-round-title">
+         Round 3: User Data Analysis
+        </div>
+        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+         Based on the data below, what action should be taken?
+        </p>
+        <pre style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 6px; font-size: 11px; overflow-x: auto; margin-bottom: 12px;">
 User: "NewUser247"
 Account Created: 2 hours ago
 Login Attempts: 47
 Messages Sent: 0
 Pages Visited: Admin Panel (x23), User Management (x18)
 Failed Access Attempts: 31</pre>
-                        <div class="message-actions" style="flex-direction: column; gap: 8px;">
-                            <button type="button" data-round="3" data-action="monitor" style="width: 100%;">
-                                Continue Monitoring (No Action)
-                            </button>
-                            <button type="button" data-round="3" data-action="limit" style="width: 100%;">
-                                Limit Access Temporarily
-                            </button>
-                            <button type="button" data-round="3" data-action="ban" style="width: 100%;">
-                                Ban Account & Block IP
-                            </button>
-                        </div>
-                        <div class="status-message" id="dev-round-3-status"></div>
-                    </div>
-
-                    <p class="warning-text" id="dev-test-warning">You must complete all 3 rounds successfully</p>
-                    <div class="test-progress" id="dev-progress">Progress: 0/3 rounds completed</div>
-                </div>
-            </div>
-
-            <!-- Moderator Section -->
-            <div id="moderator-section" class="hidden">
-                <div class="form-group">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="can-stress">
-                        <label>I can work well under pressure and make quick decisions</label>
-                    </div>
-                    <p class="warning-text" id="mod-warning">This skill is required for moderators</p>
-                </div>
-
-                <div class="test-container">
-                    <div class="test-title">Moderator Response Test (3 Scenarios)</div>
-                    
-                    <!-- Scenario 1 -->
-                    <div class="test-round" id="mod-round-1">
-                        <div class="test-round-title">Scenario 1: Spam Bot</div>
-                        <div class="chat-container">
-                            <div class="chat-header">TAC Public Chat</div>
-                            <div class="chat-log">
-                                <div class="message">
-                                    <span class="username user">User1</span>: Hey everyone!
-                                </div>
-                                <div class="message">
-                                    <span class="username bot">FastMoneyBot</span>: 💰 GET RICH QUICK! Visit sketchy-site[.]com NOW!!!
-                                </div>
-                                <div class="message">
-                                    <span class="username user">User2</span>: What's that link?
-                                </div>
-                                <div class="message" id="spam-msg-1">
-                                    <span class="username bot">FastMoneyBot</span>: 💰 FREE MONEY! Click here: sketchy-site[.]com
-                                    <div class="message-actions">
-                                        <button type="button" data-round="1" data-action="delete">Delete Message</button>
-                                        <button type="button" data-round="1" data-action="timeout">Timeout (1hr)</button>
-                                        <button type="button" data-round="1" data-action="ban" class="ban">Ban User</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="status-message" id="mod-round-1-status"></div>
-                        </div>
-                    </div>
-
-                    <!-- Scenario 2 -->
-                    <div class="test-round hidden" id="mod-round-2">
-                        <div class="test-round-title">Scenario 2: User Conflict</div>
-                        <div class="chat-container">
-                            <div class="chat-header">TAC Public Chat</div>
-                            <div class="chat-log">
-                                <div class="message">
-                                    <span class="username user">PlayerA</span>: That's a stupid way to play the game
-                                </div>
-                                <div class="message">
-                                    <span class="username user">PlayerB</span>: You're stupid! Mind your own business!
-                                </div>
-                                <div class="message">
-                                    <span class="username user">PlayerA</span>: At least I'm not trash like you
-                                </div>
-                            </div>
-                            <div class="status-message">How do you handle this?</div>
-                        </div>
-                        <div class="message-actions" style="margin-top: 12px;">
-                            <button type="button" data-round="2" data-action="warn">Warn Both Users</button>
-                            <button type="button" data-round="2" data-action="separate">Timeout Both (Cool Down)</button>
-                            <button type="button" data-round="2" data-action="ignore">Let Them Resolve It</button>
-                        </div>
-                        <div class="status-message" id="mod-round-2-status"></div>
-                    </div>
-
-                    <!-- Scenario 3 -->
-                    <div class="test-round hidden" id="mod-round-3">
-                        <div class="test-round-title">Scenario 3: Inappropriate Content</div>
-                        <div class="chat-container">
-                            <div class="chat-header">TAC Public Chat</div>
-                            <div class="chat-log">
-                                <div class="message">
-                                    <span class="username user">EdgeLord99</span>: Check out this meme [contains inappropriate content]
-                                </div>
-                                <div class="message">
-                                    <span class="username user">User3</span>: Dude that's not cool
-                                </div>
-                                <div class="message">
-                                    <span class="username user">EdgeLord99</span>: It's just a joke, relax
-                                </div>
-                            </div>
-                            <div class="status-message">What's your response?</div>
-                        </div>
-                        <div class="message-actions" style="margin-top: 12px;">
-                            <button type="button" data-round="3" data-action="delete-warn">Delete & Official Warning</button>
-                            <button type="button" data-round="3" data-action="timeout">Delete & 24hr Timeout</button>
-                            <button type="button" data-round="3" data-action="ask">Ask Them to Remove It</button>
-                        </div>
-                        <div class="status-message" id="mod-round-3-status"></div>
-                    </div>
-
-                    <p class="warning-text" id="mod-test-warning">Complete all scenarios to pass</p>
-                    <div class="test-progress" id="mod-progress">Progress: 0/3 scenarios completed</div>
-                </div>
-            </div>
-
-            <!-- Beta Tester Section -->
-            <div id="beta-tester-section" class="hidden">
-                <div class="form-group">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="find-errors">
-                        <label>I excel at finding bugs and errors in software</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="detailed-feedback">
-                        <label>I can provide detailed, actionable feedback</label>
-                    </div>
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="test-documentation">
-                        <label>I can document issues clearly for developers</label>
-                    </div>
-                    <p class="warning-text" id="beta-warning">All skills required for Beta Testers</p>
-                </div>
-
-                <div class="test-container">
-                    <div class="test-title">Beta Testing Evaluation (2 Rounds)</div>
-                    
-                    <!-- Round 1: Bug Finding -->
-                    <div class="test-round" id="beta-round-1">
-                        <div class="test-round-title">Round 1: Bug Identification</div>
-                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
-                            Find and report ALL bugs in this test interface. There are 5 bugs total.
-                        </p>
-                        <div style="background: white; color: black; padding: 20px; border-radius: 8px;">
-                            <h2 style="color: #111;">Welcoome to TAC Beta!</h2>
-                            <img src="broken-image-404.png" alt="Feature Preview" style="max-width: 100%;">
-                            <p>Click the botton below to get started with our amaz ing new feature!</p>
-                            <button style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
-                                Get Strated
-                            </button>
-                            <p style="margin-top: 15px;">For more info, visit our <a href="#">docmentation</a>.</p>
-                        </div>
-                        <textarea id="beta-bugs" class="form-textarea" rows="6" placeholder="List each bug you found (minimum 5 required):&#10;1. ...&#10;2. ...&#10;3. ..." style="margin-top: 12px;"></textarea>
-                    </div>
-
-                    <!-- Round 2: UX Feedback -->
-                    <div class="test-round hidden" id="beta-round-2">
-                        <div class="test-round-title">Round 2: User Experience Evaluation</div>
-                        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
-                            Review this new feature mockup and provide detailed UX feedback.
-                        </p>
-                        <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-                            <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                                <button style="padding: 4px 8px; background: var(--accent); color: #000; border: none; font-size: 10px;">Save</button>
-                                <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">Cancel</button>
-                                <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">Submit</button>
-                                <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">Delete</button>
-                            </div>
-                            <input type="text" placeholder="Enter your data here..." style="width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; font-size: 11px;">
-                            <p style="font-size: 9px; color: var(--muted); margin-top: 4px;">*Required field</p>
-                        </div>
-                        <textarea id="beta-ux-feedback" class="form-textarea" rows="6" placeholder="Provide UX feedback covering:&#10;- Button placement and clarity&#10;- User flow and confusion points&#10;- Accessibility concerns&#10;- Suggestions for improvement" style="margin-top: 12px;"></textarea>
-                    </div>
-
-                    <p class="warning-text" id="beta-test-warning">Complete both rounds with thorough feedback</p>
-                    <div class="test-progress" id="beta-progress">Progress: 0/2 rounds completed</div>
-                </div>
-            </div>
-
-            <!-- Other Section -->
-            <div id="other-section" class="hidden">
-                <div class="form-group">
-                    <label class="form-label">What role would you like to apply for?</label>
-                    <input type="text" id="other-role" class="form-input" placeholder="e.g., Content Creator, Community Manager">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Describe your relevant skills and experience</label>
-                    <textarea id="other-description" class="form-textarea" rows="6" placeholder="Tell us about your background, skills, and why you'd be great for this role..."></textarea>
-                </div>
-                <p class="warning-text" id="other-warning">Both fields are required</p>
-            </div>
-
-            <button type="submit" class="submit-btn">Submit Application</button>
-        </form>
-
-        <div class="applications-section">
-            <h2 class="applications-title">Your Past Applications</h2>
-            <div id="applications-list">
-                <p style="text-align: center; color: var(--muted);">Loading applications...</p>
-            </div>
+        <div class="message-actions" style="flex-direction: column; gap: 8px;">
+         <button data-action="monitor" data-round="3" style="width: 100%;" type="button">
+          Continue Monitoring (No Action)
+         </button>
+         <button data-action="limit" data-round="3" style="width: 100%;" type="button">
+          Limit Access Temporarily
+         </button>
+         <button data-action="ban" data-round="3" style="width: 100%;" type="button">
+          Ban Account &amp; Block IP
+         </button>
         </div>
+        <div class="status-message" id="dev-round-3-status">
+        </div>
+       </div>
+       <p class="warning-text" id="dev-test-warning">
+        You must complete all 3 rounds successfully
+       </p>
+       <div class="test-progress" id="dev-progress">
+        Progress: 0/3 rounds completed
+       </div>
+      </div>
+     </div>
+     <!-- Moderator Section -->
+     <div class="hidden" id="moderator-section">
+      <div class="form-group">
+       <div class="checkbox-group">
+        <input id="can-stress" type="checkbox"/>
+        <label>
+         I can work well under pressure and make quick decisions
+        </label>
+       </div>
+       <p class="warning-text" id="mod-warning">
+        This skill is required for moderators
+       </p>
+      </div>
+      <div class="test-container">
+       <div class="test-title">
+        Moderator Response Test (3 Scenarios)
+       </div>
+       <!-- Scenario 1 -->
+       <div class="test-round" id="mod-round-1">
+        <div class="test-round-title">
+         Scenario 1: Spam Bot
+        </div>
+        <div class="chat-container">
+         <div class="chat-header">
+          TAC Public Chat
+         </div>
+         <div class="chat-log">
+          <div class="message">
+           <span class="username user">
+            User1
+           </span>
+           : Hey everyone!
+          </div>
+          <div class="message">
+           <span class="username bot">
+            FastMoneyBot
+           </span>
+           : 💰 GET RICH QUICK! Visit sketchy-site[.]com NOW!!!
+          </div>
+          <div class="message">
+           <span class="username user">
+            User2
+           </span>
+           : What's that link?
+          </div>
+          <div class="message" id="spam-msg-1">
+           <span class="username bot">
+            FastMoneyBot
+           </span>
+           : 💰 FREE MONEY! Click here: sketchy-site[.]com
+           <div class="message-actions">
+            <button data-action="delete" data-round="1" type="button">
+             Delete Message
+            </button>
+            <button data-action="timeout" data-round="1" type="button">
+             Timeout (1hr)
+            </button>
+            <button class="ban" data-action="ban" data-round="1" type="button">
+             Ban User
+            </button>
+           </div>
+          </div>
+         </div>
+         <div class="status-message" id="mod-round-1-status">
+         </div>
+        </div>
+       </div>
+       <!-- Scenario 2 -->
+       <div class="test-round hidden" id="mod-round-2">
+        <div class="test-round-title">
+         Scenario 2: User Conflict
+        </div>
+        <div class="chat-container">
+         <div class="chat-header">
+          TAC Public Chat
+         </div>
+         <div class="chat-log">
+          <div class="message">
+           <span class="username user">
+            PlayerA
+           </span>
+           : That's a stupid way to play the game
+          </div>
+          <div class="message">
+           <span class="username user">
+            PlayerB
+           </span>
+           : You're stupid! Mind your own business!
+          </div>
+          <div class="message">
+           <span class="username user">
+            PlayerA
+           </span>
+           : At least I'm not trash like you
+          </div>
+         </div>
+         <div class="status-message">
+          How do you handle this?
+         </div>
+        </div>
+        <div class="message-actions" style="margin-top: 12px;">
+         <button data-action="warn" data-round="2" type="button">
+          Warn Both Users
+         </button>
+         <button data-action="separate" data-round="2" type="button">
+          Timeout Both (Cool Down)
+         </button>
+         <button data-action="ignore" data-round="2" type="button">
+          Let Them Resolve It
+         </button>
+        </div>
+        <div class="status-message" id="mod-round-2-status">
+        </div>
+       </div>
+       <!-- Scenario 3 -->
+       <div class="test-round hidden" id="mod-round-3">
+        <div class="test-round-title">
+         Scenario 3: Inappropriate Content
+        </div>
+        <div class="chat-container">
+         <div class="chat-header">
+          TAC Public Chat
+         </div>
+         <div class="chat-log">
+          <div class="message">
+           <span class="username user">
+            EdgeLord99
+           </span>
+           : Check out this meme [contains inappropriate content]
+          </div>
+          <div class="message">
+           <span class="username user">
+            User3
+           </span>
+           : Dude that's not cool
+          </div>
+          <div class="message">
+           <span class="username user">
+            EdgeLord99
+           </span>
+           : It's just a joke, relax
+          </div>
+         </div>
+         <div class="status-message">
+          What's your response?
+         </div>
+        </div>
+        <div class="message-actions" style="margin-top: 12px;">
+         <button data-action="delete-warn" data-round="3" type="button">
+          Delete &amp; Official Warning
+         </button>
+         <button data-action="timeout" data-round="3" type="button">
+          Delete &amp; 24hr Timeout
+         </button>
+         <button data-action="ask" data-round="3" type="button">
+          Ask Them to Remove It
+         </button>
+        </div>
+        <div class="status-message" id="mod-round-3-status">
+        </div>
+       </div>
+       <p class="warning-text" id="mod-test-warning">
+        Complete all scenarios to pass
+       </p>
+       <div class="test-progress" id="mod-progress">
+        Progress: 0/3 scenarios completed
+       </div>
+      </div>
+     </div>
+     <!-- Beta Tester Section -->
+     <div class="hidden" id="beta-tester-section">
+      <div class="form-group">
+       <div class="checkbox-group">
+        <input id="find-errors" type="checkbox"/>
+        <label>
+         I excel at finding bugs and errors in software
+        </label>
+       </div>
+       <div class="checkbox-group">
+        <input id="detailed-feedback" type="checkbox"/>
+        <label>
+         I can provide detailed, actionable feedback
+        </label>
+       </div>
+       <div class="checkbox-group">
+        <input id="test-documentation" type="checkbox"/>
+        <label>
+         I can document issues clearly for developers
+        </label>
+       </div>
+       <p class="warning-text" id="beta-warning">
+        All skills required for Beta Testers
+       </p>
+      </div>
+      <div class="test-container">
+       <div class="test-title">
+        Beta Testing Evaluation (2 Rounds)
+       </div>
+       <!-- Round 1: Bug Finding -->
+       <div class="test-round" id="beta-round-1">
+        <div class="test-round-title">
+         Round 1: Bug Identification
+        </div>
+        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+         Find and report ALL bugs in this test interface. There are 5 bugs total.
+        </p>
+        <div style="background: white; color: black; padding: 20px; border-radius: 8px;">
+         <h2 style="color: #111;">
+          Welcoome to TAC Beta!
+         </h2>
+         <img alt="Feature Preview" src="broken-image-404.png" style="max-width: 100%;"/>
+         <p>
+          Click the botton below to get started with our amaz ing new feature!
+         </p>
+         <button style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px;">
+          Get Strated
+         </button>
+         <p style="margin-top: 15px;">
+          For more info, visit our
+          <a href="#">
+           docmentation
+          </a>
+          .
+         </p>
+        </div>
+        <textarea class="form-textarea" id="beta-bugs" placeholder="List each bug you found (minimum 5 required):
+1. ...
+2. ...
+3. ..." rows="6" style="margin-top: 12px;"></textarea>
+       </div>
+       <!-- Round 2: UX Feedback -->
+       <div class="test-round hidden" id="beta-round-2">
+        <div class="test-round-title">
+         Round 2: User Experience Evaluation
+        </div>
+        <p style="font-size: 12px; margin-bottom: 12px; color: rgba(255,255,255,0.7);">
+         Review this new feature mockup and provide detailed UX feedback.
+        </p>
+        <div style="background: rgba(255,255,255,0.05); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+         <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button style="padding: 4px 8px; background: var(--accent); color: #000; border: none; font-size: 10px;">
+           Save
+          </button>
+          <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">
+           Cancel
+          </button>
+          <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">
+           Submit
+          </button>
+          <button style="padding: 4px 8px; background: #666; color: #fff; border: none; font-size: 10px;">
+           Delete
+          </button>
+         </div>
+         <input placeholder="Enter your data here..." style="width: 100%; padding: 8px; background: #000; border: 1px solid #333; color: #fff; font-size: 11px;" type="text"/>
+         <p style="font-size: 9px; color: var(--muted); margin-top: 4px;">
+          *Required field
+         </p>
+        </div>
+        <textarea class="form-textarea" id="beta-ux-feedback" placeholder="Provide UX feedback covering:
+- Button placement and clarity
+- User flow and confusion points
+- Accessibility concerns
+- Suggestions for improvement" rows="6" style="margin-top: 12px;"></textarea>
+       </div>
+       <p class="warning-text" id="beta-test-warning">
+        Complete both rounds with thorough feedback
+       </p>
+       <div class="test-progress" id="beta-progress">
+        Progress: 0/2 rounds completed
+       </div>
+      </div>
+     </div>
+     <!-- Other Section -->
+     <div class="hidden" id="other-section">
+      <div class="form-group">
+       <label class="form-label">
+        What role would you like to apply for?
+       </label>
+       <input class="form-input" id="other-role" placeholder="e.g., Content Creator, Community Manager" type="text"/>
+      </div>
+      <div class="form-group">
+       <label class="form-label">
+        Describe your relevant skills and experience
+       </label>
+       <textarea class="form-textarea" id="other-description" placeholder="Tell us about your background, skills, and why you'd be great for this role..." rows="6"></textarea>
+      </div>
+      <p class="warning-text" id="other-warning">
+       Both fields are required
+      </p>
+     </div>
+     <button class="submit-btn" type="submit">
+      Submit Application
+     </button>
+    </form>
+    <div class="applications-section">
+     <h2 class="applications-title">
+      Your Past Applications
+     </h2>
+     <div id="applications-list">
+      <p style="text-align: center; color: var(--muted);">
+       Loading applications...
+      </p>
+     </div>
     </div>
-</main>
-
-
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-<script>
-// Firebase Config
+   </div>
+  </main>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+  </script>
+  <script>
+   // Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
     authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -1324,27 +1512,45 @@ applicationsRef.on('value', (snapshot) => {
         listEl.appendChild(card);
     });
 });
-</script>
-
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

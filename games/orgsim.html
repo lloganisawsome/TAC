@@ -1,13 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Organism Simulator — Moving Sun & Cell Movement</title>
-<style>
-  html,body{height:100%;margin:0;font-family:sans-serif;background:#1c3a2a;color:#e0ffe0;}
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Organism Simulator — Moving Sun &amp; Cell Movement
+  </title>
+  <style>
+   html,body{height:100%;margin:0;font-family:sans-serif;background:#1c3a2a;color:#e0ffe0;}
   .container{display:flex;flex-direction:row;height:100%;}
   #ui{width:260px;background:#122517;padding:16px;box-sizing:border-box;display:flex;flex-direction:column;gap:12px;}
   #ui h2{margin:0 0 6px 0;font-size:16px;}
@@ -16,32 +18,61 @@
   button:hover{background:#3b7055;}
   #canvas{flex:1;background:#357a52;display:block;cursor:crosshair;}
   small{opacity:0.8;font-size:11px;}
-</style>
-</head>
-<body>
-<div class="container">
-  <div id="ui">
-    <h2>Organism Simulator</h2>
-    <label>Selected Cell Type:
-      <select id="cellType">
-        <option value="producer">Producer</option>
-        <option value="consumer">Consumer</option>
-        <option value="photosynth">Photosynth</option>
-        <option value="sensor">Sensor</option>
-        <option value="movement">Movement</option>
-      </select>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="container">
+   <div id="ui">
+    <h2>
+     Organism Simulator
+    </h2>
+    <label>
+     Selected Cell Type:
+     <select id="cellType">
+      <option value="producer">
+       Producer
+      </option>
+      <option value="consumer">
+       Consumer
+      </option>
+      <option value="photosynth">
+       Photosynth
+      </option>
+      <option value="sensor">
+       Sensor
+      </option>
+      <option value="movement">
+       Movement
+      </option>
+     </select>
     </label>
-    <button id="runBtn">▶ Run Simulation</button>
-    <button id="pauseBtn">⏸ Pause Simulation<button>
-    <button id="resetBtn">🔄 Retry</button>
-    <button id="randomEnvBtn">🥓 randomize food</button>
-    <small>Click grid to add/remove cells.<br>Movement cells propel the organism toward sunlight.</small>
+    <button id="runBtn">
+     ▶ Run Simulation
+    </button>
+    <button id="pauseBtn">
+     ⏸ Pause Simulation
+     <button>
+      <button id="resetBtn">
+       🔄 Retry
+      </button>
+      <button id="randomEnvBtn">
+       🥓 randomize food
+      </button>
+      <small>
+       Click grid to add/remove cells.
+       <br/>
+       Movement cells propel the organism toward sunlight.
+      </small>
+     </button>
+    </button>
+   </div>
+   <canvas height="640" id="canvas" width="960">
+   </canvas>
   </div>
-  <canvas id="canvas" width="960" height="640"></canvas>
-</div>
-
-<script>
-(() => {
+  <script>
+   (() => {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const COLS = 24, ROWS = 16, SIZE = 40;
@@ -231,13 +262,16 @@
   randomizeFood();
   loop();
 })();
-</script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

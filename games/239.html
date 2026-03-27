@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    
-    
-    
-    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/129/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Flappy Bird Multiplayer</title>
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/129/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Flappy Bird Multiplayer
+  </title>
+  <style>
+   html,
         body {
             background: #000;
             width: 100%;
@@ -43,15 +41,18 @@
             image-rendering: pixelated;
             -ms-interpolation-mode: nearest-neighbor;
         }
-    </style>
-</head>
-
-<body>
-    <div id="gameContainer">
-        <canvas id="unity-canvas" data-pixel-art=""></canvas>
-        <script src="Build/V0.1.loader.js"></script>
-        <script>
-            function mergeFiles(fileParts) {
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="gameContainer">
+   <canvas data-pixel-art="" id="unity-canvas">
+   </canvas>
+   <script src="Build/V0.1.loader.js">
+   </script>
+   <script>
+    function mergeFiles(fileParts) {
                 return new Promise((resolve, reject) => {
                     let buffers = [];
 
@@ -134,15 +135,17 @@
             }).catch(error => {
                 console.error(error);
             });
-        </script>
-    </div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+   </script>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-        <base href="https://cdn.jsdelivr.net/gh/genizy/biologyexams@main/nubbys-number-factory/">
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>GXC Game</title>
-    <style>
-      @-webkit-keyframes rotation {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/biologyexams@main/nubbys-number-factory/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" name="viewport"/>
+  <title>
+   GXC Game
+  </title>
+  <style>
+   @-webkit-keyframes rotation {
         from {
           -webkit-transform: rotate(0deg);
         }
@@ -429,134 +431,174 @@
       .relay-rtt {
         stroke-width: 2;
       }
-    </style>
-  </head>
-
-  <body>
-    <canvas
-      class="emscripten"
-      id="canvas"
-      oncontextmenu="event.preventDefault()"
-      tabindex="-1"
-    >
-    </canvas>
-    <div id="pauseMenuContainer" hidden>
-      <div id="pauseMenuBorder">
-        <div id="pauseMenu">
-          <button id="resumeButton" onclick="resume()">
-            Resume
-          </button>
-          <button id="quitButton" onclick="quitIfSupported()">
-            Quit
-          </button>
-        </div>
-        </div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1">
+  </canvas>
+  <div hidden="" id="pauseMenuContainer">
+   <div id="pauseMenuBorder">
+    <div id="pauseMenu">
+     <button id="resumeButton" onclick="resume()">
+      Resume
+     </button>
+     <button id="quitButton" onclick="quitIfSupported()">
+      Quit
+     </button>
     </div>
-    <div class="loading">
-      <div class="spinner" id="spinner"></div>
-      <div class="emscripten" id="status">Downloading...</div>
-
-      <progress value="0" max="100" id="progress" hidden="1"></progress>
-      <img id="QRCode" class="qrCode" src="runner.svg" alt="URL QR Code" hidden="1"></img>
-      <img id="QR2Code" class="qrCode" src="runnerLocal.svg" alt="URL QR2 Code" hidden="1"></img>
+   </div>
+  </div>
+  <div class="loading">
+   <div class="spinner" id="spinner">
+   </div>
+   <div class="emscripten" id="status">
+    Downloading...
+   </div>
+   <progress hidden="1" id="progress" max="100" value="0">
+   </progress>
+   <img alt="URL QR Code" class="qrCode" hidden="1" id="QRCode" src="runner.svg"/>
+   <img alt="URL QR2 Code" class="qrCode" hidden="1" id="QR2Code" src="runnerLocal.svg"/>
+  </div>
+  <div class="floating-control" id="multiplayer-stats-container">
+   <div class="multiplayer-stats-network" id="multiplayer-stats-network">
+    <svg aria-labelledby="title" class="graph" role="img" version="1.2" viewbox="-20 -10 130 140" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+     <title id="title">
+      Network stats
+     </title>
+     <g class="grid x-grid" id="xGrid">
+      <line x1="0" x2="100" y1="100" y2="100">
+      </line>
+      <line x1="12.25" x2="12.25" y1="99" y2="101">
+      </line>
+      <line x1="25" x2="25" y1="98" y2="102">
+      </line>
+      <line x1="37.5" x2="37.5" y1="99" y2="101">
+      </line>
+      <line x1="50" x2="50" y1="98" y2="102">
+      </line>
+      <line x1="62.5" x2="62.5" y1="99" y2="101">
+      </line>
+      <line x1="75" x2="75" y1="98" y2="102">
+      </line>
+      <line x1="87.5" x2="87.5" y1="99" y2="101">
+      </line>
+      <line x1="100" x2="100" y1="98" y2="102">
+      </line>
+     </g>
+     <g class="grid y-grid" id="yGrid">
+      <line x1="0" x2="0" y1="0" y2="100">
+      </line>
+      <line x1="-2" x2="2" y1="0" y2="0">
+      </line>
+      <line x1="-1" x2="1" y1="12.5" y2="12.50">
+      </line>
+      <line x1="-2" x2="2" y1="25" y2="25">
+      </line>
+      <line x1="-1" x2="1" y1="37.5" y2="37.5">
+      </line>
+      <line x1="-2" x2="2" y1="50" y2="50">
+      </line>
+      <line x1="-1" x2="1" y1="62.5" y2="62.5">
+      </line>
+      <line x1="-2" x2="2" y1="75" y2="75">
+      </line>
+      <line x1="-1" x2="1" y1="87.5" y2="87.5">
+      </line>
+     </g>
+     <g class="labels x-labels">
+      <text x="0" y="110">
+       -8
+      </text>
+      <text x="25" y="110">
+       -4
+      </text>
+      <text x="50" y="110">
+       0
+      </text>
+      <text x="75" y="110">
+       4
+      </text>
+      <text x="100" y="110">
+       8
+      </text>
+      <text class="label-title" x="50" y="115">
+       Time shift
+      </text>
+     </g>
+     <g class="labels y-labels">
+      <text alignment-baseline="middle" x="-4" y="0">
+       16
+      </text>
+      <text alignment-baseline="middle" x="-4" y="25">
+       12
+      </text>
+      <text alignment-baseline="middle" x="-4" y="50">
+       8
+      </text>
+      <text alignment-baseline="middle" x="-4" y="75">
+       4
+      </text>
+      <text alignment-baseline="middle" x="-4" y="100">
+       0
+      </text>
+      <text alignment-baseline="middle" class="label-title" x="-10" y="50">
+       RTT
+      </text>
+     </g>
+     <g id="stats-network-peers">
+     </g>
+     <g id="stats-network-peer-frame-delays">
+     </g>
+     <g id="stats-network-relay-rtt">
+     </g>
+    </svg>
+   </div>
+   <div>
+    <b>
+     Acceptable rollback frames marker:
+    </b>
+    <div>
+     <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(0)">
+      Off
+     </button>
+     <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(1)">
+      +1
+     </button>
+     <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(2)">
+      +2
+     </button>
+     <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(4)">
+      +4
+     </button>
     </div>
-
-    <div class="floating-control" id="multiplayer-stats-container">
-      <div class="multiplayer-stats-network" id="multiplayer-stats-network">
-        <svg version="1.2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="graph" aria-labelledby="title" role="img" viewbox="-20 -10 130 140">
-          <title id="title">Network stats</title>
-          <g class="grid x-grid" id="xGrid">
-            <line x1="0" y1="100" x2="100" y2="100"></line>
-
-            <line x1="12.25" y1="99" x2="12.25" y2="101"></line>
-            <line x1="25" y1="98" x2="25" y2="102"></line>
-            <line x1="37.5" y1="99" x2="37.5" y2="101"></line>
-            <line x1="50" y1="98" x2="50" y2="102"></line>
-            <line x1="62.5" y1="99" x2="62.5" y2="101"></line>
-            <line x1="75" y1="98" x2="75" y2="102"></line>
-            <line x1="87.5" y1="99" x2="87.5" y2="101"></line>
-            <line x1="100" y1="98" x2="100" y2="102"></line>
-          </g>
-          <g class="grid y-grid" id="yGrid">
-            <line x1="0" y1="0" x2="0" y2="100"></line>
-
-            <line x1="-2" y1="0" x2="2" y2="0"></line>
-            <line x1="-1" y1="12.5" x2="1" y2="12.50"></line>
-            <line x1="-2" y1="25" x2="2" y2="25"></line>
-            <line x1="-1" y1="37.5" x2="1" y2="37.5"></line>
-            <line x1="-2" y1="50" x2="2" y2="50"></line>
-            <line x1="-1" y1="62.5" x2="1" y2="62.5"></line>
-            <line x1="-2" y1="75" x2="2" y2="75"></line>
-            <line x1="-1" y1="87.5" x2="1" y2="87.5"></line>
-          </g>
-          <g class="labels x-labels">
-            <text x="0" y="110">-8</text>
-            <text x="25" y="110">-4</text>
-            <text x="50" y="110">0</text>
-            <text x="75" y="110">4</text>
-            <text x="100" y="110">8</text>
-            <text x="50" y="115" class="label-title">Time shift</text>
-          </g>
-          <g class="labels y-labels">
-            <text x="-4" y="0" alignment-baseline="middle">16</text>
-            <text x="-4" y="25" alignment-baseline="middle">12</text>
-            <text x="-4" y="50" alignment-baseline="middle">8</text>
-            <text x="-4" y="75" alignment-baseline="middle">4</text>
-            <text x="-4" y="100" alignment-baseline="middle">0</text>
-            <text x="-10" y="50" class="label-title" alignment-baseline="middle">RTT</text>
-          </g>
-
-          <g id="stats-network-peers">
-          </g>
-
-          <g id="stats-network-peer-frame-delays">
-          </g>
-
-          <g id="stats-network-relay-rtt">
-          </g>
-        </svg>
-      </div>
-      <div>
-        <b>Acceptable rollback frames marker:</b>
-        <div>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(0)">Off</button>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(1)">+1</button>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(2)">+2</button>
-          <button class="acceptable-rollback-button" onclick="set_acceptable_rollback(4)">+4</button>
-        </div>
-      </div>
-      <div id="multiplayer-stats">
-        [no stats available]
-      </div>
-    </div>
-
-    <div class="wallpaper-container" id="wallpaper-container" style="display: none">
-      <button class="output-button" onclick="toggleElement('wallpaper-config-iframe')">
-        Toggle configurator
-      </button>
-    </div>
-    <!-- The wallpaper config is displayed in an iframe to make it possible to use keyboard for entering values (it's consumed by
+   </div>
+   <div id="multiplayer-stats">
+    [no stats available]
+   </div>
+  </div>
+  <div class="wallpaper-container" id="wallpaper-container" style="display: none">
+   <button class="output-button" onclick="toggleElement('wallpaper-config-iframe')">
+    Toggle configurator
+   </button>
+  </div>
+  <!-- The wallpaper config is displayed in an iframe to make it possible to use keyboard for entering values (it's consumed by
         the runner in the original document). -->
-    <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank"></iframe>
-
-    <div id="message-container">
-      <div id="messages">
-      </div>
-    </div>
-
-   <script async
-     data-ad-client="ca-pub-123"
-     data-ad-frequency-hint="30s"
-     data-adbreak-test="on"
-     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
-   </script>
-
-   <script>
-     window.adsbygoogle = window.adsbygoogle || [];
+  <iframe class="floating-control" id="wallpaper-config-iframe" src="about:blank">
+  </iframe>
+  <div id="message-container">
+   <div id="messages">
+   </div>
+  </div>
+  <script async="" data-ad-client="ca-pub-123" data-ad-frequency-hint="30s" data-adbreak-test="on" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  </script>
+  <script>
+   window.adsbygoogle = window.adsbygoogle || [];
      const adBreak =  adConfig = function(o) {adsbygoogle.push(o);}
-   </script>
-<script>
-function mergeFiles(fileParts) {
+  </script>
+  <script>
+   function mergeFiles(fileParts) {
   return new Promise((resolve, reject) => {
     let buffers = [];
 
@@ -639,14 +681,16 @@ Promise.all([
 }).catch(error => {
   console.error("Failed to merge files:", error);
 });
-</script>
-
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

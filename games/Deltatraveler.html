@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/deltatraveler/">
-    <meta charset="utf-8">
-    <title>Unity Web Player | DELTATRAVELER</title>
-    <style>
-        html, body {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/deltatraveler/"/>
+  <meta charset="utf-8"/>
+  <title>
+   Unity Web Player | DELTATRAVELER
+  </title>
+  <style>
+   html, body {
             margin: 0;
             padding: 0;
             border: 0;
@@ -20,15 +22,20 @@
             display: block;
             background: #1F1F20;
         }
-    </style>
-</head>
-<body>
-    <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">LOADING...</div>
-    <canvas id="unity-canvas" tabindex="-1"></canvas>
-    
-    <script src="Build/DELTAWEBGL.loader.js"></script>
-    <script>
-        const canvas = document.querySelector("#unity-canvas");
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <canvas id="unity-canvas" tabindex="-1">
+  </canvas>
+  <script src="Build/DELTAWEBGL.loader.js">
+  </script>
+  <script>
+   const canvas = document.querySelector("#unity-canvas");
 
         function resizeCanvas() {
             canvas.style.width = window.innerWidth + "px";
@@ -130,13 +137,16 @@ setInterval(() => {
 resizeCanvas();
             });
         })();
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

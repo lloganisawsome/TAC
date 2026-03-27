@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAC Clock</title>
-<style>
-:root {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC Clock
+  </title>
+  <style>
+   :root {
     --bg: #0a0a0b;
     --panel: #111113;
     --panel-hover: #1a1a1c;
@@ -803,321 +805,477 @@ input:focus, select:focus {
         height: 55px;
     }
 }
-</style>
-</head>
-<body>
-
-<!-- Sidebar (exact from file2) -->
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Sidebar (exact from file2) -->
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+      <circle cx="8" cy="10" r="1.5">
+      </circle>
+      <circle cx="12" cy="10" r="1.5">
+      </circle>
+      <circle cx="16" cy="10" r="1.5">
+      </circle>
+     </svg>
+     <span>
+      Chat
+     </span>
+    </a>
+    <a class="nav-item" href="notgames.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
+      </path>
+     </svg>
+     <span>
+      Games
+     </span>
+    </a>
+    <a class="nav-item" href="phone.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+      </path>
+     </svg>
+     <span>
+      Phone
+     </span>
+    </a>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      All Apps
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+   <div class="header">
+    <h1>
+     TAC Clock
+    </h1>
+   </div>
+   <div class="tabs">
+    <div class="tab active" data-target="clockTab">
+     Clock
     </div>
-
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <a href="chat.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                <circle cx="8" cy="10" r="1.5"/>
-                <circle cx="12" cy="10" r="1.5"/>
-                <circle cx="16" cy="10" r="1.5"/>
-            </svg>
-            <span>Chat</span>
-        </a>
-
-        <a href="notgames.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-            </svg>
-            <span>Games</span>
-        </a>
-
-        <a href="phone.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-            </svg>
-            <span>Phone</span>
-        </a>
-
-        <a href="apps.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-            </svg>
-            <span>All Apps</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<!-- Main Content -->
-<main class="main-content" id="mainContent">
-    <div class="header">
-        <h1>TAC Clock</h1>
+    <div class="tab" data-target="timerTab">
+     Timers
     </div>
-
-    <div class="tabs">
-        <div class="tab active" data-target="clockTab">Clock</div>
-        <div class="tab" data-target="timerTab">Timers</div>
-        <div class="tab" data-target="stopwatchTab">Stopwatch</div>
-        <div class="tab" data-target="alarmsTab">Alarms</div>
-        <div class="tab" data-target="pomodoroTab">Pomodoro</div>
-        <div class="tab" data-target="countdownTab">Countdown</div>
+    <div class="tab" data-target="stopwatchTab">
+     Stopwatch
     </div>
-
-    <!-- Clock -->
-    <div id="clockTab" class="app-content active">
-        <div class="panel">
-            <div id="clockDate"></div>
-            <div class="analog-clock" id="analogClock">
-                <div class="clock-face">
-                    <div class="clock-center"></div>
-                    <div class="hand hour-hand" id="hourHand"></div>
-                    <div class="hand minute-hand" id="minuteHand"></div>
-                    <div class="hand second-hand" id="secondHand"></div>
-                </div>
-            </div>
-            <p id="liveClock">12:00:00 AM</p>
-            
-            <div class="world-clocks">
-                <div class="world-clock-item">
-                    <div class="world-clock-city">New York</div>
-                    <div class="world-clock-time" id="nyTime">--:--</div>
-                </div>
-                <div class="world-clock-item">
-                    <div class="world-clock-city">London</div>
-                    <div class="world-clock-time" id="londonTime">--:--</div>
-                </div>
-                <div class="world-clock-item">
-                    <div class="world-clock-city">Tokyo</div>
-                    <div class="world-clock-time" id="tokyoTime">--:--</div>
-                </div>
-                <div class="world-clock-item">
-                    <div class="world-clock-city">Sydney</div>
-                    <div class="world-clock-time" id="sydneyTime">--:--</div>
-                </div>
-            </div>
+    <div class="tab" data-target="alarmsTab">
+     Alarms
+    </div>
+    <div class="tab" data-target="pomodoroTab">
+     Pomodoro
+    </div>
+    <div class="tab" data-target="countdownTab">
+     Countdown
+    </div>
+   </div>
+   <!-- Clock -->
+   <div class="app-content active" id="clockTab">
+    <div class="panel">
+     <div id="clockDate">
+     </div>
+     <div class="analog-clock" id="analogClock">
+      <div class="clock-face">
+       <div class="clock-center">
+       </div>
+       <div class="hand hour-hand" id="hourHand">
+       </div>
+       <div class="hand minute-hand" id="minuteHand">
+       </div>
+       <div class="hand second-hand" id="secondHand">
+       </div>
+      </div>
+     </div>
+     <p id="liveClock">
+      12:00:00 AM
+     </p>
+     <div class="world-clocks">
+      <div class="world-clock-item">
+       <div class="world-clock-city">
+        New York
+       </div>
+       <div class="world-clock-time" id="nyTime">
+        --:--
+       </div>
+      </div>
+      <div class="world-clock-item">
+       <div class="world-clock-city">
+        London
+       </div>
+       <div class="world-clock-time" id="londonTime">
+        --:--
+       </div>
+      </div>
+      <div class="world-clock-item">
+       <div class="world-clock-city">
+        Tokyo
+       </div>
+       <div class="world-clock-time" id="tokyoTime">
+        --:--
+       </div>
+      </div>
+      <div class="world-clock-item">
+       <div class="world-clock-city">
+        Sydney
+       </div>
+       <div class="world-clock-time" id="sydneyTime">
+        --:--
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Timers -->
+   <div class="app-content" id="timerTab">
+    <div class="panel">
+     <h3 style="margin-bottom:16px; color:var(--accent);">
+      Quick Timers
+     </h3>
+     <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+      <button onclick="addQuickTimer(1)">
+       1 min
+      </button>
+      <button onclick="addQuickTimer(5)">
+       5 min
+      </button>
+      <button onclick="addQuickTimer(10)">
+       10 min
+      </button>
+      <button onclick="addQuickTimer(15)">
+       15 min
+      </button>
+      <button onclick="addQuickTimer(30)">
+       30 min
+      </button>
+     </div>
+     <h3 style="margin-bottom:16px; color:var(--accent);">
+      Custom Timer
+     </h3>
+     <div style="display:flex; gap:8px; align-items:center;">
+      <input id="timerMinutes" placeholder="Minutes" style="flex:1;" type="number"/>
+      <input id="timerSeconds" placeholder="Seconds" style="flex:1;" type="number"/>
+      <button onclick="addTimer()">
+       Add
+      </button>
+     </div>
+     <div id="timerList" style="margin-top:20px;">
+     </div>
+    </div>
+   </div>
+   <!-- Stopwatch -->
+   <div class="app-content" id="stopwatchTab">
+    <div class="panel">
+     <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setStopwatchMode('digital')">
+       Digital
+      </button>
+      <button class="mode-btn" onclick="setStopwatchMode('physical')">
+       Physical
+      </button>
+     </div>
+     <!-- Digital Mode -->
+     <div id="digitalStopwatch">
+      <p id="stopwatchDisplay">
+       00:00:00.000
+      </p>
+      <div class="stopwatch-controls">
+       <button id="startBtn" onclick="startStopwatch()">
+        Start
+       </button>
+       <button class="danger" id="stopBtn" onclick="stopStopwatch()">
+        Stop
+       </button>
+       <button class="secondary" id="lapBtn" onclick="lapStopwatch()">
+        Lap
+       </button>
+       <button class="secondary" id="resetBtn" onclick="resetStopwatch()">
+        Reset
+       </button>
+      </div>
+     </div>
+     <!-- Physical Mode -->
+     <div id="physicalStopwatch" style="display:none;">
+      <div class="physical-stopwatch" id="stopwatchFace">
+       <div class="stopwatch-face">
+        <div class="stopwatch-center">
         </div>
-    </div>
-
-    <!-- Timers -->
-    <div id="timerTab" class="app-content">
-        <div class="panel">
-            <h3 style="margin-bottom:16px; color:var(--accent);">Quick Timers</h3>
-            <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
-                <button onclick="addQuickTimer(1)">1 min</button>
-                <button onclick="addQuickTimer(5)">5 min</button>
-                <button onclick="addQuickTimer(10)">10 min</button>
-                <button onclick="addQuickTimer(15)">15 min</button>
-                <button onclick="addQuickTimer(30)">30 min</button>
-            </div>
-            
-            <h3 style="margin-bottom:16px; color:var(--accent);">Custom Timer</h3>
-            <div style="display:flex; gap:8px; align-items:center;">
-                <input type="number" id="timerMinutes" placeholder="Minutes" style="flex:1;">
-                <input type="number" id="timerSeconds" placeholder="Seconds" style="flex:1;">
-                <button onclick="addTimer()">Add</button>
-            </div>
-            
-            <div id="timerList" style="margin-top:20px;"></div>
+        <div class="stopwatch-hand stopwatch-second-hand" id="swSecondHand">
         </div>
-    </div>
-
-    <!-- Stopwatch -->
-    <div id="stopwatchTab" class="app-content">
-        <div class="panel">
-            <div class="mode-toggle">
-                <button class="mode-btn active" onclick="setStopwatchMode('digital')">Digital</button>
-                <button class="mode-btn" onclick="setStopwatchMode('physical')">Physical</button>
-            </div>
-            
-            <!-- Digital Mode -->
-            <div id="digitalStopwatch">
-                <p id="stopwatchDisplay">00:00:00.000</p>
-                <div class="stopwatch-controls">
-                    <button onclick="startStopwatch()" id="startBtn">Start</button>
-                    <button onclick="stopStopwatch()" id="stopBtn" class="danger">Stop</button>
-                    <button onclick="lapStopwatch()" id="lapBtn" class="secondary">Lap</button>
-                    <button onclick="resetStopwatch()" id="resetBtn" class="secondary">Reset</button>
-                </div>
-            </div>
-            
-            <!-- Physical Mode -->
-            <div id="physicalStopwatch" style="display:none;">
-                <div class="physical-stopwatch" id="stopwatchFace">
-                    <div class="stopwatch-face">
-                        <div class="stopwatch-center"></div>
-                        <div class="stopwatch-hand stopwatch-second-hand" id="swSecondHand"></div>
-                        <div class="stopwatch-hand stopwatch-minute-hand" id="swMinuteHand"></div>
-                        <!-- Sub dial for minutes -->
-                        <div class="sub-dial">
-                            <div class="sub-dial-center"></div>
-                            <div class="sub-dial-hand" id="swSubHand"></div>
-                        </div>
-                    </div>
-                </div>
-                <p id="stopwatchDisplayPhysical" style="font-size:2em; text-align:center; color:var(--accent); font-family:monospace;">00:00.000</p>
-                <div class="stopwatch-controls">
-                    <button onclick="startStopwatch()">Start</button>
-                    <button onclick="stopStopwatch()" class="danger">Stop</button>
-                    <button onclick="lapStopwatch()" class="secondary">Lap</button>
-                    <button onclick="resetStopwatch()" class="secondary">Reset</button>
-                </div>
-            </div>
-            
-            <!-- Statistics (csTimer inspired) -->
-            <div class="stats-panel">
-                <div class="stats-title">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                    </svg>
-                    Session Statistics
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-label">Best</div>
-                        <div class="stat-value" id="statBest">--:--</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Average</div>
-                        <div class="stat-value" id="statAvg">--:--</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Worst</div>
-                        <div class="stat-value" id="statWorst">--:--</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-label">Count</div>
-                        <div class="stat-value" id="statCount">0</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Lap Times -->
-            <div id="lapTimesContainer" style="display:none; margin-top:20px;">
-                <h4 style="color:var(--accent); margin-bottom:12px;">Lap Times</h4>
-                <div class="lap-times" id="lapTimes"></div>
-            </div>
-            
-            <!-- Session History -->
-            <div style="margin-top:20px;">
-                <div class="session-selector">
-                    <select id="sessionSelect" onchange="loadSession()">
-                        <option value="default">Default Session</option>
-                    </select>
-                    <button onclick="newSession()">+</button>
-                    <button onclick="clearSession()" class="danger">×</button>
-                </div>
-                <div id="sessionTimes"></div>
-            </div>
+        <div class="stopwatch-hand stopwatch-minute-hand" id="swMinuteHand">
         </div>
-    </div>
-
-    <!-- Alarms -->
-    <div id="alarmsTab" class="app-content">
-        <div class="panel">
-            <h3 style="margin-bottom:16px; color:var(--accent);">Set Alarm</h3>
-            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                <input type="time" id="alarmTime" style="flex:1; min-width:150px;">
-                <input type="text" id="alarmLabel" placeholder="Label (optional)" style="flex:1; min-width:150px;">
-                <button onclick="addAlarm()">Add Alarm</button>
-            </div>
-            
-            <div id="alarmList" style="margin-top:20px;"></div>
+        <!-- Sub dial for minutes -->
+        <div class="sub-dial">
+         <div class="sub-dial-center">
+         </div>
+         <div class="sub-dial-hand" id="swSubHand">
+         </div>
         </div>
-    </div>
-
-    <!-- Pomodoro -->
-    <div id="pomodoroTab" class="app-content">
-        <div class="panel">
-            <div class="pomodoro-display">
-                <div class="pomodoro-status" id="pomodoroStatus">Ready to focus</div>
-                <div class="pomodoro-time" id="pomodoroTime">25:00</div>
-                <div class="pomodoro-progress">
-                    <div class="pomodoro-progress-bar" id="pomodoroProgress" style="width:100%"></div>
-                </div>
-                <div style="margin-bottom:20px;">
-                    <span style="color:var(--muted);">Sessions completed: </span>
-                    <span id="pomodoroSessions" style="color:var(--accent); font-weight:bold;">0</span>
-                </div>
-                <div class="stopwatch-controls">
-                    <button onclick="startPomodoro()" id="pomodoroStartBtn">Start Focus</button>
-                    <button onclick="pausePomodoro()" class="secondary">Pause</button>
-                    <button onclick="resetPomodoro()" class="danger">Reset</button>
-                    <button onclick="skipPomodoro()" class="secondary">Skip</button>
-                </div>
-            </div>
-            
-            <div class="pomodoro-settings">
-                <div class="pomodoro-setting">
-                    <label>Focus (min)</label>
-                    <input type="number" id="focusTime" value="25" min="1" max="120">
-                </div>
-                <div class="pomodoro-setting">
-                    <label>Short Break</label>
-                    <input type="number" id="shortBreak" value="5" min="1" max="30">
-                </div>
-                <div class="pomodoro-setting">
-                    <label>Long Break</label>
-                    <input type="number" id="longBreak" value="15" min="1" max="60">
-                </div>
-            </div>
+       </div>
+      </div>
+      <p id="stopwatchDisplayPhysical" style="font-size:2em; text-align:center; color:var(--accent); font-family:monospace;">
+       00:00.000
+      </p>
+      <div class="stopwatch-controls">
+       <button onclick="startStopwatch()">
+        Start
+       </button>
+       <button class="danger" onclick="stopStopwatch()">
+        Stop
+       </button>
+       <button class="secondary" onclick="lapStopwatch()">
+        Lap
+       </button>
+       <button class="secondary" onclick="resetStopwatch()">
+        Reset
+       </button>
+      </div>
+     </div>
+     <!-- Statistics (csTimer inspired) -->
+     <div class="stats-panel">
+      <div class="stats-title">
+       <svg fill="currentColor" height="16" viewbox="0 0 24 24" width="16">
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z">
+        </path>
+       </svg>
+       Session Statistics
+      </div>
+      <div class="stats-grid">
+       <div class="stat-item">
+        <div class="stat-label">
+         Best
         </div>
-    </div>
-
-    <!-- Countdown -->
-    <div id="countdownTab" class="app-content">
-        <div class="panel">
-            <h3 style="margin-bottom:16px; color:var(--accent);">Countdown Timer</h3>
-            <div class="countdown-input-group">
-                <div>
-                    <label>Hours</label>
-                    <input type="number" id="countdownHours" value="0" min="0" max="99">
-                </div>
-                <div>
-                    <label>Minutes</label>
-                    <input type="number" id="countdownMinutes" value="0" min="0" max="59">
-                </div>
-                <div>
-                    <label>Seconds</label>
-                    <input type="number" id="countdownSeconds" value="0" min="0" max="59">
-                </div>
-            </div>
-            
-            <div id="countdownDisplay" style="font-size:4em; text-align:center; color:var(--accent); font-family:monospace; margin:30px 0;">
-                00:00:00
-            </div>
-            
-            <div class="stopwatch-controls">
-                <button onclick="startCountdown()" id="countdownStartBtn">Start</button>
-                <button onclick="pauseCountdown()" class="secondary">Pause</button>
-                <button onclick="resetCountdown()" class="danger">Reset</button>
-            </div>
-            
-            <h4 style="margin-top:30px; margin-bottom:12px; color:var(--accent);">Quick Presets</h4>
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button onclick="setCountdown(0,5,0)">5 min</button>
-                <button onclick="setCountdown(0,10,0)">10 min</button>
-                <button onclick="setCountdown(0,15,0)">15 min</button>
-                <button onclick="setCountdown(0,30,0)">30 min</button>
-                <button onclick="setCountdown(1,0,0)">1 hour</button>
-            </div>
+        <div class="stat-value" id="statBest">
+         --:--
         </div>
+       </div>
+       <div class="stat-item">
+        <div class="stat-label">
+         Average
+        </div>
+        <div class="stat-value" id="statAvg">
+         --:--
+        </div>
+       </div>
+       <div class="stat-item">
+        <div class="stat-label">
+         Worst
+        </div>
+        <div class="stat-value" id="statWorst">
+         --:--
+        </div>
+       </div>
+       <div class="stat-item">
+        <div class="stat-label">
+         Count
+        </div>
+        <div class="stat-value" id="statCount">
+         0
+        </div>
+       </div>
+      </div>
+     </div>
+     <!-- Lap Times -->
+     <div id="lapTimesContainer" style="display:none; margin-top:20px;">
+      <h4 style="color:var(--accent); margin-bottom:12px;">
+       Lap Times
+      </h4>
+      <div class="lap-times" id="lapTimes">
+      </div>
+     </div>
+     <!-- Session History -->
+     <div style="margin-top:20px;">
+      <div class="session-selector">
+       <select id="sessionSelect" onchange="loadSession()">
+        <option value="default">
+         Default Session
+        </option>
+       </select>
+       <button onclick="newSession()">
+        +
+       </button>
+       <button class="danger" onclick="clearSession()">
+        ×
+       </button>
+      </div>
+      <div id="sessionTimes">
+      </div>
+     </div>
     </div>
-</main>
-
-<script>
-// Request notification permission
+   </div>
+   <!-- Alarms -->
+   <div class="app-content" id="alarmsTab">
+    <div class="panel">
+     <h3 style="margin-bottom:16px; color:var(--accent);">
+      Set Alarm
+     </h3>
+     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <input id="alarmTime" style="flex:1; min-width:150px;" type="time"/>
+      <input id="alarmLabel" placeholder="Label (optional)" style="flex:1; min-width:150px;" type="text"/>
+      <button onclick="addAlarm()">
+       Add Alarm
+      </button>
+     </div>
+     <div id="alarmList" style="margin-top:20px;">
+     </div>
+    </div>
+   </div>
+   <!-- Pomodoro -->
+   <div class="app-content" id="pomodoroTab">
+    <div class="panel">
+     <div class="pomodoro-display">
+      <div class="pomodoro-status" id="pomodoroStatus">
+       Ready to focus
+      </div>
+      <div class="pomodoro-time" id="pomodoroTime">
+       25:00
+      </div>
+      <div class="pomodoro-progress">
+       <div class="pomodoro-progress-bar" id="pomodoroProgress" style="width:100%">
+       </div>
+      </div>
+      <div style="margin-bottom:20px;">
+       <span style="color:var(--muted);">
+        Sessions completed:
+       </span>
+       <span id="pomodoroSessions" style="color:var(--accent); font-weight:bold;">
+        0
+       </span>
+      </div>
+      <div class="stopwatch-controls">
+       <button id="pomodoroStartBtn" onclick="startPomodoro()">
+        Start Focus
+       </button>
+       <button class="secondary" onclick="pausePomodoro()">
+        Pause
+       </button>
+       <button class="danger" onclick="resetPomodoro()">
+        Reset
+       </button>
+       <button class="secondary" onclick="skipPomodoro()">
+        Skip
+       </button>
+      </div>
+     </div>
+     <div class="pomodoro-settings">
+      <div class="pomodoro-setting">
+       <label>
+        Focus (min)
+       </label>
+       <input id="focusTime" max="120" min="1" type="number" value="25"/>
+      </div>
+      <div class="pomodoro-setting">
+       <label>
+        Short Break
+       </label>
+       <input id="shortBreak" max="30" min="1" type="number" value="5"/>
+      </div>
+      <div class="pomodoro-setting">
+       <label>
+        Long Break
+       </label>
+       <input id="longBreak" max="60" min="1" type="number" value="15"/>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Countdown -->
+   <div class="app-content" id="countdownTab">
+    <div class="panel">
+     <h3 style="margin-bottom:16px; color:var(--accent);">
+      Countdown Timer
+     </h3>
+     <div class="countdown-input-group">
+      <div>
+       <label>
+        Hours
+       </label>
+       <input id="countdownHours" max="99" min="0" type="number" value="0"/>
+      </div>
+      <div>
+       <label>
+        Minutes
+       </label>
+       <input id="countdownMinutes" max="59" min="0" type="number" value="0"/>
+      </div>
+      <div>
+       <label>
+        Seconds
+       </label>
+       <input id="countdownSeconds" max="59" min="0" type="number" value="0"/>
+      </div>
+     </div>
+     <div id="countdownDisplay" style="font-size:4em; text-align:center; color:var(--accent); font-family:monospace; margin:30px 0;">
+      00:00:00
+     </div>
+     <div class="stopwatch-controls">
+      <button id="countdownStartBtn" onclick="startCountdown()">
+       Start
+      </button>
+      <button class="secondary" onclick="pauseCountdown()">
+       Pause
+      </button>
+      <button class="danger" onclick="resetCountdown()">
+       Reset
+      </button>
+     </div>
+     <h4 style="margin-top:30px; margin-bottom:12px; color:var(--accent);">
+      Quick Presets
+     </h4>
+     <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="setCountdown(0,5,0)">
+       5 min
+      </button>
+      <button onclick="setCountdown(0,10,0)">
+       10 min
+      </button>
+      <button onclick="setCountdown(0,15,0)">
+       15 min
+      </button>
+      <button onclick="setCountdown(0,30,0)">
+       30 min
+      </button>
+      <button onclick="setCountdown(1,0,0)">
+       1 hour
+      </button>
+     </div>
+    </div>
+   </div>
+  </main>
+  <script>
+   // Request notification permission
 if(Notification.permission !== "granted") Notification.requestPermission();
 
 // Initialize all variables at the top BEFORE any function calls
@@ -1797,26 +1955,45 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

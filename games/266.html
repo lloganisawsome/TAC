@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/web-ports/cuphead@main/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Cuphead</title>
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/web-ports/cuphead@main/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity WebGL Player | Cuphead
+  </title>
+  <style>
+   html,
         body {
             margin: 0;
             padding: 0;
@@ -26,15 +27,20 @@
             display: none;
             background: #231F20;
         }
-    </style>
-</head>
-
-<body>
-    <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
-    <div id="unityContainer"></div>
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-        var loadingText = document.querySelector("#loading-text");
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <div id="unityContainer">
+  </div>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <script>
+   var loadingText = document.querySelector("#loading-text");
     
         let totalBytes = 0;
         let loadedBytes = 0;
@@ -149,15 +155,16 @@
             }
             resizeCanvas();
         })();
-    </script>
-    
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

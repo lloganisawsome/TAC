@@ -1,28 +1,46 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Sort the Court!</title>
-    <link rel="icon" type="image/x-icon" href="img/icon.png" />
-    <link rel="shortcut icon" type="image/x-icon" href="img/icon.png" />
-    <link rel="stylesheet" href="TemplateData/style.css" />
-    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
-    <script src="TemplateData/UnityProgress.js"></script>
-  </head>
-  <body class="template">
-    <p class="header"><span>Unity WebGL Player | </span>Sort the Court!</p>
-    <div class="template-wrap clear">
-      <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="540px" width="960px"></canvas>
-      <br />
-      <div class="logo"></div>
-      <div class="fullscreen"><img src="TemplateData/fullscreen.png" width="38" height="38" alt="Fullscreen" title="Fullscreen" onclick="SetFullscreen(1);" /></div>
-      <div class="title">Sort the Court!</div>
-    </div>
-    <script type="text/javascript">
-      var Module = {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Sort the Court!
+  </title>
+  <link href="img/icon.png" rel="icon" type="image/x-icon">
+   <link href="img/icon.png" rel="shortcut icon" type="image/x-icon">
+    <link href="TemplateData/style.css" rel="stylesheet"/>
+    <link href="TemplateData/favicon.ico" rel="shortcut icon"/>
+    <script src="TemplateData/UnityProgress.js">
+    </script>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body class="template">
+  <p class="header">
+   <span>
+    Unity WebGL Player |
+   </span>
+   Sort the Court!
+  </p>
+  <div class="template-wrap clear">
+   <canvas class="emscripten" height="540px" id="canvas" oncontextmenu="event.preventDefault()" width="960px">
+   </canvas>
+   <br/>
+   <div class="logo">
+   </div>
+   <div class="fullscreen">
+    <img alt="Fullscreen" height="38" onclick="SetFullscreen(1);" src="TemplateData/fullscreen.png" title="Fullscreen" width="38"/>
+   </div>
+   <div class="title">
+    Sort the Court!
+   </div>
+  </div>
+  <script type="text/javascript">
+   var Module = {
         TOTAL_MEMORY: 268435456,
         errorhandler: null, // arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
         compatibilitycheck: null,
@@ -30,14 +48,18 @@
         codeUrl: "Release/WebGL.js",
         memUrl: "Release/WebGL.mem",
       };
-    </script>
-    <script src="Release/UnityLoader.js"></script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="Release/UnityLoader.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

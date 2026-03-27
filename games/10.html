@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bloons Tower Defense 5</title>
-  <script src="https://unpkg.com/@ruffle-rs/ruffle@latest/ruffle.js"></script>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Bloons Tower Defense 5
+  </title>
+  <script src="https://unpkg.com/@ruffle-rs/ruffle@latest/ruffle.js">
+  </script>
   <style>
-    html, body {
+   html, body {
       margin: 0;
       padding: 0;
       width: 100%;
@@ -26,10 +29,12 @@
       display: block;
     }
   </style>
-</head>
-<body>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <script>
-    window.RufflePlayer = window.RufflePlayer || {};
+   window.RufflePlayer = window.RufflePlayer || {};
     window.addEventListener("load", function () {
       const ruffle = window.RufflePlayer.newest();
       const player = ruffle.createPlayer();
@@ -38,13 +43,17 @@
       player.load("https://noahsamazingtutoringhelp.github.io/glowing-chainsaw/badpiggies.swf");
     });
   </script>
-  <div id="flash-container"></div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  <div id="flash-container">
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

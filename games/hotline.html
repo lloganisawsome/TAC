@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@latest/hotline-miami/">
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta http-equiv="pragma" content="no-cache"/>
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-    <title>HOTLINE MIAMI</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@latest/hotline-miami/"/>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="no-cache" http-equiv="pragma"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+  <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+  <title>
+   HOTLINE MIAMI
+  </title>
+  <style>
+   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         body {
             margin: 0;
             padding: 0;
@@ -81,11 +83,13 @@
             80% { text-shadow: 0px 0px #00ffe5, 0px 0px #ffea00; }
             100% { text-shadow: 2px 2px #00ffe5, -2px -2px #ffea00; }
         }
-    </style>
-</head>
-<body>
-<script>
-  const OriginalXHR = window.XMLHttpRequest;
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <script>
+   const OriginalXHR = window.XMLHttpRequest;
 
   function InterceptedXHR() {
     const xhr = new OriginalXHR();
@@ -127,31 +131,35 @@
   window.XMLHttpRequest = function () {
     return new InterceptedXHR();
   };
-</script>
-
-
-
-    <div class="gm4html5_div_class" id="gm4html5_div_id">
-        <canvas id="canvas" width="1920" height="1080">
-            <p>Your browser doesn't support HTML5 canvas.</p>
-        </canvas>
-    </div>
-    <div id="loading-text"> </div>
-    <script type="text/javascript" src="html5game/HotlineMiami.js?PPPYB=938827661"></script>
-    <script>
-        window.onload = () => {
+  </script>
+  <div class="gm4html5_div_class" id="gm4html5_div_id">
+   <canvas height="1080" id="canvas" width="1920">
+    <p>
+     Your browser doesn't support HTML5 canvas.
+    </p>
+   </canvas>
+  </div>
+  <div id="loading-text">
+  </div>
+  <script src="html5game/HotlineMiami.js?PPPYB=938827661" type="text/javascript">
+  </script>
+  <script>
+   window.onload = () => {
             const loader = document.getElementById("loading-text");
             loader.style.display = "block";
             GameMaker_Init();
             setTimeout(() => loader.style.display = "none", 4000);
         };
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

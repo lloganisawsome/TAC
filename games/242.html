@@ -1,18 +1,25 @@
 <html lang="en-us">
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/escape-road@45b2d69c626dc365753f6922d2c48c4075683ef5/drive.google.com/escape%20road/">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Escape Road</title>
-<link rel="shortcut icon" href="icon.png">
-<link rel="stylesheet" href="TemplateData/style.css">
-<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init()</script>
-</head>
-<style>
+ <base href="https://cdn.jsdelivr.net/gh/bubbls/escape-road@45b2d69c626dc365753f6922d2c48c4075683ef5/drive.google.com/escape%20road/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   Escape Road
+  </title>
+  <link href="icon.png" rel="shortcut icon"/>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/eruda">
+  </script>
+  <script>
+   eruda.init()
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <style>
   @font-face {
   font-family: myFirstFont;
   src: url(Chainwhacks.otf);
@@ -21,26 +28,30 @@
   {
     font-family: myFirstFont;
   }
-</style>
-<body class="dark">
-<div id="unity-container" class="unity-desktop"><p style="opacity: 0;position: absolute;">_</p>
-<canvas id="unity-canvas"></canvas>
-</div>
-<div id="loading-cover" style="display:none;background: black;">
-<div id="unity-loading-bar">
-<canvas id="logo-canvas" style="position: absolute; background-color: black;">
-<img src="loading.png" id="ld_bg">
-<img src="car-icon.png" id="ld_car">
-</canvas>
-</div>
-</div>
-<!-- /0a502697b99e36d322eeb8daf23bc8b8.data.unityweb",
+ </style>
+ <body class="dark">
+  <div class="unity-desktop" id="unity-container">
+   <p style="opacity: 0;position: absolute;">
+    _
+   </p>
+   <canvas id="unity-canvas">
+   </canvas>
+  </div>
+  <div id="loading-cover" style="display:none;background: black;">
+   <div id="unity-loading-bar">
+    <canvas id="logo-canvas" style="position: absolute; background-color: black;">
+     <img id="ld_bg" src="loading.png"/>
+     <img id="ld_car" src="car-icon.png"/>
+    </canvas>
+   </div>
+  </div>
+  <!-- /0a502697b99e36d322eeb8daf23bc8b8.data.unityweb",
       frameworkUrl: buildUrl + "/f9b96a5188376a54aba0e08c0ed35ba8.js.unityweb",
       codeUrl: buildUrl + "/7b28c6f059eabf99b5ee87d37b2df90c.wasm.unityweb",
       streamingAssetsUrl: " -->
-<img id="azlogo" class="az" src="az_logo.png">
-<script type="57480f3f31f76c75506c83a0-text/javascript">
-    const container = document.querySelector("#unity-container");
+  <img class="az" id="azlogo" src="az_logo.png"/>
+  <script type="57480f3f31f76c75506c83a0-text/javascript">
+   const container = document.querySelector("#unity-container");
     const canvas = document.querySelector("#unity-canvas");
     const loadingCover = document.querySelector("#loading-cover");
     const fullscreenButton = document.querySelector("#unity-fullscreen-button");
@@ -239,12 +250,16 @@
 
     document.body.appendChild(script);
   </script>
-<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
-<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
-<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
-<script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics-compat.js" type="57480f3f31f76c75506c83a0-text/javascript"></script>
-<script type="57480f3f31f76c75506c83a0-module">
-  // Import the functions you need from the SDKs you need
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js" type="57480f3f31f76c75506c83a0-text/javascript">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js" type="57480f3f31f76c75506c83a0-text/javascript">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js" type="57480f3f31f76c75506c83a0-text/javascript">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics-compat.js" type="57480f3f31f76c75506c83a0-text/javascript">
+  </script>
+  <script type="57480f3f31f76c75506c83a0-module">
+   // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
   import { getAuth  } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
@@ -273,13 +288,18 @@ window.gtag("config", firebaseConfig.measurementId, {
 
   const app = firebase.initializeApp(firebaseConfig);
   const auth = getAuth(app);
-</script>
-<script src="rocket-loader.min.js" data-cf-settings="57480f3f31f76c75506c83a0-|49" defer></script>    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script data-cf-settings="57480f3f31f76c75506c83a0-|49" defer="" src="rocket-loader.min.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,145 +1,196 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en-US">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-
-<title>MineSweeper</title>
-
-<!-- Standard Setup -->
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<!-- Pre-Connect + Pre-Load -->
-<link rel="preconnect" href="https://fonts.gstatic.com">
-
-<!-- Descriptive Meta Tags -->
-<meta name="description" content="Play minesweeper online at the original #1 site. Works on phones, tablets and Mac!" />
-<meta name="keywords" content="Minesweeper, Minesweeper Game, Minesweeper Online, Classic Minesweeper" />
-<meta name="author" content="The Free Video Games Project" />
-<meta name="copyright" content="&copy; 2005-2023. FreeVideoGames.org. All Rights Reserved." />
-
-<!-- Open Graph / Twitter -->
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://freeminesweeper.org" />
-<meta property="og:site_name" content="FreeMinesweeper.org" />
-<meta property="og:title" content="Original Minesweeper.. in the Browser!" />
-<meta property="og:description" content="Awesome browser version of the original Windows Minesweeper. Play instantly anytime." />
-<meta property="og:image" content="https://freeminesweeper.org/images/thumbnails/free-minesweeper-thumbnail.png" />
-<meta name="twitter:image:alt" content="Minesweeper Game Logo" />
-<meta name="twitter:card" content="summary_large_image" />
-
-<!-- For the Robots -->
-<meta name="robots" content="all" />
-<meta name="revisit-after" content="7 days" />
-
-<!-- Canonical + Favicon -->
-<link rel="canonical" href="https://freeminesweeper.org" />
-<link rel="home" href="https://freeminesweeper.org" />
-<link rel="shortcut icon" href="favicon.ico" />
-<link rel="icon" type="image/x-icon" sizes="16x16" href="images/favicon16.png" />
-<link rel="icon" type="image/png" sizes="244x244" href="images/minesweeper-game-icon-244.png" />
-
-<!-- iOS Web App Specific -->
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-title" content="Minesweeper" />
-<link rel="apple-touch-icon" sizes="244x244" href="images/minesweeper-game-icon-244.png" />
-
-<!-- CSS -->
-<link rel="stylesheet" type="text/css" href="https://turbo.freevideogames.org/includes/css/core-game-site.css" />
-<link rel="stylesheet" type="text/css" href="https://turbo.freevideogames.org/includes/css/side-navigation.css" />
-<link rel="stylesheet" type="text/css" href="https://turbo.freevideogames.org/includes/css/minesweeper.css" />
-
-<!-- Fonts -->
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" />
-
-<!-- Scripts -->
-<script src="https://turbo.freevideogames.org/includes/js/core-game-site.js"></script>
-<script src="https://turbo.freevideogames.org/includes/js/screenfull.min.js"></script>
-<script src="https://turbo.freevideogames.org/includes/js/minesweepercookie.js"></script>
-	
-<!-- Plausible Analytics -->
-	  <script defer data-domain="freeminesweeper.org" src="https://plausible.io/js/script.js"></script>
-<!-- End Plausible Analytics -->
-	
-<!-- Start GAS -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7437598866529614" crossorigin="anonymous"></script>
-<!-- End GAS -->	
-	
-<!-- Google Tag Manager -->
-	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <title>
+   MineSweeper
+  </title>
+  <!-- Standard Setup -->
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <!-- Pre-Connect + Pre-Load -->
+  <link href="https://fonts.gstatic.com" rel="preconnect"/>
+  <!-- Descriptive Meta Tags -->
+  <meta content="Play minesweeper online at the original #1 site. Works on phones, tablets and Mac!" name="description"/>
+  <meta content="Minesweeper, Minesweeper Game, Minesweeper Online, Classic Minesweeper" name="keywords"/>
+  <meta content="The Free Video Games Project" name="author"/>
+  <meta content="© 2005-2023. FreeVideoGames.org. All Rights Reserved." name="copyright"/>
+  <!-- Open Graph / Twitter -->
+  <meta content="website" property="og:type"/>
+  <meta content="https://freeminesweeper.org" property="og:url"/>
+  <meta content="FreeMinesweeper.org" property="og:site_name"/>
+  <meta content="Original Minesweeper.. in the Browser!" property="og:title"/>
+  <meta content="Awesome browser version of the original Windows Minesweeper. Play instantly anytime." property="og:description"/>
+  <meta content="https://freeminesweeper.org/images/thumbnails/free-minesweeper-thumbnail.png" property="og:image"/>
+  <meta content="Minesweeper Game Logo" name="twitter:image:alt"/>
+  <meta content="summary_large_image" name="twitter:card"/>
+  <!-- For the Robots -->
+  <meta content="all" name="robots"/>
+  <meta content="7 days" name="revisit-after"/>
+  <!-- Canonical + Favicon -->
+  <link href="https://freeminesweeper.org" rel="canonical">
+   <link href="https://freeminesweeper.org" rel="home">
+    <link href="favicon.ico" rel="shortcut icon">
+     <link href="images/favicon16.png" rel="icon" sizes="16x16" type="image/x-icon"/>
+     <link href="images/minesweeper-game-icon-244.png" rel="icon" sizes="244x244" type="image/png"/>
+     <!-- iOS Web App Specific -->
+     <meta content="yes" name="apple-mobile-web-app-capable"/>
+     <meta content="Minesweeper" name="apple-mobile-web-app-title"/>
+     <link href="images/minesweeper-game-icon-244.png" rel="apple-touch-icon" sizes="244x244"/>
+     <!-- CSS -->
+     <link href="https://turbo.freevideogames.org/includes/css/core-game-site.css" rel="stylesheet" type="text/css"/>
+     <link href="https://turbo.freevideogames.org/includes/css/side-navigation.css" rel="stylesheet" type="text/css"/>
+     <link href="https://turbo.freevideogames.org/includes/css/minesweeper.css" rel="stylesheet" type="text/css"/>
+     <!-- Fonts -->
+     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&amp;display=swap" rel="stylesheet"/>
+     <!-- Scripts -->
+     <script src="https://turbo.freevideogames.org/includes/js/core-game-site.js">
+     </script>
+     <script src="https://turbo.freevideogames.org/includes/js/screenfull.min.js">
+     </script>
+     <script src="https://turbo.freevideogames.org/includes/js/minesweepercookie.js">
+     </script>
+     <!-- Plausible Analytics -->
+     <script data-domain="freeminesweeper.org" defer="" src="https://plausible.io/js/script.js">
+     </script>
+     <!-- End Plausible Analytics -->
+     <!-- Start GAS -->
+     <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7437598866529614">
+     </script>
+     <!-- End GAS -->
+     <!-- Google Tag Manager -->
+     <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-	})(window,document,'script','dataLayer','GTM-T49RDRD8');</script>
-<!-- End Google Tag Manager -->
-	
-</head>
-
-<body>
-	
-<!-- Google Tag Manager (noscript) -->
-	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T49RDRD8"
-	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->
-	
-<div id='full-page-container'>	
-<!-- Header Message -->
-<header>
-	<div id="header-message">
-		
-		<!-- This is breaking the game window so has been removed --> 
-
-	</div>		
-</header>
-<!-- End Header Message -->
-	
-<!-- Minesweeper Game Container --> 
-<div id="game-container">
-<div id="minesweepergame" style="touch-action: manipulation;">
-
-<!-- Create the menus 
+	})(window,document,'script','dataLayer','GTM-T49RDRD8');
+     </script>
+     <!-- End Google Tag Manager -->
+    </link>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+   <iframe height="0" src="https://www.googletagmanager.com/ns.html?id=GTM-T49RDRD8" style="display:none;visibility:hidden" width="0">
+   </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <div id="full-page-container">
+   <!-- Header Message -->
+   <header>
+    <div id="header-message">
+     <!-- This is breaking the game window so has been removed -->
+    </div>
+   </header>
+   <!-- End Header Message -->
+   <!-- Minesweeper Game Container -->
+   <div id="game-container">
+    <div id="minesweepergame" style="touch-action: manipulation;">
+     <!-- Create the menus 
 	 Uses DHTML layers, with a table around them.  Note the use of 
 	 OnClick as the primary handler.  See the javascript above. -->
-
-<!-- Game menu -->
-<div id="divMenuGame" style="position:absolute; visibility:hidden; width:150px; left:10px; top:30px; z-index:1;">
-  <table border="1" bgcolor="#C0C0C0"><tr><td class="menu_item" nowrap="nowrap">
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt="" name="imNew"          />&nbsp;<a onclick="return menuItemClick('New')">New &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; F2</a><br />
-	<hr />
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt="" name="imBeginner"     />&nbsp;<a onclick="menuItemClick('Beginner')"     >Beginner</a><br />
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt="" name="imIntermediate" />&nbsp;<a onclick="menuItemClick('Intermediate')" >Intermediate</a><br />
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt="" name="imExpert"       />&nbsp;<a onclick="menuItemClick('Expert')"       >Expert</a><br />
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt="" name="imCustom"       />&nbsp;<a onclick="menuItemClick('Custom')"       >Custom</a><br />
-	<hr />
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt=""                       />&nbsp;<a onclick="return menuItemClick('Personal')" >Personal&nbsp;Best</a>
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="0" height="0" alt="" /><hr />
-	<img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10" height="10" alt="" name="imExit"         />&nbsp;<a onclick="return menuItemClick('Exit')"  >Exit</a><br />
-  </td></tr></table>
-</div>
-
-<!-- Options menu -->
-<div id="divMenuOpt" style="position:absolute; visibility:hidden; width:150px; left:53px; top:30px; z-index:1;">
-  <table border="1" bgcolor="#C0C0C0"><tr><td class="menu_item" nowrap="nowrap">
-	<a onclick="return menuItemClick('First')"     title="The first move will always open a useful series of squares" >                     <img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" alt=""    name="imFirst"     border="0" width="10" height="10" />&nbsp;Opening&nbsp;Move</a><br />
-	<a onclick="return menuItemClick('Marks')"     title="Second left-click changes bomb marking to a question mark">                       <img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" alt=""   name="imMarks"     border="0" width="10" height="10" />&nbsp;Question Marks</a><br />
-	<a onclick="return menuItemClick('Area')"      title="Clicking on numbered/satisfied square will open all its neighbors">               <img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" alt=""   name="imUseMacro"  border="0" width="10" height="10" />&nbsp;Area Open</a><br />
-	<a onclick="return menuItemClick('Remaining')" title="When 0 bombs are left unmarked, click the bomb counter 000 to open all remaining"><img src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" alt=""   name="imRemaining" border="0" width="10" height="10" />&nbsp;Open&nbsp;Remaining</a>&nbsp;<br />
-  </td></tr></table>
-</div>
-
-<!-- Help menu -->
-<div id="divMenuHelp" style="position:absolute; visibility:hidden; width:110px; left:110px; top:30px; z-index:1;">
-  <table border="1" bgcolor="#C0C0C0"><tr><td class="menu_item" nowrap="nowrap">
-	&nbsp;<a onclick="return menuItemClick('Instructions')">Instructions</a><br />
-	<hr />
-	&nbsp;<a onclick="return menuItemClick('About')"       >About</a><br />
-  </td></tr></table>
-</div>
-
-<script type="text/javascript">
-
-//Run when the page has loaded to display welcome message for touch device users
+     <!-- Game menu -->
+     <div id="divMenuGame" style="position:absolute; visibility:hidden; width:150px; left:10px; top:30px; z-index:1;">
+      <table bgcolor="#C0C0C0" border="1">
+       <tr>
+        <td class="menu_item" nowrap="nowrap">
+         <img alt="" height="10" name="imNew" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="return menuItemClick('New')">
+          New             F2
+         </a>
+         <br/>
+         <hr/>
+         <img alt="" height="10" name="imBeginner" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="menuItemClick('Beginner')">
+          Beginner
+         </a>
+         <br/>
+         <img alt="" height="10" name="imIntermediate" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="menuItemClick('Intermediate')">
+          Intermediate
+         </a>
+         <br/>
+         <img alt="" height="10" name="imExpert" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="menuItemClick('Expert')">
+          Expert
+         </a>
+         <br/>
+         <img alt="" height="10" name="imCustom" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="menuItemClick('Custom')">
+          Custom
+         </a>
+         <br/>
+         <hr/>
+         <img alt="" height="10" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="return menuItemClick('Personal')">
+          Personal Best
+         </a>
+         <img alt="" height="0" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="0"/>
+         <hr/>
+         <img alt="" height="10" name="imExit" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/notchecked.gif" width="10"/>
+         <a onclick="return menuItemClick('Exit')">
+          Exit
+         </a>
+         <br/>
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- Options menu -->
+     <div id="divMenuOpt" style="position:absolute; visibility:hidden; width:150px; left:53px; top:30px; z-index:1;">
+      <table bgcolor="#C0C0C0" border="1">
+       <tr>
+        <td class="menu_item" nowrap="nowrap">
+         <a onclick="return menuItemClick('First')" title="The first move will always open a useful series of squares">
+          <img alt="" border="0" height="10" name="imFirst" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" width="10"/>
+          Opening Move
+         </a>
+         <br/>
+         <a onclick="return menuItemClick('Marks')" title="Second left-click changes bomb marking to a question mark">
+          <img alt="" border="0" height="10" name="imMarks" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" width="10"/>
+          Question Marks
+         </a>
+         <br/>
+         <a onclick="return menuItemClick('Area')" title="Clicking on numbered/satisfied square will open all its neighbors">
+          <img alt="" border="0" height="10" name="imUseMacro" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" width="10"/>
+          Area Open
+         </a>
+         <br/>
+         <a onclick="return menuItemClick('Remaining')" title="When 0 bombs are left unmarked, click the bomb counter 000 to open all remaining">
+          <img alt="" border="0" height="10" name="imRemaining" src="https://cdn.jsdelivr.net/gh/thirstygithub/didactic-guacamole/images/checked.gif" width="10"/>
+          Open Remaining
+         </a>
+         <br/>
+        </td>
+       </tr>
+      </table>
+     </div>
+     <!-- Help menu -->
+     <div id="divMenuHelp" style="position:absolute; visibility:hidden; width:110px; left:110px; top:30px; z-index:1;">
+      <table bgcolor="#C0C0C0" border="1">
+       <tr>
+        <td class="menu_item" nowrap="nowrap">
+         <a onclick="return menuItemClick('Instructions')">
+          Instructions
+         </a>
+         <br/>
+         <hr/>
+         <a onclick="return menuItemClick('About')">
+          About
+         </a>
+         <br/>
+        </td>
+       </tr>
+      </table>
+     </div>
+     <script type="text/javascript">
+      //Run when the page has loaded to display welcome message for touch device users
 window.addEventListener('load', (event) => {
 if (touchDeviceGlobal){
 	document.querySelector("#firsttimemobile-modal").style.display = "block"; // Turn on display of the hidden First Time Mobile User Modal
@@ -1118,37 +1169,41 @@ function menuItemClick(thisMsg)
 
 /* ]]> */
 // -->
-</script>
-
-
-
-<!-- Menubar -->
-<table width="150" border="0" cellspacing="0" cellpadding="0"  class="menu_margin">
-<tr>
-<td class="menu_title">&nbsp;</td>
-<td width="43" class="menu_title"><a onclick="return menuClick('divMenuGame')" onmouseover="return menuMouseOver('divMenuGame')">Game</a></td>
-<td width="55" class="menu_title"><a onclick="return menuClick('divMenuOpt')"  onmouseover="return menuMouseOver('divMenuOpt')" >Options</a></td>
-<td width="50" class="menu_title"><a onclick="return menuClick('divMenuHelp')" onmouseover="return menuMouseOver('divMenuHelp')">Help</a></td>
-</tr>
-</table>
-
-
-
-<!-- Special check box - retains focus no matter what. Note it is located off the screen to the left by 200 pixels.  It looks ugly otherwise. -->
-<div class="focus_box">
-<form name="checkForm" action="ignore">
-	<input id="hiddencheckbox" type="checkbox" onclick="cellRightClick()" name="modeCheck" />
-	<label for="hiddencheckbox">Hidden checkbox please ignore</label>
-</form>
-</div>
-
-
-
-<!-- Create the board itself. This is done in JavaScript so the board can be dynamically sized-->
-
-
-<script type="text/javascript">
-<!-- 
+     </script>
+     <!-- Menubar -->
+     <table border="0" cellpadding="0" cellspacing="0" class="menu_margin" width="150">
+      <tr>
+       <td class="menu_title">
+       </td>
+       <td class="menu_title" width="43">
+        <a onclick="return menuClick('divMenuGame')" onmouseover="return menuMouseOver('divMenuGame')">
+         Game
+        </a>
+       </td>
+       <td class="menu_title" width="55">
+        <a onclick="return menuClick('divMenuOpt')" onmouseover="return menuMouseOver('divMenuOpt')">
+         Options
+        </a>
+       </td>
+       <td class="menu_title" width="50">
+        <a onclick="return menuClick('divMenuHelp')" onmouseover="return menuMouseOver('divMenuHelp')">
+         Help
+        </a>
+       </td>
+      </tr>
+     </table>
+     <!-- Special check box - retains focus no matter what. Note it is located off the screen to the left by 200 pixels.  It looks ugly otherwise. -->
+     <div class="focus_box">
+      <form action="ignore" name="checkForm">
+       <input id="hiddencheckbox" name="modeCheck" onclick="cellRightClick()" type="checkbox"/>
+       <label for="hiddencheckbox">
+        Hidden checkbox please ignore
+       </label>
+      </form>
+     </div>
+     <!-- Create the board itself. This is done in JavaScript so the board can be dynamically sized-->
+     <script type="text/javascript">
+      <!-- 
    // Create a distinct DIV section for the board, and hide it until it is ready.
    // This is important for slower machines, since the onclick events are
    // available as soon as they are created, even if the board isn't fully built.
@@ -1228,34 +1283,28 @@ document.write('</div>');
 	document.getElementById("divBoard").style.visibility = "visible";
 	
 //-->
-</script>
-
-
-
-</div>
-		
-</div>
-<!-- End Minesweeper Game Container --> 
-	
-<!-- Footer Navigation -->
-<footer>
-	<div id="footer-navigation">
-	</div>
-</footer>
-<!-- End Footer Navigation -->	
-
-</div>
-
-<!-- ************************* ALL MODAL WINDOWS START HERE ********************************* -->
-
-
-<!-- Win Modal HTML code -->
-<div class="modal-background" id="win-modal-background"></div>
-<div class="modal" id="win-modal">
-  <button class="close-button" id="close-button">CLOSE</button>
-  	<div class="modal-guts"> 
-		<script type="text/javascript">  
-			  function gameWinModal() {
+     </script>
+    </div>
+   </div>
+   <!-- End Minesweeper Game Container -->
+   <!-- Footer Navigation -->
+   <footer>
+    <div id="footer-navigation">
+    </div>
+   </footer>
+   <!-- End Footer Navigation -->
+  </div>
+  <!-- ************************* ALL MODAL WINDOWS START HERE ********************************* -->
+  <!-- Win Modal HTML code -->
+  <div class="modal-background" id="win-modal-background">
+  </div>
+  <div class="modal" id="win-modal">
+   <button class="close-button" id="close-button">
+    CLOSE
+   </button>
+   <div class="modal-guts">
+    <script type="text/javascript">
+     function gameWinModal() {
 				  // Read the 4 vars as cookies
 				  console.log("Function gameWinModal was called and before checking cookies, maxX was " + maxX + " and maxY was " + maxY + " and maxNumBombs was " + maxNumBombs);
 				   maxX=parseInt(getCookie("maxX"),10);  // Cells wide (0..n-1)
@@ -1289,15 +1338,18 @@ document.write('</div>');
 				   
 				   
 			  }
-		</script>
-	  
-<div id="success-message"><h2>SUCCESS!</h2></div>
-
-
-  <p>Congratulations on winning Minesweeper</p>
-	  <div id="win-modal-div">
-			<script>
-			// This is the old Mine Win results screen showing the game's statistics, rewritten for modal display
+    </script>
+    <div id="success-message">
+     <h2>
+      SUCCESS!
+     </h2>
+    </div>
+    <p>
+     Congratulations on winning Minesweeper
+    </p>
+    <div id="win-modal-div">
+     <script>
+      // This is the old Mine Win results screen showing the game's statistics, rewritten for modal display
 			// This writes the HTML into the modal display, whether it is hidden from view or not
 			function modalWriteHTML() {
 			var winModalDiv = document.getElementById("win-modal-div");
@@ -1307,15 +1359,14 @@ document.write('</div>');
 		    else {winModalDiv.innerHTML = winModalDiv.innerHTML + "Your best "+gameFormat+" time is: "+highTime+" seconds<br />";}
 			winModalDiv.innerHTML = winModalDiv.innerHTML + "Number of clicks was: "+numMoves+"</p>";		
 			}
-		  </script>	  
-	  </div>	
+     </script>
+    </div>
+   </div>
   </div>
-</div>
-<!-- End Win Modal HTML code -->
-
-<!-- Start Win Modal Javascript code -->
-<script>
-	var winModalDIV = document.querySelector("#win-modal");
+  <!-- End Win Modal HTML code -->
+  <!-- Start Win Modal Javascript code -->
+  <script>
+   var winModalDIV = document.querySelector("#win-modal");
 	var winModalBackground = document.querySelector("#win-modal-background");
 	var winCloseButton = document.querySelector("#close-button");	
 	winCloseButton.addEventListener("click", function() {
@@ -1323,18 +1374,18 @@ document.write('</div>');
 		winModalBackground.style.display = "none";
 		document.getElementById("minesweepergame").style.filter = "none"; // Turn off blur
 	});
-</script>
-<!-- End Win Modal Javascript code -->
-	
-
-
-<!-- Personal Best Modal HTML code -->
-<div class="modal-background" id="pb-modal-background"></div>
-	<div class="modal" id="pb-modal">
-	  <button class="close-button" id="pb-close-button">CLOSE</button>
-		  <div class="modal-guts"> 
-			<script type="text/javascript">  
-				  function pbModal() {
+  </script>
+  <!-- End Win Modal Javascript code -->
+  <!-- Personal Best Modal HTML code -->
+  <div class="modal-background" id="pb-modal-background">
+  </div>
+  <div class="modal" id="pb-modal">
+   <button class="close-button" id="pb-close-button">
+    CLOSE
+   </button>
+   <div class="modal-guts">
+    <script type="text/javascript">
+     function pbModal() {
 					  bestBeginner = parseInt(getCookie("Beginner"),10);
 						 if (isNaN(bestBeginner))
 							bestBeginner = 999;
@@ -1353,38 +1404,59 @@ document.write('</div>');
 						 setCookie("Expert",999);
 						 window.close(); }
 				  }
-			</script>
-		  
-	<h2>Personal Best Times</h2>
-		  <div id="pb-modal-div">
-				<table cellpadding=4>
-					<tr>
-					  <td><b>Beginner:&nbsp</b></td>
-					  <td align="right"><b>
-						<div id="pb-beginner"></div>
-					  </b></td>
-					</tr>
-					<tr>
-					  <td><b>Intermediate:&nbsp</b></td>
-					  <td align="right"><b>
-						<div id="pb-intermediate"></div>
-					  </b></td>
-					</tr>
-					<tr>
-					  <td><b>Expert:&nbsp</b></td>
-					  <td align="right"><b>
-						<div id="pb-expert"></div>
-					  </b></td>
-					</tr>
-				  </table>
-		  </div>	
-	  </div>
-	</div>
-<!-- End PB Modal HTML code -->
-	
-<!-- Start PB Modal close button code -->
-<script>
-	var pbModalDIV = document.querySelector("#pb-modal");
+    </script>
+    <h2>
+     Personal Best Times
+    </h2>
+    <div id="pb-modal-div">
+     <table cellpadding="4">
+      <tr>
+       <td>
+        <b>
+         Beginner:
+        </b>
+       </td>
+       <td align="right">
+        <b>
+         <div id="pb-beginner">
+         </div>
+        </b>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <b>
+         Intermediate:
+        </b>
+       </td>
+       <td align="right">
+        <b>
+         <div id="pb-intermediate">
+         </div>
+        </b>
+       </td>
+      </tr>
+      <tr>
+       <td>
+        <b>
+         Expert:
+        </b>
+       </td>
+       <td align="right">
+        <b>
+         <div id="pb-expert">
+         </div>
+        </b>
+       </td>
+      </tr>
+     </table>
+    </div>
+   </div>
+  </div>
+  <!-- End PB Modal HTML code -->
+  <!-- Start PB Modal close button code -->
+  <script>
+   var pbModalDIV = document.querySelector("#pb-modal");
 	var pbModalBackground = document.querySelector("#pb-modal-background");
 	var pbCloseButton = document.querySelector("#pb-close-button");	
 	pbCloseButton.addEventListener("click", function() {
@@ -1392,19 +1464,18 @@ document.write('</div>');
 	pbModalBackground.style.display = "none";
 	document.getElementById("minesweepergame").style.filter = "none"; // Turn off blur
 	});
-</script>
-<!-- End PB Modal close button code -->
-
-
-
-
-<!-- Custom Game Settings Modal HTML code -->
-	<div class="modal-background" id="custom-modal-background"></div>
-		<div class="modal" id="custom-modal">
-		  <button class="close-button" id="custom-close-button">CLOSE</button>
-			  <div class="modal-guts"> 
-				<script type="text/javascript">  
-					  function customModal() {
+  </script>
+  <!-- End PB Modal close button code -->
+  <!-- Custom Game Settings Modal HTML code -->
+  <div class="modal-background" id="custom-modal-background">
+  </div>
+  <div class="modal" id="custom-modal">
+   <button class="close-button" id="custom-close-button">
+    CLOSE
+   </button>
+   <div class="modal-guts">
+    <script type="text/javascript">
+     function customModal() {
 
 					 maxX=parseInt(getCookie("maxX"),10)+1;  // Cells wide (0..n-1)
 					 maxY=parseInt(getCookie("maxY"),10)+1;  // Cells high (0..n-1)
@@ -1448,34 +1519,60 @@ document.write('</div>');
 	   e.preventDefault(); //stop form action i.e. submit
    }
 					  }
-				</script>
-			  
-		<h2>Custom Game Setup</h2>
-			  <div id="custom-modal-div">
-					<form name="CustomForm" id="CustomForm">
-						<div align="center">
-							<center><table border="0">
-							<tr><td>Game Height:</td>
-								<td><div id="custom-height"></div></td>
-							</tr>
-							<tr><td>Game Width:</td>
-								<td><div id="custom-width"></div></td>
-							</tr>
-							<tr><td>Number of Bombs:</td>
-								<td><div id="custom-bombs"></div></td>
-							</tr>
-						</table></center>
-						</div>
-					<center><p><button type="submit">OK</button></p></center>
-					</form>
-			  </div>	
-		  </div>
-		</div>
-<!-- End Custom Game Settings Modal HTML code -->
-		
-<!-- Start Custom Game Settings Modal close button code -->
-<script>
-	var customModalDIV = document.querySelector("#custom-modal");
+    </script>
+    <h2>
+     Custom Game Setup
+    </h2>
+    <div id="custom-modal-div">
+     <form id="CustomForm" name="CustomForm">
+      <div align="center">
+       <center>
+        <table border="0">
+         <tr>
+          <td>
+           Game Height:
+          </td>
+          <td>
+           <div id="custom-height">
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           Game Width:
+          </td>
+          <td>
+           <div id="custom-width">
+           </div>
+          </td>
+         </tr>
+         <tr>
+          <td>
+           Number of Bombs:
+          </td>
+          <td>
+           <div id="custom-bombs">
+           </div>
+          </td>
+         </tr>
+        </table>
+       </center>
+      </div>
+      <center>
+       <p>
+        <button type="submit">
+         OK
+        </button>
+       </p>
+      </center>
+     </form>
+    </div>
+   </div>
+  </div>
+  <!-- End Custom Game Settings Modal HTML code -->
+  <!-- Start Custom Game Settings Modal close button code -->
+  <script>
+   var customModalDIV = document.querySelector("#custom-modal");
 	var customModalBackground = document.querySelector("#custom-modal-background");
 	var customCloseButton = document.querySelector("#custom-close-button");	
 	customCloseButton.addEventListener("click", function() {
@@ -1483,34 +1580,49 @@ document.write('</div>');
 	customModalBackground.style.display = "none";
 	document.getElementById("minesweepergame").style.filter = "none"; // Turn off blur
 	});
-</script>
-<!-- End Custom Game Settings Modal close button code -->
-	
-	
-	
-<!-- First Time Mobile User Modal HTML code -->
-	<div class="modal-background" id="firsttimemobile-modal-background"></div>
-		<div class="large-modal" id="firsttimemobile-modal">
-		  <button class="close-button" id="firsttimemobile-close-button">CLOSE</button>
-			  <div class="modal-guts"> 
-			  
-		<h1>WELCOME!</h1>
-		
-		<ul>
-		<li>This is the only <b>Minesweeper</b> website to work well on phones and tablets - you've come to the right place!</li>
-		<li>Double-tap on squares to mark them with a flag</li>
-		<li>You can find us in future by searching Google for <b>"free minesweeper"</b></li>
-		<li>If you need instructions, they're in the menu</b></li>
-		</ul>
-		<p>Enjoy!</p>
-	
-		  </div>
-		</div>
-<!-- End First Time Mobile User Modal HTML code -->
-		
-<!-- Start First Time Mobile User Modal close button code -->
-<script>
-	var firsttimemobileModalDIV = document.querySelector("#firsttimemobile-modal");
+  </script>
+  <!-- End Custom Game Settings Modal close button code -->
+  <!-- First Time Mobile User Modal HTML code -->
+  <div class="modal-background" id="firsttimemobile-modal-background">
+  </div>
+  <div class="large-modal" id="firsttimemobile-modal">
+   <button class="close-button" id="firsttimemobile-close-button">
+    CLOSE
+   </button>
+   <div class="modal-guts">
+    <h1>
+     WELCOME!
+    </h1>
+    <ul>
+     <li>
+      This is the only
+      <b>
+       Minesweeper
+      </b>
+      website to work well on phones and tablets - you've come to the right place!
+     </li>
+     <li>
+      Double-tap on squares to mark them with a flag
+     </li>
+     <li>
+      You can find us in future by searching Google for
+      <b>
+       "free minesweeper"
+      </b>
+     </li>
+     <li>
+      If you need instructions, they're in the menu
+     </li>
+    </ul>
+    <p>
+     Enjoy!
+    </p>
+   </div>
+  </div>
+  <!-- End First Time Mobile User Modal HTML code -->
+  <!-- Start First Time Mobile User Modal close button code -->
+  <script>
+   var firsttimemobileModalDIV = document.querySelector("#firsttimemobile-modal");
 	var firsttimemobileModalBackground = document.querySelector("#firsttimemobile-modal-background");
 	var firsttimemobileCloseButton = document.querySelector("#firsttimemobile-close-button");	
 	firsttimemobileCloseButton.addEventListener("click", function() {
@@ -1518,19 +1630,18 @@ document.write('</div>');
 	firsttimemobileModalBackground.style.display = "none";
 	document.getElementById("minesweepergame").style.filter = "none"; // Turn off blur
 	});
-</script>
-<!-- End First Time Mobile User Modal close button code -->
-
-
-<!-- ************************* ALL MODAL WINDOWS END HERE ********************************* -->
-
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <!-- End First Time Mobile User Modal close button code -->
+  <!-- ************************* ALL MODAL WINDOWS END HERE ********************************* -->
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,6 +1,6 @@
 <div id="tac-phone-widget" style="display:none; position:fixed; bottom:20px; left:20px; z-index:9999;">
-    <style>
-        #tac-phone-widget {
+ <style>
+  #tac-phone-widget {
             --pw-accent: #22c55e;
             --pw-accent-dim: rgba(34,197,94,0.15);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -75,28 +75,37 @@
         .pw-btn:active { transform: scale(0.97); }
         .pw-ignore  { background: #ef4444; color: #fff; }
         .pw-answer  { background: var(--pw-accent); color: #000; }
-    </style>
-
-    <div class="pw-card">
-        <div class="pw-header">
-            <div class="pw-dot"></div>
-            <span class="pw-label">Incoming TAC Call</span>
-        </div>
-        <div class="pw-caller">
-            <div class="pw-name" id="w-name">Unknown</div>
-            <div class="pw-ext" id="w-ext">Ext ---</div>
-        </div>
-        <div class="pw-buttons">
-            <button class="pw-btn pw-ignore" id="w-ignore">Ignore</button>
-            <button class="pw-btn pw-answer" id="w-answer">Answer</button>
-        </div>
-    </div>
+ </style>
+ <div class="pw-card">
+  <div class="pw-header">
+   <div class="pw-dot">
+   </div>
+   <span class="pw-label">
+    Incoming TAC Call
+   </span>
+  </div>
+  <div class="pw-caller">
+   <div class="pw-name" id="w-name">
+    Unknown
+   </div>
+   <div class="pw-ext" id="w-ext">
+    Ext ---
+   </div>
+  </div>
+  <div class="pw-buttons">
+   <button class="pw-btn pw-ignore" id="w-ignore">
+    Ignore
+   </button>
+   <button class="pw-btn pw-answer" id="w-answer">
+    Answer
+   </button>
+  </div>
+ </div>
 </div>
-
-<audio id="widget-ringtone" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" loop style="display:none;"></audio>
-
+<audio id="widget-ringtone" loop="" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3" style="display:none;">
+</audio>
 <script>
-// Uses a regular script + dynamic import() so it executes correctly
+ // Uses a regular script + dynamic import() so it executes correctly
 // when re-created via DOM after fetch → innerHTML → re-append trick.
 (async function() {
     // phone.html handles calls natively — don't duplicate
@@ -246,4 +255,6 @@
         remove(sessionRef);
     });
 })();
+</script>
+<script src="app-presence.js">
 </script>

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yuhh</title>
-    <style>
-        * {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Yuhh
+  </title>
+  <style>
+   * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -24,15 +26,15 @@
             height: 100%;
             border: none;
         }
-    </style>
-</head>
-<body>
-    <iframe id="gameFrame" 
-            title="Clash Royale Game">
-    </iframe>
-
-    <script>
-        window.addEventListener('load', function() {
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <iframe id="gameFrame" title="Clash Royale Game">
+  </iframe>
+  <script>
+   window.addEventListener('load', function() {
             alert("Fyi this game might not work in school and it might not even work out of school, so dont complain that it doesnt work. Thanks!");
 
             setTimeout(function() {
@@ -98,14 +100,16 @@
 
             iframe.src = currentLink;
         }
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

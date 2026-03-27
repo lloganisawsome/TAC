@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/web-ports/hollow-knight@latest/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Hollow Knight</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/web-ports/hollow-knight@latest/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity WebGL Player | Hollow Knight
+  </title>
+  <link href="TemplateData/favicon.ico" rel="shortcut icon"/>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <style>
+   html,
         body {
             margin: 0;
             padding: 0;
@@ -27,24 +28,31 @@
             top: 0;
             left: 0;
         }
-
-    </style>
-</head>
-
-<body>
-    <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;"> LOADING... </div>
-    <div hidden id="unity-container" class="unity-desktop">
-        <canvas id="unity-canvas"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-        </div>
-        <div id="unity-mobile-warning"> WebGL builds are not supported on mobile devices. </div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="color: white; font-size: 48px; font-family: cursive; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <div class="unity-desktop" hidden="" id="unity-container">
+   <canvas id="unity-canvas">
+   </canvas>
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
     </div>
-    <script>
-        var loadingText = document.querySelector("#loading-text");
+    <div id="unity-progress-bar-empty">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+   </div>
+   <div id="unity-mobile-warning">
+    WebGL builds are not supported on mobile devices.
+   </div>
+  </div>
+  <script>
+   var loadingText = document.querySelector("#loading-text");
         let totalBytes = 0;
         let loadedBytes = 0;
         async function getSize(url) {
@@ -164,14 +172,16 @@
             };
             document.body.appendChild(script);
         })();
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

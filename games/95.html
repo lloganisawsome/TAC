@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-<base href="https://cdn.jsdelivr.net/gh/Stinkalistic/UGS@main/MISC/wolfenstein/">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <title>Wolfenstein 3D</title>
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="description" content="First-person-shooter Wolfenstein 3D from 1992 ported for the web">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0.0, viewport-fit=cover">
-	<style>
-	html {
+ <base href="https://cdn.jsdelivr.net/gh/Stinkalistic/UGS@main/MISC/wolfenstein/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <title>
+   Wolfenstein 3D
+  </title>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="First-person-shooter Wolfenstein 3D from 1992 ported for the web" name="description"/>
+  <meta content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0.0, viewport-fit=cover" name="viewport"/>
+  <style>
+   html {
 	        height: 100vh;
 	}
 	a {
@@ -73,25 +75,35 @@
 		transform: translateZ(0);
 		animation: page-loader 1.1s infinite linear;
 	}
-	</style>
-</head>
-<body>
-    <!-- Create the canvas that the C++ code will draw into -->
-    <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-	<div class="info-overlay" id="loading">
-		<div id="spinner"></div>
-		<div id="status">Downloading...</div>
-		<div>
-			<progress value="0" max="100" id="progress" hidden=1></progress>  
-		</div>
-	</div>
-	<div class="info-overlay" id="select-version">
-		<a href="#" id="load">Load</a><br/>
-		~2mb
-	</div>
-    <!-- Allow the C++ to access the canvas element -->
-    <script type='text/javascript'>
-		var loadScript = (ev, src) => {
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Create the canvas that the C++ code will draw into -->
+  <canvas id="canvas" oncontextmenu="event.preventDefault()">
+  </canvas>
+  <div class="info-overlay" id="loading">
+   <div id="spinner">
+   </div>
+   <div id="status">
+    Downloading...
+   </div>
+   <div>
+    <progress hidden="1" id="progress" max="100" value="0">
+    </progress>
+   </div>
+  </div>
+  <div class="info-overlay" id="select-version">
+   <a href="#" id="load">
+    Load
+   </a>
+   <br/>
+   ~2mb
+  </div>
+  <!-- Allow the C++ to access the canvas element -->
+  <script type="text/javascript">
+   var loadScript = (ev, src) => {
 			ev.preventDefault();
 
 			// Hide select-version, show loader
@@ -167,13 +179,16 @@
 				}
 			};
 		};
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

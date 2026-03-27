@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<script src="guard.js"></script>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAC - Home</title>
-
-<!-- 🔒 Embedded-only protection -->
-<script>
-(function(){
+ <head>
+  <script src="guard.js">
+  </script>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC - Home
+  </title>
+  <!-- 🔒 Embedded-only protection -->
+  <script>
+   (function(){
   try {
     if (window.top === window.self) {
       window.location.replace('https://www.google.com/');
@@ -19,10 +21,9 @@
     window.location.replace('https://www.google.com/');
   }
 })();
-</script>
-
-<style>
-:root {
+  </script>
+  <style>
+   :root {
     --bg: #0a0a0b;
     --panel: #111113;
     --panel-hover: #1a1a1c;
@@ -773,198 +774,266 @@ html, body {
         grid-template-columns: 1fr;
     }
 }
-</style>
-</head>
-
-<audio id="bgMusic" loop>
-    <source src="homepage.mp3" type="audio/mpeg">
-</audio>
-
-<body>
-
-<!-- Intro Dialog -->
-<div class="intro-overlay" id="introOverlay">
-    <div class="intro-dialog">
-        <h2>👋 Welcome to TAC!</h2>
-        <p>Here's a quick look at what's new on the homepage:</p>
-
-        <div class="intro-section">
-            <h3>🟢 Online Users</h3>
-            <p>See how many people are currently on TAC. Click it to see exactly who's online and when offline users were last seen.</p>
-        </div>
-
-        <div class="intro-section">
-            <h3>🔥 Login Streak</h3>
-            <p>Your login streak counts how many days in a row you've visited TAC. Come back every day to keep it going!</p>
-        </div>
-
-        <div class="intro-section">
-            <h3>🏆 Leaderboards</h3>
-            <p>Compete with others! The leaderboards show who has the longest login streak and who has spent the most total time on TAC.</p>
-        </div>
-
-        <div class="intro-section">
-            <h3>⏱️ Time on TAC</h3>
-            <p>Your total time spent on TAC is tracked and synced. It shows up in the top bar and on the leaderboard.</p>
-        </div>
-
-        <button class="intro-btn" id="introCloseBtn">Got it!</button>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <audio id="bgMusic" loop="">
+  <source src="homepage.mp3" type="audio/mpeg"/>
+ </audio>
+ <body>
+  <!-- Intro Dialog -->
+  <div class="intro-overlay" id="introOverlay">
+   <div class="intro-dialog">
+    <h2>
+     👋 Welcome to TAC!
+    </h2>
+    <p>
+     Here's a quick look at what's new on the homepage:
+    </p>
+    <div class="intro-section">
+     <h3>
+      🟢 Online Users
+     </h3>
+     <p>
+      See how many people are currently on TAC. Click it to see exactly who's online and when offline users were last seen.
+     </p>
     </div>
-</div>
-
-<!-- Kinetic Dots Canvas -->
-<canvas id="dotsCanvas"></canvas>
-
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    <div class="intro-section">
+     <h3>
+      🔥 Login Streak
+     </h3>
+     <p>
+      Your login streak counts how many days in a row you've visited TAC. Come back every day to keep it going!
+     </p>
     </div>
-
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item active">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <a href="chat.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                <circle cx="8" cy="10" r="1.5"/>
-                <circle cx="12" cy="10" r="1.5"/>
-                <circle cx="16" cy="10" r="1.5"/>
-            </svg>
-            <span>Chat</span>
-        </a>
-
-        <a href="notgames.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-            </svg>
-            <span>Games</span>
-        </a>
-
-        <a href="phone.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-            </svg>
-            <span>Phone</span>
-        </a>
-
-        <a href="apps.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-            </svg>
-            <span>All Apps</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<!-- Main Content -->
-<main class="main-content" id="mainContent">
-    <div class="header">
-        <h1>Welcome to TAC</h1>
-        <div class="datetime" id="datetime"></div>
+    <div class="intro-section">
+     <h3>
+      🏆 Leaderboards
+     </h3>
+     <p>
+      Compete with others! The leaderboards show who has the longest login streak and who has spent the most total time on TAC.
+     </p>
     </div>
-
-    <!-- Top Info Row: Quote + Time on TAC + Online -->
-    <div class="top-info-row">
-        <div class="quote-box" id="quoteBox">
-            <span class="quote-text" id="quoteText">Loading message...</span>
-        </div>
-        <div class="timeon-box">
-            <span class="timeon-label">Time on TAC</span>
-            <span class="timeon-value" id="timeonValue">--:--:--</span>
-        </div>
-        <div class="online-box" id="onlineBox">
-            <span class="online-label">Users</span>
-            <span class="online-value">
-                <span class="online-dot"></span>
-                <span id="onlineCount">0</span> Online
-            </span>
-            <div class="online-dropdown" id="onlineDropdown">
-                <div class="online-dropdown-title">All Users</div>
-                <div id="onlineUsersList"></div>
-            </div>
-        </div>
+    <div class="intro-section">
+     <h3>
+      ⏱️ Time on TAC
+     </h3>
+     <p>
+      Your total time spent on TAC is tracked and synced. It shows up in the top bar and on the leaderboard.
+     </p>
     </div>
-
-    <!-- Leaderboards -->
-    <div class="leaderboard-row">
-        <div class="leaderboard-panel">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z"/></svg>
-                Top Login Streaks
-            </h3>
-            <ul class="lb-list" id="streakLeaderboard">
-                <li class="lb-item" style="color:var(--muted)">Loading...</li>
-            </ul>
-        </div>
-        <div class="leaderboard-panel">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-                Top Time on TAC
-            </h3>
-            <ul class="lb-list" id="timeLeaderboard">
-                <li class="lb-item" style="color:var(--muted)">Loading...</li>
-            </ul>
-        </div>
+    <button class="intro-btn" id="introCloseBtn">
+     Got it!
+    </button>
+   </div>
+  </div>
+  <!-- Kinetic Dots Canvas -->
+  <canvas id="dotsCanvas">
+  </canvas>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item active" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+      <circle cx="8" cy="10" r="1.5">
+      </circle>
+      <circle cx="12" cy="10" r="1.5">
+      </circle>
+      <circle cx="16" cy="10" r="1.5">
+      </circle>
+     </svg>
+     <span>
+      Chat
+     </span>
+    </a>
+    <a class="nav-item" href="notgames.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
+      </path>
+     </svg>
+     <span>
+      Games
+     </span>
+    </a>
+    <a class="nav-item" href="phone.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+      </path>
+     </svg>
+     <span>
+      Phone
+     </span>
+    </a>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      All Apps
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+   <div class="header">
+    <h1>
+     Welcome to TAC
+    </h1>
+    <div class="datetime" id="datetime">
     </div>
-
-    <div class="grid">
-        <!-- Carousel Panel -->
-        <div class="panel">
-            <div class="panel-header">
-                <div>
-                    <h2 class="panel-title">Featured</h2>
-                    <p class="panel-subtitle">Latest highlights</p>
-                </div>
-            </div>
-            <div class="image-carousel">
-                <div class="carousel-images" id="carouselImages"></div>
-                <button class="carousel-control prev" id="prevBtn">‹</button>
-                <button class="carousel-control next" id="nextBtn">›</button>
-            </div>
-        </div>
-
-        <!-- News Panel -->
-        <div class="panel">
-            <div class="panel-header">
-                <div>
-                    <h2 class="panel-title">Today's Announcements</h2>
-                    <p class="panel-subtitle">Latest news and updates</p>
-                </div>
-                <div class="live-indicator">
-                    <span class="live-dot"></span>
-                    Live
-                </div>
-            </div>
-            <div class="news-feed" id="newsFeed">
-                <div class="empty-state">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                    </svg>
-                    <p>Loading announcements...</p>
-                </div>
-            </div>
-        </div>
+   </div>
+   <!-- Top Info Row: Quote + Time on TAC + Online -->
+   <div class="top-info-row">
+    <div class="quote-box" id="quoteBox">
+     <span class="quote-text" id="quoteText">
+      Loading message...
+     </span>
     </div>
-</main>
-
-<!-- Firebase SDK v9 (Compat) -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
-<script>
-// Firebase Config
+    <div class="timeon-box">
+     <span class="timeon-label">
+      Time on TAC
+     </span>
+     <span class="timeon-value" id="timeonValue">
+      --:--:--
+     </span>
+    </div>
+    <div class="online-box" id="onlineBox">
+     <span class="online-label">
+      Users
+     </span>
+     <span class="online-value">
+      <span class="online-dot">
+      </span>
+      <span id="onlineCount">
+       0
+      </span>
+      Online
+     </span>
+     <div class="online-dropdown" id="onlineDropdown">
+      <div class="online-dropdown-title">
+       All Users
+      </div>
+      <div id="onlineUsersList">
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- Leaderboards -->
+   <div class="leaderboard-row">
+    <div class="leaderboard-panel">
+     <h3>
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z">
+       </path>
+      </svg>
+      Top Login Streaks
+     </h3>
+     <ul class="lb-list" id="streakLeaderboard">
+      <li class="lb-item" style="color:var(--muted)">
+       Loading...
+      </li>
+     </ul>
+    </div>
+    <div class="leaderboard-panel">
+     <h3>
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z">
+       </path>
+      </svg>
+      Top Time on TAC
+     </h3>
+     <ul class="lb-list" id="timeLeaderboard">
+      <li class="lb-item" style="color:var(--muted)">
+       Loading...
+      </li>
+     </ul>
+    </div>
+   </div>
+   <div class="grid">
+    <!-- Carousel Panel -->
+    <div class="panel">
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        Featured
+       </h2>
+       <p class="panel-subtitle">
+        Latest highlights
+       </p>
+      </div>
+     </div>
+     <div class="image-carousel">
+      <div class="carousel-images" id="carouselImages">
+      </div>
+      <button class="carousel-control prev" id="prevBtn">
+       ‹
+      </button>
+      <button class="carousel-control next" id="nextBtn">
+       ›
+      </button>
+     </div>
+    </div>
+    <!-- News Panel -->
+    <div class="panel">
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        Today's Announcements
+       </h2>
+       <p class="panel-subtitle">
+        Latest news and updates
+       </p>
+      </div>
+      <div class="live-indicator">
+       <span class="live-dot">
+       </span>
+       Live
+      </div>
+     </div>
+     <div class="news-feed" id="newsFeed">
+      <div class="empty-state">
+       <svg fill="currentColor" viewbox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z">
+        </path>
+       </svg>
+       <p>
+        Loading announcements...
+       </p>
+      </div>
+     </div>
+    </div>
+   </div>
+  </main>
+  <!-- Firebase SDK v9 (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+  </script>
+  <script>
+   // Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
     authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -1516,26 +1585,35 @@ function loadNews() {
 }
 
 loadNews();
-</script>
-
-    <script src="timeTracker.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="idle-dvd.js"></script>
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
         });
-</script>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

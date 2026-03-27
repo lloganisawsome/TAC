@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en-US">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    
-    
-    <script>
-        window.dataLayer = window.dataLayer || [];
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <script>
+   window.dataLayer = window.dataLayer || [];
 
         function gtag() {
             dataLayer.push(arguments);
         }
         gtag('js', new Date());
         gtag('config', 'G-');
-    </script>
-    <base href="https://rawcdn.githack.com/genizy/google-class/main/gdlite/">
-    <title>Geometry Dash</title>
-    <link rel="icon" type="image/png" href="https://e3334afd.cf-nate.pages.dev/0/g/geodash/game/splash.png">
-    <meta name="description" content="Play Geometry Dash Lite Online For Free on Chromebook, PC, Windows, Desktop in Chrome and modern browsers.">
-    <link rel="canonical" href="https://gamecomets.com/game/geometry-dash-lite/" />
-    <meta name="robots" content="noindex, nofollow">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="themes/geometrydashlite.io/rs/css/home.css?v=1">
-</head>
-<meta name="cf-2fa-verify" content="GpoihhhSRQknehLQkEtXM">
-
-<body>
-    <style>
-        html {
+  </script>
+  <base href="https://rawcdn.githack.com/genizy/google-class/main/gdlite/"/>
+  <title>
+   Geometry Dash
+  </title>
+  <link href="https://e3334afd.cf-nate.pages.dev/0/g/geodash/game/splash.png" rel="icon" type="image/png"/>
+  <meta content="Play Geometry Dash Lite Online For Free on Chromebook, PC, Windows, Desktop in Chrome and modern browsers." name="description"/>
+  <link href="https://gamecomets.com/game/geometry-dash-lite/" rel="canonical">
+   <meta content="noindex, nofollow" name="robots"/>
+   <meta charset="utf-8"/>
+   <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+   <meta content="width=device-width, initial-scale=1" name="viewport"/>
+   <link href="themes/geometrydashlite.io/rs/css/home.css?v=1" rel="stylesheet"/>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <meta content="GpoihhhSRQknehLQkEtXM" name="cf-2fa-verify"/>
+ <body>
+  <style>
+   html {
             box-sizing: border-box;
         }
         
@@ -175,19 +176,27 @@
                 transform: rotate(360deg);
             }
         }
-    </style>
-    <div id="gameContainer"></div>
-    <div id="loader"><img class="logo" src="image/loading.png?v=1">
-        <div class="spinner"></div>
-        <div class=" pos_progress">
-            <div class="progress">
-                <div class="posfull"><img class="full" src="image/process_bar_back.png"></div>
-                <div class="posbox"><img class="box_process" src="image/process_bar_front.png"></div>
-            </div>
-        </div>
-        <script src="Build/UnityLoader.js"></script>
-        <script>
-            var gameInstance = UnityLoader.instantiate("gameContainer", "Build/GeometryDashLite.json", {
+  </style>
+  <div id="gameContainer">
+  </div>
+  <div id="loader">
+   <img class="logo" src="image/loading.png?v=1"/>
+   <div class="spinner">
+   </div>
+   <div class="pos_progress">
+    <div class="progress">
+     <div class="posfull">
+      <img class="full" src="image/process_bar_back.png"/>
+     </div>
+     <div class="posbox">
+      <img class="box_process" src="image/process_bar_front.png"/>
+     </div>
+    </div>
+   </div>
+   <script src="Build/UnityLoader.js">
+   </script>
+   <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "Build/GeometryDashLite.json", {
                 onProgress: UnityProgress
             });
 
@@ -209,9 +218,9 @@
                     }, 2000);
                 }
             }
-        </script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+   </script>
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
                 let buttondiv = document.getElementsByTagName('button');
                 for (let i = 0; i < buttondiv.length; i++) {
                     if (buttondiv[i].innerHTML == "OK") {
@@ -227,10 +236,11 @@
                     }
                 }, 1000);
             });
-        </script>
-        <script src="themes/geometrydashlite.io/rs/js/jquery-3.4.1.min.js"></script>
-        <script>
-            function ToggleInfo() {
+   </script>
+   <script src="themes/geometrydashlite.io/rs/js/jquery-3.4.1.min.js">
+   </script>
+   <script>
+    function ToggleInfo() {
                 if ($('button.hide-main-panel').children('i')[0].textContent != 'Info') {
                     $("div.main-panel").css('width', '0px');
                     $("div.main-panel-ads").css('display', 'none');
@@ -263,14 +273,17 @@
                 console.log('a');
                 ToggleInfo();
             });
-        </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+   </script>
+   <script src="custom-cursor.js">
+   </script>
+   <script src="rightclick.js">
+   </script>
+   <script src="panic-key.js">
+   </script>
+   <script src="idle-dvd.js">
+   </script>
+   <script src="online.js" type="module">
+   </script>
+  </div>
+ </body>
 </html>

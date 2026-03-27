@@ -1,31 +1,39 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/fork-so-the-site-i-take-wont-be-deleted/bulbasaurchat.github.io@main/games/slope2/">
-    <title>Slope 2</title>
-    <link rel="icon" type="image/png" href="/favicon.ico" />
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="style.css" />
-
-  </head>
-  <body style="width: 100%; height: 100%; margin: 0;">
-    <div id="unity-container" style="width: 100%; height: 100%; margin: 0;" class="unity-desktop">
-      <canvas id="unity-canvas" style="width: 100%; height: 100%; margin: 0;"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-logo"></div>
-        <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
-        </div>
-      </div>
-      <div id="unity-mobile-warning">
-        WebGL builds are not supported on mobile devices.
-      </div>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/fork-so-the-site-i-take-wont-be-deleted/bulbasaurchat.github.io@main/games/slope2/"/>
+  <title>
+   Slope 2
+  </title>
+  <link href="/favicon.ico" rel="icon" type="image/png">
+   <meta charset="utf-8"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <link href="style.css" rel="stylesheet">
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body style="width: 100%; height: 100%; margin: 0;">
+  <div class="unity-desktop" id="unity-container" style="width: 100%; height: 100%; margin: 0;">
+   <canvas id="unity-canvas" style="width: 100%; height: 100%; margin: 0;">
+   </canvas>
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
     </div>
-    <script>
-      var buildUrl = "Build";
+    <div id="unity-progress-bar-empty">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+   </div>
+   <div id="unity-mobile-warning">
+    WebGL builds are not supported on mobile devices.
+   </div>
+  </div>
+  <script>
+   var buildUrl = "Build";
       var loaderUrl = "WebGL2Players v1.1.loader.js";
       var config = {
         dataUrl: "WebGL2Players v1.1.data.unityweb",
@@ -73,14 +81,18 @@
           });
       };
       document.body.appendChild(script);
-    </script>
-    <script defer src="sg.min.js"></script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script defer="" src="sg.min.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

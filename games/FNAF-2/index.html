@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<style type="text/css">
+ <style type="text/css">
   h1 {
 	  font-family: Arial, Helvetica, sans-serif;
 	  color: #F00;
@@ -28,37 +27,33 @@
 	  width: 600px;
 	  margin-left: -260px
   }
-</style>
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-
+ </style>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
   <!-- Enables full-screen on iOS devices -->
-  <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="HandheldFriendly" content="true" />
-
-  <title>Five Nights at Freddy 2</title>
-
-	<script>
-	   	// Detection of old browsers that do not support the canvas element
+  <meta content="initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" name="viewport"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="true" name="HandheldFriendly"/>
+  <title>
+   Five Nights at Freddy 2
+  </title>
+  <script>
+   // Detection of old browsers that do not support the canvas element
 		// Falls back to a default page
 	    if (!document.createElement("canvas").getContext)
 	    {
 			window.open("http://www.clickteam.com/html5-fallback", "_self");
 		}
-	</script>
-
-
-  	<!-- EXTRASOURCES -->
-    <!-- Loads the Javascript code...-->
-    <script src="src/Runtime.js"></script>
-
+  </script>
+  <!-- EXTRASOURCES -->
+  <!-- Loads the Javascript code...-->
+  <script src="src/Runtime.js">
+  </script>
   <script>
-
-	// Detection of when the html file is ran locally.
+   // Detection of when the html file is ran locally.
 	// You can remove this code for the final version
 	if (window.location.protocol == "file:")
 	{
@@ -72,18 +67,17 @@
 		throw new error("Cannot run application");
 	}
   </script>
-</head>
-
-<body>
-
-<div style="display: inline-block; -webkit-user-select: none; text-align: left;">
-    <canvas id="MMFCanvas" width="1024" height="768">
-    	Your browser does not support Canvas.
-    </canvas>
-</div>
-
-<script>
-    // RUNTIMESTART
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div style="display: inline-block; -webkit-user-select: none; text-align: left;">
+   <canvas height="768" id="MMFCanvas" width="1024">
+    Your browser does not support Canvas.
+   </canvas>
+  </div>
+  <script>
+   // RUNTIMESTART
     // This is where the HTML5 runtime is actually started
     window.addEventListener("load", windowLoaded, false);
     function windowLoaded()
@@ -94,15 +88,19 @@
         new Runtime("MMFCanvas", "resources/FiveNights2NOHACKS.cch");
     }
     // RUNTIMESTARTEND
-</script>
-
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-	<p align="left"> <img src="https://komarev.com/ghpvc/?username=sussygamedeveloper&label=Profile%20views&color=0e75b6&style=flat" alt="sussygamedeveloper" /> </p>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
+ <p align="left">
+  <img alt="sussygamedeveloper" src="https://komarev.com/ghpvc/?username=sussygamedeveloper&amp;label=Profile%20views&amp;color=0e75b6&amp;style=flat"/>
+ </p>
 </html>

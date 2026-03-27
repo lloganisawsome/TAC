@@ -1,23 +1,18 @@
-
 <html lang="en">
-<base href="https://cdn.jsdelivr.net/gh/bubbls/fnf-mods@main/rewritev22/">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-
-  <meta charset="utf-8"> 
-
-  <title>Friday Night Funkin': Psych Engine</title>
-
-  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="mobile-web-app-capable" content="yes">
-
-  <link rel="shortcut icon" type="image/png" href="./favicon.png">
-
-
-  <script type="text/javascript" src="./jane2.js"></script>
-
-  <script>
+ <base href="https://cdn.jsdelivr.net/gh/bubbls/fnf-mods@main/rewritev22/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <title>
+   Friday Night Funkin': Psych Engine
+  </title>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" id="viewport" name="viewport">
+   <meta content="yes" name="mobile-web-app-capable"/>
+   <link href="./favicon.png" rel="shortcut icon" type="image/png"/>
+   <script src="./jane2.js" type="text/javascript">
+   </script>
+   <script>
     window.addEventListener("touchmove", function(event) {
       event.preventDefault();
     }, {
@@ -33,9 +28,8 @@
         e.preventDefault();
       }
     }, false);
-  </script>
-
-  <style>
+   </script>
+   <style>
     html,
     body {
       margin: 0;
@@ -118,30 +112,33 @@
       font-weight: normal;
       font-style: normal;
     }
-  </style>
-
-</head>
-
-<body>
-
-  <noscript>This webpage makes extensive use of JavaScript. Please enable JavaScript in your web browser to view this page.</noscript>
-
-  <div id="openfl-content"></div>
-
+   </style>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <noscript>
+   This webpage makes extensive use of JavaScript. Please enable JavaScript in your web browser to view this page.
+  </noscript>
+  <div id="openfl-content">
+  </div>
   <script type="text/javascript">
-    lime.embed("PsychEngine", "openfl-content", 1280, 720, {
+   lime.embed("PsychEngine", "openfl-content", 1280, 720, {
       parameters: {}
     });
   </script>
-
-  <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"b062b5bc397843a2b7cac03511be2721","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  <script crossorigin="anonymous" data-cf-beacon='{"version":"2024.11.0","token":"b062b5bc397843a2b7cac03511be2721","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' defer="" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

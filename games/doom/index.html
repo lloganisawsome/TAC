@@ -1,41 +1,37 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta name="google-site-verification" content="dRFt1DjMaz4QI-gPjzUmoztVbRdcXL8jltdpfQp6Klo" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-  <meta name="description" content="Play DOOM via JS-DOS.">
-  <meta name="keywords" content="DOOM,pc,game,javscript">
-  <title>DOOM</title>
-  <meta property="og:title" content='DOOM &middot; js-dos' />
-  <meta property="og:description" content="Play in the DOOM in browser." />
-  <meta property="og:type" content="game" />
-  <meta property="og:url" content="" />
-  <meta property="og:image" content="DOOM.png" />
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="app.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
-
-  <!-- FAVICON -->
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="manifest" href="site.webmanifest">
-    
-  <script type="text/javascript" src="js-dos-api.js"></script>
-
-
-  <body style="background-color:#121212; color: white">
-   
-<style>
-    #DOOM > .dosbox-container { width: 640px; height: 400px; }
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta content="dRFt1DjMaz4QI-gPjzUmoztVbRdcXL8jltdpfQp6Klo" name="google-site-verification"/>
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1" name="viewport"/>
+  <meta content="Play DOOM via JS-DOS." name="description"/>
+  <meta content="DOOM,pc,game,javscript" name="keywords"/>
+  <title>
+   DOOM
+  </title>
+  <meta content="DOOM · js-dos" property="og:title">
+   <meta content="Play in the DOOM in browser." property="og:description">
+    <meta content="game" property="og:type">
+     <meta content="" property="og:url">
+      <meta content="DOOM.png" property="og:image">
+       <!-- CSS -->
+       <link href="app.css" rel="stylesheet"/>
+       <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
+       <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface" rel="stylesheet"/>
+       <!-- FAVICON -->
+       <link href="apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+       <link href="favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
+       <link href="favicon-32x32.png" rel="icon" type="image/png"/>
+       <link href="favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
+       <link href="site.webmanifest" rel="manifest"/>
+       <script src="js-dos-api.js" type="text/javascript">
+       </script>
+       <body style="background-color:#121212; color: white">
+        <style>
+         #DOOM > .dosbox-container { width: 640px; height: 400px; }
     #DOOM > .dosbox-container > .dosbox-overlay { background: url("DOOM.png"); }
     #DOOM > .dosbox-container > .dosbox-overlay > .dosbox-start {
         border-radius: 17px 17px 17px 17px;
@@ -50,13 +46,18 @@
         margin: 0 auto;
     }
     a:link {color:white}
-</style>
-<center>
-<div style="margin-top:20px;" id="DOOM" class="dosbox-default"></div>
-<p><br /><a id="fullscreen_DOOM" href="javascript: void 0;" class="fa-solid fa-expand"></a>&nbsp;&nbsp;FULLSCREEN</p>
-
-<script type="text/javascript">
-  var dosbox_DOOM = new Dosbox({
+        </style>
+        <center>
+         <div class="dosbox-default" id="DOOM" style="margin-top:20px;">
+         </div>
+         <p>
+          <br/>
+          <a class="fa-solid fa-expand" href="javascript: void 0;" id="fullscreen_DOOM">
+          </a>
+          FULLSCREEN
+         </p>
+         <script type="text/javascript">
+          var dosbox_DOOM = new Dosbox({
     id: "DOOM",
     onload: function (dosbox) {
       dosbox_DOOM.run("DOOM-@evilution.zip", "./DOOM/DOOM.EXE");
@@ -69,14 +70,25 @@
   document.getElementById("fullscreen_DOOM").addEventListener("click", function() {
     dosbox_DOOM.requestFullScreen();
   });
-</script>
-    </center>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+         </script>
+        </center>
+        <script src="custom-cursor.js">
+        </script>
+        <script src="rightclick.js">
+        </script>
+        <script src="panic-key.js">
+        </script>
+        <script src="idle-dvd.js">
+        </script>
+        <script src="online.js" type="module">
+        </script>
+       </body>
+      </meta>
+     </meta>
+    </meta>
+   </meta>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
 </html>

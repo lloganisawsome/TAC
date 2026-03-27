@@ -1,13 +1,17 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-        <meta charset='utf8'>
-        <title>Riddle School</title>
-    </head>
-    <style>
-        html, body {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <title>
+   Riddle School
+  </title>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <style>
+  html, body {
           margin: 0;
           padding: 0;
           width: 100%;
@@ -18,13 +22,14 @@
           width: 100%;
           height: 100%;
         }
-      </style>
-    </head>
-    <body>
-      <div id="ruffle"></div>
-      <script src="https://ruffle-bay.vercel.app/ruffle.js"></script>
-      <script>
-        window.RufflePlayer = window.RufflePlayer || {};
+ </style>
+ <body>
+  <div id="ruffle">
+  </div>
+  <script src="https://ruffle-bay.vercel.app/ruffle.js">
+  </script>
+  <script>
+   window.RufflePlayer = window.RufflePlayer || {};
         window.addEventListener("load", (event) => {
           const ruffle = window.RufflePlayer.newest();
           const player = ruffle.createPlayer();
@@ -35,15 +40,16 @@
           container.appendChild(player);
           player.load("Riddle School.swf");
         });
-      </script>
-        <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-  </html>
-  
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

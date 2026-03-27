@@ -1,28 +1,34 @@
-https://ruffle-bay.vercel.app/ruffle.js<!DOCTYPE html>
+https://ruffle-bay.vercel.app/ruffle.js
+<!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>{game_name} Unblocked - ubg235 GameFlare</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   {game_name} Unblocked - ubg235 GameFlare
+  </title>
   <style>
-    body {
+   body {
     margin: 0px;
     padding: 0px;
     overflow: hidden;
   }
   </style>
-  <meta name="description" content="{game_name}, {game_name} Unblocked">
-  <meta property="og:image" content="{game_thumbs}" />
-</head>
-
-<body>
+  <meta content="{game_name}, {game_name} Unblocked" name="description"/>
+  <meta content="{game_thumbs}" property="og:image">
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <div class="webgl-content">
-    <div id="gameContainer" style="width: 100vw; height: 100vh">
-      <script src="patch/ruffle/ruffle.js"></script>
-      <script>
-        window.RufflePlayer = window.RufflePlayer || {};
+   <div id="gameContainer" style="width: 100vw; height: 100vh">
+    <script src="patch/ruffle/ruffle.js">
+    </script>
+    <script>
+     window.RufflePlayer = window.RufflePlayer || {};
         window.RufflePlayer.config = {
             warnOnUnsupportedContent: false,
             autoplay: "on",
@@ -32,36 +38,37 @@ https://ruffle-bay.vercel.app/ruffle.js<!DOCTYPE html>
             forceScale: false,
             quality: 'high'
         };
-      </script>
-      <div id="gamefilearea" class="prestitial-running" style="height:100%;">
-
-      <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="900" height="600" id="gamefile" align="middle">
-      <param name="allowScriptAccess" value="always" />
-      <param name="movie" value="{game_url}" />
-      <param name="quality" value="high" />
-      <param name="wmode" value="window" />
-      <param name="allowfullscreen" value="false" />
-      <param name="allowfullscreeninteractive" value="false" />
-      <param name="fullScreenAspectRatio" value="" />
-      <param name="quality" value="high" />
-      <param name="play" value="true" />
-      <param name="loop" value="true" />
-      <param name="menu" value="" />
-      <param name="flashvars" value="gameID=13824" />
-      <param name="hasPriority" value="true" />
-
-      <embed src="{game_url}" width="100%" height="100%" id="gamefileEmbed" name="gamefile" align="middle" wmode="window" allowfullscreen="false" allowfullscreeninteractive="false" fullScreenAspectRatio="" quality="high" play="true" loop="true" menu="" allowScriptAccess="always" flashvars="gameID=13824" hasPriority="true" type="application/x-shockwave-flash" pluginspage="http://www.adobe.com/go/getflashplayer"></embed>
-      </object>
-
+    </script>
+    <div class="prestitial-running" id="gamefilearea" style="height:100%;">
+     <object align="middle" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" height="600" id="gamefile" width="900">
+      <param name="allowScriptAccess" value="always"/>
+      <param name="movie" value="{game_url}"/>
+      <param name="quality" value="high"/>
+      <param name="wmode" value="window"/>
+      <param name="allowfullscreen" value="false"/>
+      <param name="allowfullscreeninteractive" value="false"/>
+      <param name="fullScreenAspectRatio" value=""/>
+      <param name="quality" value="high"/>
+      <param name="play" value="true"/>
+      <param name="loop" value="true"/>
+      <param name="menu" value=""/>
+      <param name="flashvars" value="gameID=13824"/>
+      <param name="hasPriority" value="true"/>
+      <embed align="middle" allowfullscreen="false" allowfullscreeninteractive="false" allowscriptaccess="always" flashvars="gameID=13824" fullscreenaspectratio="" haspriority="true" height="100%" id="gamefileEmbed" loop="true" menu="" name="gamefile" play="true" pluginspage="http://www.adobe.com/go/getflashplayer" quality="high" src="{game_url}" type="application/x-shockwave-flash" width="100%" wmode="window"/>
+     </object>
     </div>
+   </div>
+   <!-- <script src="js/analytics_ubg_v1_4.js"></script>   -->
+   <script src="custom-cursor.js">
+   </script>
+   <script src="rightclick.js">
+   </script>
+   <script src="panic-key.js">
+   </script>
+   <script src="idle-dvd.js">
+   </script>
+   <script src="online.js" type="module">
+   </script>
   </div>
-  <!-- <script src="js/analytics_ubg_v1_4.js"></script>   -->
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+ </body>
 </html>

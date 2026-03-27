@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apps Manager</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Apps Manager
+  </title>
   <style>
-    body {
+   body {
       font-family: Arial, sans-serif;
       background: #121212;
       color: #eee;
@@ -53,38 +55,55 @@
       display: none;
     }
   </style>
-</head>
-<body>
-
-<div id="passwordPrompt" class="container" style="display:block;">
-  <h2>Enter Password</h2>
-  <input type="password" id="passwordInput" placeholder="Enter password">
-  <button onclick="checkPassword()">Submit</button>
-  <p id="errorMsg" style="color:red; display:none;">Wrong password.</p>
-</div>
-
-<div id="appsManager" class="container">
-  <h2>Apps Manager</h2>
-  <input type="text" id="appName" placeholder="App Name">
-  <input type="text" id="appUrl" placeholder="App URL">
-  <input type="text" id="appLogo" placeholder="App Logo (optional)">
-  <button onclick="addApp()">Add App</button>
-
-  <table>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="container" id="passwordPrompt" style="display:block;">
+   <h2>
+    Enter Password
+   </h2>
+   <input id="passwordInput" placeholder="Enter password" type="password"/>
+   <button onclick="checkPassword()">
+    Submit
+   </button>
+   <p id="errorMsg" style="color:red; display:none;">
+    Wrong password.
+   </p>
+  </div>
+  <div class="container" id="appsManager">
+   <h2>
+    Apps Manager
+   </h2>
+   <input id="appName" placeholder="App Name" type="text"/>
+   <input id="appUrl" placeholder="App URL" type="text"/>
+   <input id="appLogo" placeholder="App Logo (optional)" type="text"/>
+   <button onclick="addApp()">
+    Add App
+   </button>
+   <table>
     <thead>
-      <tr>
-        <th>Name</th>
-        <th>URL</th>
-        <th>Logo</th>
-        <th>Actions</th>
-      </tr>
+     <tr>
+      <th>
+       Name
+      </th>
+      <th>
+       URL
+      </th>
+      <th>
+       Logo
+      </th>
+      <th>
+       Actions
+      </th>
+     </tr>
     </thead>
-    <tbody id="appsTableBody"></tbody>
-  </table>
-</div>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    <tbody id="appsTableBody">
+    </tbody>
+   </table>
+  </div>
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
   import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
@@ -179,26 +198,45 @@
       tbody.appendChild(row);
     });
   });
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

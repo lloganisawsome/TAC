@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-		
-		
-		
-		<base href="https://rawcdn.githack.com/genizy/cc3d-mobile/main/">
-		       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837"
-     crossorigin="anonymous"></script>
-     
-		<meta charset="utf-8">
-		<style>
-  html, body {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://rawcdn.githack.com/genizy/cc3d-mobile/main/"/>
+  <script async="" crossorigin="anonymous" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5521219086088837">
+  </script>
+  <meta charset="utf-8"/>
+  <style>
+   html, body {
     margin: 0;
     overflow: hidden;
     touch-action: none;
   }
-</style>
-
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>CrazyCattle3D</title>
-		<style>
-html, body, #canvas {
+  </style>
+  <meta content="width=device-width, user-scalable=no, initial-scale=1.0" name="viewport"/>
+  <title>
+   CrazyCattle3D
+  </title>
+  <style>
+   html, body, #canvas {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -106,30 +103,33 @@ body {
 	text-align: center;
 	z-index: 1;
 }
-		</style>
-		<link id="-gd-engine-icon" rel="icon" type="image/png" href="CrazyCattle3D.icon.png" />
-<link rel="apple-touch-icon" href="CrazyCattle3D.apple-touch-icon.png"/>
-<link rel="manifest" href="CrazyCattle3D.manifest.json">
-
-	</head>
-	<body>
-		<canvas id="canvas">
-			Your browser does not support the canvas tag.
-		</canvas>
-
-		<noscript>
-			Your browser does not support JavaScript.
-		</noscript>
-
-		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="CrazyCattle3D.png" alt="">
-			<progress id="status-progress"></progress>
-			<div id="status-notice"></div>
-		</div>
-
-		<script src="CrazyCattle3D.js"></script>
-		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"CrazyCattle3D","experimentalVK":false,"fileSizes":{"CrazyCattle3D.pck":28642672,"CrazyCattle3D.wasm":43444261},"focusCanvas":true,"gdextensionLibs":[],"serviceWorker":"CrazyCattle3D.service.worker.js"};
+  </style>
+  <link href="CrazyCattle3D.icon.png" id="-gd-engine-icon" rel="icon" type="image/png">
+   <link href="CrazyCattle3D.apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="CrazyCattle3D.manifest.json" rel="manifest"/>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas">
+   Your browser does not support the canvas tag.
+  </canvas>
+  <noscript>
+   Your browser does not support JavaScript.
+  </noscript>
+  <div id="status">
+   <img alt="" class="show-image--true fullsize--true use-filter--true" id="status-splash" src="CrazyCattle3D.png"/>
+   <progress id="status-progress">
+   </progress>
+   <div id="status-notice">
+   </div>
+  </div>
+  <script src="CrazyCattle3D.js">
+  </script>
+  <script>
+   const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"ensureCrossOriginIsolationHeaders":true,"executable":"CrazyCattle3D","experimentalVK":false,"fileSizes":{"CrazyCattle3D.pck":28642672,"CrazyCattle3D.wasm":43444261},"focusCanvas":true,"gdextensionLibs":[],"serviceWorker":"CrazyCattle3D.service.worker.js"};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -232,9 +232,9 @@ const engine = new Engine(GODOT_CONFIG);
 		}, displayFailureNotice);
 	}
 }());
-		</script>
-		<script>
-  document.addEventListener("touchstart", function(e) {
+  </script>
+  <script>
+   document.addEventListener("touchstart", function(e) {
     if (e.touches.length > 1) e.preventDefault();
   }, { passive: false });
 
@@ -250,14 +250,16 @@ const engine = new Engine(GODOT_CONFIG);
     e.preventDefault();
     e.returnValue = '';
   });
-</script>
-
-	    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

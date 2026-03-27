@@ -1,28 +1,25 @@
-	<html lang="en">
-    <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@ae6706e5224c55594c491edfc7f5ad541e2ea02b/baseball%20bros/" </base>
-	<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-
-	  <meta charset="utf-8">
-
-	  <title>BASEBALL BROS! | Official Site</title>
-	  <meta name="description" content="Online multiplayer baseball! Strikeouts, steals, and grand slams! Hit Nukes!" />
-	  <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-	  <link rel="shortcut icon" type="image/png" href="./favicon.png">
-	  <meta name="Keywords" content="Baseball, Play, Free, Online, Multiplayer, Games, IO, Sports, Scrolling, Friends">
-	  <meta name="author" content="Blue Wizard Digital">
-
-	  <meta property="og:type" content="website" />
-	  <meta property="og:title" content="Baseball Bros" />
-	  <meta property="og:description" content="Online multiplayer baseball! Hit home runs, steal bases, strike out the side!" />
-	  <link rel="manifest" href="manifest.json">
-
-
-	  <script type="text/javascript" src="./BaseballBros.js?th=76"></script>
-
-	  <script>
-	    window.addEventListener("touchmove", function(event) {
+<html lang="en">
+ <base <="" base="" href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@ae6706e5224c55594c491edfc7f5ad541e2ea02b/baseball%20bros/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <title>
+   BASEBALL BROS! | Official Site
+  </title>
+  <meta content="Online multiplayer baseball! Strikeouts, steals, and grand slams! Hit Nukes!" name="description">
+   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" id="viewport" name="viewport"/>
+   <link href="./favicon.png" rel="shortcut icon" type="image/png"/>
+   <meta content="Baseball, Play, Free, Online, Multiplayer, Games, IO, Sports, Scrolling, Friends" name="Keywords"/>
+   <meta content="Blue Wizard Digital" name="author"/>
+   <meta content="website" property="og:type">
+    <meta content="Baseball Bros" property="og:title">
+     <meta content="Online multiplayer baseball! Hit home runs, steal bases, strike out the side!" property="og:description"/>
+     <link href="manifest.json" rel="manifest"/>
+     <script src="./BaseballBros.js?th=76" type="text/javascript">
+     </script>
+     <script>
+      window.addEventListener("touchmove", function(event) {
 	      event.preventDefault();
 	    }, {
 	      capture: false,
@@ -38,10 +35,9 @@
 	      }
 	    });
 	    var aCo = 'US';
-	  </script>
-
-	  <style>
-	    html,
+     </script>
+     <style>
+      html,
 	    body {
 	      margin: 0;
 	      padding: 0;
@@ -226,13 +222,12 @@
 	      /* Slightly darker yellow on hover */
 	      color: #FFFFFF;
 	    }
-	  </style>
-
-	  <!-- Google tag (gtag.js) -->
-	  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D67EBFNGR6"></script>
-
-	  <script>
-	    window.dataLayer = window.dataLayer || [];
+     </style>
+     <!-- Google tag (gtag.js) -->
+     <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D67EBFNGR6">
+     </script>
+     <script>
+      window.dataLayer = window.dataLayer || [];
 
 	    function gtag() {
 	      dataLayer.push(arguments);
@@ -242,16 +237,15 @@
 	    if (location.hostname != "localhost") gtag('config', 'G-D67EBFNGR6', {
 	      cookie_flags: 'secure;samesite=none'
 	    });
-	  </script>
-
-	  <script>
-	    //Interstitial ad available event
+     </script>
+     <script>
+      //Interstitial ad available event
 	    document.addEventListener("aip_interstitialadavailable", function(e) {
 	      console.log("An interstitial ad is available");
 	    });
-	  </script>
-	  <script>
-	    console.log("Initting AIP")
+     </script>
+     <script>
+      console.log("Initting AIP")
 	    window.aiptag = window.aiptag || {
 	      cmd: []
 	    };
@@ -267,11 +261,11 @@
 	      buttonText: "Privacy settings",
 	      buttonPosition: "bottom-left"
 	    }
-	  </script>
-	  <script async src="tag.min.js"></script>
-
-	  <script>
-	    function SetupMSNotification() {
+     </script>
+     <script async="" src="tag.min.js">
+     </script>
+     <script>
+      function SetupMSNotification() {
 	      console.log("notifying");
 	      if (typeof $msstart !== 'undefined') {
 	        console.log("notifying2");
@@ -355,17 +349,18 @@
 	        });
 	      }
 	    }
-	  </script>
-
-	  <!-- Firebase App (the core Firebase SDK) -->
-	  <script src="firebase-app.js"></script>
-	  <!-- Firebase Authentication -->
-	  <script src="firebase-auth.js"></script>
-	  <!-- Firebase Firestore (Database) -->
-	  <script src="firebase-firestore.js"></script>
-
-	  <script>
-	    // Your web app's Firebase configuration
+     </script>
+     <!-- Firebase App (the core Firebase SDK) -->
+     <script src="firebase-app.js">
+     </script>
+     <!-- Firebase Authentication -->
+     <script src="firebase-auth.js">
+     </script>
+     <!-- Firebase Firestore (Database) -->
+     <script src="firebase-firestore.js">
+     </script>
+     <script>
+      // Your web app's Firebase configuration
 	    const firebaseConfig = {
 	      apiKey: "AIzaSyBuzj8XEP7-5kOFFhyuxylQ6P0B2G_ogsM",
 	      authDomain: "baseball-bros-8dd7f.firebaseapp.com",
@@ -447,14 +442,19 @@
 	    function isUserLoggedIn() {
 	      return auth.currentUser !== null;
 	    }
-	  </script>
-
-	</head>
-
-	<body style="overflow:hidden;">
-	  <noscript>Enable JavaScript bro!</noscript>
-	  <script>
-	    //alert("Globals:"+localStorage.getItem("/:Globals").length);
+     </script>
+    </meta>
+   </meta>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body style="overflow:hidden;">
+  <noscript>
+   Enable JavaScript bro!
+  </noscript>
+  <script>
+   //alert("Globals:"+localStorage.getItem("/:Globals").length);
 	    /////////////////////////////////////////////////////////////////////
 	    ////////////////////////////////////////////////////////////////////
 	    var url = window.location.href;
@@ -484,72 +484,77 @@
 	    }
 	    /////////////////////////////////////////////////////////////////////
 	    ////////////////////////////////////////////////////////////////////
-	  </script>
-
-	  <div id="loading" style="position: absolute; z-index: 15; top: 60%; left: 50%; transform: translate(-50%, 0); background: black;">
-	    <center><img src="assets/loading4.png"><br />
-	      <img src="assets/fbro.png">
-	      <img src="assets/bbbro.png">
-	      <img src="assets/sbro.png">
-	      <img src="assets/wbro.png">
-	      <img src="assets/kbro.png">
-	      <img src="assets/bbro.png">
-	    </center>
-	  </div>
-
-	  <div id="game2" style="width: 100%; height: 100%; ">
-	    <div id="openfl-content" onblur="window.focus(); window.scrollTo(0, 0);" style="width: calc(100%); float:left;">
-	      <script type="text/javascript">
-	        lime.embed("BaseballBros", "openfl-content", 0, 0, {
+  </script>
+  <div id="loading" style="position: absolute; z-index: 15; top: 60%; left: 50%; transform: translate(-50%, 0); background: black;">
+   <center>
+    <img src="assets/loading4.png"/>
+    <br/>
+    <img src="assets/fbro.png"/>
+    <img src="assets/bbbro.png"/>
+    <img src="assets/sbro.png"/>
+    <img src="assets/wbro.png"/>
+    <img src="assets/kbro.png"/>
+    <img src="assets/bbro.png"/>
+   </center>
+  </div>
+  <div id="game2" style="width: 100%; height: 100%; ">
+   <div id="openfl-content" onblur="window.focus(); window.scrollTo(0, 0);" style="width: calc(100%); float:left;">
+    <script type="text/javascript">
+     lime.embed("BaseballBros", "openfl-content", 0, 0, {
 	          parameters: {}
 	        });
-	      </script>
-	    </div>
-	    <div id="preroll" style="width: 960px; height: 540px; display: none; position: absolute; top: 50%; left: 50%; z-index: 100; transform: translate(-50%, -50%);">
-	    </div>
-
-	    <div id="baseballbros-io_300x250" style="width: 336px; height: 280px; visibility:hidden; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
-	      <script>
-	        if (typeof gCrazySDK == 'undefined') {
+    </script>
+   </div>
+   <div id="preroll" style="width: 960px; height: 540px; display: none; position: absolute; top: 50%; left: 50%; z-index: 100; transform: translate(-50%, -50%);">
+   </div>
+   <div id="baseballbros-io_300x250" style="width: 336px; height: 280px; visibility:hidden; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
+    <script>
+     if (typeof gCrazySDK == 'undefined') {
 	          aiptag.cmd.display.push(function() {
 	            aipDisplayTag.display('baseballbros-io_300x250');
 	          });
 	        }
-	      </script>
-	    </div>
-	    <div id="baseballbros-io_300x250_2" style="width: 336px; height: 280px; visibility:hidden; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
-	      <script>
-	        if (typeof gCrazySDK == 'undefined') {
+    </script>
+   </div>
+   <div id="baseballbros-io_300x250_2" style="width: 336px; height: 280px; visibility:hidden; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
+    <script>
+     if (typeof gCrazySDK == 'undefined') {
 	          aiptag.cmd.display.push(function() {
 	            aipDisplayTag.display('baseballbros-io_300x250_2');
 	          });
 	        }
-	      </script>
-	    </div>
-	    <div id="baseballbros-io_336x280" style="visibility:hidden; width: 336px; height: 600px; display: none; position: absolute; left: 30px; z-index: 100;overflow: hidden;">
-	    </div>
-	    <div id="baseballbros-io_336x280_2" style="visibility:hidden; width: 336px; height: 600px; display: none; position: absolute; left: 30px; z-index: 100;overflow: hidden;">
-	    </div>
-	    <div id="baseballbros-io_728x90" style="visibility:hidden; width: 728px; height: 90px; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
-	    </div>
-	    <div id="baseballbros-io_728x90_m" style="visibility:hidden; width: 728px; height: 90px; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
-	    </div>
-	    <div id="baseballbros-io_970x250" style="visibility:hidden; width: 970px; height: 250px; display: none; position: absolute; top: 30px; left: 30px; z-index: 100; text-align: center;overflow: hidden;">
-	    </div>
-
-	    <div class="feedback-form" id="feedbackForm" style="display:none;">
-	      <h3>Report a Bug/Glitch</h3>
-	      <textarea id="feedback" placeholder="Describe the bug or glitch with a lot of details, like how to make the glitch happen and anything else whether it seems useful or not..."></textarea>
-	      <textarea id="email" placeholder="Email address (optional)" style="height: 50px;"></textarea>
-	      <textarea id="discord" placeholder="Discord ID (optional)" style="height: 50px;"></textarea>
-	      <button onclick="sendFeedback()" id="submitBtn">Submit Feedback</button>
-	      <br />
-	      <br />
-	      <button onclick="document.getElementById('feedbackForm').style.display='none'" id="submitBtn">Cancel</button>
-	      <p id="responseMsg"></p>
-	    </div>
-	    <script>
-	      //                                                                                                                          var doFeedback = true;
+    </script>
+   </div>
+   <div id="baseballbros-io_336x280" style="visibility:hidden; width: 336px; height: 600px; display: none; position: absolute; left: 30px; z-index: 100;overflow: hidden;">
+   </div>
+   <div id="baseballbros-io_336x280_2" style="visibility:hidden; width: 336px; height: 600px; display: none; position: absolute; left: 30px; z-index: 100;overflow: hidden;">
+   </div>
+   <div id="baseballbros-io_728x90" style="visibility:hidden; width: 728px; height: 90px; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
+   </div>
+   <div id="baseballbros-io_728x90_m" style="visibility:hidden; width: 728px; height: 90px; display: none; position: absolute; top: 30px; left: 30px; z-index: 100;overflow: hidden;">
+   </div>
+   <div id="baseballbros-io_970x250" style="visibility:hidden; width: 970px; height: 250px; display: none; position: absolute; top: 30px; left: 30px; z-index: 100; text-align: center;overflow: hidden;">
+   </div>
+   <div class="feedback-form" id="feedbackForm" style="display:none;">
+    <h3>
+     Report a Bug/Glitch
+    </h3>
+    <textarea id="feedback" placeholder="Describe the bug or glitch with a lot of details, like how to make the glitch happen and anything else whether it seems useful or not..."></textarea>
+    <textarea id="email" placeholder="Email address (optional)" style="height: 50px;"></textarea>
+    <textarea id="discord" placeholder="Discord ID (optional)" style="height: 50px;"></textarea>
+    <button id="submitBtn" onclick="sendFeedback()">
+     Submit Feedback
+    </button>
+    <br/>
+    <br/>
+    <button id="submitBtn" onclick="document.getElementById('feedbackForm').style.display='none'">
+     Cancel
+    </button>
+    <p id="responseMsg">
+    </p>
+   </div>
+   <script>
+    //                                                                                                                          var doFeedback = true;
 	      function getOSFromUserAgent() {
 	        const userAgent = navigator.userAgent;
 	        const platform = navigator.platform;
@@ -632,53 +637,124 @@
 
 	        submitBtn.disabled = false;
 	      }
-	    </script>
-
-
-
-	  </div>
-	  <br />
-	  <div tabindex="-1" id="more">
-	    <div class="info-box">
-	      <h3>About Baseball Bros</h3>
-	      <p>Baseball Bros is a simple, fast-paced baseball game that's easy to learn and has lots of crazy hijinks! With online multiplayer gameplay, franchise mode, fun pitching, and so much more!</p>
-	      <p>Controls: Use either the arrow keys or WASD to control your bro. Space bar will throw a the ball, dive, slide, or change directions when you're running the bases.</p>
-	      <p>Be sure to follow us on social media for the latest updates and info!</p>
-	      <br />
-	      <h3>Changelog (3/13/2024)</h3>
-	      <p>Fixed another glitch where the game ends to early if the home team scores on their last at bat while still losing.</p>
-	      <p>Made cpu players better at catching fly balls. Should make it more difficult in 1p games.</p>
-	      <p>Updated theme song.</p>
-	      <p>Fixed more innings glitches.</p>
-	      <p>Fixed glitch where home team wouldn't get their fair at bat in extra innings.</p>
-	      <p>Improved virtual controller on iPads and pnones.</p>
-	    </div>
-	    <div class="info-box">
-	      <h3>FAQ</h3>
-	      <b>Why isn't the game loading?</b>
-	      <p>You should check your internet connection and make sure our site isn't blocked. Also, disable all ad blockers.</p>
-	      <b>How do I play?</b>
-	      <p>Use your arrow keys and space bar! The rest is easy- pick your play and go!</p>
-	      <b>Which browser should I use?</b>
-	      <p>You should use Chrome. It is the only browser guaranteed to work. Baseball Bros has also been tested to work on Firefox and Safari, but not guaranteed.</p>
-	      <b>Are there more Bros games?</b>
-	      <p>Yes! Check out <a tabindex="-1" href="https://footballbros.io">Football Bros</a>, href="https://basketbros.io">Basket Bros</a>, <a tabindex="-1" href="https://soccerbros.gg">Soccer Bros</a> and <a tabindex="-1" href="https://wrestlebros.io">Wrestle Bros</a>. Also be sure to check out <a tabindex="-1" href="https://freegames.io" target="_blank">Web games at FreeGames.io</a></p>
-	      <b>Do you have a favorite team?</b>
-	      <p>Yes, but we're not saying which one. Drop us an e-mail if you think you know.</p>
-	      <b>I'm blocked, where else can i play?</b>
-	      <p>Check here, these links work for all the bros games: <a href="https://sites.google.com/bluewizard.com/basket-bros-unblocked">Baseball Bros Unblocked</a></p>
-
-	    </div>
-	  </div>
-	  <footer id="footer" tabindex="-1">
-	    <div tabindex="-1" class="footer-links">
-	      <a tabindex="-1" href="https://bluewizard.com">Copyright 2024 Blue Wizard Digital</a> |
-	      <a tabindex="-1" href="https://bluewizard.com/terms/">Terms of Service</a> |
-	      <a tabindex="-1" href="https://bluewizard.com/privacypolicy/">Privacy Policy</a>
-	    </div>
-	  </footer>
-	  <script>
-	    var lastRefresh = 0;
+   </script>
+  </div>
+  <br/>
+  <div id="more" tabindex="-1">
+   <div class="info-box">
+    <h3>
+     About Baseball Bros
+    </h3>
+    <p>
+     Baseball Bros is a simple, fast-paced baseball game that's easy to learn and has lots of crazy hijinks! With online multiplayer gameplay, franchise mode, fun pitching, and so much more!
+    </p>
+    <p>
+     Controls: Use either the arrow keys or WASD to control your bro. Space bar will throw a the ball, dive, slide, or change directions when you're running the bases.
+    </p>
+    <p>
+     Be sure to follow us on social media for the latest updates and info!
+    </p>
+    <br/>
+    <h3>
+     Changelog (3/13/2024)
+    </h3>
+    <p>
+     Fixed another glitch where the game ends to early if the home team scores on their last at bat while still losing.
+    </p>
+    <p>
+     Made cpu players better at catching fly balls. Should make it more difficult in 1p games.
+    </p>
+    <p>
+     Updated theme song.
+    </p>
+    <p>
+     Fixed more innings glitches.
+    </p>
+    <p>
+     Fixed glitch where home team wouldn't get their fair at bat in extra innings.
+    </p>
+    <p>
+     Improved virtual controller on iPads and pnones.
+    </p>
+   </div>
+   <div class="info-box">
+    <h3>
+     FAQ
+    </h3>
+    <b>
+     Why isn't the game loading?
+    </b>
+    <p>
+     You should check your internet connection and make sure our site isn't blocked. Also, disable all ad blockers.
+    </p>
+    <b>
+     How do I play?
+    </b>
+    <p>
+     Use your arrow keys and space bar! The rest is easy- pick your play and go!
+    </p>
+    <b>
+     Which browser should I use?
+    </b>
+    <p>
+     You should use Chrome. It is the only browser guaranteed to work. Baseball Bros has also been tested to work on Firefox and Safari, but not guaranteed.
+    </p>
+    <b>
+     Are there more Bros games?
+    </b>
+    <p>
+     Yes! Check out
+     <a href="https://footballbros.io" tabindex="-1">
+      Football Bros
+     </a>
+     , href="https://basketbros.io"&gt;Basket Bros
+     ,
+     <a href="https://soccerbros.gg" tabindex="-1">
+      Soccer Bros
+     </a>
+     and
+     <a href="https://wrestlebros.io" tabindex="-1">
+      Wrestle Bros
+     </a>
+     . Also be sure to check out
+     <a href="https://freegames.io" tabindex="-1" target="_blank">
+      Web games at FreeGames.io
+     </a>
+    </p>
+    <b>
+     Do you have a favorite team?
+    </b>
+    <p>
+     Yes, but we're not saying which one. Drop us an e-mail if you think you know.
+    </p>
+    <b>
+     I'm blocked, where else can i play?
+    </b>
+    <p>
+     Check here, these links work for all the bros games:
+     <a href="https://sites.google.com/bluewizard.com/basket-bros-unblocked">
+      Baseball Bros Unblocked
+     </a>
+    </p>
+   </div>
+  </div>
+  <footer id="footer" tabindex="-1">
+   <div class="footer-links" tabindex="-1">
+    <a href="https://bluewizard.com" tabindex="-1">
+     Copyright 2024 Blue Wizard Digital
+    </a>
+    |
+    <a href="https://bluewizard.com/terms/" tabindex="-1">
+     Terms of Service
+    </a>
+    |
+    <a href="https://bluewizard.com/privacypolicy/" tabindex="-1">
+     Privacy Policy
+    </a>
+   </div>
+  </footer>
+  <script>
+   var lastRefresh = 0;
 
 	    function refreshTag(theTag) {
 	      try {
@@ -1088,14 +1164,16 @@
 	    // Event listeners to restore focus when lost
 	    element.addEventListener('blur', keepFocus);
 	    element.addEventListener('focusout', keepFocus);
-	  </script>
-	    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
-	</html>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
+</html>

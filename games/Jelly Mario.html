@@ -1,22 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/315/">
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-10433828-16"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/315/"/>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-10433828-16">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'UA-10433828-16');
-    </script>
-    <title>Jelly Mario</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-    <style>
-        body, html {
+  </script>
+  <title>
+   Jelly Mario
+  </title>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+   <style>
+    body, html {
             width: 100%;
             height: 100%;
             padding: 0;
@@ -123,47 +125,59 @@
             display: table-cell;
             vertical-align: middle;
         }
-    </style>
-</head>
-<body>
-
-<div id="mobile-info">
-    <p id="mobile-info-message">Jelly Mario does not work on mobile, sorry :(</p>
-</div>
-
-<div id="loading">
-Loading&nbsp;<span id="loadedPercent">0</span>%
-</div>
-
-<div id="play" style="display:none">
-<input hidden id="playButton" type="submit" value="Start game" />
-</div>
-
-<div id="toggleSound">
-    Sound <input id="toggleSoundCheckbox" type="checkbox" checked="checked" value="1"/>
-</div>
-
-<table width="100%" height="100%" style="table-layout:fixed; border: none;" cellspacing="0" cellpadding="0">
-    <tr>
-        <td id="container"></td>
-    </tr>
-</table>
-
-<script src="lib/three.min.js"></script>
-<script src="lib/stats.min.js"></script>
-<script src="lib/dat.gui.min.js"></script>
-<script src="build/main.js?2"></script>
-<script>
-    window.onload = function () {
+   </style>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="mobile-info">
+   <p id="mobile-info-message">
+    Jelly Mario does not work on mobile, sorry :(
+   </p>
+  </div>
+  <div id="loading">
+   Loading
+   <span id="loadedPercent">
+    0
+   </span>
+   %
+  </div>
+  <div id="play" style="display:none">
+   <input hidden="" id="playButton" type="submit" value="Start game"/>
+  </div>
+  <div id="toggleSound">
+   Sound
+   <input checked="checked" id="toggleSoundCheckbox" type="checkbox" value="1"/>
+  </div>
+  <table cellpadding="0" cellspacing="0" height="100%" style="table-layout:fixed; border: none;" width="100%">
+   <tr>
+    <td id="container">
+    </td>
+   </tr>
+  </table>
+  <script src="lib/three.min.js">
+  </script>
+  <script src="lib/stats.min.js">
+  </script>
+  <script src="lib/dat.gui.min.js">
+  </script>
+  <script src="build/main.js?2">
+  </script>
+  <script>
+   window.onload = function () {
         document.getElementById('playButton').click();
     }
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

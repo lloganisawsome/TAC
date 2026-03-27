@@ -1,22 +1,19 @@
-<Module>
-
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-
-<Module>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>really cool flash game</title>
-  <style>
-    html, body {
+<module>
+ <!-- Ultimate Game Stash file-->
+ <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+ <module>
+  <html lang="en">
+   <head>
+    <link href="rightclick.css" rel="stylesheet"/>
+    <link href="custom-cursor.css" rel="stylesheet"/>
+    <meta charset="utf-8"/>
+    <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+    <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>
+     really cool flash game
+    </title>
+    <style>
+     html, body {
       margin: 0;
       padding: 0;
       background: black;
@@ -67,17 +64,25 @@
       background: black;
       display: block;
     }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle@0.2.0-nightly.2025.10.2/ruffle.min.js"></script>
-</head>
-<body>
-  <div id="flash-container"></div>
-  <div class="black-box" id="box-top"></div>
-  <div class="black-box" id="box-bottom"></div>
-  <div class="black-box" id="box-left"></div>
-  <div class="black-box" id="box-right"></div>
-  <script>
-    const container = document.getElementById("flash-container");
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@ruffle-rs/ruffle@0.2.0-nightly.2025.10.2/ruffle.min.js">
+    </script>
+    <script src="app-presence.js">
+    </script>
+   </head>
+   <body>
+    <div id="flash-container">
+    </div>
+    <div class="black-box" id="box-top">
+    </div>
+    <div class="black-box" id="box-bottom">
+    </div>
+    <div class="black-box" id="box-left">
+    </div>
+    <div class="black-box" id="box-right">
+    </div>
+    <script>
+     const container = document.getElementById("flash-container");
     const boxTop = document.getElementById("box-top");
     const boxBottom = document.getElementById("box-bottom");
     const boxLeft = document.getElementById("box-left");
@@ -126,17 +131,21 @@
         container.textContent = "Ruffle failed to load."; 
       }
     });
-  </script>
-    <param name="movie" value="https://cdn.jsdelivr.net/gh/bagel-man/eggyolkers@638d286c58b7952af5ee59af75587db454f3b798/games/swf/papastacomia.swf">
-    <embed src="https://cdn.jsdelivr.net/gh/bagel-man/eggyolkers@638d286c58b7952af5ee59af75587db454f3b798/games/swf/papastacomia.swf" width="100%" height="100%">
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-</html>
-]]></Content>
-</Module>
+    </script>
+    <param name="movie" value="https://cdn.jsdelivr.net/gh/bagel-man/eggyolkers@638d286c58b7952af5ee59af75587db454f3b798/games/swf/papastacomia.swf"/>
+    <embed height="100%" src="https://cdn.jsdelivr.net/gh/bagel-man/eggyolkers@638d286c58b7952af5ee59af75587db454f3b798/games/swf/papastacomia.swf" width="100%"/>
+    <script src="custom-cursor.js">
+    </script>
+    <script src="rightclick.js">
+    </script>
+    <script src="panic-key.js">
+    </script>
+    <script src="idle-dvd.js">
+    </script>
+    <script src="online.js" type="module">
+    </script>
+   </body>
+  </html>
+  ]]&gt;
+ </module>
+</module>

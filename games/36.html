@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/318/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity Web Player | Roulette</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <link rel="manifest" href="manifest.webmanifest">
-    <script src="https://cdn.jsdelivr.net/gh/gn-math/assets@main/merge.js"></script>
-</head>
-
-<body>
-    <div id="loading-text" style="color: black; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
-    <div id="unity-container" hidden>
-        <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
-        <div id="unity-loading-bar">
-            <div id="unity-logo"></div>
-            <div id="unity-progress-bar-empty">
-                <div id="unity-progress-bar-full"></div>
-            </div>
-        </div>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@main/318/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity Web Player | Roulette
+  </title>
+  <link href="TemplateData/favicon.ico" rel="shortcut icon"/>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <link href="manifest.webmanifest" rel="manifest"/>
+  <script src="https://cdn.jsdelivr.net/gh/gn-math/assets@main/merge.js">
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="color: black; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <div hidden="" id="unity-container">
+   <canvas height="600" id="unity-canvas" tabindex="-1" width="960">
+   </canvas>
+   <div id="unity-loading-bar">
+    <div id="unity-logo">
     </div>
-    <script>
-        Promise.all([
+    <div id="unity-progress-bar-empty">
+     <div id="unity-progress-bar-full">
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+   Promise.all([
             window.mergeFiles(window.getParts("Build/SideEffectsWebBuild_V0.1.wasm.br", 1, 3)),
             window.mergeFiles(window.getParts("Build/SideEffectsWebBuild_V0.1.data.br", 1, 12)),
         ]).then(([wasmUrl, dataUrl]) => {
@@ -86,14 +94,16 @@
             };
             document.body.appendChild(script);
         });
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

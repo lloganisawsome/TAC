@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<base href="https://cdn.jsdelivr.net/gh/bubbls/dosbox/">
-<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>game</title>
-    <style>
-        html,
+ <base href="https://cdn.jsdelivr.net/gh/bubbls/dosbox/"/>
+ <meta content="text/html;charset=utf-8" http-equiv="content-type"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   game
+  </title>
+  <style>
+   html,
         body {
             width: 100%;
             height: 100%;
@@ -61,22 +62,23 @@
             margin-top: 20px;
             font-size: 16px;
         }
-    </style>
-</head>
-
-<body>
-    <div id="loading">
-        <div>Loading...</div>
-        <div id="progress">Merging archive parts: 0%</div>
-    </div>
-<canvas 
-  id="canvas"
-  tabindex="0"
-  style="width: 50%; height: 50%; display: none; margin: 0 auto; outline: none; cursor: none;"
-></canvas>
-
-<script>
-function enablePointerLock() {
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading">
+   <div>
+    Loading...
+   </div>
+   <div id="progress">
+    Merging archive parts: 0%
+   </div>
+  </div>
+  <canvas id="canvas" style="width: 50%; height: 50%; display: none; margin: 0 auto; outline: none; cursor: none;" tabindex="0">
+  </canvas>
+  <script>
+   function enablePointerLock() {
   const canvas = document.getElementById('canvas');
   const reqLock = canvas.requestPointerLock ||
                   canvas.mozRequestPointerLock ||
@@ -104,15 +106,17 @@ document.addEventListener('click', (e) => {
   const canvas = document.getElementById('canvas');
   if (e.target === canvas) enablePointerLock();
 });
-</script>
-
-    <script type="text/javascript" src="js/es6-promise.js"></script>
-    <script type="text/javascript" src="js/browserfs.min.js"></script>
-    <script type="text/javascript" src="js/loader.js"></script>
-    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-
-<script type="text/javascript">
-    const PARTS_FOLDER = 'softs/daggerfall/';
+  </script>
+  <script src="js/es6-promise.js" type="text/javascript">
+  </script>
+  <script src="js/browserfs.min.js" type="text/javascript">
+  </script>
+  <script src="js/loader.js" type="text/javascript">
+  </script>
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js">
+  </script>
+  <script type="text/javascript">
+   const PARTS_FOLDER = 'softs/daggerfall/';
     const BASE_FILENAME = 'Daggerfall.zip';
     const NUM_PARTS = 8;
 
@@ -200,15 +204,16 @@ document.addEventListener('click', (e) => {
     }
 
     window.addEventListener('load', loadAndMergeZipParts);
-</script>
-
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

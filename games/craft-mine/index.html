@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-        <title>CraftMine</title>
-
-        <!-- Allow fullscreen mode on iOS devices. (These are Apple specific meta tags.) -->
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta name="HandheldFriendly" content="true" />
-
-        <!-- Chrome for Android web app tags -->
-        <meta name="mobile-web-app-capable" content="yes" />
-        <script src="/js/main.js"></script>
-
-        <!-- All margins and padding must be zero for the canvas to fill the screen. -->
-        <style type="text/css">
-            * {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
+  <title>
+   CraftMine
+  </title>
+  <!-- Allow fullscreen mode on iOS devices. (These are Apple specific meta tags.) -->
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" name="viewport"/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+  <meta content="true" name="HandheldFriendly"/>
+  <!-- Chrome for Android web app tags -->
+  <meta content="yes" name="mobile-web-app-capable"/>
+  <script src="/js/main.js">
+  </script>
+  <!-- All margins and padding must be zero for the canvas to fill the screen. -->
+  <style type="text/css">
+   * {
                 padding: 0;
                 margin: 0;
             }
@@ -36,44 +36,63 @@
                 touch-action: none;
                 -ms-touch-action: none;
             }
-        </style>
-    </head>
-
-    <body>
-        <script>
-            // Issue a warning if trying to preview an exported project on disk.
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <script>
+   // Issue a warning if trying to preview an exported project on disk.
             (function () {
                 // Check for running exported on file protocol
                 if (window.location.protocol.substr(0, 4) === "file") {
                     alert("Exported games won't work until you upload them. (When running on the file:/// protocol, browsers block many features from working for security reasons.)");
                 }
             })();
-        </script>
-
-        <!-- The canvas must be inside a div called c2canvasdiv -->
-        <div id="c2canvasdiv">
-            <!-- The canvas the project will render to.  If you change its ID, don't forget to change the
+  </script>
+  <!-- The canvas must be inside a div called c2canvasdiv -->
+  <div id="c2canvasdiv">
+   <!-- The canvas the project will render to.  If you change its ID, don't forget to change the
 		ID the runtime looks for in the jQuery events above (ready() and cr_sizeCanvas()). -->
-            <canvas id="c2canvas" width="1280" height="720">
-                <!-- This text is displayed if the visitor's browser does not support HTML5.
+   <canvas height="720" id="c2canvas" width="1280">
+    <!-- This text is displayed if the visitor's browser does not support HTML5.
 			You can change it, but it is a good idea to link to a description of a browser
 			and provide some links to download some popular HTML5-compatible browsers. -->
-                <h1>
-                    Your browser does not appear to support HTML5. Try upgrading your browser to the latest version. <a href="http://www.whatbrowser.org">What is a browser?</a> <br />
-                    <br />
-                    <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">Microsoft Internet Explorer</a><br />
-                    <a href="http://www.mozilla.com/firefox/">Mozilla Firefox</a><br />
-                    <a href="http://www.google.com/chrome/">Google Chrome</a><br />
-                    <a href="http://www.apple.com/safari/download/">Apple Safari</a>
-                </h1>
-            </canvas>
-        </div>
-        <script src="jquery-3.4.1.min.js"></script>
-        <script src="ga_init.js"></script>
-        <script src="Photon-Javascript_SDK.min.js"></script>
-        <script src="c2runtime.js"></script>
-        <script>
-            // Start the Construct 2 project running on window load.
+    <h1>
+     Your browser does not appear to support HTML5. Try upgrading your browser to the latest version.
+     <a href="http://www.whatbrowser.org">
+      What is a browser?
+     </a>
+     <br/>
+     <br/>
+     <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx">
+      Microsoft Internet Explorer
+     </a>
+     <br/>
+     <a href="http://www.mozilla.com/firefox/">
+      Mozilla Firefox
+     </a>
+     <br/>
+     <a href="http://www.google.com/chrome/">
+      Google Chrome
+     </a>
+     <br/>
+     <a href="http://www.apple.com/safari/download/">
+      Apple Safari
+     </a>
+    </h1>
+   </canvas>
+  </div>
+  <script src="jquery-3.4.1.min.js">
+  </script>
+  <script src="ga_init.js">
+  </script>
+  <script src="Photon-Javascript_SDK.min.js">
+  </script>
+  <script src="c2runtime.js">
+  </script>
+  <script>
+   // Start the Construct 2 project running on window load.
             jQuery(document).ready(function () {
                 // Create new runtime using the c2canvas
                 cr_createRuntime("c2canvas");
@@ -110,22 +129,26 @@
                     OnRegisterSWError(e);
                 }
             };
-        </script>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-98DP5VKS42"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
+  </script>
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-98DP5VKS42">
+  </script>
+  <script>
+   window.dataLayer = window.dataLayer || [];
             function gtag() {
                 dataLayer.push(arguments);
             }
             gtag("js", new Date());
             gtag("config", "G-98DP5VKS42");
-        </script>
-        <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC - Music Popup</title>
+<style>
+:root {
+    --bg: #0a0a0b;
+    --panel: #111113;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --muted: #71717a;
+    --border: rgba(255,255,255,0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+/* ── FULL & TITLE states: normal widget ── */
+.widget {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 320px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 0 24px var(--accent-dim), 0 8px 32px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* TITLE state */
+.widget.state-title {
+    padding: 10px 14px;
+    gap: 0;
+}
+
+/* ICON state — hide widget entirely */
+.widget.state-icon {
+    display: none;
+}
+
+/* ── ICON BUTTON (shown only in state-icon) ── */
+.icon-btn {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0 16px var(--accent-dim), 0 4px 16px rgba(0,0,0,0.6);
+    transition: opacity 0.2s;
+}
+.icon-btn:hover { opacity: 0.8; }
+.icon-btn svg { width: 18px; height: 18px; color: var(--accent); }
+
+body.state-icon .icon-btn { display: flex; }
+body.state-icon .widget { display: none; }
+
+.widget-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.widget-song-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--accent);
+}
+
+.minimize-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+.minimize-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.minimize-btn svg { width: 14px; height: 14px; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
+
+/* chevron points down when full, up when title */
+.widget.state-title .minimize-btn svg { transform: rotate(180deg); }
+
+/* mini play shown only in title state */
+.mini-play-btn {
+    width: 28px;
+    height: 28px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--accent);
+    color: #000;
+    cursor: pointer;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.mini-play-btn:hover { opacity: 0.85; }
+.mini-play-btn svg { width: 14px; height: 14px; }
+.widget.state-title .mini-play-btn { display: flex; }
+
+.expandable {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: hidden;
+    max-height: 200px;
+    opacity: 1;
+    transition: max-height 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.2s ease;
+}
+.widget.state-title .expandable {
+    max-height: 0;
+    opacity: 0;
+}
+
+.progress-wrap {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 2px;
+    cursor: pointer;
+}
+.progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+.time-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: -4px;
+}
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+.ctrl-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.ctrl-btn:hover { background: rgba(255,255,255,0.06); }
+.ctrl-btn svg { width: 16px; height: 16px; }
+.ctrl-btn.play-btn {
+    width: 38px;
+    height: 38px;
+    background: var(--accent);
+    color: #000;
+    border-radius: 50%;
+}
+.ctrl-btn.play-btn:hover { opacity: 0.85; }
+.ctrl-btn.play-btn svg { width: 18px; height: 18px; }
+.volume-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.volume-row svg { width: 14px; height: 14px; color: var(--muted); flex-shrink: 0; }
+.volume-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    outline: none;
+}
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+}
+.volume-slider::-moz-range-thumb {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+}
+</style>
+</head>
+<body>
+
+<audio id="audio"></audio>
+
+<!-- Icon-only button (state 2 = fully minimised) -->
+<button class="icon-btn" id="iconBtn" title="Expand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+</button>
+
+<div class="widget" id="widget">
+    <div class="widget-top">
+        <span class="widget-song-name" id="songName">Loading...</span>
+        <button class="mini-play-btn" id="miniPlayBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor" id="miniPlayIcon"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="minimize-btn" id="minimizeBtn" title="Minimise">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
+    </div>
+    <div class="expandable" id="expandable">
+        <div class="progress-wrap" id="progressWrap">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="time-row">
+            <span id="currentTime">0:00</span>
+            <span id="totalTime">0:00</span>
+        </div>
+        <div class="controls">
+            <button class="ctrl-btn" id="prevBtn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+            </button>
+            <button class="ctrl-btn play-btn" id="playBtn">
+                <svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <button class="ctrl-btn" id="nextBtn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+            </button>
+        </div>
+        <div class="volume-row">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+            <input type="range" min="0" max="100" value="50" class="volume-slider" id="volSlider">
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var audio = document.getElementById('audio');
+    var songNameEl = document.getElementById('songName');
+    var progressBar = document.getElementById('progressBar');
+    var progressWrap = document.getElementById('progressWrap');
+    var currentTimeEl = document.getElementById('currentTime');
+    var totalTimeEl = document.getElementById('totalTime');
+    var playIcon = document.getElementById('playIcon');
+    var miniPlayIcon = document.getElementById('miniPlayIcon');
+    var volSlider = document.getElementById('volSlider');
+    var btnPlay = document.getElementById('playBtn');
+    var btnNext = document.getElementById('nextBtn');
+    var btnPrev = document.getElementById('prevBtn');
+    var widget = document.getElementById('widget');
+    var minimizeBtn = document.getElementById('minimizeBtn');
+    var miniPlayBtn = document.getElementById('miniPlayBtn');
+    var iconBtn = document.getElementById('iconBtn');
+
+    var playlist = [];
+    var currentIndex = 0;
+
+    // States: 0 = full, 1 = title only, 2 = icon only
+    var STATES = ['state-full', 'state-title', 'state-icon'];
+    var HEIGHTS = [220, 52, 44];
+    var currentState = parseInt(localStorage.getItem('tacState') || '0');
+    if (isNaN(currentState) || currentState < 0 || currentState > 2) currentState = 0;
+
+    function applyState(s) {
+        currentState = s;
+        // Reset classes
+        widget.classList.remove('state-title', 'state-icon');
+        document.body.classList.remove('state-icon');
+
+        if (s === 1) {
+            widget.classList.add('state-title');
+        } else if (s === 2) {
+            widget.classList.add('state-icon');
+            document.body.classList.add('state-icon');
+        }
+
+        localStorage.setItem('tacState', s);
+
+        // Tell parent to resize iframe
+        try {
+            window.parent.postMessage({ type: 'tacResize', height: HEIGHTS[s] }, '*');
+        } catch(e) {}
+    }
+
+    // Minimise button: cycles full→title→icon
+    minimizeBtn.addEventListener('click', function () {
+        applyState((currentState + 1) % 3);
+    });
+
+    // Icon button: goes back to full
+    iconBtn.addEventListener('click', function () {
+        applyState(0);
+    });
+
+    // Apply saved state on load
+    applyState(currentState);
+
+    // ── Helpers ──
+    function formatTime(s) {
+        if (!s || isNaN(s)) return '0:00';
+        var m = Math.floor(s / 60);
+        var sec = Math.floor(s % 60);
+        return m + ':' + (sec < 10 ? '0' : '') + sec;
+    }
+
+    function saveState() {
+        localStorage.setItem('tacCurrentIdx', currentIndex);
+        localStorage.setItem('tacMusicPlaying', audio.paused ? 'false' : 'true');
+        localStorage.setItem('tacMusicVolume', Math.round(audio.volume * 100));
+        if (audio.currentTime > 0) localStorage.setItem('tacMusicTime', audio.currentTime);
+    }
+
+    function updatePlayIcon() {
+        var icon = audio.paused
+            ? '<path d="M8 5v14l11-7z"/>'
+            : '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+        playIcon.innerHTML = icon;
+        miniPlayIcon.innerHTML = icon;
+    }
+
+    function loadSong(index, shouldPlay) {
+        if (!playlist[index]) return;
+        currentIndex = index;
+        audio.src = playlist[index].file;
+        var savedIdx = parseInt(localStorage.getItem('tacCurrentIdx'));
+        if (savedIdx === index) {
+            var savedTime = parseFloat(localStorage.getItem('tacMusicTime') || '0');
+            if (savedTime > 0) {
+                audio.addEventListener('loadedmetadata', function onMeta() {
+                    audio.currentTime = savedTime;
+                    audio.removeEventListener('loadedmetadata', onMeta);
+                });
+            }
+        }
+        songNameEl.textContent = playlist[index].name;
+        saveState();
+        if (shouldPlay) audio.play();
+        updatePlayIcon();
+    }
+
+    function playNext() {
+        localStorage.removeItem('tacMusicTime');
+        loadSong((currentIndex + 1) % playlist.length, true);
+    }
+
+    function playPrev() {
+        if (audio.currentTime > 3) { audio.currentTime = 0; return; }
+        localStorage.removeItem('tacMusicTime');
+        loadSong((currentIndex - 1 + playlist.length) % playlist.length, true);
+    }
+
+    function togglePlay() {
+        if (!playlist.length) return;
+        if (!audio.src || audio.src === window.location.href) { loadSong(currentIndex, true); return; }
+        if (audio.paused) audio.play(); else audio.pause();
+    }
+
+    btnPlay.addEventListener('click', togglePlay);
+    miniPlayBtn.addEventListener('click', togglePlay);
+    btnNext.addEventListener('click', playNext);
+    btnPrev.addEventListener('click', playPrev);
+
+    audio.addEventListener('play', function () { updatePlayIcon(); saveState(); });
+    audio.addEventListener('pause', function () { updatePlayIcon(); saveState(); });
+    audio.addEventListener('ended', playNext);
+
+    audio.addEventListener('timeupdate', function () {
+        if (!audio.duration) return;
+        var pct = (audio.currentTime / audio.duration) * 100;
+        progressBar.style.width = pct + '%';
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+        totalTimeEl.textContent = formatTime(audio.duration);
+        saveState();
+    });
+
+    progressWrap.addEventListener('click', function (e) {
+        if (!audio.duration) return;
+        var r = progressWrap.getBoundingClientRect();
+        audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+    });
+
+    var savedVol = parseInt(localStorage.getItem('tacMusicVolume') || '50');
+    if (isNaN(savedVol) || savedVol < 0) savedVol = 50;
+    if (savedVol > 100) savedVol = 100;
+    volSlider.value = savedVol;
+    audio.volume = savedVol / 100;
+
+    volSlider.addEventListener('input', function () {
+        audio.volume = parseInt(volSlider.value) / 100;
+        localStorage.setItem('tacMusicVolume', volSlider.value);
+    });
+
+    var themeColors = {
+        green:  { primary: '#22c55e', dim: 'rgba(34,197,94,0.1)' },
+        blue:   { primary: '#3b82f6', dim: 'rgba(59,130,246,0.1)' },
+        red:    { primary: '#ef4444', dim: 'rgba(239,68,68,0.1)' },
+        cyan:   { primary: '#06b6d4', dim: 'rgba(6,182,212,0.1)' },
+        pink:   { primary: '#ec4899', dim: 'rgba(236,72,153,0.1)' },
+        purple: { primary: '#8b5cf6', dim: 'rgba(139,92,246,0.1)' },
+        yellow: { primary: '#eab308', dim: 'rgba(234,179,8,0.1)' },
+        orange: { primary: '#f97316', dim: 'rgba(249,115,22,0.1)' },
+        white:  { primary: '#ffffff', dim: 'rgba(255,255,255,0.1)' }
+    };
+
+    function applyTheme() {
+        var t = localStorage.getItem('theme') || 'green';
+        var c = themeColors[t] || themeColors.green;
+        document.documentElement.style.setProperty('--accent', c.primary);
+        document.documentElement.style.setProperty('--accent-dim', c.dim);
+    }
+    applyTheme();
+    window.addEventListener('storage', function (e) { if (e.key === 'theme') applyTheme(); });
+
+    function parseCSV(text) {
+        var lines = text.split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l.length > 0; });
+        var songs = [];
+        lines.forEach(function (line) {
+            if (line.toLowerCase().replace(/\s/g, '') === 'songname,filename') return;
+            var comma = line.indexOf(',');
+            if (comma === -1) return;
+            var name = line.substring(0, comma).trim().replace(/^"|"$/g, '');
+            var file = line.substring(comma + 1).trim().replace(/^"|"$/g, '');
+            if (name && file) songs.push({ name: name, file: file });
+        });
+        return songs;
+    }
+
+    function tryLoadCSV(paths, idx) {
+        if (idx >= paths.length) { songNameEl.textContent = 'Could not load songs.csv'; return; }
+        fetch(paths[idx])
+            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+            .then(function (text) {
+                playlist = parseCSV(text);
+                if (!playlist.length) { songNameEl.textContent = 'No songs found in CSV'; return; }
+                var savedIdx = parseInt(localStorage.getItem('tacCurrentIdx') || '0');
+                if (isNaN(savedIdx) || savedIdx < 0 || savedIdx >= playlist.length) savedIdx = 0;
+                currentIndex = savedIdx;
+                var wasPlaying = localStorage.getItem('tacMusicPlaying') === 'true';
+                loadSong(currentIndex, wasPlaying);
+            })
+            .catch(function () { tryLoadCSV(paths, idx + 1); });
+    }
+
+    tryLoadCSV(['Music/songs.csv', 'music/songs.csv', './Music/songs.csv'], 0);
+
+})();
+</script>
+</body>
+</html>

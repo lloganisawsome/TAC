@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page Not Found - TAC</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Page Not Found - TAC
+  </title>
   <style>
-    :root {
+   :root {
       --bg: #0a0a0b;
       --panel: #111113;
       --panel-hover: #1a1a1c;
@@ -139,33 +141,38 @@
       .image-wrapper { max-width: 280px; }
     }
   </style>
-</head>
-<body>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <div class="container">
-    <div class="error-badge">
-      <span class="dot"></span>
-      404 ERROR
-    </div>
-
-    <div class="error-code">404</div>
-
-    <h1>This Page Took a Wrong Turn</h1>
-    <p>The page you're looking for is either still being built or doesn't exist. Either way, there's nothing to see here — yet.</p>
-
-    <div class="image-wrapper">
-      <img src="tac.gif" alt="Not Found">
-    </div>
-
-    <a href="/" class="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-      Back to Home
-    </a>
+   <div class="error-badge">
+    <span class="dot">
+    </span>
+    404 ERROR
+   </div>
+   <div class="error-code">
+    404
+   </div>
+   <h1>
+    This Page Took a Wrong Turn
+   </h1>
+   <p>
+    The page you're looking for is either still being built or doesn't exist. Either way, there's nothing to see here — yet.
+   </p>
+   <div class="image-wrapper">
+    <img alt="Not Found" src="tac.gif"/>
+   </div>
+   <a class="button" href="/">
+    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+     <polyline points="15 18 9 12 15 6">
+     </polyline>
+    </svg>
+    Back to Home
+   </a>
   </div>
-
   <script>
-    // Theme Colors (same as file2)
+   // Theme Colors (same as file2)
     const themeColors = {
       green:    { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)' },
       blue:     { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)' },
@@ -192,25 +199,44 @@
       if (e.key === 'theme') applyTheme();
     });
   </script>
-  <script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

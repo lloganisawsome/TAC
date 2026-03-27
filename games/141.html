@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/minesweeperplus/">
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0"
-    />
-    <title>MinesweeperPlus</title>
-    <style>
-      html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/minesweeperplus/"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, user-scalable=no, initial-scale=1.0" name="viewport"/>
+  <title>
+   MinesweeperPlus
+  </title>
+  <style>
+   html,
       body,
       #canvas {
         margin: 0;
@@ -101,46 +100,43 @@
         text-align: center;
         z-index: 1;
       }
-    </style>
-    <link
-      id="-gd-engine-icon"
-      rel="icon"
-      type="image/png"
-      href="MinesweeperPlus.icon.png"
-    />
-    <link rel="apple-touch-icon" href="MinesweeperPlus.apple-touch-icon.png" />
-  </head>
-  <body>
-    <canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
-
-    <noscript> Your browser does not support JavaScript. </noscript>
-    <script src="main.js"></script>
-    <div
-      id="loading-text"
-      style="
+  </style>
+  <link href="MinesweeperPlus.icon.png" id="-gd-engine-icon" rel="icon" type="image/png">
+   <link href="MinesweeperPlus.apple-touch-icon.png" rel="apple-touch-icon">
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas">
+   Your browser does not support the canvas tag.
+  </canvas>
+  <noscript>
+   Your browser does not support JavaScript.
+  </noscript>
+  <script src="main.js">
+  </script>
+  <div id="loading-text" style="
         color: white;
         font-family: cursive;
         font-size: 48px;
         text-align: center;
         margin-top: 20px;
-      "
-    >
-      LOADING...
-    </div>
-    <div id="status">
-      <img
-        id="status-splash"
-        class="show-image--true fullsize--true use-filter--true"
-        src="MinesweeperPlus.png"
-        alt=""
-      />
-      <progress id="status-progress"></progress>
-      <div id="status-notice"></div>
-    </div>
-
-    <script src="MinesweeperPlus.js"></script>
-    <script>
-      window.godotRunStart = function () {
+      ">
+   LOADING...
+  </div>
+  <div id="status">
+   <img alt="" class="show-image--true fullsize--true use-filter--true" id="status-splash" src="MinesweeperPlus.png"/>
+   <progress id="status-progress">
+   </progress>
+   <div id="status-notice">
+   </div>
+  </div>
+  <script src="MinesweeperPlus.js">
+  </script>
+  <script>
+   window.godotRunStart = function () {
         const GODOT_CONFIG = {
           args: [],
           canvasResizePolicy: 2,
@@ -271,13 +267,16 @@
             }, displayFailureNotice);
         }
       };
-    </script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

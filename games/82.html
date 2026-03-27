@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
-	<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-		<base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/fears-to-fathom/home-alone/">
-		<meta charset="utf-8" />
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
-		/>
-		<title>Unity WebGL Player | Fears To Fathom: Home Alone</title>
-		<style>
-			* {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/fears-to-fathom/home-alone/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   Unity WebGL Player | Fears To Fathom: Home Alone
+  </title>
+  <style>
+   * {
 				margin: 0;
 				padding: 0;
 				border: 0;
@@ -91,10 +90,11 @@
 				background: black;
 				transition: width 0.3s ease;
 			}
-		</style>
-		<script src="Build/UnityLoader.js"></script>
-		<script>
-			// Add the alert message
+  </style>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <script>
+   // Add the alert message
 			alert("This port was made possible by Bread and the rest of the gn-math team ty sm! <3 Make sure to join their discord server https://discord.gg/gn-math");
 			
 			let max = 0;
@@ -178,39 +178,43 @@
 					},
 				});
 			});
-		</script>
-	</head>
-
-	<body>
-		<!-- Simple Loading Bar -->
-		<div id="simple-loading">
-			<div id="game-title">FEARS TO FATHOM: HOME ALONE</div>
-			<div id="simple-loading-bar">
-				<div id="simple-loading-progress"></div>
-			</div>
-		</div>
-
-		<div class="webgl-content">
-			<div
-				id="loading-text"
-				style="
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Simple Loading Bar -->
+  <div id="simple-loading">
+   <div id="game-title">
+    FEARS TO FATHOM: HOME ALONE
+   </div>
+   <div id="simple-loading-bar">
+    <div id="simple-loading-progress">
+    </div>
+   </div>
+  </div>
+  <div class="webgl-content">
+   <div id="loading-text" style="
 					color: white;
 					font-size: 48px;
 					font-family: cursive;
 					text-align: center;
 					margin-top: 20px;
-				"
-			>
-				LOADING...
-			</div>
-			<div id="unityContainer"></div>
-		</div>
-	    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+				">
+    LOADING...
+   </div>
+   <div id="unityContainer">
+   </div>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

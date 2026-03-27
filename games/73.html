@@ -1,35 +1,36 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/google-class@d0cbe7c43047eb95d3c1455877387d540128e98e/dokidoki/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Doki Doki Literature Club! (Ren'Py Mod)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json" crossorigin="use-credentials" />
-    <link rel="icon" href="icons/icon-72x72.png" sizes="72x72" type="image/png" />
-    <link rel="icon" href="icons/icon-96x96.png" sizes="96x96" type="image/png" />
-    <link rel="icon" href="icons/icon-128x128.png" sizes="128x128" type="image/png" />
-    <link rel="icon" href="icons/icon-144x144.png" sizes="144x144" type="image/png" />
-    <link rel="icon" href="icons/icon-152x152.png" sizes="152x152" type="image/png" />
-    <link rel="icon" href="icons/icon-192x192.png" sizes="192x192" type="image/png" />
-    <link rel="icon" href="icons/icon-384x384.png" sizes="384x384" type="image/png" />
-    <link rel="icon" href="icons/icon-512x512.png" sizes="512x512" type="image/png" />
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/google-class@d0cbe7c43047eb95d3c1455877387d540128e98e/dokidoki/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Doki Doki Literature Club! (Ren'Py Mod)
+  </title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <link crossorigin="use-credentials" href="manifest.json" rel="manifest">
+   <link href="icons/icon-72x72.png" rel="icon" sizes="72x72" type="image/png">
+    <link href="icons/icon-96x96.png" rel="icon" sizes="96x96" type="image/png"/>
+    <link href="icons/icon-128x128.png" rel="icon" sizes="128x128" type="image/png"/>
+    <link href="icons/icon-144x144.png" rel="icon" sizes="144x144" type="image/png"/>
+    <link href="icons/icon-152x152.png" rel="icon" sizes="152x152" type="image/png"/>
+    <link href="icons/icon-192x192.png" rel="icon" sizes="192x192" type="image/png"/>
+    <link href="icons/icon-384x384.png" rel="icon" sizes="384x384" type="image/png"/>
+    <link href="icons/icon-512x512.png" rel="icon" sizes="512x512" type="image/png"/>
     <!-- ios support -->
-    <link rel="apple-touch-icon" href="icons/icon-72x72.png" sizes="72x72" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-96x96.png" sizes="96x96" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-128x128.png" sizes="128x128" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-144x144.png" sizes="144x144" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-152x152.png" sizes="152x152" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png" sizes="192x192" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-384x384.png" sizes="384x384" type="image/png" />
-    <link rel="apple-touch-icon" href="icons/icon-512x512.png" sizes="512x512" type="image/png" />
-    <meta name="theme-color" content="#000" />
-    <style>
-        html {
+    <link href="icons/icon-72x72.png" rel="apple-touch-icon" sizes="72x72" type="image/png"/>
+    <link href="icons/icon-96x96.png" rel="apple-touch-icon" sizes="96x96" type="image/png"/>
+    <link href="icons/icon-128x128.png" rel="apple-touch-icon" sizes="128x128" type="image/png"/>
+    <link href="icons/icon-144x144.png" rel="apple-touch-icon" sizes="144x144" type="image/png"/>
+    <link href="icons/icon-152x152.png" rel="apple-touch-icon" sizes="152x152" type="image/png"/>
+    <link href="icons/icon-192x192.png" rel="apple-touch-icon" sizes="192x192" type="image/png"/>
+    <link href="icons/icon-384x384.png" rel="apple-touch-icon" sizes="384x384" type="image/png"/>
+    <link href="icons/icon-512x512.png" rel="apple-touch-icon" sizes="512x512" type="image/png"/>
+    <meta content="#000" name="theme-color">
+     <style>
+      html {
             background: #444;
             font-family: sans-serif;
         }
@@ -176,36 +177,55 @@
             height: 100%;
             object-fit: contain;
         }
-    </style>
-</head>
-
-<body>
-    <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
-    <div id="overlayDiv"></div>
-    <img id="presplash" src="web-presplash.jpg">
-    <div id="ContextContainer">
-        <a id="ContextButton">&#8801;</a><br />
-        <div id="ContextMenu" style="display: none;">
-            <input id="ID_SavegamesImport" type="file" onchange="onSavegamesImport(this)" accept="application/zip" style=display:none></input>
-            <a href="javascript:document.getElementById('ID_SavegamesImport').click();">Import Saves</a>
-            <a href="javascript:onSavegamesExport();">Export Saves</a>
-            <a href="javascript:FSDownload('/log.txt', 'text/plain');">Download Log</a>
-            <a href="https://www.renpy.org/" target="_blank"> Powered by Ren'Py </a>
-            </span>
-        </div>
+     </style>
+    </meta>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1">
+  </canvas>
+  <div id="overlayDiv">
+  </div>
+  <img id="presplash" src="web-presplash.jpg"/>
+  <div id="ContextContainer">
+   <a id="ContextButton">
+    ≡
+   </a>
+   <br/>
+   <div id="ContextMenu" style="display: none;">
+    <input accept="application/zip" id="ID_SavegamesImport" onchange="onSavegamesImport(this)" style="display:none" type="file"/>
+    <a href="javascript:document.getElementById('ID_SavegamesImport').click();">
+     Import Saves
+    </a>
+    <a href="javascript:onSavegamesExport();">
+     Export Saves
+    </a>
+    <a href="javascript:FSDownload('/log.txt', 'text/plain');">
+     Download Log
+    </a>
+    <a href="https://www.renpy.org/" target="_blank">
+     Powered by Ren'Py
+    </a>
+   </div>
+  </div>
+  <div class="hidden" id="statusDiv">
+   <div id="statusTextDiv">
+   </div>
+   <progress id="statusProgress" max="100" value="0">
+   </progress>
+  </div>
+  <div class="hidden" id="inputDiv">
+   <form id="inputForm">
+    <div id="inputPrompt">
     </div>
-    <div id="statusDiv" class="hidden">
-        <div id="statusTextDiv"></div>
-        <progress id="statusProgress" value="0" max="100"></progress>
-    </div>
-    <div id="inputDiv" class="hidden">
-        <form id="inputForm">
-            <div id="inputPrompt"></div>
-            <input id="inputText" type="text">
-        </form>
-    </div>
-    <script>
-        function mergeFiles(fileParts) {
+    <input id="inputText" type="text"/>
+   </form>
+  </div>
+  <script>
+   function mergeFiles(fileParts) {
             return new Promise((resolve, reject) => {
                 let buffers = [];
 
@@ -255,14 +275,16 @@
             renpy.async = true;
             document.body.appendChild(renpy);
         });
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

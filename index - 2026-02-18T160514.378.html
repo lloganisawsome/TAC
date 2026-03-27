@@ -1,35 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-<script src="guard.js"></script>
-    <title>Hello, World!</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-      <h1 class="title">Hello World!</h1>
-      <p id="currentTime"></p>
-      <script src="script.js"></script>
-      <script src="custom-cursor.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+ <head>
+  <script src="guard.js">
+  </script>
+  <title>
+   Hello, World!
+  </title>
+  <link href="styles.css" rel="stylesheet"/>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <h1 class="title">
+   Hello World!
+  </h1>
+  <p id="currentTime">
+  </p>
+  <script src="script.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
 </body>
 <link rel="stylesheet" href="rightclick.css">
-<script src="rightclick.js"></script>
-<link rel="stylesheet" href="custom-cursor.css">
-<script defer src="custom-cursor.js"></script>
+<script src="rightclick.js">
+  </script>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <script defer="" src="custom-cursor.js">
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
 </html>

@@ -1,25 +1,22 @@
 <!DOCTYPE html>
-
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-
-<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/happy%20room/">
+<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/happy%20room/"/>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Счастливая Комната</title>
-<link rel="stylesheet" href="TemplateData/style.css">
-<link rel="shortcut icon" href="TemplateData/favicon.ico" />
-<script src="TemplateData/UnityProgress.js"></script>
-
-<script>
-(function() {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Счастливая Комната
+  </title>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <link href="TemplateData/favicon.ico" rel="shortcut icon">
+   <script src="TemplateData/UnityProgress.js">
+   </script>
+   <script>
+    (function() {
   'use strict';
   
   const config = {
@@ -230,15 +227,18 @@
   
   start();
 })();
-</script>
-
-</head>
-<body class="template">
-<div class="template-wrap clear">
-<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="100%" height="100%"></canvas>
-</div>
-<script type="text/javascript">
-  var Module = {
+   </script>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body class="template">
+  <div class="template-wrap clear">
+   <canvas class="emscripten" height="100%" id="canvas" oncontextmenu="event.preventDefault()" width="100%">
+   </canvas>
+  </div>
+  <script type="text/javascript">
+   var Module = {
     TOTAL_MEMORY: 268435456,
     errorhandler: null,
     compatibilitycheck: null,
@@ -256,14 +256,18 @@
     canvas2.height = window.innerHeight-50;
   }
   resizeCanvas();
-</script>
-<script src="Release/UnityLoader.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="Release/UnityLoader.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-	<base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/web-fishing/">
-	<meta charset='utf-8' />
-	<meta name='viewport' content='width=device-width, user-scalable=no' />
-	<title>autumn_webfishing_main</title>
-	<style type='text/css'>
-
-		body {
+<html lang="" xml:lang="" xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/web-fishing/"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, user-scalable=no" name="viewport"/>
+  <title>
+   autumn_webfishing_main
+  </title>
+  <style type="text/css">
+   body {
 			touch-action: none;
 			margin: 0;
 			border: 0 none;
@@ -114,33 +115,52 @@
 			padding: 4px 6px;
 			visibility: visible;
 		}
-	</style>
-<link id='-gd-engine-icon' rel='icon' type='image/png' href='webfishing.icon.png' />
-<link rel='apple-touch-icon' href='webfishing.apple-touch-icon.png'/>
-
-</head>
-<body>
-	<canvas id='canvas'>
-		HTML5 canvas appears to be unsupported in the current browser.<br />
-		Please try updating or use a different browser.
-	</canvas>
-	<div id='status'>
-		<div id='status-progress' style='display: none;' oncontextmenu='event.preventDefault();'><div id ='status-progress-inner'></div></div>
-		<div id='status-indeterminate' style='display: none;' oncontextmenu='event.preventDefault();'>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-			<div></div>
-		</div>
-		<div id='status-notice' class='godot' style='display: none;'></div>
-	</div>
-	<script src="main.js"></script>
-	<script type='text/javascript' src='webfishing.js'></script>
-	<script type='text/javascript'>//<![CDATA[
+  </style>
+  <link href="webfishing.icon.png" id="-gd-engine-icon" rel="icon" type="image/png">
+   <link href="webfishing.apple-touch-icon.png" rel="apple-touch-icon">
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas">
+   HTML5 canvas appears to be unsupported in the current browser.
+   <br/>
+   Please try updating or use a different browser.
+  </canvas>
+  <div id="status">
+   <div id="status-progress" oncontextmenu="event.preventDefault();" style="display: none;">
+    <div id="status-progress-inner">
+    </div>
+   </div>
+   <div id="status-indeterminate" oncontextmenu="event.preventDefault();" style="display: none;">
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+    <div>
+    </div>
+   </div>
+   <div class="godot" id="status-notice" style="display: none;">
+   </div>
+  </div>
+  <script src="main.js">
+  </script>
+  <script src="webfishing.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   //<![CDATA[
 
 		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"webfishing","experimentalVK":false,"fileSizes":{"webfishing.pck":45948464,"webfishing.wasm":17860295},"focusCanvas":true,"gdnativeLibs":[]};
 		var engine = new Engine(GODOT_CONFIG);
@@ -245,14 +265,17 @@
 				}, displayFailureNotice);
 			}
 		};
-	//]]></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+	//]]>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>
-

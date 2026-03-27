@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Abandoned</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <meta content="width=device-width, initial-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>
+   Abandoned
+  </title>
   <style>
-    html, body {
+   html, body {
       margin: 0;
       padding: 0;
       background: black;
@@ -32,13 +34,16 @@
       display: block;
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/gh/somer-sheff-73/xv@main/ruffle.js"></script>
-</head>
-<body>
-  <div id="flash-container"></div>
-
+  <script src="https://cdn.jsdelivr.net/gh/somer-sheff-73/xv@main/ruffle.js">
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="flash-container">
+  </div>
   <script>
-    const container = document.getElementById("flash-container");
+   const container = document.getElementById("flash-container");
 
     function resizeGame() {
       const windowWidth = window.innerWidth;
@@ -74,13 +79,15 @@
       }
     });
   </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>
-

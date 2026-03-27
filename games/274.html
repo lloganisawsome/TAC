@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <base href="https://cdn.jsdelivr.net/gh/greeniYT/weinersfunmath@main/sf1/" target="_blank">
-    <title>Sausage Flip</title>
-    <link rel="shortcut icon" href="images/favicon.ico">
-    <style>
-        * {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <base href="https://cdn.jsdelivr.net/gh/greeniYT/weinersfunmath@main/sf1/" target="_blank"/>
+  <title>
+   Sausage Flip
+  </title>
+  <link href="images/favicon.ico" rel="shortcut icon"/>
+  <style>
+   * {
             margin: 0;
             padding: 0;
         }
@@ -105,10 +106,11 @@
         div.fullscreen img {
             padding-left: 5px;
         }
-    </style>
-    <script src="js/UnityLoader.js"></script>
-    <script type="text/javascript">
-        function UnityProgress(gameInstance, progress) {
+  </style>
+  <script src="js/UnityLoader.js">
+  </script>
+  <script type="text/javascript">
+   function UnityProgress(gameInstance, progress) {
             if (!gameInstance.Module) {
                 return;
             } else if (progress === "complete") {
@@ -167,16 +169,17 @@
                 document.getElementById("sitelogo").style.display = "block";
             }
         }
-        
-    </script>
-    <script src="js/functions.js"></script>
-    <script src="js/ShowGames.js"></script>
-    <script>
-        gamesBest = Games;
+  </script>
+  <script src="js/functions.js">
+  </script>
+  <script src="js/ShowGames.js">
+  </script>
+  <script>
+   gamesBest = Games;
         linkBest = CreateLinksInGame;
-    </script>
-    <script type="text/javascript">
-        function openWindow(Screen, Button, NameId, website) {
+  </script>
+  <script type="text/javascript">
+   function openWindow(Screen, Button, NameId, website) {
             document.onmouseup = function() {
                 switch (website.trim().toLowerCase()) {
                     case "bestgames":
@@ -237,35 +240,40 @@
                 document.onmouseup = null;
             }
         }
-    </script>
-</head>
-
-<body onfocus="FitScreen();" onload="FitScreen();" onresize="FitScreen();">
-    <div id="container">
-        <div id="gameContainer" height="750px" width="440px"></div>
-
-            <div id="sitelogo" onclick="linkBest(" sausage="" flip","game","logo")"="" style="position:absolute;bottom:5px;left:50%;transform: translate(-50%,0);display:none;cursor:pointer;">
-            </div>
-            <div class="fullscreen">ripped by greeni 
-            <img src="images/fullscreen.png" width="38" height="38" onclick="gameInstance.SetFullscreen(1);" " id="FullscreenImg"></div>
-            <div id="toggleButton" onclick="toggleFooter()">▲</div>
-        </div>
-
-        <div id="logo">
-            <img src="images/img.jpg" width="100%" height="100%">
-            <img src="https://cdn.jsdelivr.net/gh/greeniYT/gug@main/assets/raebg.png" style="bottom:-2px;position:absolute;left:50%;width:80%;transform: translate(-50%, 0%); cursor:pointer;" onclick="linkBest(" sausage="" flip","loading","logo")"="">
-            <div id="loadinginfo" style="position:absolute;bottom:10px;left:50%;width:50%;max-height:10px;transform: translate(-50%, 0%);color:#a59d96;font-size:14px;">
-                Greeni's Unblocked Games
-            </div>
-        </div>
-    </div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body onfocus="FitScreen();" onload="FitScreen();" onresize="FitScreen();">
+  <div id="container">
+   <div height="750px" id="gameContainer" width="440px">
+   </div>
+   <div flip","game","logo")"="" id="sitelogo" onclick="linkBest(" sausage="" style="position:absolute;bottom:5px;left:50%;transform: translate(-50%,0);display:none;cursor:pointer;">
+   </div>
+   <div class="fullscreen">
+    ripped by greeni
+    <img "="" height="38" id="FullscreenImg" onclick="gameInstance.SetFullscreen(1);" src="images/fullscreen.png" width="38"/>
+   </div>
+   <div id="toggleButton" onclick="toggleFooter()">
+    ▲
+   </div>
+  </div>
+  <div id="logo">
+   <img height="100%" src="images/img.jpg" width="100%"/>
+   <img flip","loading","logo")"="" onclick="linkBest(" sausage="" src="https://cdn.jsdelivr.net/gh/greeniYT/gug@main/assets/raebg.png" style="bottom:-2px;position:absolute;left:50%;width:80%;transform: translate(-50%, 0%); cursor:pointer;"/>
+   <div id="loadinginfo" style="position:absolute;bottom:10px;left:50%;width:50%;max-height:10px;transform: translate(-50%, 0%);color:#a59d96;font-size:14px;">
+    Greeni's Unblocked Games
+   </div>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

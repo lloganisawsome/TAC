@@ -1,31 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/buckshot-roulette/index.html">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-    <title>Buckshot Roulette</title>
-    <link rel="stylesheet" href="style.css">
-    <link id="-gd-engine-icon" rel="icon" type="image/png" href="buckshot-roulette.icon.png" />
-    <link rel="apple-touch-icon" href="buckshot-roulette.apple-touch-icon.png" />
-</head>
-
-<body>
-    <script src="main.js"></script>
-    <div id="loading-text" style="color: white; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">LOADING...</div>
-    <canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
-    <noscript> Your browser does not support JavaScript. </noscript>
-    <div id="status">
-        <img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="buckshot-roulette.png" alt="">
-        <progress id="status-progress"></progress>
-        <div id="status-notice"></div>
-    </div>
-    <script src="buckshot-roulette.js"></script>
-    <script>
-        const GODOT_CONFIG = {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/buckshot-roulette/index.html"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, user-scalable=no, initial-scale=1.0" name="viewport"/>
+  <title>
+   Buckshot Roulette
+  </title>
+  <link href="style.css" rel="stylesheet"/>
+  <link href="buckshot-roulette.icon.png" id="-gd-engine-icon" rel="icon" type="image/png">
+   <link href="buckshot-roulette.apple-touch-icon.png" rel="apple-touch-icon">
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <script src="main.js">
+  </script>
+  <div id="loading-text" style="color: white; font-family: cursive; font-size: 48px; text-align: center; margin-top: 20px;">
+   LOADING...
+  </div>
+  <canvas id="canvas">
+   Your browser does not support the canvas tag.
+  </canvas>
+  <noscript>
+   Your browser does not support JavaScript.
+  </noscript>
+  <div id="status">
+   <img alt="" class="show-image--true fullsize--true use-filter--true" id="status-splash" src="buckshot-roulette.png"/>
+   <progress id="status-progress">
+   </progress>
+   <div id="status-notice">
+   </div>
+  </div>
+  <script src="buckshot-roulette.js">
+  </script>
+  <script>
+   const GODOT_CONFIG = {
             "args": [],
             "canvasResizePolicy": 2,
             "ensureCrossOriginIsolationHeaders": false,
@@ -140,14 +154,16 @@
             }
         };
         window.godotRunStart = run;
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

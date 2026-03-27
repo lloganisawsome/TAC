@@ -1,24 +1,18 @@
 <!DOCTYPE html>
-
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-
-
 <html>
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8">
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/falling-fred/">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Super Falling Fred Unblocked</title>
-  
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/falling-fred/"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Super Falling Fred Unblocked
+  </title>
   <script>
-    window.fileMergerConfig = {
+   window.fileMergerConfig = {
       files: [
         { name: 'superfallingfred-webgl-120_23.data.unityweb', parts: 2 },
         { name: 'superfallingfred-webgl-120_23.wasm.code.unityweb', parts: 2 },
@@ -141,10 +135,9 @@
       console.log('[File Merger] Request interceptors installed');
     })();
   </script>
-
   <!-- Game configuration -->
   <script>
-    window.config = {
+   window.config = {
       loader: 'unity',
       debug: true,
       maxRatio: 16 / 9,
@@ -165,17 +158,21 @@
       },
     };
   </script>
-</head>
-
-<body>
-  <script src="patch/js/poki-master-loader.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <script src="patch/js/poki-master-loader.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

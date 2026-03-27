@@ -1,13 +1,15 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8" />
-<title>TAC Forum</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<style>
-:root {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <title>
+   TAC Forum
+  </title>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <style>
+   :root {
     --bg: #0a0a0b;
     --panel: #111113;
     --panel-hover: #1a1a1c;
@@ -892,352 +894,524 @@ label {
         grid-template-columns: repeat(2, 1fr);
     }
 }
-</style>
-</head>
-<body>
-
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+    <a class="nav-item active" href="forum.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z">
+      </path>
+     </svg>
+     <span>
+      Forum
+     </span>
+    </a>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+     </svg>
+     <span>
+      Chat
+     </span>
+    </a>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      Apps
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+   <header>
+    <div class="title-section">
+     <h1>
+      TAC Forum
+     </h1>
+     <span class="subforum-label" id="currentSubforumLabel">
+     </span>
     </div>
-
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <a href="forum.html" class="nav-item active">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/>
-            </svg>
-            <span>Forum</span>
-        </a>
-
-        <a href="chat.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-            </svg>
-            <span>Chat</span>
-        </a>
-
-        <a href="apps.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-            </svg>
-            <span>Apps</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<!-- Main Content -->
-<main class="main-content" id="mainContent">
-    <header>
-        <div class="title-section">
-            <h1>TAC Forum</h1>
-            <span id="currentSubforumLabel" class="subforum-label"></span>
-        </div>
-        <div class="user-section">
-            <span id="welcomeText" class="welcome-text">Not signed in</span>
-            <button id="openLoginBtn" class="btn btn-primary">Login</button>
-            <button id="openSignupBtn" class="btn">Signup</button>
-            <button id="logoutBtn" class="btn hidden">Logout</button>
-        </div>
-    </header>
-
-    <div class="content-grid">
-        <!-- Left Sidebar -->
-        <div class="sidebar-left">
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">Quick Actions</h3>
-                    </div>
-                </div>
-                <div class="quick-actions">
-                    <button id="createSubBtn" class="btn btn-primary" style="flex:1">+ Subforum</button>
-                    <button id="createPostBtn" class="btn btn-primary" style="flex:1">+ Post</button>
-                </div>
-                <p class="small muted">Welcome to TAC Forums! Create posts, join discussions, and connect with the community.</p>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">Subforums</h3>
-                        <p class="panel-subtitle">Browse communities</p>
-                    </div>
-                </div>
-                <div id="subforumItems"></div>
-            </div>
-
-            <div id="userPanel" class="panel hidden">
-                <div class="panel-header">
-                    <h3 class="panel-title">Your Profile</h3>
-                </div>
-                <div id="userMeta"></div>
-                <div id="userActions" class="mt-2"></div>
-            </div>
-        </div>
-
-        <!-- Main Content Area -->
-        <section>
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">Posts</h3>
-                        <p class="panel-subtitle">Latest discussions</p>
-                    </div>
-                    <div class="flex">
-                        <select id="sortSelect" style="width:auto;margin:0">
-                            <option value="new">Newest</option>
-                            <option value="top">Top</option>
-                            <option value="pinned">Pinned</option>
-                        </select>
-                        <label class="flex small muted" style="margin:0;cursor:pointer">
-                            <input id="showPinnedOnly" type="checkbox" style="width:auto;margin:0"/>
-                            Pinned only
-                        </label>
-                    </div>
-                </div>
-                <div id="postsFeed"></div>
-            </div>
-        </section>
-
-        <!-- Right Sidebar -->
-        <div class="sidebar-right">
-            <div id="modPanel" class="panel hidden">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">Mod Tools</h3>
-                    </div>
-                    <div class="live-indicator">
-                        <span class="live-dot"></span>
-                        Live
-                    </div>
-                </div>
-                <div id="modQueue"></div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">Global Admins</h3>
-                    </div>
-                </div>
-                <div id="adminList" class="small muted"></div>
-                <p class="small muted mt-2">Only <strong>logan</strong> can manage global admins.</p>
-            </div>
-
-            <div class="panel">
-                <div class="panel-header">
-                    <div>
-                        <h3 class="panel-title">Blacklist</h3>
-                    </div>
-                </div>
-                <div id="blacklistView" class="blacklist-tags"></div>
-            </div>
-        </div>
+    <div class="user-section">
+     <span class="welcome-text" id="welcomeText">
+      Not signed in
+     </span>
+     <button class="btn btn-primary" id="openLoginBtn">
+      Login
+     </button>
+     <button class="btn" id="openSignupBtn">
+      Signup
+     </button>
+     <button class="btn hidden" id="logoutBtn">
+      Logout
+     </button>
     </div>
-</main>
-
-<!-- Key icon -->
-<div id="keyIcon" title="Admin / Mod Panel"><span>🔑</span></div>
-
-<!-- Overlay -->
-<div id="overlay" class="overlay"></div>
-
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-    <div class="modal-header">
-        <h3 class="modal-title">Login</h3>
-        <button class="modal-close" id="closeLoginBtn">&times;</button>
+   </header>
+   <div class="content-grid">
+    <!-- Left Sidebar -->
+    <div class="sidebar-left">
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         Quick Actions
+        </h3>
+       </div>
+      </div>
+      <div class="quick-actions">
+       <button class="btn btn-primary" id="createSubBtn" style="flex:1">
+        + Subforum
+       </button>
+       <button class="btn btn-primary" id="createPostBtn" style="flex:1">
+        + Post
+       </button>
+      </div>
+      <p class="small muted">
+       Welcome to TAC Forums! Create posts, join discussions, and connect with the community.
+      </p>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         Subforums
+        </h3>
+        <p class="panel-subtitle">
+         Browse communities
+        </p>
+       </div>
+      </div>
+      <div id="subforumItems">
+      </div>
+     </div>
+     <div class="panel hidden" id="userPanel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        Your Profile
+       </h3>
+      </div>
+      <div id="userMeta">
+      </div>
+      <div class="mt-2" id="userActions">
+      </div>
+     </div>
     </div>
-    <label>Username</label>
-    <input id="loginUsername" placeholder="Enter your username" />
-    <label>Password</label>
-    <input id="loginPassword" type="password" placeholder="Enter your password" />
-    <div class="modal-footer">
-        <button id="doLoginBtn" class="btn btn-primary">Login</button>
+    <!-- Main Content Area -->
+    <section>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         Posts
+        </h3>
+        <p class="panel-subtitle">
+         Latest discussions
+        </p>
+       </div>
+       <div class="flex">
+        <select id="sortSelect" style="width:auto;margin:0">
+         <option value="new">
+          Newest
+         </option>
+         <option value="top">
+          Top
+         </option>
+         <option value="pinned">
+          Pinned
+         </option>
+        </select>
+        <label class="flex small muted" style="margin:0;cursor:pointer">
+         <input id="showPinnedOnly" style="width:auto;margin:0" type="checkbox"/>
+         Pinned only
+        </label>
+       </div>
+      </div>
+      <div id="postsFeed">
+      </div>
+     </div>
+    </section>
+    <!-- Right Sidebar -->
+    <div class="sidebar-right">
+     <div class="panel hidden" id="modPanel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         Mod Tools
+        </h3>
+       </div>
+       <div class="live-indicator">
+        <span class="live-dot">
+        </span>
+        Live
+       </div>
+      </div>
+      <div id="modQueue">
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         Global Admins
+        </h3>
+       </div>
+      </div>
+      <div class="small muted" id="adminList">
+      </div>
+      <p class="small muted mt-2">
+       Only
+       <strong>
+        logan
+       </strong>
+       can manage global admins.
+      </p>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         Blacklist
+        </h3>
+       </div>
+      </div>
+      <div class="blacklist-tags" id="blacklistView">
+      </div>
+     </div>
     </div>
-</div>
-
-<!-- Signup Modal -->
-<div id="signupModal" class="modal">
-    <div class="modal-header">
-        <h3 class="modal-title">Create Account</h3>
-        <button class="modal-close" id="closeSignupBtn">&times;</button>
+   </div>
+  </main>
+  <!-- Key icon -->
+  <div id="keyIcon" title="Admin / Mod Panel">
+   <span>
+    🔑
+   </span>
+  </div>
+  <!-- Overlay -->
+  <div class="overlay" id="overlay">
+  </div>
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+   <div class="modal-header">
+    <h3 class="modal-title">
+     Login
+    </h3>
+    <button class="modal-close" id="closeLoginBtn">
+     ×
+    </button>
+   </div>
+   <label>
+    Username
+   </label>
+   <input id="loginUsername" placeholder="Enter your username"/>
+   <label>
+    Password
+   </label>
+   <input id="loginPassword" placeholder="Enter your password" type="password"/>
+   <div class="modal-footer">
+    <button class="btn btn-primary" id="doLoginBtn">
+     Login
+    </button>
+   </div>
+  </div>
+  <!-- Signup Modal -->
+  <div class="modal" id="signupModal">
+   <div class="modal-header">
+    <h3 class="modal-title">
+     Create Account
+    </h3>
+    <button class="modal-close" id="closeSignupBtn">
+     ×
+    </button>
+   </div>
+   <label>
+    Username
+   </label>
+   <input id="signupUsername" placeholder="Choose a username"/>
+   <label>
+    Password
+   </label>
+   <input id="signupPassword" placeholder="Choose a password" type="password"/>
+   <div class="modal-footer">
+    <button class="btn btn-primary" id="doSignupBtn">
+     Create Account
+    </button>
+   </div>
+  </div>
+  <!-- Create Subforum Modal -->
+  <div class="modal" id="createSubModal">
+   <div class="modal-header">
+    <h3 class="modal-title">
+     Create Subforum
+    </h3>
+    <button class="modal-close" id="closeCreateSubBtn">
+     ×
+    </button>
+   </div>
+   <label>
+    ID (single word, no spaces)
+   </label>
+   <input id="newSubId" placeholder="e.g. tech"/>
+   <label>
+    Display Name
+   </label>
+   <input id="newSubName" placeholder="e.g. Technology"/>
+   <label>
+    Description
+   </label>
+   <input id="newSubDesc" placeholder="What's this subforum about?"/>
+   <div class="modal-footer">
+    <button class="btn btn-primary" id="doCreateSubBtn">
+     Create
+    </button>
+   </div>
+  </div>
+  <!-- Create Post Modal -->
+  <div class="modal" id="createPostModal">
+   <div class="modal-header">
+    <h3 class="modal-title">
+     Create Post
+    </h3>
+    <button class="modal-close" id="closeCreatePostBtn">
+     ×
+    </button>
+   </div>
+   <label>
+    Subforum
+   </label>
+   <input id="postSubId" placeholder="e.g. tech"/>
+   <label>
+    Type
+   </label>
+   <select id="postTypeSelect">
+    <option value="text">
+     Text
+    </option>
+    <option value="poll">
+     Poll
+    </option>
+    <option value="announcement">
+     Announcement
+    </option>
+   </select>
+   <label>
+    Title
+   </label>
+   <input id="postTitleInput" placeholder="Post title"/>
+   <label>
+    Content
+   </label>
+   <textarea id="postContentInput" placeholder="Write your post..." rows="6"></textarea>
+   <div class="hidden" id="pollBlock">
+    <label>
+     Poll Question
+    </label>
+    <input id="pollQuestion" placeholder="What do you want to ask?"/>
+    <label>
+     Options (one per line)
+    </label>
+    <textarea id="pollOptions" placeholder="Option 1
+Option 2
+Option 3" rows="3"></textarea>
+   </div>
+   <div class="modal-footer">
+    <button class="btn btn-primary" id="doCreatePostBtn">
+     Post
+    </button>
+   </div>
+  </div>
+  <!-- Report Modal -->
+  <div class="modal" id="reportModal">
+   <div class="modal-header">
+    <h3 class="modal-title">
+     Submit Report
+    </h3>
+    <button class="modal-close" id="closeReportBtn">
+     ×
+    </button>
+   </div>
+   <label>
+    Type (post/comment)
+   </label>
+   <input id="reportTypeInput" placeholder="post or comment"/>
+   <label>
+    Target ID
+   </label>
+   <input id="reportTargetInput" placeholder="postId or postId/commentId"/>
+   <label>
+    Reason
+   </label>
+   <textarea id="reportReasonInput" placeholder="Why are you reporting this?" rows="3"></textarea>
+   <div class="modal-footer">
+    <button class="btn btn-primary" id="doReportBtn">
+     Submit Report
+    </button>
+   </div>
+  </div>
+  <!-- Admin Modal -->
+  <div class="modal large" id="adminModal">
+   <div class="modal-header">
+    <h3 class="modal-title">
+     Admin Panel
+    </h3>
+    <button class="modal-close" id="closeAdminBtn">
+     ×
+    </button>
+   </div>
+   <!-- Stats -->
+   <div class="admin-stats">
+    <div class="stat-card">
+     <div class="stat-value" id="statUsers">
+      0
+     </div>
+     <div class="stat-label">
+      Users
+     </div>
     </div>
-    <label>Username</label>
-    <input id="signupUsername" placeholder="Choose a username" />
-    <label>Password</label>
-    <input id="signupPassword" type="password" placeholder="Choose a password" />
-    <div class="modal-footer">
-        <button id="doSignupBtn" class="btn btn-primary">Create Account</button>
+    <div class="stat-card">
+     <div class="stat-value" id="statPosts">
+      0
+     </div>
+     <div class="stat-label">
+      Posts
+     </div>
     </div>
-</div>
-
-<!-- Create Subforum Modal -->
-<div id="createSubModal" class="modal">
-    <div class="modal-header">
-        <h3 class="modal-title">Create Subforum</h3>
-        <button class="modal-close" id="closeCreateSubBtn">&times;</button>
+    <div class="stat-card">
+     <div class="stat-value" id="statReports">
+      0
+     </div>
+     <div class="stat-label">
+      Reports
+     </div>
     </div>
-    <label>ID (single word, no spaces)</label>
-    <input id="newSubId" placeholder="e.g. tech" />
-    <label>Display Name</label>
-    <input id="newSubName" placeholder="e.g. Technology" />
-    <label>Description</label>
-    <input id="newSubDesc" placeholder="What's this subforum about?" />
-    <div class="modal-footer">
-        <button id="doCreateSubBtn" class="btn btn-primary">Create</button>
+    <div class="stat-card">
+     <div class="stat-value" id="statOffenses">
+      0
+     </div>
+     <div class="stat-label">
+      Offenses
+     </div>
     </div>
-</div>
-
-<!-- Create Post Modal -->
-<div id="createPostModal" class="modal">
-    <div class="modal-header">
-        <h3 class="modal-title">Create Post</h3>
-        <button class="modal-close" id="closeCreatePostBtn">&times;</button>
+   </div>
+   <!-- Tabs -->
+   <div class="admin-tabs">
+    <button class="admin-tab active" data-tab="users">
+     Users
+    </button>
+    <button class="admin-tab" data-tab="reports">
+     Reports
+    </button>
+    <button class="admin-tab" data-tab="audit">
+     Audit Log
+    </button>
+    <button class="admin-tab" data-tab="blacklist">
+     Blacklist
+    </button>
+    <button class="admin-tab" data-tab="admins">
+     Admins
+    </button>
+   </div>
+   <!-- Users Tab -->
+   <div class="admin-tab-content active" id="tab-users">
+    <label>
+     Username Lookup
+    </label>
+    <div class="flex">
+     <input id="lookupUsername" placeholder="Enter username" style="margin:0;flex:1"/>
+     <button class="btn btn-primary" id="doLookupBtn">
+      Lookup
+     </button>
     </div>
-    <label>Subforum</label>
-    <input id="postSubId" placeholder="e.g. tech" />
-    <label>Type</label>
-    <select id="postTypeSelect">
-        <option value="text">Text</option>
-        <option value="poll">Poll</option>
-        <option value="announcement">Announcement</option>
-    </select>
-    <label>Title</label>
-    <input id="postTitleInput" placeholder="Post title" />
-    <label>Content</label>
-    <textarea id="postContentInput" rows="6" placeholder="Write your post..."></textarea>
-    <div id="pollBlock" class="hidden">
-        <label>Poll Question</label>
-        <input id="pollQuestion" placeholder="What do you want to ask?" />
-        <label>Options (one per line)</label>
-        <textarea id="pollOptions" rows="3" placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
+    <div id="lookupResult">
     </div>
-    <div class="modal-footer">
-        <button id="doCreatePostBtn" class="btn btn-primary">Post</button>
+   </div>
+   <!-- Reports Tab -->
+   <div class="admin-tab-content" id="tab-reports">
+    <input id="reportFilterInput" placeholder="Filter reports..." style="margin-bottom:12px"/>
+    <div class="list-container" id="adminReportsList">
     </div>
-</div>
-
-<!-- Report Modal -->
-<div id="reportModal" class="modal">
-    <div class="modal-header">
-        <h3 class="modal-title">Submit Report</h3>
-        <button class="modal-close" id="closeReportBtn">&times;</button>
+   </div>
+   <!-- Audit Tab -->
+   <div class="admin-tab-content" id="tab-audit">
+    <div class="flex mb-2">
+     <input id="auditFilterInput" placeholder="Filter audit log..." style="margin:0;flex:1"/>
+     <button class="btn" id="exportAuditBtn">
+      Export JSON
+     </button>
     </div>
-    <label>Type (post/comment)</label>
-    <input id="reportTypeInput" placeholder="post or comment" />
-    <label>Target ID</label>
-    <input id="reportTargetInput" placeholder="postId or postId/commentId" />
-    <label>Reason</label>
-    <textarea id="reportReasonInput" rows="3" placeholder="Why are you reporting this?"></textarea>
-    <div class="modal-footer">
-        <button id="doReportBtn" class="btn btn-primary">Submit Report</button>
+    <div class="list-container" id="adminAuditList">
     </div>
-</div>
-
-<!-- Admin Modal -->
-<div id="adminModal" class="modal large">
-    <div class="modal-header">
-        <h3 class="modal-title">Admin Panel</h3>
-        <button class="modal-close" id="closeAdminBtn">&times;</button>
+   </div>
+   <!-- Blacklist Tab -->
+   <div class="admin-tab-content" id="tab-blacklist">
+    <div class="flex mb-2">
+     <input id="blackInput" placeholder="Word to add/remove" style="margin:0;flex:1"/>
+     <button class="btn btn-primary" id="addBlackBtn">
+      Add
+     </button>
+     <button class="btn btn-danger" id="removeBlackBtn">
+      Remove
+     </button>
     </div>
-
-    <!-- Stats -->
-    <div class="admin-stats">
-        <div class="stat-card">
-            <div class="stat-value" id="statUsers">0</div>
-            <div class="stat-label">Users</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="statPosts">0</div>
-            <div class="stat-label">Posts</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="statReports">0</div>
-            <div class="stat-label">Reports</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-value" id="statOffenses">0</div>
-            <div class="stat-label">Offenses</div>
-        </div>
+    <div class="blacklist-tags mt-4" id="blackAdminView">
     </div>
-
-    <!-- Tabs -->
-    <div class="admin-tabs">
-        <button class="admin-tab active" data-tab="users">Users</button>
-        <button class="admin-tab" data-tab="reports">Reports</button>
-        <button class="admin-tab" data-tab="audit">Audit Log</button>
-        <button class="admin-tab" data-tab="blacklist">Blacklist</button>
-        <button class="admin-tab" data-tab="admins">Admins</button>
+   </div>
+   <!-- Admins Tab -->
+   <div class="admin-tab-content" id="tab-admins">
+    <p class="small muted mb-2">
+     Only
+     <strong>
+      logan
+     </strong>
+     can promote or demote global admins.
+    </p>
+    <div class="flex mb-2">
+     <input id="adminTargetInput" placeholder="Username" style="margin:0;flex:1"/>
+     <button class="btn btn-primary" id="promoteAdminBtn">
+      Promote
+     </button>
+     <button class="btn btn-danger" id="demoteAdminBtn">
+      Demote
+     </button>
     </div>
-
-    <!-- Users Tab -->
-    <div class="admin-tab-content active" id="tab-users">
-        <label>Username Lookup</label>
-        <div class="flex">
-            <input id="lookupUsername" placeholder="Enter username" style="margin:0;flex:1" />
-            <button id="doLookupBtn" class="btn btn-primary">Lookup</button>
-        </div>
-        <div id="lookupResult"></div>
+    <div class="mt-4">
+     <label>
+      Current Global Admins
+     </label>
+     <div class="blacklist-tags" id="adminListModal">
+     </div>
     </div>
-
-    <!-- Reports Tab -->
-    <div class="admin-tab-content" id="tab-reports">
-        <input id="reportFilterInput" placeholder="Filter reports..." style="margin-bottom:12px" />
-        <div id="adminReportsList" class="list-container"></div>
-    </div>
-
-    <!-- Audit Tab -->
-    <div class="admin-tab-content" id="tab-audit">
-        <div class="flex mb-2">
-            <input id="auditFilterInput" placeholder="Filter audit log..." style="margin:0;flex:1" />
-            <button id="exportAuditBtn" class="btn">Export JSON</button>
-        </div>
-        <div id="adminAuditList" class="list-container"></div>
-    </div>
-
-    <!-- Blacklist Tab -->
-    <div class="admin-tab-content" id="tab-blacklist">
-        <div class="flex mb-2">
-            <input id="blackInput" placeholder="Word to add/remove" style="margin:0;flex:1" />
-            <button id="addBlackBtn" class="btn btn-primary">Add</button>
-            <button id="removeBlackBtn" class="btn btn-danger">Remove</button>
-        </div>
-        <div id="blackAdminView" class="blacklist-tags mt-4"></div>
-    </div>
-
-    <!-- Admins Tab -->
-    <div class="admin-tab-content" id="tab-admins">
-        <p class="small muted mb-2">Only <strong>logan</strong> can promote or demote global admins.</p>
-        <div class="flex mb-2">
-            <input id="adminTargetInput" placeholder="Username" style="margin:0;flex:1" />
-            <button id="promoteAdminBtn" class="btn btn-primary">Promote</button>
-            <button id="demoteAdminBtn" class="btn btn-danger">Demote</button>
-        </div>
-        <div class="mt-4">
-            <label>Current Global Admins</label>
-            <div id="adminListModal" class="blacklist-tags"></div>
-        </div>
-    </div>
-</div>
-
-<!-- Firebase + App -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+   </div>
+  </div>
+  <!-- Firebase + App -->
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, set, push, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -2297,26 +2471,45 @@ function renderUserPanel(){
 }
 
 console.log("TAC Forum loaded.");
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

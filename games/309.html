@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <!--comment-->
-
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8">
-  <base href="https://cdn.jsdelivr.net/gh/bubbls/ugss@main/people-playground/">
-    <title>people playground.</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <link rel="manifest" href="manifest.webmanifest">
-    <style>
-      #xp-loader {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <base href="https://cdn.jsdelivr.net/gh/bubbls/ugss@main/people-playground/"/>
+  <title>
+   people playground.
+  </title>
+  <link href="TemplateData/favicon.ico" rel="shortcut icon"/>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <link href="manifest.webmanifest" rel="manifest"/>
+  <style>
+   #xp-loader {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -48,32 +49,43 @@
       #unity-loading-bar {
         display: none;
       }
-    </style>
-  </head>
-  <body>
-    <div id="xp-loader">
-      <div id="xp-loader-title">Loading..</div>
-      <div id="xp-loader-bar"><div id="xp-loader-fill"></div></div>
-      <div id="xp-loader-text">0%</div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="xp-loader">
+   <div id="xp-loader-title">
+    Loading..
+   </div>
+   <div id="xp-loader-bar">
+    <div id="xp-loader-fill">
     </div>
-
-    <div id="unity-container">
-      <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
-      <div id="unity-warning"></div>
-    </div>
-    <script>
-      window.fileMergerConfig = {
+   </div>
+   <div id="xp-loader-text">
+    0%
+   </div>
+  </div>
+  <div id="unity-container">
+   <canvas height="600" id="unity-canvas" tabindex="-1" width="960">
+   </canvas>
+   <div id="unity-warning">
+   </div>
+  </div>
+  <script>
+   window.fileMergerConfig = {
         files: [
           { name: 'pggbog.data', parts: 7 },
           { name: 'pggbog.wasm', parts: 3 }
         ],
         basePath: 'Build/',
         debug: true
-      };  
+      };
   </script>
-  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js"></script>
-    <script>
-      window.addEventListener("load", function () {
+  <script src="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@main/merge.js">
+  </script>
+  <script>
+   window.addEventListener("load", function () {
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker.register("ServiceWorker.js");
         }
@@ -137,13 +149,16 @@
         });
       };
       document.body.appendChild(script);
-    </script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

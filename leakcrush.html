@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Leak People's Crush!</title>
-<style>
-:root {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Leak People's Crush!
+  </title>
+  <style>
+   :root {
     --bg: #0a0a0b;
     --panel: #111113;
     --panel-hover: #1a1a1c;
@@ -490,107 +492,141 @@ html, body {
         right: -100%;
     }
 }
-</style>
-</head>
-<body>
-
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+      <circle cx="8" cy="10" r="1.5">
+      </circle>
+      <circle cx="12" cy="10" r="1.5">
+      </circle>
+      <circle cx="16" cy="10" r="1.5">
+      </circle>
+     </svg>
+     <span>
+      Chat
+     </span>
+    </a>
+    <a class="nav-item" href="notgames.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
+      </path>
+     </svg>
+     <span>
+      Games
+     </span>
+    </a>
+    <a class="nav-item" href="phone.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+      </path>
+     </svg>
+     <span>
+      Phone
+     </span>
+    </a>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      All Apps
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <div aria-hidden="true" id="adminSidebar">
+   <h3>
+    Admin Panel
+   </h3>
+   <p id="adminInfo" style="color: var(--muted); font-size: 13px; margin-bottom: 12px;">
+    Loading...
+   </p>
+   <div class="admin-controls">
+    <button class="admin-btn" id="closeSidebar">
+     Close
+    </button>
+    <button class="admin-btn danger" id="deleteAllBtn">
+     Delete All
+    </button>
+   </div>
+   <div id="adminList">
+    Loading entries...
+   </div>
+  </div>
+  <main class="main-content" id="mainContent">
+   <div class="header">
+    <h1 id="title">
+     Leak People's Crush!
+    </h1>
+    <button class="header-btn" id="openBtn">
+     + Add Entry
+    </button>
+   </div>
+   <div class="panel">
+    <div class="panel-header">
+     <h2 class="panel-title">
+      Latest Crushes
+     </h2>
     </div>
-
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span>Home</span>
-        </a>
-
-        <a href="chat.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-                <circle cx="8" cy="10" r="1.5"/>
-                <circle cx="12" cy="10" r="1.5"/>
-                <circle cx="16" cy="10" r="1.5"/>
-            </svg>
-            <span>Chat</span>
-        </a>
-
-        <a href="notgames.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
-            </svg>
-            <span>Games</span>
-        </a>
-
-        <a href="phone.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-            </svg>
-            <span>Phone</span>
-        </a>
-
-        <a href="apps.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-            </svg>
-            <span>All Apps</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<div id="adminSidebar" aria-hidden="true">
-    <h3>Admin Panel</h3>
-    <p id="adminInfo" style="color: var(--muted); font-size: 13px; margin-bottom: 12px;">Loading...</p>
-    <div class="admin-controls">
-        <button class="admin-btn" id="closeSidebar">Close</button>
-        <button class="admin-btn danger" id="deleteAllBtn">Delete All</button>
+    <div id="list">
+     <div class="empty-state">
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z">
+       </path>
+      </svg>
+      <p>
+       Loading crushes...
+      </p>
+     </div>
     </div>
-    <div id="adminList">Loading entries...</div>
-</div>
-
-<main class="main-content" id="mainContent">
-    <div class="header">
-        <h1 id="title">Leak People's Crush!</h1>
-        <button class="header-btn" id="openBtn">+ Add Entry</button>
+   </div>
+  </main>
+  <div aria-hidden="true" class="modal" id="modal">
+   <div class="modal-card">
+    <h2>
+     Add Entry
+    </h2>
+    <input id="from" maxlength="40" placeholder="Who likes..."/>
+    <input id="to" maxlength="40" placeholder="Who is liked..."/>
+    <div class="row">
+     <button id="submitBtn">
+      Submit
+     </button>
+     <button id="cancelBtn">
+      Cancel
+     </button>
     </div>
-
-    <div class="panel">
-        <div class="panel-header">
-            <h2 class="panel-title">Latest Crushes</h2>
-        </div>
-        <div id="list">
-            <div class="empty-state">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                </svg>
-                <p>Loading crushes...</p>
-            </div>
-        </div>
-    </div>
-</main>
-
-<div id="modal" class="modal" aria-hidden="true">
-    <div class="modal-card">
-        <h2>Add Entry</h2>
-        <input id="from" placeholder="Who likes..." maxlength="40"/>
-        <input id="to" placeholder="Who is liked..." maxlength="40"/>
-        <div class="row">
-            <button id="submitBtn">Submit</button>
-            <button id="cancelBtn">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+   </div>
+  </div>
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 // Firebase config
@@ -867,26 +903,45 @@ deleteAllBtn.addEventListener('click', () => {
     if (!isAdmin) return alert('Not authorized');
     if (confirm('Delete all entries?')) remove(likesRef);
 });
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

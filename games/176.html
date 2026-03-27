@@ -1,47 +1,55 @@
-<Module>
-
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-<!DOCTYPE html>
-<html lang="en">
+<module>
+ <!-- Ultimate Game Stash file-->
+ <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+ <!DOCTYPE html>
+ <html lang="en">
   <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
-    <meta name="description" content="Guess the word in 6 tries. Play daily, hourly and infinite modes." />
-    <meta name="theme-color" content="#6aaa64" />
-    <link rel="manifest" href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/manifest.json" />
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/img/logo_32x32.png" type="image/x-icon" />
-    <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/img/logo_32x32.png" type="image/x-icon" />
-    <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/img/logo_192x192.png" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/global.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/build/bundle.css" />
-    <!-- FB Meta Tags -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Wordle+ - A word guessing game" />
-    <meta property="og:description" content="Guess the word in 6 tries. Play daily, hourly and infinite modes." />
-    <meta property="og:image" content="img/og_1200x630.png" />
-    <script>
+   <link href="rightclick.css" rel="stylesheet"/>
+   <link href="custom-cursor.css" rel="stylesheet"/>
+   <meta charset="utf-8"/>
+   <meta content="width=device-width,initial-scale=1,user-scalable=no" name="viewport"/>
+   <meta content="Guess the word in 6 tries. Play daily, hourly and infinite modes." name="description"/>
+   <meta content="#6aaa64" name="theme-color"/>
+   <link href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/manifest.json" rel="manifest">
+    <link href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/img/logo_32x32.png" rel="icon" type="image/x-icon">
+     <link href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/img/logo_32x32.png" rel="shortcut icon" type="image/x-icon"/>
+     <link href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/img/logo_192x192.png" rel="apple-touch-icon"/>
+     <link href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/global.css" rel="stylesheet"/>
+     <link href="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/build/bundle.css" rel="stylesheet"/>
+     <!-- FB Meta Tags -->
+     <meta content="website" property="og:type"/>
+     <meta content="Wordle+ - A word guessing game" property="og:title"/>
+     <meta content="Guess the word in 6 tries. Play daily, hourly and infinite modes." property="og:description"/>
+     <meta content="img/og_1200x630.png" property="og:image"/>
+     <script>
       // PWA Service worker
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("sw.js");
       }
-    </script>
-    <script src="/js/main.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/build/bundle.js"></script>
-    <title>Wordle</title>
+     </script>
+     <script src="/js/main.js">
+     </script>
+     <script defer="" src="https://cdn.jsdelivr.net/gh/Nailington/3kh0-assets@aeb371b7e88542fd5e61eeed9e967a446d84fe1b/wordle/build/bundle.js">
+     </script>
+     <title>
+      Wordle
+     </title>
+    </link>
+   </link>
+   <script src="app-presence.js">
+   </script>
   </head>
-
-  <body>    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-</html>
+  <body>
+   <script src="custom-cursor.js">
+   </script>
+   <script src="rightclick.js">
+   </script>
+   <script src="panic-key.js">
+   </script>
+   <script src="idle-dvd.js">
+   </script>
+   <script src="online.js" type="module">
+   </script>
+  </body>
+ </html>
+</module>

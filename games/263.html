@@ -1,17 +1,17 @@
-
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
 <html lang="en-us">
-<base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@8b3b8522e7e0c3f94588a5d2364f49e7829f993e/deepest%20sword/">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Deepest Sword</title>
+ <base href="https://cdn.jsdelivr.net/gh/bubbls/UGS-Assets@8b3b8522e7e0c3f94588a5d2364f49e7829f993e/deepest%20sword/"/>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Deepest Sword
+  </title>
   <style>
-    html,
+   html,
     body {
       background: #000;
       width: 100%;
@@ -30,14 +30,17 @@
       position: absolute;
     }
   </style>
-</head>
-
-<body>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
   <div id="gameContainer">
-    <canvas id="unity-canvas"></canvas>
-    <script src="Build/WebBuilds.loader.js"></script>
-    <script>
-      createUnityInstance(document.querySelector("#unity-canvas"), {
+   <canvas id="unity-canvas">
+   </canvas>
+   <script src="Build/WebBuilds.loader.js">
+   </script>
+   <script>
+    createUnityInstance(document.querySelector("#unity-canvas"), {
         dataUrl: "Build/WebBuilds.data",
         frameworkUrl: "Build/WebBuilds.framework.js",
         codeUrl: "Build/WebBuilds.wasm",
@@ -83,15 +86,17 @@
         window.addEventListener('resize', onResize);
         onResize();
       });
-    </script>
+   </script>
   </div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TACTube</title>
-
-<style>
-:root {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TACTube
+  </title>
+  <style>
+   :root {
     --bg: #0a0a0b;
     --panel: #111113;
     --panel-hover: #1a1a1c;
@@ -586,152 +587,217 @@ html, body {
         grid-template-columns: 1fr;
     }
 }
-</style>
-</head>
-<body>
-
-<!-- Sidebar -->
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+    <a class="nav-item" href="chat.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+     </svg>
+     <span>
+      Chat
+     </span>
+    </a>
+    <a class="nav-item" href="phone.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
+      </path>
+     </svg>
+     <span>
+      Phone
+     </span>
+    </a>
+    <a class="nav-item" href="apps.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      All Apps
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <!-- Main Content -->
+  <main class="main-content" id="mainContent">
+   <div class="header">
+    <h1>
+     TACTube
+    </h1>
+    <div class="user-info">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z">
+      </path>
+     </svg>
+     <span id="userName">
+      User
+     </span>
     </div>
-
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-            </svg>
-            <span>Home</span>
-        </a>
-
-
-
-        <a href="chat.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
-            </svg>
-            <span>Chat</span>
-        </a>
-
-        <a href="phone.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-            </svg>
-            <span>Phone</span>
-        </a>
-
-        <a href="apps.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
-            </svg>
-            <span>All Apps</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<!-- Main Content -->
-<main class="main-content" id="mainContent">
-    <div class="header">
-        <h1>TACTube</h1>
-        <div class="user-info">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-            </svg>
-            <span id="userName">User</span>
-        </div>
+   </div>
+   <div class="top-controls">
+    <input class="search-box" id="searchBar" placeholder="Search videos..." type="text"/>
+    <button class="filter-btn" onclick="showHome()">
+     All Videos
+    </button>
+    <button class="filter-btn" onclick="showUpload()">
+     Upload Video
+    </button>
+    <button class="filter-btn" id="myVideosBtn">
+     My Videos
+    </button>
+   </div>
+   <div class="channel-tabs" id="channelTabs">
+    <div class="channel-tab active" data-channel="all">
+     All Channels
     </div>
-
-    <div class="top-controls">
-        <input type="text" id="searchBar" class="search-box" placeholder="Search videos...">
-        <button class="filter-btn" onclick="showHome()">All Videos</button>
-        <button class="filter-btn" onclick="showUpload()">Upload Video</button>
-        <button class="filter-btn" id="myVideosBtn">My Videos</button>
+    <div class="channel-tab" data-channel="Gaming">
+     Gaming
     </div>
-
-    <div class="channel-tabs" id="channelTabs">
-        <div class="channel-tab active" data-channel="all">All Channels</div>
-        <div class="channel-tab" data-channel="Gaming">Gaming</div>
-        <div class="channel-tab" data-channel="Music">Music</div>
-        <div class="channel-tab" data-channel="Education">Education</div>
-        <div class="channel-tab" data-channel="Entertainment">Entertainment</div>
-        <div class="channel-tab" data-channel="Tech">Tech</div>
-        <div class="channel-tab" data-channel="Sports">Sports</div>
+    <div class="channel-tab" data-channel="Music">
+     Music
     </div>
-
-    <div id="uploadSection" class="upload-panel" style="display:none;">
-        <h2>Upload New Video</h2>
-        <div class="form-grid">
-            <input type="text" id="videoTitle" class="form-input" placeholder="Video Title">
-            <select id="videoChannel" class="form-select">
-                <option value="Gaming">Gaming</option>
-                <option value="Music">Music</option>
-                <option value="Education">Education</option>
-                <option value="Entertainment">Entertainment</option>
-                <option value="Tech">Tech</option>
-                <option value="Sports">Sports</option>
-            </select>
-            <input type="text" id="videoThumb" class="form-input" placeholder="Thumbnail URL">
-            <input type="text" id="videoUrl" class="form-input" placeholder="YouTube Video URL">
-            <textarea id="videoDesc" class="form-input full" placeholder="Video Description (optional)" rows="3"></textarea>
-        </div>
-        <button class="upload-btn" onclick="uploadVideo()">Upload Video</button>
+    <div class="channel-tab" data-channel="Education">
+     Education
     </div>
-
-    <div class="video-grid" id="videoGrid"></div>
-</main>
-
-<!-- Video Popup -->
-<div class="video-popup" id="videoPopup">
-    <div class="popup-content">
-        <div class="popup-header">
-            <h2 class="popup-title" id="popupTitle">Video Title</h2>
-            <button class="close-btn" id="closePopup">×</button>
-        </div>
-        
-        <iframe id="videoPlayer" class="video-player" frameborder="0" allowfullscreen></iframe>
-        
-        <div class="video-actions">
-            <button class="action-btn" id="likeBtn">
-                👍 <span id="likeCount">0</span>
-            </button>
-            <button class="action-btn" id="dislikeBtn">
-                👎 <span id="dislikeCount">0</span>
-            </button>
-            <button class="action-btn">
-                👁️ <span id="viewCount">0</span>
-            </button>
-            <button class="action-btn">
-                📁 <span id="channelName">Channel</span>
-            </button>
-        </div>
-        
-        <div class="comments-section">
-            <h3 class="comments-header">Comments</h3>
-            <div class="comment-input-area">
-                <input type="text" id="commentInput" class="comment-input" placeholder="Add a comment...">
-                <button class="action-btn" onclick="addComment()">Post</button>
-            </div>
-            <div class="comment-list" id="commentList"></div>
-            
-            <div class="admin-controls" id="adminControls">
-                <button class="admin-btn" onclick="resetVotes()">Reset Votes</button>
-                <button class="admin-btn" onclick="deleteVideo()">Delete Video</button>
-            </div>
-        </div>
+    <div class="channel-tab" data-channel="Entertainment">
+     Entertainment
     </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-<script>
-// Firebase Config
+    <div class="channel-tab" data-channel="Tech">
+     Tech
+    </div>
+    <div class="channel-tab" data-channel="Sports">
+     Sports
+    </div>
+   </div>
+   <div class="upload-panel" id="uploadSection" style="display:none;">
+    <h2>
+     Upload New Video
+    </h2>
+    <div class="form-grid">
+     <input class="form-input" id="videoTitle" placeholder="Video Title" type="text"/>
+     <select class="form-select" id="videoChannel">
+      <option value="Gaming">
+       Gaming
+      </option>
+      <option value="Music">
+       Music
+      </option>
+      <option value="Education">
+       Education
+      </option>
+      <option value="Entertainment">
+       Entertainment
+      </option>
+      <option value="Tech">
+       Tech
+      </option>
+      <option value="Sports">
+       Sports
+      </option>
+     </select>
+     <input class="form-input" id="videoThumb" placeholder="Thumbnail URL" type="text"/>
+     <input class="form-input" id="videoUrl" placeholder="YouTube Video URL" type="text"/>
+     <textarea class="form-input full" id="videoDesc" placeholder="Video Description (optional)" rows="3"></textarea>
+    </div>
+    <button class="upload-btn" onclick="uploadVideo()">
+     Upload Video
+    </button>
+   </div>
+   <div class="video-grid" id="videoGrid">
+   </div>
+  </main>
+  <!-- Video Popup -->
+  <div class="video-popup" id="videoPopup">
+   <div class="popup-content">
+    <div class="popup-header">
+     <h2 class="popup-title" id="popupTitle">
+      Video Title
+     </h2>
+     <button class="close-btn" id="closePopup">
+      ×
+     </button>
+    </div>
+    <iframe allowfullscreen="" class="video-player" frameborder="0" id="videoPlayer">
+    </iframe>
+    <div class="video-actions">
+     <button class="action-btn" id="likeBtn">
+      👍
+      <span id="likeCount">
+       0
+      </span>
+     </button>
+     <button class="action-btn" id="dislikeBtn">
+      👎
+      <span id="dislikeCount">
+       0
+      </span>
+     </button>
+     <button class="action-btn">
+      👁️
+      <span id="viewCount">
+       0
+      </span>
+     </button>
+     <button class="action-btn">
+      📁
+      <span id="channelName">
+       Channel
+      </span>
+     </button>
+    </div>
+    <div class="comments-section">
+     <h3 class="comments-header">
+      Comments
+     </h3>
+     <div class="comment-input-area">
+      <input class="comment-input" id="commentInput" placeholder="Add a comment..." type="text"/>
+      <button class="action-btn" onclick="addComment()">
+       Post
+      </button>
+     </div>
+     <div class="comment-list" id="commentList">
+     </div>
+     <div class="admin-controls" id="adminControls">
+      <button class="admin-btn" onclick="resetVotes()">
+       Reset Votes
+      </button>
+      <button class="admin-btn" onclick="deleteVideo()">
+       Delete Video
+      </button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js">
+  </script>
+  <script>
+   // Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
     authDomain: "taclogin-ab38e.firebaseapp.com",
@@ -1102,27 +1168,45 @@ document.getElementById('searchBar').addEventListener('keypress', e => {
 
 // Initialize
 loadVideos();
-</script>
-
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

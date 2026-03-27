@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<base href="https://cdn.jsdelivr.net/gh/Pixelsuft/hl@main/">
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-	<meta name="MobileOptimized" content="640" />
-	<meta name="HandheldFriendly" content="true" />
-	<title>Pixelsuft hl</title>
-	<script>
-		document.addEventListener('contextmenu', event => event.preventDefault());
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/Pixelsuft/hl@main/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <meta content="640" name="MobileOptimized">
+   <meta content="true" name="HandheldFriendly">
+    <title>
+     Pixelsuft hl
+    </title>
+    <script>
+     document.addEventListener('contextmenu', event => event.preventDefault());
 		window.onbeforeunload = function(e) {
 			// Cancel the event
 			e.preventDefault();
@@ -47,9 +48,9 @@
 		}
 		window.addEventListener('click', play_sound);
 		window.addEventListener('keydown', play_sound);
-	</script>
-	<style>
-		body {
+    </script>
+    <style>
+     body {
 			font-family: arial;
 			margin: 0;
 			padding: none;
@@ -251,73 +252,154 @@
 		if (document.createElement("detect").style.textShadow==="") {
 			document.getElementsByTagName("html")[0].className+=" textshadow";
 		}
-	</style>
-</head>
-
-<body onerror=alert(event); bgcolor=#555555 text=#F0B418 link=#ffa600 vlink=#ffa600>
-	<div class="emscripten_border">
-		<canvas style="display:none" class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-	</div>
-
-	<p>
-	<div style=width:100%;height:0px>
-		<div style="float:left;" id="status">Downloading...</div>
-		<div id="progress1" style=position:relative;z-index:10;display:none;float:right;width:70%;border-color:#F0B418;border-style:solid;border-width:2px;height:20px>
-			<div id=progress style=text-align:center;background-color:#F0B418;border-color:#555555;border-style:solid:border-width:3px;width:50%;height:20px></div>
-		</div><br>
-	</div><br></p>
-
-	<div class="loader" id=loader1></div>
-
-	<div style=width:100%><span id='controls'>
-			<a class="glow"><span><label id="label_show_console_log" style="display: none;"><input type="checkbox" id="show_console_log">Show Console Log</label></span></a>
-			<a class="glow"><span><label><input type="checkbox" id="resize">Resize canvas</label></span></a>
-			<a class="glow"><span><label><input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer &nbsp;&nbsp;&nbsp;</label></span></a>
-			<span><input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)"></span>
-		</span></div>
-
-	<textarea id="output" rows="8" style="display: none;"></textarea>
-	<div id="asyncDialog" style="float:left"></div>
-
-	<a class="glow">
-		<div id=optionsTitle>
-			<h1>Game Options</h1>
-		</div>
-	</a>
-	<form style=display:none id=fSettings>Select filesystem for settings and save and restore:<br><br>
-		<div id=idbHider style=display:none><label><input name=a type=radio id=rIndexedDB checked=true />IndexedDB (Need exit correctly to save changes)</label><br></div>
-		<label><input name=a type=radio id=rLocalStorage />LocalStorage (Sometimes not enough space)</label><br>
-		<label><input name=a type=radio id=rNone />None(in RAM)</label><br><br>
-		<hr>
-		Select game data source:<br><br>
-		<label>
-			<div id=pkgHider style=display:none><input name=b type=radio id=rPackage />Emscripten package from server (cached in IndexedDB if availiable)
-		</label><select id=selectPkg style=display:none></select><br></div>
-		<label>
-			<div id=zipHider style=display:none><input name=b type=radio id=rZip checked=true />ZIP archive from server (slow, but small, no IndexedDB cache)
-		</label><select id=selectZip style=display:none></select><br></div>
-		<label><input name=b type=radio id=rLocalZip />Local ZIP file:</label><label id="label_file_select"><input type=file name=c id=iZipFile />Select ZIP file</label><br><br>
-		<hr>
-		Command-line arguments: <input name=d type=text id=iArgs value="-dev 1 -game gearbox" /><br><br>
-
-		<input type=button onclick="startXash();return false;" value="Launch Xash3D!" />
-
-		<br>
-		<hr>
-
-		<div id='linksPlaceholder' style=display:none>Download archives to load locally next time:</div><br>
-	</form>
-
-	<script type='text/javascript' src='browserfs.min.js'></script>
-	<script type='text/javascript'>
-		var zipMods = [];
+    </style>
+   </meta>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body bgcolor="#555555" link="#ffa600" onerror="alert(event);" text="#F0B418" vlink="#ffa600">
+  <div class="emscripten_border">
+   <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="display:none">
+   </canvas>
+  </div>
+  <p>
+   <div style="width:100%;height:0px">
+    <div id="status" style="float:left;">
+     Downloading...
+    </div>
+    <div id="progress1" style="position:relative;z-index:10;display:none;float:right;width:70%;border-color:#F0B418;border-style:solid;border-width:2px;height:20px">
+     <div id="progress" style="text-align:center;background-color:#F0B418;border-color:#555555;border-style:solid:border-width:3px;width:50%;height:20px">
+     </div>
+    </div>
+    <br/>
+   </div>
+   <br/>
+  </p>
+  <div class="loader" id="loader1">
+  </div>
+  <div style="width:100%">
+   <span id="controls">
+    <a class="glow">
+     <span>
+      <label id="label_show_console_log" style="display: none;">
+       <input id="show_console_log" type="checkbox"/>
+       Show Console Log
+      </label>
+     </span>
+    </a>
+    <a class="glow">
+     <span>
+      <label>
+       <input id="resize" type="checkbox"/>
+       Resize canvas
+      </label>
+     </span>
+    </a>
+    <a class="glow">
+     <span>
+      <label>
+       <input checked="" id="pointerLock" type="checkbox"/>
+       Lock/hide mouse pointer
+      </label>
+     </span>
+    </a>
+    <span>
+     <input onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, document.getElementById('resize').checked)" type="button" value="Fullscreen"/>
+    </span>
+   </span>
+  </div>
+  <textarea id="output" rows="8" style="display: none;"></textarea>
+  <div id="asyncDialog" style="float:left">
+  </div>
+  <a class="glow">
+   <div id="optionsTitle">
+    <h1>
+     Game Options
+    </h1>
+   </div>
+  </a>
+  <form id="fSettings" style="display:none">
+   Select filesystem for settings and save and restore:
+   <br/>
+   <br/>
+   <div id="idbHider" style="display:none">
+    <label>
+     <input checked="true" id="rIndexedDB" name="a" type="radio">
+      IndexedDB (Need exit correctly to save changes)
+     </input>
+    </label>
+    <br/>
+   </div>
+   <label>
+    <input id="rLocalStorage" name="a" type="radio">
+     LocalStorage (Sometimes not enough space)
+    </input>
+   </label>
+   <br/>
+   <label>
+    <input id="rNone" name="a" type="radio">
+     None(in RAM)
+    </input>
+   </label>
+   <br/>
+   <br/>
+   <hr/>
+   Select game data source:
+   <br/>
+   <br/>
+   <label>
+    <div id="pkgHider" style="display:none">
+     <input id="rPackage" name="b" type="radio">
+      Emscripten package from server (cached in IndexedDB if availiable)
+     </input>
+    </div>
+   </label>
+   <select id="selectPkg" style="display:none">
+   </select>
+   <br/>
+   <label>
+    <div id="zipHider" style="display:none">
+     <input checked="true" id="rZip" name="b" type="radio"/>
+     ZIP archive from server (slow, but small, no IndexedDB cache)
+    </div>
+   </label>
+   <select id="selectZip" style="display:none">
+   </select>
+   <br/>
+   <label>
+    <input id="rLocalZip" name="b" type="radio"/>
+    Local ZIP file:
+   </label>
+   <label id="label_file_select">
+    <input id="iZipFile" name="c" type="file"/>
+    Select ZIP file
+   </label>
+   <br/>
+   <br/>
+   <hr/>
+   Command-line arguments:
+   <input id="iArgs" name="d" type="text" value="-dev 1 -game gearbox"/>
+   <br/>
+   <br/>
+   <input onclick="startXash();return false;" type="button" value="Launch Xash3D!"/>
+   <br/>
+   <hr/>
+   <div id="linksPlaceholder" style="display:none">
+    Download archives to load locally next time:
+   </div>
+   <br/>
+  </form>
+  <script src="browserfs.min.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var zipMods = [];
 		var pkgMods = [];
-	</script>
-
-	<script type='text/javascript' src='mods.js'></script>
-
-	<script type='text/javascript'>
-		var show_again = true;
+  </script>
+  <script src="mods.js" type="text/javascript">
+  </script>
+  <script type="text/javascript">
+   var show_again = true;
 		var statusElement = document.getElementById('status');
 		var progressElement = document.getElementById('progress');
 		var asyncDialog = document.getElementById('asyncDialog');
@@ -736,10 +818,9 @@
 		//Module.websocket.url = 'wsproxy://the-swank.pp.ua:3000/'
 		Module.websocket.url = 'wsproxy://4.tcp.ngrok.io:10657/';
 		ENV = [];
-	</script>
-
-	<script>
-		(function() {
+  </script>
+  <script>
+   (function() {
 			var memoryInitializer = 'xash.html.mem';
 			if (typeof Module['locateFile'] === 'function') {
 				memoryInitializer = Module['locateFile'](memoryInitializer);
@@ -755,9 +836,9 @@
 		var script = document.createElement('script');
 		script.src = "xash.js";
 		document.body.appendChild(script);
-	</script>
-	<script>
-		document.getElementById('show_console_log').addEventListener('change', function() {
+  </script>
+  <script>
+   document.getElementById('show_console_log').addEventListener('change', function() {
 			if (document.getElementById('show_console_log').checked) document.getElementById('output').style.display = "block";
 			else document.getElementById('output').style.display = "none";
 		});
@@ -769,14 +850,16 @@
 
 		ga('create', 'UA-68666752-4', 'auto');
 		ga('send', 'pageview');*/
-	</script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

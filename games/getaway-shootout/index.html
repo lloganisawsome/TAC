@@ -1,31 +1,41 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <link rel="icon" type="image/x-icon" href="img/images.jpg" />
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Getaway Shootout</title>
-    <script src="Build/UnityLoader.js"></script>
-    <style>
-      body {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <link href="img/images.jpg" rel="icon" type="image/x-icon">
+   <meta charset="utf-8"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+   <title>
+    Getaway Shootout
+   </title>
+   <script src="Build/UnityLoader.js">
+   </script>
+   <style>
+    body {
         background-color: #000000;
       }
-    </style>
-    <script>
-      var gameInstance = UnityLoader.instantiate("gameContainer", "GetawayShootout.json", { width: 800, height: 600 });
-    </script>
-  </head>
-  <body>
-    <div id="gameContainer" style="width: 100%; height: 100%; margin: auto;"></div>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+   </style>
+   <script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "GetawayShootout.json", { width: 800, height: 600 });
+   </script>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="gameContainer" style="width: 100%; height: 100%; margin: auto;">
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

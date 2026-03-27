@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAC Reminders</title>
-<style>
-  body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC Reminders
+  </title>
+  <style>
+   body { margin:0; background:black; color:#19FFA0; font-family: monospace; display:flex; flex-direction:column; align-items:center; }
   header { width:100%; text-align:center; padding:15px; font-size:1.5em; border-bottom:2px solid #19FFA0; }
   .section { max-width:400px; width:100%; margin-top:20px; display:flex; flex-direction:column; align-items:center; }
   input, button { margin:5px 0; padding:10px; border:none; border-radius:8px; width:100%; }
@@ -31,29 +33,35 @@
     cursor:pointer;
   }
   #homeBtn:hover { background:#13cca0; }
-</style>
-</head>
-<body>
-
-<!-- Home Button -->
-<button id="homeBtn" onclick="location.href='index.html'">🏠</button>
-
-<header>TAC Reminders</header>
-
-<div class="section">
-  <input type="text" id="username" placeholder="Enter your name">
-  <button id="loadBtn">Load My Reminders</button>
-</div>
-
-<div class="section" id="reminderSection" style="display:none;">
-  <input type="text" id="reminderText" placeholder="Reminder description">
-  <input type="datetime-local" id="reminderTime">
-  <button id="addBtn">Add Reminder</button>
-  <ul id="reminderList"></ul>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <!-- Home Button -->
+  <button id="homeBtn" onclick="location.href='index.html'">
+   🏠
+  </button>
+  <header>
+   TAC Reminders
+  </header>
+  <div class="section">
+   <input id="username" placeholder="Enter your name" type="text"/>
+   <button id="loadBtn">
+    Load My Reminders
+   </button>
+  </div>
+  <div class="section" id="reminderSection" style="display:none;">
+   <input id="reminderText" placeholder="Reminder description" type="text"/>
+   <input id="reminderTime" type="datetime-local"/>
+   <button id="addBtn">
+    Add Reminder
+   </button>
+   <ul id="reminderList">
+   </ul>
+  </div>
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
 import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -130,27 +138,45 @@ setInterval(()=>{
 function notify(title,msg){
   if(Notification.permission==="granted") new Notification(title,{body:msg});
 }
-
-</script>
-<script src="guard.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
+
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
+</body>
+</html>
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
 </body>
 </html>

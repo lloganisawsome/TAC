@@ -1,14 +1,15 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAC</title>
-<style>
-:root{
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC
+  </title>
+  <style>
+   :root{
   --sidebar-bg:#111;
   --sidebar-accent:#4CAF50;
   --sidebar-text:#fff;
@@ -131,43 +132,82 @@ body{margin:0;font-family:Inter,Arial,sans-serif;display:flex;background:#222;co
 .carousel-control:hover {opacity: 1;}
 .prev {left: 10px;border-radius: 50%;}
 .next {right: 10px;border-radius: 50%;}
-</style>
-</head>
-<body>
-
-<div class="user-sidebar collapsed" id="sidebar">
-  <div class="logo-section collapsed" id="logoSection">
-    <img src="tac-logo.png" alt="TAC Logo" class="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="user-sidebar collapsed" id="sidebar">
+   <div class="logo-section collapsed" id="logoSection">
+    <img alt="TAC Logo" class="logo" src="tac-logo.png"/>
+   </div>
+   <ul class="user-nav">
+    <li class="nav-item" data-href="home.html">
+     <span class="nav-text">
+      Home
+     </span>
+    </li>
+    <li class="nav-item" data-href="chat.html">
+     <span class="nav-text">
+      Chat
+     </span>
+    </li>
+    <li class="nav-item" data-href="help.html">
+     <span class="nav-text">
+      Help
+     </span>
+    </li>
+    <li class="nav-item" data-href="staff.html">
+     <span class="nav-text">
+      Apply for Staff
+     </span>
+    </li>
+    <li class="nav-item" data-href="notgames.html">
+     <span class="nav-text">
+      Not Games
+     </span>
+    </li>
+    <li class="nav-item" data-href="apps.html">
+     <span class="nav-text">
+      Apps
+     </span>
+    </li>
+    <li class="nav-item" data-href="members.html">
+     <span class="nav-text">
+      Members
+     </span>
+    </li>
+    <li class="nav-item" data-href="developer.html">
+     <span class="nav-text">
+      Dev
+     </span>
+    </li>
+   </ul>
+   <div class="action-buttons">
+    <button id="collapseBtn">
+     ☰
+    </button>
+   </div>
   </div>
-
-  <ul class="user-nav">
-    <li class="nav-item" data-href="home.html"><span class="nav-text">Home</span></li>
-    <li class="nav-item" data-href="chat.html"><span class="nav-text">Chat</span></li>
-    <li class="nav-item" data-href="help.html"><span class="nav-text">Help</span></li>
-    <li class="nav-item" data-href="staff.html"><span class="nav-text">Apply for Staff</span></li>
-    <li class="nav-item" data-href="notgames.html"><span class="nav-text">Not Games</span></li>
-    <li class="nav-item" data-href="apps.html"><span class="nav-text">Apps</span></li>
-    <li class="nav-item" data-href="members.html"><span class="nav-text">Members</span></li>
-    <li class="nav-item" data-href="developer.html"><span class="nav-text">Dev</span></li>
-  </ul>
-
-  <div class="action-buttons">
-    <button id="collapseBtn">☰</button>
-  </div>
-</div>
-
-<div class="content">
-    <h1>Welcome to TAC</h1>
-    <div id="datetime"></div>
-    <div class="image-carousel">
-        <div class="carousel-images" id="carouselImages"></div>
-        <button class="carousel-control prev" id="prevBtn">‹</button>
-        <button class="carousel-control next" id="nextBtn">›</button>
+  <div class="content">
+   <h1>
+    Welcome to TAC
+   </h1>
+   <div id="datetime">
+   </div>
+   <div class="image-carousel">
+    <div class="carousel-images" id="carouselImages">
     </div>
-</div>
-
-<script>
-const sidebar = document.getElementById('sidebar');
+    <button class="carousel-control prev" id="prevBtn">
+     ‹
+    </button>
+    <button class="carousel-control next" id="nextBtn">
+     ›
+    </button>
+   </div>
+  </div>
+  <script>
+   const sidebar = document.getElementById('sidebar');
 const logoSection = document.getElementById('logoSection');
 const collapseBtn = document.getElementById('collapseBtn');
 const carouselImages = document.getElementById('carouselImages');
@@ -238,13 +278,16 @@ function showPrevImage(){
 prevBtn.addEventListener('click', showPrevImage);
 nextBtn.addEventListener('click', showNextImage);
 window.addEventListener('resize', updateCarousel);
-</script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

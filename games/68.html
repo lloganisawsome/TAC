@@ -1,17 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Sonic 2 Community's Cut</title>
-<base href="https://cdn.jsdelivr.net/gh/waycrosspublicmedia/assets/sonic2/">
-<link rel="icon" type="x-icon" href="icon.png">
-<link rel="stylesheet" href="fonts/stylesheet.css">
-<style>
-  html, body { height: 100%; margin: 0; padding: 0; background:black; }
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+   <title>
+    Sonic 2 Community's Cut
+   </title>
+   <base href="https://cdn.jsdelivr.net/gh/waycrosspublicmedia/assets/sonic2/"/>
+   <link href="icon.png" rel="icon" type="x-icon"/>
+   <link href="fonts/stylesheet.css" rel="stylesheet"/>
+   <style>
+    html, body { height: 100%; margin: 0; padding: 0; background:black; }
   body { font-family: arial; background-image: url("./bg.gif"); background-repeat: repeat; }
   #status { color: rgb(120,120,120); font-weight: bold; margin: 2rem 0 0 20px; }
   #progress { width: 300px; height: 20px; }
@@ -19,25 +21,32 @@
   #container { font-family: 'sonic2systemregular'; color:white; text-shadow: .25rem .25rem black;
     position: fixed; top:50%; left:50%; transform: translate(-50%, -50%); text-align:center; width:100%; }
   a { color: yellow; text-decoration: none; }
-</style>
-</head>
-<body>
-
-<div id="status" class="emscripten">Downloading...</div>
-<progress id="progress" class="emscripten" value="0" max="100" hidden></progress>
-<canvas id="canvas" class="emscripten" oncontextmenu="event.preventDefault()" tabindex="-1"></canvas>
-
-<div id="container">
-    <img src="./sonic2.png" style="max-width:31rem; width:100%;" /><br>
-    <img src="./wait.gif" style="max-width:31rem; width:100%;" />
-</div>
-
-<script src="./s2cx.js"></script>
-<script src="./md5.min.js"></script>
-<script src="./jquery-3.5.1.slim.min.js"></script>
-
-<script>
-    // Keep a safe reference (if any)
+   </style>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="emscripten" id="status">
+   Downloading...
+  </div>
+  <progress class="emscripten" hidden="" id="progress" max="100" value="0">
+  </progress>
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex="-1">
+  </canvas>
+  <div id="container">
+   <img src="./sonic2.png" style="max-width:31rem; width:100%;"/>
+   <br/>
+   <img src="./wait.gif" style="max-width:31rem; width:100%;"/>
+  </div>
+  <script src="./s2cx.js">
+  </script>
+  <script src="./md5.min.js">
+  </script>
+  <script src="./jquery-3.5.1.slim.min.js">
+  </script>
+  <script>
+   // Keep a safe reference (if any)
     const oldSetStatus = Module.setStatus ? Module.setStatus.bind(Module) : null;
 
 Module.setStatus = function (text) {
@@ -107,15 +116,16 @@ Module.setStatus = function (text) {
             alert("ROM preload failed, check console.");
         }
     }
-</script>
-
-
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href__="rightclick.css">
-    <link rel="stylesheet" href__="custom-cursor.css">
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <title>Developer Dashboard — TAC</title>
-    <style>
-        :root {
+ <head>
+  <link href__="rightclick.css" rel="stylesheet"/>
+  <link href__="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   Developer Dashboard — TAC
+  </title>
+  <style>
+   :root {
             --bg: #0a0a0b;
             --panel: #111113;
             --panel-hover: #1a1a1c;
@@ -226,693 +228,1714 @@
             font-size: 13px;
             cursor: pointer;
         }
-    </style>
-</head>
-<body>
-<header class="header">
-    <div class="header-left">
-        <div class="logo">T</div>
-        <div class="header-title">
-            <h1>TAC Developer Dashboard</h1>
-            <p>Full Control Center v3.2</p>
-        </div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <header class="header">
+   <div class="header-left">
+    <div class="logo">
+     T
     </div>
-    <div class="header-right">
-        <div class="live-indicator"><div class="live-dot"></div><span>Live</span></div>
-        <span class="last-fetch" id="lastFetch">Last fetch: --</span>
-        <div class="header-info">
-            <div class="user" id="loggedInUser">Not logged in</div>
-            <div class="datetime" id="currentDateTime">--</div>
-        </div>
+    <div class="header-title">
+     <h1>
+      TAC Developer Dashboard
+     </h1>
+     <p>
+      Full Control Center v3.2
+     </p>
     </div>
-</header>
-
-<nav class="nav">
-    <button class="nav-tab active" data-page="overview">📊 Overview</button>
-    <button class="nav-tab" data-page="users">👤 Users</button>
-    <button class="nav-tab" data-page="pending">⏳ Pending</button>
-    <button class="nav-tab" data-page="appusage">📱 App Usage</button>
-    <button class="nav-tab" data-page="chat">💬 Chat</button>
-    <button class="nav-tab" data-page="privatechats">🔒 Private Chats</button>
-    <button class="nav-tab" data-page="forum">📋 Forum</button>
-    <button class="nav-tab" data-page="lpc">💕 LPC Likes</button>
-    <button class="nav-tab" data-page="news">📰 News</button>
-    <button class="nav-tab" data-page="videos">🎬 Videos</button>
-    <button class="nav-tab" data-page="gameplays">🎮 Game Plays</button>
-    <button class="nav-tab" data-page="polls">📊 Polls</button>
-    <button class="nav-tab" data-page="phone">📞 Phone</button>
-    <button class="nav-tab" data-page="notifications">🔔 Notifications</button>
-    <button class="nav-tab" data-page="moderation">🛡️ Moderation</button>
-    <button class="nav-tab" data-page="failedlogins">🚨 Failed Logins</button>
-    <button class="nav-tab" data-page="security">🔐 Security</button>
-    <button class="nav-tab" data-page="appbans">🚫 App Bans</button>
-    <button class="nav-tab" data-page="charts">📈 Charts</button>
-    <button class="nav-tab" data-page="tools">🛠️ Tools</button>
-    <button class="nav-tab" data-page="settings">⚙️ Settings</button>
-</nav>
-
-<main class="main">
-
-<div id="page-overview" class="page active">
+   </div>
+   <div class="header-right">
+    <div class="live-indicator">
+     <div class="live-dot">
+     </div>
+     <span>
+      Live
+     </span>
+    </div>
+    <span class="last-fetch" id="lastFetch">
+     Last fetch: --
+    </span>
+    <div class="header-info">
+     <div class="user" id="loggedInUser">
+      Not logged in
+     </div>
+     <div class="datetime" id="currentDateTime">
+      --
+     </div>
+    </div>
+   </div>
+  </header>
+  <nav class="nav">
+   <button class="nav-tab active" data-page="overview">
+    📊 Overview
+   </button>
+   <button class="nav-tab" data-page="users">
+    👤 Users
+   </button>
+   <button class="nav-tab" data-page="pending">
+    ⏳ Pending
+   </button>
+   <button class="nav-tab" data-page="appusage">
+    📱 App Usage
+   </button>
+   <button class="nav-tab" data-page="chat">
+    💬 Chat
+   </button>
+   <button class="nav-tab" data-page="privatechats">
+    🔒 Private Chats
+   </button>
+   <button class="nav-tab" data-page="forum">
+    📋 Forum
+   </button>
+   <button class="nav-tab" data-page="lpc">
+    💕 LPC Likes
+   </button>
+   <button class="nav-tab" data-page="news">
+    📰 News
+   </button>
+   <button class="nav-tab" data-page="videos">
+    🎬 Videos
+   </button>
+   <button class="nav-tab" data-page="gameplays">
+    🎮 Game Plays
+   </button>
+   <button class="nav-tab" data-page="polls">
+    📊 Polls
+   </button>
+   <button class="nav-tab" data-page="phone">
+    📞 Phone
+   </button>
+   <button class="nav-tab" data-page="notifications">
+    🔔 Notifications
+   </button>
+   <button class="nav-tab" data-page="moderation">
+    🛡️ Moderation
+   </button>
+   <button class="nav-tab" data-page="failedlogins">
+    🚨 Failed Logins
+   </button>
+   <button class="nav-tab" data-page="security">
+    🔐 Security
+   </button>
+   <button class="nav-tab" data-page="appbans">
+    🚫 App Bans
+   </button>
+   <button class="nav-tab" data-page="charts">
+    📈 Charts
+   </button>
+   <button class="nav-tab" data-page="tools">
+    🛠️ Tools
+   </button>
+   <button class="nav-tab" data-page="settings">
+    ⚙️ Settings
+   </button>
+  </nav>
+  <main class="main">
+   <div class="page active" id="page-overview">
     <div class="flex items-center gap-3 mb-4" style="flex-wrap:wrap;">
-        <div class="time-range-btns">
-            <button class="time-btn active" id="rangeToday" onclick="setOverviewRange('today')">📅 Today</button>
-            <button class="time-btn" id="rangeYesterday" onclick="setOverviewRange('yesterday')">⬅️ Yesterday</button>
-            <button class="time-btn" id="rangeAllTime" onclick="setOverviewRange('alltime')">🗓️ All Time</button>
-        </div>
-        <span class="text-sm text-muted" id="todayDateLabel"></span>
+     <div class="time-range-btns">
+      <button class="time-btn active" id="rangeToday" onclick="setOverviewRange('today')">
+       📅 Today
+      </button>
+      <button class="time-btn" id="rangeYesterday" onclick="setOverviewRange('yesterday')">
+       ⬅️ Yesterday
+      </button>
+      <button class="time-btn" id="rangeAllTime" onclick="setOverviewRange('alltime')">
+       🗓️ All Time
+      </button>
+     </div>
+     <span class="text-sm text-muted" id="todayDateLabel">
+     </span>
     </div>
-
     <div class="grid grid-7 mb-4">
-        <div class="stat-card accent">
-            <div class="live-badge"></div>
-            <div class="stat-label">Active Users Now</div>
-            <div class="stat-value" id="activeUsersCount">—</div>
-        </div>
-        <div class="stat-card blue">
-            <div class="stat-label" id="loginsLabel">Total Logins</div>
-            <div class="stat-value" id="totalLogins">—</div>
-            <div class="stat-sub" id="loginsSub"></div>
-        </div>
-        <div class="stat-card amber">
-            <div class="stat-label">Pending</div>
-            <div class="stat-value" id="pendingCount">—</div>
-        </div>
-        <div class="stat-card violet">
-            <div class="stat-label">Total Videos</div>
-            <div class="stat-value" id="videosCount">—</div>
-        </div>
-        <div class="stat-card pink">
-            <div class="stat-label" id="notifLabel">Notifications</div>
-            <div class="stat-value" id="notificationsCount">—</div>
-        </div>
-        <div class="stat-card cyan">
-            <div class="stat-label" id="newsLabel">News Posts</div>
-            <div class="stat-value" id="newsCount">—</div>
-        </div>
-        <div class="stat-card teal">
-            <div class="stat-label">Private Chats</div>
-            <div class="stat-value" id="privateChatsCount">—</div>
-        </div>
+     <div class="stat-card accent">
+      <div class="live-badge">
+      </div>
+      <div class="stat-label">
+       Active Users Now
+      </div>
+      <div class="stat-value" id="activeUsersCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card blue">
+      <div class="stat-label" id="loginsLabel">
+       Total Logins
+      </div>
+      <div class="stat-value" id="totalLogins">
+       —
+      </div>
+      <div class="stat-sub" id="loginsSub">
+      </div>
+     </div>
+     <div class="stat-card amber">
+      <div class="stat-label">
+       Pending
+      </div>
+      <div class="stat-value" id="pendingCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card violet">
+      <div class="stat-label">
+       Total Videos
+      </div>
+      <div class="stat-value" id="videosCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card pink">
+      <div class="stat-label" id="notifLabel">
+       Notifications
+      </div>
+      <div class="stat-value" id="notificationsCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card cyan">
+      <div class="stat-label" id="newsLabel">
+       News Posts
+      </div>
+      <div class="stat-value" id="newsCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card teal">
+      <div class="stat-label">
+       Private Chats
+      </div>
+      <div class="stat-value" id="privateChatsCount">
+       —
+      </div>
+     </div>
     </div>
     <div class="grid grid-4 mb-4">
-        <div class="stat-card red">
-            <div class="stat-label">Failed Attempts</div>
-            <div class="stat-value" id="failedCount">—</div>
-        </div>
-        <div class="stat-card orange">
-            <div class="stat-label" id="lpcLabel">LPC Likes</div>
-            <div class="stat-value" id="lpcCount">—</div>
-        </div>
-        <div class="stat-card violet">
-            <div class="stat-label">Total Games</div>
-            <div class="stat-value" id="gamesCount">—</div>
-        </div>
-        <div class="stat-card blue">
-            <div class="stat-label" id="chatLabel">Chat Messages</div>
-            <div class="stat-value" id="chatCount">—</div>
-        </div>
+     <div class="stat-card red">
+      <div class="stat-label">
+       Failed Attempts
+      </div>
+      <div class="stat-value" id="failedCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card orange">
+      <div class="stat-label" id="lpcLabel">
+       LPC Likes
+      </div>
+      <div class="stat-value" id="lpcCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card violet">
+      <div class="stat-label">
+       Total Games
+      </div>
+      <div class="stat-value" id="gamesCount">
+       —
+      </div>
+     </div>
+     <div class="stat-card blue">
+      <div class="stat-label" id="chatLabel">
+       Chat Messages
+      </div>
+      <div class="stat-value" id="chatCount">
+       —
+      </div>
+     </div>
     </div>
-
     <div class="grid grid-3">
-        <div class="panel col-span-2">
-            <div class="panel-header">
-                <div>
-                    <h3 class="panel-title">📜 Recent Activity</h3>
-                    <p class="panel-subtitle">Live across all collections</p>
-                </div>
-                <div class="flex gap-2">
-                    <select id="activityFilter" style="width:160px;" onchange="renderActivityFeed()">
-                        <option value="all">All Activity</option>
-                        <option value="chat">Chat</option>
-                        <option value="forum">Forum</option>
-                        <option value="analytics">Analytics</option>
-                        <option value="videos">Videos</option>
-                        <option value="appUsage">App Usage</option>
-                        <option value="failed">Failed Logins</option>
-                        <option value="likes">LPC Likes</option>
-                        <option value="news">News</option>
-                        <option value="notifications">Notifications</option>
-                        <option value="polls">Polls</option>
-                        <option value="gameplays">Game Plays</option>
-                        <option value="pending">Pending</option>
-                        <option value="logins">Logins</option>
-                    </select>
-                    <button class="btn btn-secondary btn-sm" onclick="loadData()">Refresh</button>
-                </div>
-            </div>
-            <div class="feed" id="activityFeed" style="max-height:500px;">
-                <div class="empty-state">Loading...</div>
-            </div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">👥 Team Members</h3></div>
-            <div class="input-group">
-                <input type="text" id="memberInput" placeholder="Add member..."/>
-                <button class="btn btn-primary btn-sm" id="addMemberBtn">Add</button>
-            </div>
-            <div class="table-wrap" style="max-height: 280px;">
-                <table id="membersTable">
-                    <thead><tr><th>Member</th><th>Role</th><th>Actions</th></tr></thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
+     <div class="panel col-span-2">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📜 Recent Activity
+        </h3>
+        <p class="panel-subtitle">
+         Live across all collections
+        </p>
+       </div>
+       <div class="flex gap-2">
+        <select id="activityFilter" onchange="renderActivityFeed()" style="width:160px;">
+         <option value="all">
+          All Activity
+         </option>
+         <option value="chat">
+          Chat
+         </option>
+         <option value="forum">
+          Forum
+         </option>
+         <option value="analytics">
+          Analytics
+         </option>
+         <option value="videos">
+          Videos
+         </option>
+         <option value="appUsage">
+          App Usage
+         </option>
+         <option value="failed">
+          Failed Logins
+         </option>
+         <option value="likes">
+          LPC Likes
+         </option>
+         <option value="news">
+          News
+         </option>
+         <option value="notifications">
+          Notifications
+         </option>
+         <option value="polls">
+          Polls
+         </option>
+         <option value="gameplays">
+          Game Plays
+         </option>
+         <option value="pending">
+          Pending
+         </option>
+         <option value="logins">
+          Logins
+         </option>
+        </select>
+        <button class="btn btn-secondary btn-sm" onclick="loadData()">
+         Refresh
+        </button>
+       </div>
+      </div>
+      <div class="feed" id="activityFeed" style="max-height:500px;">
+       <div class="empty-state">
+        Loading...
+       </div>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        👥 Team Members
+       </h3>
+      </div>
+      <div class="input-group">
+       <input id="memberInput" placeholder="Add member..." type="text"/>
+       <button class="btn btn-primary btn-sm" id="addMemberBtn">
+        Add
+       </button>
+      </div>
+      <div class="table-wrap" style="max-height: 280px;">
+       <table id="membersTable">
+        <thead>
+         <tr>
+          <th>
+           Member
+          </th>
+          <th>
+           Role
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-users" class="page">
+   </div>
+   <div class="page" id="page-users">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">👤 User Management</h2><p class="panel-subtitle">Manage all users — green dot = online now</p></div>
-            <div class="flex gap-2" style="flex-wrap:wrap;">
-                <input type="search" id="userSearch" placeholder="Search..." style="width: 200px;"/>
-                <button class="btn btn-secondary" id="exportCsv">Export CSV</button>
-                <button class="btn btn-primary" onclick="loadData()">Refresh</button>
-            </div>
-        </div>
-        <div class="table-wrap">
-            <table id="usersTable">
-                <thead><tr><th>Username</th><th>Status</th><th>Last Seen</th><th>Logins (All)</th><th>Today</th><th>Acc Status</th><th>Pending</th><th>Failed</th><th>Actions</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        👤 User Management
+       </h2>
+       <p class="panel-subtitle">
+        Manage all users — green dot = online now
+       </p>
+      </div>
+      <div class="flex gap-2" style="flex-wrap:wrap;">
+       <input id="userSearch" placeholder="Search..." style="width: 200px;" type="search"/>
+       <button class="btn btn-secondary" id="exportCsv">
+        Export CSV
+       </button>
+       <button class="btn btn-primary" onclick="loadData()">
+        Refresh
+       </button>
+      </div>
+     </div>
+     <div class="table-wrap">
+      <table id="usersTable">
+       <thead>
+        <tr>
+         <th>
+          Username
+         </th>
+         <th>
+          Status
+         </th>
+         <th>
+          Last Seen
+         </th>
+         <th>
+          Logins (All)
+         </th>
+         <th>
+          Today
+         </th>
+         <th>
+          Acc Status
+         </th>
+         <th>
+          Pending
+         </th>
+         <th>
+          Failed
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+       </tbody>
+      </table>
+     </div>
     </div>
-</div>
-
-<div id="page-pending" class="page">
+   </div>
+   <div class="page" id="page-pending">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">⏳ Pending Accounts</h2><p class="panel-subtitle">Users requesting access — from /pendingAccounts</p></div>
-            <div class="flex gap-2">
-                <button class="btn btn-danger" onclick="clearAllPending()">Clear All</button>
-                <button class="btn btn-primary" onclick="loadData()">Refresh</button>
-            </div>
-        </div>
-        <div id="pendingContainer"><div class="empty-state">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        ⏳ Pending Accounts
+       </h2>
+       <p class="panel-subtitle">
+        Users requesting access — from /pendingAccounts
+       </p>
+      </div>
+      <div class="flex gap-2">
+       <button class="btn btn-danger" onclick="clearAllPending()">
+        Clear All
+       </button>
+       <button class="btn btn-primary" onclick="loadData()">
+        Refresh
+       </button>
+      </div>
+     </div>
+     <div id="pendingContainer">
+      <div class="empty-state">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-appusage" class="page">
+   </div>
+   <div class="page" id="page-appusage">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">📱 App Usage Analytics</h2><p class="panel-subtitle">From /appUsage</p></div>
-            <button class="btn btn-danger" onclick="resetAllAppUsage()">Reset All Counts</button>
-        </div>
-        <div class="grid grid-5" id="appUsageGrid"><div class="empty-state">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        📱 App Usage Analytics
+       </h2>
+       <p class="panel-subtitle">
+        From /appUsage
+       </p>
+      </div>
+      <button class="btn btn-danger" onclick="resetAllAppUsage()">
+       Reset All Counts
+      </button>
+     </div>
+     <div class="grid grid-5" id="appUsageGrid">
+      <div class="empty-state">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-chat" class="page">
+   </div>
+   <div class="page" id="page-chat">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">💬 Public Chat</h2><p class="panel-subtitle">All chat rooms</p></div>
-            <button class="btn btn-danger" onclick="clearAllChat()">Clear Current Room</button>
-        </div>
-        <div class="room-tabs" id="chatRoomTabs"></div>
-        <div class="feed" id="chatFeed" style="max-height: 600px;"><div class="empty-state">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        💬 Public Chat
+       </h2>
+       <p class="panel-subtitle">
+        All chat rooms
+       </p>
+      </div>
+      <button class="btn btn-danger" onclick="clearAllChat()">
+       Clear Current Room
+      </button>
+     </div>
+     <div class="room-tabs" id="chatRoomTabs">
+     </div>
+     <div class="feed" id="chatFeed" style="max-height: 600px;">
+      <div class="empty-state">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-privatechats" class="page">
+   </div>
+   <div class="page" id="page-privatechats">
     <div class="panel">
-        <div class="panel-header"><div><h2 class="panel-title">🔒 Private Chats</h2><p class="panel-subtitle">From /private_chats</p></div></div>
-        <div class="grid grid-2">
-            <div>
-                <h4 class="mb-2">Chat Rooms</h4>
-                <div class="table-wrap" style="max-height: 400px;">
-                    <table id="privateChatRoomsTable">
-                        <thead><tr><th>Participants</th><th>Messages</th><th>Actions</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-            <div>
-                <h4 class="mb-2" id="privateChatTitle">Selected Chat Messages</h4>
-                <div id="privateChatMessages" class="feed" style="max-height: 400px;"><div class="empty-state">Select a chat to view messages</div></div>
-            </div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🔒 Private Chats
+       </h2>
+       <p class="panel-subtitle">
+        From /private_chats
+       </p>
+      </div>
+     </div>
+     <div class="grid grid-2">
+      <div>
+       <h4 class="mb-2">
+        Chat Rooms
+       </h4>
+       <div class="table-wrap" style="max-height: 400px;">
+        <table id="privateChatRoomsTable">
+         <thead>
+          <tr>
+           <th>
+            Participants
+           </th>
+           <th>
+            Messages
+           </th>
+           <th>
+            Actions
+           </th>
+          </tr>
+         </thead>
+         <tbody>
+         </tbody>
+        </table>
+       </div>
+      </div>
+      <div>
+       <h4 class="mb-2" id="privateChatTitle">
+        Selected Chat Messages
+       </h4>
+       <div class="feed" id="privateChatMessages" style="max-height: 400px;">
+        <div class="empty-state">
+         Select a chat to view messages
         </div>
+       </div>
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-forum" class="page">
+   </div>
+   <div class="page" id="page-forum">
     <div class="grid grid-2">
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">📋 Forum Posts</h3><p class="panel-subtitle">From /forum/posts</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="forumPostsTable"><thead><tr><th>Author</th><th>Title</th><th>Content</th><th>Votes</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">📂 Subforums</h3><p class="panel-subtitle">From /forum/subforums</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="subforumsTable"><thead><tr><th>Name</th><th>Description</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📋 Forum Posts
+        </h3>
+        <p class="panel-subtitle">
+         From /forum/posts
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="forumPostsTable">
+        <thead>
+         <tr>
+          <th>
+           Author
+          </th>
+          <th>
+           Title
+          </th>
+          <th>
+           Content
+          </th>
+          <th>
+           Votes
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📂 Subforums
+        </h3>
+        <p class="panel-subtitle">
+         From /forum/subforums
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="subforumsTable">
+        <thead>
+         <tr>
+          <th>
+           Name
+          </th>
+          <th>
+           Description
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
     </div>
     <div class="panel">
-        <div class="panel-header">
-            <div><h3 class="panel-title">📝 Audit Logs</h3><p class="panel-subtitle">From /forum/auditLogs</p></div>
-            <button class="btn btn-danger btn-sm" onclick="clearForumAuditLogs()">Clear Logs</button>
-        </div>
-        <div class="table-wrap" style="max-height: 300px;">
-            <table id="forumAuditTable"><thead><tr><th>Action</th><th>By</th><th>Target</th><th>Time</th></tr></thead><tbody></tbody></table>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h3 class="panel-title">
+        📝 Audit Logs
+       </h3>
+       <p class="panel-subtitle">
+        From /forum/auditLogs
+       </p>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="clearForumAuditLogs()">
+       Clear Logs
+      </button>
+     </div>
+     <div class="table-wrap" style="max-height: 300px;">
+      <table id="forumAuditTable">
+       <thead>
+        <tr>
+         <th>
+          Action
+         </th>
+         <th>
+          By
+         </th>
+         <th>
+          Target
+         </th>
+         <th>
+          Time
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+       </tbody>
+      </table>
+     </div>
     </div>
-</div>
-
-<div id="page-lpc" class="page">
+   </div>
+   <div class="page" id="page-lpc">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">💕 Leak Peoples Crush - Likes</h2><p class="panel-subtitle">From /likes</p></div>
-            <button class="btn btn-danger" onclick="clearAllLikes()">Clear All Likes</button>
-        </div>
-        <div class="table-wrap" style="max-height: 600px;">
-            <table id="likesTable">
-                <thead>
-                    <tr>
-                        <th>From User</th>
-                        <th>Posted By</th>
-                        <th>Crush (To)</th>
-                        <th>👍 Likes</th>
-                        <th>👎 Dislikes</th>
-                        <th>Time</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        💕 Leak Peoples Crush - Likes
+       </h2>
+       <p class="panel-subtitle">
+        From /likes
+       </p>
+      </div>
+      <button class="btn btn-danger" onclick="clearAllLikes()">
+       Clear All Likes
+      </button>
+     </div>
+     <div class="table-wrap" style="max-height: 600px;">
+      <table id="likesTable">
+       <thead>
+        <tr>
+         <th>
+          From User
+         </th>
+         <th>
+          Posted By
+         </th>
+         <th>
+          Crush (To)
+         </th>
+         <th>
+          👍 Likes
+         </th>
+         <th>
+          👎 Dislikes
+         </th>
+         <th>
+          Time
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+       </tbody>
+      </table>
+     </div>
     </div>
-</div>
-
-<div id="page-news" class="page">
+   </div>
+   <div class="page" id="page-news">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">📰 News Posts</h2><p class="panel-subtitle">From /news</p></div>
-            <button class="btn btn-primary" onclick="showAddNewsModal()">+ Add News</button>
-        </div>
-        <div id="newsContainer" style="max-height: 600px; overflow-y: auto;"><div class="empty-state">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        📰 News Posts
+       </h2>
+       <p class="panel-subtitle">
+        From /news
+       </p>
+      </div>
+      <button class="btn btn-primary" onclick="showAddNewsModal()">
+       + Add News
+      </button>
+     </div>
+     <div id="newsContainer" style="max-height: 600px; overflow-y: auto;">
+      <div class="empty-state">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-videos" class="page">
+   </div>
+   <div class="page" id="page-videos">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">🎬 Videos</h2><p class="panel-subtitle">From /videos</p></div>
-            <button class="btn btn-primary" onclick="loadData()">Refresh</button>
-        </div>
-        <div id="videosContainer" class="video-grid"><div class="empty-state" style="grid-column:1/-1;">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🎬 Videos
+       </h2>
+       <p class="panel-subtitle">
+        From /videos
+       </p>
+      </div>
+      <button class="btn btn-primary" onclick="loadData()">
+       Refresh
+      </button>
+     </div>
+     <div class="video-grid" id="videosContainer">
+      <div class="empty-state" style="grid-column:1/-1;">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-gameplays" class="page">
+   </div>
+   <div class="page" id="page-gameplays">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">🎮 Game Plays</h2><p class="panel-subtitle">From /gamePlays — game push-key → play count, name resolved from /games</p></div>
-            <button class="btn btn-primary" onclick="loadData()">Refresh</button>
-        </div>
-        <div class="grid grid-4" id="gamePlaysGrid"><div class="empty-state" style="grid-column:1/-1;">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🎮 Game Plays
+       </h2>
+       <p class="panel-subtitle">
+        From /gamePlays — game push-key → play count, name resolved from /games
+       </p>
+      </div>
+      <button class="btn btn-primary" onclick="loadData()">
+       Refresh
+      </button>
+     </div>
+     <div class="grid grid-4" id="gamePlaysGrid">
+      <div class="empty-state" style="grid-column:1/-1;">
+       Loading...
+      </div>
+     </div>
     </div>
     <div class="panel">
-        <div class="panel-header"><h3 class="panel-title">📊 Plays by Game</h3></div>
-        <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="gamePlaysDetailBarChart" style="height:200px;"></div></div>
+     <div class="panel-header">
+      <h3 class="panel-title">
+       📊 Plays by Game
+      </h3>
+     </div>
+     <div class="bar-chart-scroll">
+      <div class="bar-chart-wrap" id="gamePlaysDetailBarChart" style="height:200px;">
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-polls" class="page">
+   </div>
+   <div class="page" id="page-polls">
     <div class="grid grid-2">
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">📊 Polls</h3><p class="panel-subtitle">From /polls</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="pollsTable"><thead><tr><th>Question</th><th>Options</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">🗳️ Poll Votes</h3><p class="panel-subtitle">From /pollVotes</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="pollVotesTable"><thead><tr><th>Poll</th><th>User</th><th>Vote</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📊 Polls
+        </h3>
+        <p class="panel-subtitle">
+         From /polls
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="pollsTable">
+        <thead>
+         <tr>
+          <th>
+           Question
+          </th>
+          <th>
+           Options
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         🗳️ Poll Votes
+        </h3>
+        <p class="panel-subtitle">
+         From /pollVotes
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="pollVotesTable">
+        <thead>
+         <tr>
+          <th>
+           Poll
+          </th>
+          <th>
+           User
+          </th>
+          <th>
+           Vote
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-phone" class="page">
+   </div>
+   <div class="page" id="page-phone">
     <div class="grid grid-2">
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">📞 User Phones</h3><p class="panel-subtitle">From /userPhones</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="userPhonesTable"><thead><tr><th>User</th><th>Phone #</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">📱 Phone Sessions</h3><p class="panel-subtitle">From /sessions</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="sessionsTable"><thead><tr><th>Session ID</th><th>User</th><th>Status</th><th>Time</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📞 User Phones
+        </h3>
+        <p class="panel-subtitle">
+         From /userPhones
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="userPhonesTable">
+        <thead>
+         <tr>
+          <th>
+           User
+          </th>
+          <th>
+           Phone #
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📱 Phone Sessions
+        </h3>
+        <p class="panel-subtitle">
+         From /sessions
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="sessionsTable">
+        <thead>
+         <tr>
+          <th>
+           Session ID
+          </th>
+          <th>
+           User
+          </th>
+          <th>
+           Status
+          </th>
+          <th>
+           Time
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-notifications" class="page">
+   </div>
+   <div class="page" id="page-notifications">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">🔔 Notifications</h2><p class="panel-subtitle">From /notifications</p></div>
-            <div class="flex gap-2">
-                <button class="btn btn-primary" onclick="showSendNotificationModal()">Send Notification</button>
-                <button class="btn btn-danger" onclick="clearAllNotifications()">Clear All</button>
-            </div>
-        </div>
-        <div class="table-wrap" style="max-height: 600px;">
-            <table id="notificationsTable"><thead><tr><th>To User</th><th>Title</th><th>Message</th><th>Read</th><th>Time</th><th>Actions</th></tr></thead><tbody></tbody></table>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🔔 Notifications
+       </h2>
+       <p class="panel-subtitle">
+        From /notifications
+       </p>
+      </div>
+      <div class="flex gap-2">
+       <button class="btn btn-primary" onclick="showSendNotificationModal()">
+        Send Notification
+       </button>
+       <button class="btn btn-danger" onclick="clearAllNotifications()">
+        Clear All
+       </button>
+      </div>
+     </div>
+     <div class="table-wrap" style="max-height: 600px;">
+      <table id="notificationsTable">
+       <thead>
+        <tr>
+         <th>
+          To User
+         </th>
+         <th>
+          Title
+         </th>
+         <th>
+          Message
+         </th>
+         <th>
+          Read
+         </th>
+         <th>
+          Time
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+       </tbody>
+      </table>
+     </div>
     </div>
-</div>
-
-<div id="page-moderation" class="page">
+   </div>
+   <div class="page" id="page-moderation">
     <div class="grid grid-2">
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">🛡️ Chat Moderation Settings</h3><p class="panel-subtitle">From /moderation</p></div></div>
-            <div class="setting-row"><label>Mod Command</label><input type="text" id="modCommand" style="width: 150px;" /></div>
-            <div class="setting-row"><label>Mod Response Text</label><input type="text" id="modText" /></div>
-            <div class="setting-row"><label>Chat Paused</label><select id="chatPaused" style="width: 100px;"><option value="false">No</option><option value="true">Yes</option></select></div>
-            <div class="setting-row"><label>Pinned Message ID</label><input type="text" id="pinnedMessage" style="width: 200px;" /></div>
-            <button class="btn btn-primary mt-4" onclick="saveModerationSettings()">Save Settings</button>
-            <h4 class="mt-4 mb-2">Spam Settings</h4>
-            <div class="setting-row"><label>Threshold</label><input type="number" id="spamThreshold" style="width: 80px;" /></div>
-            <div class="setting-row"><label>Window (ms)</label><input type="number" id="spamWindowMs" style="width: 120px;" /></div>
-            <div class="setting-row"><label>Duration (ms)</label><input type="number" id="spamDurationMs" style="width: 120px;" /></div>
-            <button class="btn btn-primary mt-4" onclick="saveSpamSettings()">Save Spam Settings</button>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">🚫 Blocked Words (Regex)</h3><p class="panel-subtitle">From /moderation/regex</p></div></div>
-            <div class="input-group"><input type="text" id="newRegexInput" placeholder="Add blocked word/pattern..." /><button class="btn btn-primary" onclick="addRegex()">Add</button></div>
-            <div class="regex-list" id="regexList"><div class="empty-state">Loading...</div></div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         🛡️ Chat Moderation Settings
+        </h3>
+        <p class="panel-subtitle">
+         From /moderation
+        </p>
+       </div>
+      </div>
+      <div class="setting-row">
+       <label>
+        Mod Command
+       </label>
+       <input id="modCommand" style="width: 150px;" type="text"/>
+      </div>
+      <div class="setting-row">
+       <label>
+        Mod Response Text
+       </label>
+       <input id="modText" type="text"/>
+      </div>
+      <div class="setting-row">
+       <label>
+        Chat Paused
+       </label>
+       <select id="chatPaused" style="width: 100px;">
+        <option value="false">
+         No
+        </option>
+        <option value="true">
+         Yes
+        </option>
+       </select>
+      </div>
+      <div class="setting-row">
+       <label>
+        Pinned Message ID
+       </label>
+       <input id="pinnedMessage" style="width: 200px;" type="text"/>
+      </div>
+      <button class="btn btn-primary mt-4" onclick="saveModerationSettings()">
+       Save Settings
+      </button>
+      <h4 class="mt-4 mb-2">
+       Spam Settings
+      </h4>
+      <div class="setting-row">
+       <label>
+        Threshold
+       </label>
+       <input id="spamThreshold" style="width: 80px;" type="number"/>
+      </div>
+      <div class="setting-row">
+       <label>
+        Window (ms)
+       </label>
+       <input id="spamWindowMs" style="width: 120px;" type="number"/>
+      </div>
+      <div class="setting-row">
+       <label>
+        Duration (ms)
+       </label>
+       <input id="spamDurationMs" style="width: 120px;" type="number"/>
+      </div>
+      <button class="btn btn-primary mt-4" onclick="saveSpamSettings()">
+       Save Spam Settings
+      </button>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         🚫 Blocked Words (Regex)
+        </h3>
+        <p class="panel-subtitle">
+         From /moderation/regex
+        </p>
+       </div>
+      </div>
+      <div class="input-group">
+       <input id="newRegexInput" placeholder="Add blocked word/pattern..." type="text"/>
+       <button class="btn btn-primary" onclick="addRegex()">
+        Add
+       </button>
+      </div>
+      <div class="regex-list" id="regexList">
+       <div class="empty-state">
+        Loading...
+       </div>
+      </div>
+     </div>
     </div>
     <div class="panel">
-        <div class="panel-header">
-            <div><h3 class="panel-title">💬 Mod Chat</h3><p class="panel-subtitle">From /moderation/modChat</p></div>
-            <button class="btn btn-danger btn-sm" onclick="clearModChat()">Clear Mod Chat</button>
-        </div>
-        <div class="feed" id="modChatFeed" style="max-height: 300px;"><div class="empty-state">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h3 class="panel-title">
+        💬 Mod Chat
+       </h3>
+       <p class="panel-subtitle">
+        From /moderation/modChat
+       </p>
+      </div>
+      <button class="btn btn-danger btn-sm" onclick="clearModChat()">
+       Clear Mod Chat
+      </button>
+     </div>
+     <div class="feed" id="modChatFeed" style="max-height: 300px;">
+      <div class="empty-state">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-failedlogins" class="page">
+   </div>
+   <div class="page" id="page-failedlogins">
     <div class="panel">
-        <div class="panel-header">
-            <div><h2 class="panel-title">🚨 Failed Login Attempts</h2><p class="panel-subtitle">From /failedLogins</p></div>
-            <div class="flex gap-2">
-                <input type="search" id="failedLoginSearch" placeholder="Search user..." style="width: 200px;" oninput="renderFailedLoginsPage(this.value)"/>
-                <button class="btn btn-danger" onclick="clearAllFailedLogins()">Clear All</button>
-            </div>
-        </div>
-        <div class="table-wrap" style="max-height: 700px;">
-            <table id="failedLoginsPageTable">
-                <thead><tr><th>User</th><th>Type</th><th>Device Name</th><th>Device ID</th><th>Time</th><th>User Agent</th><th>Actions</th></tr></thead>
-                <tbody></tbody>
-            </table>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🚨 Failed Login Attempts
+       </h2>
+       <p class="panel-subtitle">
+        From /failedLogins
+       </p>
+      </div>
+      <div class="flex gap-2">
+       <input id="failedLoginSearch" oninput="renderFailedLoginsPage(this.value)" placeholder="Search user..." style="width: 200px;" type="search"/>
+       <button class="btn btn-danger" onclick="clearAllFailedLogins()">
+        Clear All
+       </button>
+      </div>
+     </div>
+     <div class="table-wrap" style="max-height: 700px;">
+      <table id="failedLoginsPageTable">
+       <thead>
+        <tr>
+         <th>
+          User
+         </th>
+         <th>
+          Type
+         </th>
+         <th>
+          Device Name
+         </th>
+         <th>
+          Device ID
+         </th>
+         <th>
+          Time
+         </th>
+         <th>
+          User Agent
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+       </tbody>
+      </table>
+     </div>
     </div>
-</div>
-
-<div id="page-security" class="page">
+   </div>
+   <div class="page" id="page-security">
     <div class="panel mb-4">
-        <div class="panel-header"><div><h2 class="panel-title">🔐 Admin Override</h2><p class="panel-subtitle">Enter admin code to view sensitive data</p></div></div>
-        <div class="input-group" style="max-width: 400px;">
-            <input type="password" id="adminCodeInput" placeholder="Enter admin code..."/>
-            <button class="btn btn-primary" onclick="verifyAdminCode()">Verify</button>
-        </div>
-        <p class="text-sm text-muted mt-4" id="adminStatus">Status: 🔒 Locked</p>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🔐 Admin Override
+       </h2>
+       <p class="panel-subtitle">
+        Enter admin code to view sensitive data
+       </p>
+      </div>
+     </div>
+     <div class="input-group" style="max-width: 400px;">
+      <input id="adminCodeInput" placeholder="Enter admin code..." type="password"/>
+      <button class="btn btn-primary" onclick="verifyAdminCode()">
+       Verify
+      </button>
+     </div>
+     <p class="text-sm text-muted mt-4" id="adminStatus">
+      Status: 🔒 Locked
+     </p>
     </div>
     <div class="grid grid-2">
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">🔑 User Passwords</h3><p class="panel-subtitle">From /userPasswords</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="userPasswordsTable"><thead><tr><th>User</th><th>Password</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">📌 User PINs</h3><p class="panel-subtitle">From /userPins</p></div></div>
-            <div class="table-wrap" style="max-height: 400px;">
-                <table id="userPinsTable"><thead><tr><th>User</th><th>PIN</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         🔑 User Passwords
+        </h3>
+        <p class="panel-subtitle">
+         From /userPasswords
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="userPasswordsTable">
+        <thead>
+         <tr>
+          <th>
+           User
+          </th>
+          <th>
+           Password
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📌 User PINs
+        </h3>
+        <p class="panel-subtitle">
+         From /userPins
+        </p>
+       </div>
+      </div>
+      <div class="table-wrap" style="max-height: 400px;">
+       <table id="userPinsTable">
+        <thead>
+         <tr>
+          <th>
+           User
+          </th>
+          <th>
+           PIN
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-appbans" class="page">
+   </div>
+   <div class="page" id="page-appbans">
     <div class="panel">
-        <div class="panel-header">
-            <div>
-                <h2 class="panel-title">🚫 App Bans</h2>
-                <p class="panel-subtitle">From /appBans — manage banned users and handle ban appeals</p>
-            </div>
-            <div class="flex gap-2">
-                <button class="btn btn-danger" onclick="showBanUserModal()">🚫 Ban User</button>
-                <button class="btn btn-primary" onclick="loadData()">Refresh</button>
-            </div>
-        </div>
-        <div class="grid grid-3 mb-4">
-            <div class="stat-card red">
-                <div class="stat-label">Total Bans</div>
-                <div class="stat-value" id="totalBansCount">—</div>
-            </div>
-            <div class="stat-card amber">
-                <div class="stat-label">Pending Appeals</div>
-                <div class="stat-value" id="pendingAppealsCount">—</div>
-            </div>
-            <div class="stat-card accent">
-                <div class="stat-label">Currently Banned</div>
-                <div class="stat-value" id="activeBansCount">—</div>
-            </div>
-        </div>
-        <div id="appBansContainer"><div class="empty-state">Loading...</div></div>
+     <div class="panel-header">
+      <div>
+       <h2 class="panel-title">
+        🚫 App Bans
+       </h2>
+       <p class="panel-subtitle">
+        From /appBans — manage banned users and handle ban appeals
+       </p>
+      </div>
+      <div class="flex gap-2">
+       <button class="btn btn-danger" onclick="showBanUserModal()">
+        🚫 Ban User
+       </button>
+       <button class="btn btn-primary" onclick="loadData()">
+        Refresh
+       </button>
+      </div>
+     </div>
+     <div class="grid grid-3 mb-4">
+      <div class="stat-card red">
+       <div class="stat-label">
+        Total Bans
+       </div>
+       <div class="stat-value" id="totalBansCount">
+        —
+       </div>
+      </div>
+      <div class="stat-card amber">
+       <div class="stat-label">
+        Pending Appeals
+       </div>
+       <div class="stat-value" id="pendingAppealsCount">
+        —
+       </div>
+      </div>
+      <div class="stat-card accent">
+       <div class="stat-label">
+        Currently Banned
+       </div>
+       <div class="stat-value" id="activeBansCount">
+        —
+       </div>
+      </div>
+     </div>
+     <div id="appBansContainer">
+      <div class="empty-state">
+       Loading...
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-charts" class="page">
+   </div>
+   <div class="page" id="page-charts">
     <div class="panel mb-4">
-        <div class="panel-header">
-            <div>
-                <h3 class="panel-title">👥 Active Users Over Time</h3>
-                <p class="panel-subtitle">Snapshots saved every 5 minutes to /activeUserSnapshots</p>
-            </div>
-            <div class="time-range-btns">
-                <button class="time-btn active" id="auRangeToday" onclick="setActiveUsersRange('today')">Today (by hour)</button>
-                <button class="time-btn" id="auRangeYesterday" onclick="setActiveUsersRange('yesterday')">Yesterday</button>
-                <button class="time-btn" id="auRangeAllTime" onclick="setActiveUsersRange('alltime')">All Time (by day)</button>
-            </div>
-        </div>
-        <canvas id="activeUsersChart" class="line-chart-canvas" height="220"></canvas>
-        <div id="activeUsersChartLegend" style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;"></div>
+     <div class="panel-header">
+      <div>
+       <h3 class="panel-title">
+        👥 Active Users Over Time
+       </h3>
+       <p class="panel-subtitle">
+        Snapshots saved every 5 minutes to /activeUserSnapshots
+       </p>
+      </div>
+      <div class="time-range-btns">
+       <button class="time-btn active" id="auRangeToday" onclick="setActiveUsersRange('today')">
+        Today (by hour)
+       </button>
+       <button class="time-btn" id="auRangeYesterday" onclick="setActiveUsersRange('yesterday')">
+        Yesterday
+       </button>
+       <button class="time-btn" id="auRangeAllTime" onclick="setActiveUsersRange('alltime')">
+        All Time (by day)
+       </button>
+      </div>
+     </div>
+     <canvas class="line-chart-canvas" height="220" id="activeUsersChart">
+     </canvas>
+     <div id="activeUsersChartLegend" style="font-size:11px;color:var(--muted);margin-top:6px;text-align:center;">
+     </div>
     </div>
-
     <div class="panel mb-4">
-        <div class="panel-header">
-            <div>
-                <h3 class="panel-title">📈 Login Trend — Last 7 Days</h3>
-                <p class="panel-subtitle">Daily total logins stored in /loginsByDay</p>
-            </div>
-        </div>
-        <div id="loginTrendChart" class="trend-chart"></div>
-        <div id="loginTrendLabels" style="display:flex;gap:4px;margin-top:4px;"></div>
-    </div>
-
-    <div class="grid grid-2 mb-4">
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">🎮 Game Plays (Top 10)</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="gamePlaysBarChart"></div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">🎬 Video Views (Top 10)</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="videoViewsBarChart"></div></div>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h3 class="panel-title">
+        📈 Login Trend — Last 7 Days
+       </h3>
+       <p class="panel-subtitle">
+        Daily total logins stored in /loginsByDay
+       </p>
+      </div>
+     </div>
+     <div class="trend-chart" id="loginTrendChart">
+     </div>
+     <div id="loginTrendLabels" style="display:flex;gap:4px;margin-top:4px;">
+     </div>
     </div>
     <div class="grid grid-2 mb-4">
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">📱 App Usage (Top 10)</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="appUsageBarChart"></div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">💕 LPC Likes Per User</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="lpcBarChart"></div></div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        🎮 Game Plays (Top 10)
+       </h3>
+      </div>
+      <div class="bar-chart-scroll">
+       <div class="bar-chart-wrap" id="gamePlaysBarChart">
+       </div>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        🎬 Video Views (Top 10)
+       </h3>
+      </div>
+      <div class="bar-chart-scroll">
+       <div class="bar-chart-wrap" id="videoViewsBarChart">
+       </div>
+      </div>
+     </div>
     </div>
     <div class="grid grid-2 mb-4">
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">💬 Chat Messages Per Room</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="chatBarChart"></div></div>
-        </div>
-        <div class="panel">
-            <div class="panel-header"><h3 class="panel-title">🔔 Notifications Per User</h3></div>
-            <div class="bar-chart-scroll"><div class="bar-chart-wrap" id="notifBarChart"></div></div>
-        </div>
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        📱 App Usage (Top 10)
+       </h3>
+      </div>
+      <div class="bar-chart-scroll">
+       <div class="bar-chart-wrap" id="appUsageBarChart">
+       </div>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        💕 LPC Likes Per User
+       </h3>
+      </div>
+      <div class="bar-chart-scroll">
+       <div class="bar-chart-wrap" id="lpcBarChart">
+       </div>
+      </div>
+     </div>
     </div>
-</div>
-
-<div id="page-tools" class="page">
+    <div class="grid grid-2 mb-4">
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        💬 Chat Messages Per Room
+       </h3>
+      </div>
+      <div class="bar-chart-scroll">
+       <div class="bar-chart-wrap" id="chatBarChart">
+       </div>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <h3 class="panel-title">
+        🔔 Notifications Per User
+       </h3>
+      </div>
+      <div class="bar-chart-scroll">
+       <div class="bar-chart-wrap" id="notifBarChart">
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <div class="page" id="page-tools">
     <div class="grid grid-2">
-        <div class="panel">
-            <div class="panel-header"><div><h3 class="panel-title">🎮 Games Manager</h3><p class="panel-subtitle">Add and manage games in /games</p></div></div>
-            <div class="input-group">
-                <input type="text" id="gameTitle" placeholder="Title"/>
-                <input type="text" id="gameIframe" placeholder="Iframe URL"/>
-                <input type="text" id="gameLogo" placeholder="Logo"/>
-                <button class="btn btn-primary" id="addGameBtn">Add</button>
-            </div>
-            <div class="table-wrap" style="max-height: 300px;">
-                <table id="gamesTable"><thead><tr><th>Title</th><th>Actions</th></tr></thead><tbody></tbody></table>
-            </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         🎮 Games Manager
+        </h3>
+        <p class="panel-subtitle">
+         Add and manage games in /games
+        </p>
+       </div>
+      </div>
+      <div class="input-group">
+       <input id="gameTitle" placeholder="Title" type="text"/>
+       <input id="gameIframe" placeholder="Iframe URL" type="text"/>
+       <input id="gameLogo" placeholder="Logo" type="text"/>
+       <button class="btn btn-primary" id="addGameBtn">
+        Add
+       </button>
+      </div>
+      <div class="table-wrap" style="max-height: 300px;">
+       <table id="gamesTable">
+        <thead>
+         <tr>
+          <th>
+           Title
+          </th>
+          <th>
+           Actions
+          </th>
+         </tr>
+        </thead>
+        <tbody>
+        </tbody>
+       </table>
+      </div>
+     </div>
+     <div class="panel">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         📥 CSV Games Import
+        </h3>
+        <p class="panel-subtitle">
+         Import games into /games from a CSV file
+        </p>
+       </div>
+       <div class="tooltip-wrap">
+        <div class="tooltip-icon">
+         ?
         </div>
-
-        <div class="panel">
-            <div class="panel-header">
-                <div>
-                    <h3 class="panel-title">📥 CSV Games Import</h3>
-                    <p class="panel-subtitle">Import games into /games from a CSV file</p>
-                </div>
-                <div class="tooltip-wrap">
-                    <div class="tooltip-icon">?</div>
-                    <div class="tooltip-box">Required CSV format:
+        <div class="tooltip-box">
+         Required CSV format:
 title,iframe,logo
 Flappy Bird,https://example.com/game,https://example.com/logo.png
 Tetris,https://example.com/tetris,
 
-• First row must be the header: <strong>title,iframe,logo</strong>
-• Each row: title, iframe URL, logo URL (logo is optional but include the comma)
+• First row must be the header:
+         <strong>
+          title,iframe,logo
+         </strong>
+         • Each row: title, iframe URL, logo URL (logo is optional but include the comma)
 • No spaces around commas unless part of the URL/Title
-• File must end in .csv</div>
-                </div>
-            </div>
-            <div class="csv-import-zone" id="csvDropZone" onclick="document.getElementById('csvFileInput').click()" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleCsvDrop(event)">
-                <div style="font-size:32px;">📂</div>
-                <p>Click to select a CSV file or drag & drop here</p>
-                <p style="font-size:11px;margin-top:6px;">Required columns: <code>title</code>, <code>iframe</code>, <code>logo</code></p>
-            </div>
-            <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleCsvFile(this.files[0])"/>
-            <div id="csvImportStatus" style="margin-top:12px;"></div>
-            <div id="csvPreviewTable" style="margin-top:12px;"></div>
+• File must end in .csv
         </div>
+       </div>
+      </div>
+      <div class="csv-import-zone" id="csvDropZone" onclick="document.getElementById('csvFileInput').click()" ondragleave="this.classList.remove('drag-over')" ondragover="event.preventDefault();this.classList.add('drag-over')" ondrop="handleCsvDrop(event)">
+       <div style="font-size:32px;">
+        📂
+       </div>
+       <p>
+        Click to select a CSV file or drag &amp; drop here
+       </p>
+       <p style="font-size:11px;margin-top:6px;">
+        Required columns:
+        <code>
+         title
+        </code>
+        ,
+        <code>
+         iframe
+        </code>
+        ,
+        <code>
+         logo
+        </code>
+       </p>
+      </div>
+      <input accept=".csv" id="csvFileInput" onchange="handleCsvFile(this.files[0])" style="display:none;" type="file"/>
+      <div id="csvImportStatus" style="margin-top:12px;">
+      </div>
+      <div id="csvPreviewTable" style="margin-top:12px;">
+      </div>
+     </div>
     </div>
-
     <div class="panel">
-        <div class="panel-header"><div><h3 class="panel-title">❓ Help Responses</h3></div></div>
-        <div class="mb-4">
-            <input type="text" id="helpTitleInput" placeholder="Title" class="mb-2"/>
-            <textarea id="helpBodyInput" placeholder="Body"></textarea>
-        </div>
-        <button class="btn btn-primary mb-4" id="addHelpBtn">Add Response</button>
-        <div class="table-wrap" style="max-height: 200px;">
-            <table id="helpTable"><thead><tr><th>Title</th><th>Actions</th></tr></thead><tbody></tbody></table>
-        </div>
+     <div class="panel-header">
+      <div>
+       <h3 class="panel-title">
+        ❓ Help Responses
+       </h3>
+      </div>
+     </div>
+     <div class="mb-4">
+      <input class="mb-2" id="helpTitleInput" placeholder="Title" type="text"/>
+      <textarea id="helpBodyInput" placeholder="Body"></textarea>
+     </div>
+     <button class="btn btn-primary mb-4" id="addHelpBtn">
+      Add Response
+     </button>
+     <div class="table-wrap" style="max-height: 200px;">
+      <table id="helpTable">
+       <thead>
+        <tr>
+         <th>
+          Title
+         </th>
+         <th>
+          Actions
+         </th>
+        </tr>
+       </thead>
+       <tbody>
+       </tbody>
+      </table>
+     </div>
     </div>
-</div>
-
-<div id="page-settings" class="page">
+   </div>
+   <div class="page" id="page-settings">
     <div class="grid grid-2">
-        <div class="panel col-span-2">
-            <div class="panel-header"><div><h3 class="panel-title">⚠️ Danger Zone</h3></div></div>
-            <div class="flex gap-2 flex-wrap">
-                <button class="btn btn-warning" onclick="clearAllFailedLogins()">Clear Failed Logins</button>
-                <button class="btn btn-warning" onclick="clearAllPending()">Clear Pending</button>
-                <button class="btn btn-danger" onclick="resetAllLogins()">Reset All Login Counts</button>
-                <button class="btn btn-danger" onclick="clearAllChat()">Clear All Chat</button>
-                <button class="btn btn-danger" onclick="clearAllLikes()">Clear All LPC Likes</button>
-            </div>
-        </div>
+     <div class="panel col-span-2">
+      <div class="panel-header">
+       <div>
+        <h3 class="panel-title">
+         ⚠️ Danger Zone
+        </h3>
+       </div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+       <button class="btn btn-warning" onclick="clearAllFailedLogins()">
+        Clear Failed Logins
+       </button>
+       <button class="btn btn-warning" onclick="clearAllPending()">
+        Clear Pending
+       </button>
+       <button class="btn btn-danger" onclick="resetAllLogins()">
+        Reset All Login Counts
+       </button>
+       <button class="btn btn-danger" onclick="clearAllChat()">
+        Clear All Chat
+       </button>
+       <button class="btn btn-danger" onclick="clearAllLikes()">
+        Clear All LPC Likes
+       </button>
+      </div>
+     </div>
     </div>
-</div>
-
-</main>
-
-<div class="modal-overlay" id="newsModal">
-    <div class="modal">
-        <div class="modal-header"><h3>Add News Post</h3><button class="modal-close" onclick="closeModal('newsModal')">✕</button></div>
-        <div class="modal-body">
-            <input type="text" id="newsTitleInput" placeholder="Date (YYYY-MM-DD)" class="mb-2"/>
-            <textarea id="newsContentInput" placeholder="Content" class="mb-2"></textarea>
-            <input type="text" id="newsAuthorInput" placeholder="Author" class="mb-4"/>
-            <button class="btn btn-primary" onclick="addNews()">Publish</button>
-        </div>
+   </div>
+  </main>
+  <div class="modal-overlay" id="newsModal">
+   <div class="modal">
+    <div class="modal-header">
+     <h3>
+      Add News Post
+     </h3>
+     <button class="modal-close" onclick="closeModal('newsModal')">
+      ✕
+     </button>
     </div>
-</div>
-<div class="modal-overlay" id="notificationModal">
-    <div class="modal">
-        <div class="modal-header"><h3>Send Notification</h3><button class="modal-close" onclick="closeModal('notificationModal')">✕</button></div>
-        <div class="modal-body">
-            <input type="text" id="notifUserInput" placeholder="To User (or 'all')" class="mb-2"/>
-            <input type="text" id="notifTitleInput" placeholder="Title" class="mb-2"/>
-            <textarea id="notifMessageInput" placeholder="Message" class="mb-4"></textarea>
-            <button class="btn btn-primary" onclick="sendNotification()">Send</button>
-        </div>
+    <div class="modal-body">
+     <input class="mb-2" id="newsTitleInput" placeholder="Date (YYYY-MM-DD)" type="text"/>
+     <textarea class="mb-2" id="newsContentInput" placeholder="Content"></textarea>
+     <input class="mb-4" id="newsAuthorInput" placeholder="Author" type="text"/>
+     <button class="btn btn-primary" onclick="addNews()">
+      Publish
+     </button>
     </div>
-</div>
-<div class="modal-overlay" id="viewPasswordModal">
-    <div class="modal">
-        <div class="modal-header"><h3 id="viewPasswordTitle">View Password</h3><button class="modal-close" onclick="closeModal('viewPasswordModal')">✕</button></div>
-        <div class="modal-body">
-            <p class="text-muted mb-2">Enter admin code to reveal:</p>
-            <input type="password" id="revealCodeInput" placeholder="Admin code" class="mb-4"/>
-            <button class="btn btn-primary" onclick="revealPassword()">Reveal</button>
-            <div id="revealedPassword" class="mt-4" style="display:none;">
-                <p class="text-muted">Value:</p>
-                <code id="revealedPasswordText" style="font-size: 18px; padding: 10px; display: block;"></code>
-            </div>
-        </div>
+   </div>
+  </div>
+  <div class="modal-overlay" id="notificationModal">
+   <div class="modal">
+    <div class="modal-header">
+     <h3>
+      Send Notification
+     </h3>
+     <button class="modal-close" onclick="closeModal('notificationModal')">
+      ✕
+     </button>
     </div>
-</div>
-
-<div class="modal-overlay" id="banUserModal">
-    <div class="modal">
-        <div class="modal-header"><h3>⛔ Issue a Ban</h3><button class="modal-close" onclick="closeModal('banUserModal')">✕</button></div>
-        <div class="modal-body">
-            <input type="text" id="banUsername" placeholder="USERNAME" class="mb-2">
-            <textarea id="banReason" placeholder="REASON" class="mb-2"></textarea>
-            
-            <label class="ban-app-label" style="font-weight:bold; color:var(--danger); margin-bottom: 8px;">
-                <input type="checkbox" id="banAllApps" onchange="toggleBanAllApps(this)">
-                🚫 All Apps (Full Launcher Ban)
-            </label>
-            
-            <div style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-top:12px;font-weight:600;">Banned From</div>
-            <div class="ban-apps-grid" id="banAppCheckboxes">
-                <label class="ban-app-label"><input type="checkbox" value="Games" class="ban-app-cb"> Games</label>
-                <label class="ban-app-label"><input type="checkbox" value="Members" class="ban-app-cb"> Members</label>
-                <label class="ban-app-label"><input type="checkbox" value="Apply Staff" class="ban-app-cb"> Apply Staff</label>
-                <label class="ban-app-label"><input type="checkbox" value="Help" class="ban-app-cb"> Help</label>
-                <label class="ban-app-label"><input type="checkbox" value="Home" class="ban-app-cb"> Home</label>
-                <label class="ban-app-label"><input type="checkbox" value="Browser" class="ban-app-cb"> Browser</label>
-                <label class="ban-app-label"><input type="checkbox" value="Developer" class="ban-app-cb"> Developer</label>
-                <label class="ban-app-label"><input type="checkbox" value="DVD Logo" class="ban-app-cb"> DVD Logo</label>
-                <label class="ban-app-label"><input type="checkbox" value="Calculator" class="ban-app-cb"> Calculator</label>
-                <label class="ban-app-label"><input type="checkbox" value="TACTube" class="ban-app-cb"> TACTube</label>
-                <label class="ban-app-label"><input type="checkbox" value="Memes" class="ban-app-cb"> Memes</label>
-                <label class="ban-app-label"><input type="checkbox" value="Chat" class="ban-app-cb"> Chat</label>
-                <label class="ban-app-label"><input type="checkbox" value="Clock" class="ban-app-cb"> Clock</label>
-                <label class="ban-app-label"><input type="checkbox" value="Notes" class="ban-app-cb"> Notes</label>
-                <label class="ban-app-label"><input type="checkbox" value="To-Do" class="ban-app-cb"> To-Do</label>
-                <label class="ban-app-label"><input type="checkbox" value="Leak Crush" class="ban-app-cb"> Leak Crush</label>
-                <label class="ban-app-label"><input type="checkbox" value="Spacebar Clicker" class="ban-app-cb"> Spacebar Clicker</label>
-                <label class="ban-app-label"><input type="checkbox" value="Forum" class="ban-app-cb"> Forum</label>
-                <label class="ban-app-label"><input type="checkbox" value="Casino" class="ban-app-cb"> Casino</label>
-                <label class="ban-app-label"><input type="checkbox" value="News" class="ban-app-cb"> News</label>
-                <label class="ban-app-label"><input type="checkbox" value="Loftis Button" class="ban-app-cb"> Loftis Button</label>
-                <label class="ban-app-label"><input type="checkbox" value="Phone" class="ban-app-cb"> Phone</label>
-                <label class="ban-app-label"><input type="checkbox" value="Draw" class="ban-app-cb"> Draw</label>
-                <label class="ban-app-label"><input type="checkbox" value="Theme" class="ban-app-cb"> Theme</label>
-            </div>
-            
-            <button class="btn btn-danger" style="margin-top:16px; width:100%; justify-content:center;" onclick="confirmBanUser()">Issue Ban</button>
-        </div>
+    <div class="modal-body">
+     <input class="mb-2" id="notifUserInput" placeholder="To User (or 'all')" type="text"/>
+     <input class="mb-2" id="notifTitleInput" placeholder="Title" type="text"/>
+     <textarea class="mb-4" id="notifMessageInput" placeholder="Message"></textarea>
+     <button class="btn btn-primary" onclick="sendNotification()">
+      Send
+     </button>
     </div>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script>
-    const firebaseConfig = {
+   </div>
+  </div>
+  <div class="modal-overlay" id="viewPasswordModal">
+   <div class="modal">
+    <div class="modal-header">
+     <h3 id="viewPasswordTitle">
+      View Password
+     </h3>
+     <button class="modal-close" onclick="closeModal('viewPasswordModal')">
+      ✕
+     </button>
+    </div>
+    <div class="modal-body">
+     <p class="text-muted mb-2">
+      Enter admin code to reveal:
+     </p>
+     <input class="mb-4" id="revealCodeInput" placeholder="Admin code" type="password"/>
+     <button class="btn btn-primary" onclick="revealPassword()">
+      Reveal
+     </button>
+     <div class="mt-4" id="revealedPassword" style="display:none;">
+      <p class="text-muted">
+       Value:
+      </p>
+      <code id="revealedPasswordText" style="font-size: 18px; padding: 10px; display: block;">
+      </code>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="modal-overlay" id="banUserModal">
+   <div class="modal">
+    <div class="modal-header">
+     <h3>
+      ⛔ Issue a Ban
+     </h3>
+     <button class="modal-close" onclick="closeModal('banUserModal')">
+      ✕
+     </button>
+    </div>
+    <div class="modal-body">
+     <input class="mb-2" id="banUsername" placeholder="USERNAME" type="text"/>
+     <textarea class="mb-2" id="banReason" placeholder="REASON"></textarea>
+     <label class="ban-app-label" style="font-weight:bold; color:var(--danger); margin-bottom: 8px;">
+      <input id="banAllApps" onchange="toggleBanAllApps(this)" type="checkbox"/>
+      🚫 All Apps (Full Launcher Ban)
+     </label>
+     <div style="font-size:11px;color:var(--muted);text-transform:uppercase;margin-top:12px;font-weight:600;">
+      Banned From
+     </div>
+     <div class="ban-apps-grid" id="banAppCheckboxes">
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Games"/>
+       Games
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Members"/>
+       Members
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Apply Staff"/>
+       Apply Staff
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Help"/>
+       Help
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Home"/>
+       Home
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Browser"/>
+       Browser
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Developer"/>
+       Developer
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="DVD Logo"/>
+       DVD Logo
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Calculator"/>
+       Calculator
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="TACTube"/>
+       TACTube
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Memes"/>
+       Memes
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Chat"/>
+       Chat
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Clock"/>
+       Clock
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Notes"/>
+       Notes
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="To-Do"/>
+       To-Do
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Leak Crush"/>
+       Leak Crush
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Spacebar Clicker"/>
+       Spacebar Clicker
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Forum"/>
+       Forum
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Casino"/>
+       Casino
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="News"/>
+       News
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Loftis Button"/>
+       Loftis Button
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Phone"/>
+       Phone
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Draw"/>
+       Draw
+      </label>
+      <label class="ban-app-label">
+       <input class="ban-app-cb" type="checkbox" value="Theme"/>
+       Theme
+      </label>
+     </div>
+     <button class="btn btn-danger" onclick="confirmBanUser()" style="margin-top:16px; width:100%; justify-content:center;">
+      Issue Ban
+     </button>
+    </div>
+   </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+  </script>
+  <script>
+   const firebaseConfig = {
         apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
         authDomain: "taclogin-ab38e.firebaseapp.com",
         databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
@@ -2522,13 +3545,26 @@ Tetris,https://example.com/tetris,
         const chartsPageActive = document.getElementById('page-charts').classList.contains('active');
         if (chartsPageActive) renderActiveUsersChart();
     });
-</script>
-<script src="guard.js"></script>
-<script src="custom-cursor.js"></script>
-<script src="rightclick.js"></script>
-<script src="panic-key.js"></script>
-<script src="idle-dvd.js"></script>
-<script src="timeTracker.js"></script>
-<script type="module" src="online.js"></script>
+  </script>
+  <script src="guard.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
 </body>
 </html>

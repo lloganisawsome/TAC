@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-
 <html lang="en">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<style type="text/css">
-html {height: 100%;}
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <style type="text/css">
+   html {height: 100%;}
 body {
       background-color: #1d1d1d;
       text-align: center;
@@ -36,27 +34,25 @@ p {
 	width: 600px;
 	margin-left: -260px
 }
-</style>
-
-<title>Five Nights at Freddy's 4</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico" />
-
-	<script>
-	   	// Detection of old browsers that do not support the canvas element
+  </style>
+  <title>
+   Five Nights at Freddy's 4
+  </title>
+  <link href="favicon.ico" rel="icon" type="image/x-icon">
+   <script>
+    // Detection of old browsers that do not support the canvas element
 		// Falls back to a default page
 	    if (!document.createElement("canvas").getContext)
 	    {
 			window.open("http://www.clickteam.com/html5-fallback", "_self");
 		}
-	</script>
-	
-  	<!-- EXTRASOURCES -->
-	<!-- Loads the Javascript code...-->
-  	<script src="src/Runtime.js"></script>
-  	
-  <script>
-
-	// Detects if the html file is ran locally.
+   </script>
+   <!-- EXTRASOURCES -->
+   <!-- Loads the Javascript code...-->
+   <script src="src/Runtime.js">
+   </script>
+   <script>
+    // Detects if the html file is ran locally.
 	// You can remove this code for the final version
 	if (window.location.protocol == "file:")
 	{
@@ -69,20 +65,20 @@ p {
 		document.write('</div>');
 		throw new error("Cannot run application");
 	}
+   </script>
+  </link>
+  <script src="app-presence.js">
   </script>
-</head>
-
-<!-- This is where we create the Canvas element that will contain the application...-->
-<body>
-    <div
-      style="display: inline-block; -webkit-user-select: none; text-align: left"
-    >
-      <canvas id="MMFCanvas" width="1024" height="768">
-        Your browser does not support Canvas.
-      </canvas>
-    </div>
-    <script>
-        // RUNTIMESTART
+ </head>
+ <!-- This is where we create the Canvas element that will contain the application...-->
+ <body>
+  <div style="display: inline-block; -webkit-user-select: none; text-align: left">
+   <canvas height="768" id="MMFCanvas" width="1024">
+    Your browser does not support Canvas.
+   </canvas>
+  </div>
+  <script>
+   // RUNTIMESTART
         // This is where the HTML5 runtime is actually started
 	    window.addEventListener("load", windowLoaded, false);
 	    function windowLoaded()
@@ -93,13 +89,16 @@ p {
 		    new Runtime("MMFCanvas", "resources/fnaf 4.cch");
 	    }
         // RUNTIMESTARTEND
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

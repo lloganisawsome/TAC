@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>10 Minutes Till Dawn</title>
-    <script src="Build/UnityLoader.js"></script>
-    <link rel="icon" href="icon.png">
-    <script>
-      var gameInstance = UnityLoader.instantiate("gameContainer", "Build/10MinutesTillDawnWebGL.json");
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   10 Minutes Till Dawn
+  </title>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <link href="icon.png" rel="icon"/>
+  <script>
+   var gameInstance = UnityLoader.instantiate("gameContainer", "Build/10MinutesTillDawnWebGL.json");
       var scaleToFit;
       try {
         scaleToFit = !!JSON.parse("");
@@ -44,9 +47,9 @@
         container.style.left = Math.floor((window.innerWidth - w) / 2) + "px";
       }
       window.addEventListener("resize", onResize);
-    </script>
-    <style>
-      html,
+  </script>
+  <style>
+   html,
       body {
         background: #000;
         background: ;
@@ -77,17 +80,22 @@
         image-rendering: pixelated;
         -ms-interpolation-mode: nearest-neighbor;
       }
-    </style>
-  </head>
-
-  <body onload="onResize();">
-    <div id="gameContainer" data-pixelated="true"></div>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body onload="onResize();">
+  <div data-pixelated="true" id="gameContainer">
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

@@ -1,23 +1,20 @@
 <html>
-
-<!-- Ultimate Game Stash file--> 
-<!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
-
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <script>
-      window.gameconfig = {
+ <!-- Ultimate Game Stash file-->
+ <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <script>
+   window.gameconfig = {
         name: "Cooking Mama 3 - Shop & Chop (USA)",
         url: "https://cdn.jsdelivr.net/gh/bubbls/ugss@1cae41a76b11b998223f997d7f0d98137f76cfa5/Cooking%20Mama%203%20-%20Shop%20%26%20Chop%20(USA)%20(1)/Cooking%20Mama%203%20-%20Shop%20%26%20Chop%20(USA).nds",
         core: "nds",
         min: 1,
         max: 4,
       };
-    </script>
-    <script>
-      function mergeFiles(fileParts, cb) {
+  </script>
+  <script>
+   function mergeFiles(fileParts, cb) {
         return new Promise((resolve, reject) => {
           let buffers = [];
           function fetchPart(index) {
@@ -46,9 +43,9 @@
         }
         return parts;
       }
-    </script>
-    <style>
-      body,
+  </script>
+  <style>
+   body,
       html {
         margin: 0;
         padding: 0;
@@ -74,16 +71,23 @@
         border-radius: 8px;
         display: inline-block;
       }
-    </style>
-  </head>
-  <body>
-    <div id="game-container">
-      <div id="game"></div>
-      <div id="loading-progress">Loading: 0/0</div>
-      <div id="first-time">First-time loading may take longer...</div>
-    </div>
-    <script>
-      var parts = getParts(
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="game-container">
+   <div id="game">
+   </div>
+   <div id="loading-progress">
+    Loading: 0/0
+   </div>
+   <div id="first-time">
+    First-time loading may take longer...
+   </div>
+  </div>
+  <script>
+   var parts = getParts(
         window.gameconfig.url,
         window.gameconfig.min,
         window.gameconfig.max
@@ -120,13 +124,16 @@
           document.getElementById("loading-progress").textContent =
             "Error loading game.";
         });
-    </script>
-      <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-</html> 
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
+</html>

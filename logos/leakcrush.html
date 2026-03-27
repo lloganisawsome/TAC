@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Leak People's Crush!</title>
-<style>
-:root{
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+  <title>
+   Leak People's Crush!
+  </title>
+  <style>
+   :root{
   --bg:#000; --neon:#0f0; font-family: monospace;
 }
 body{
@@ -40,52 +42,77 @@ button:hover{background:rgba(0,255,102,0.06);}
 #keyIcon{
   position:fixed; bottom:10px; left:10px; font-size:24px; cursor:pointer; user-select:none;
 }
-</style>
-</head>
-<body>
-
-<div class="wrap">
-  <header>
-    <h1>Leak People's Crush!</h1>
-    <a href="index.html"><button>Home</button></a>
-  </header>
-  <div class="controls">
-    <button id="openBtn">Add Entry</button>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="wrap">
+   <header>
+    <h1>
+     Leak People's Crush!
+    </h1>
+    <a href="index.html">
+     <button>
+      Home
+     </button>
+    </a>
+   </header>
+   <div class="controls">
+    <button id="openBtn">
+     Add Entry
+    </button>
+   </div>
+   <div id="list">
+    Loading...
+   </div>
   </div>
-  <div id="list">Loading...</div>
-</div>
-
-<!-- Add Entry Modal -->
-<div id="modal" class="modal">
-  <div class="modal-card">
-    <h2>Add Entry</h2>
-    <input id="from" placeholder="Who likes..." maxlength="40"/>
-    <input id="to" placeholder="Who is liked..." maxlength="40"/>
+  <!-- Add Entry Modal -->
+  <div class="modal" id="modal">
+   <div class="modal-card">
+    <h2>
+     Add Entry
+    </h2>
+    <input id="from" maxlength="40" placeholder="Who likes..."/>
+    <input id="to" maxlength="40" placeholder="Who is liked..."/>
     <div class="row">
-      <button id="submitBtn">Submit</button>
-      <button id="cancelBtn">Cancel</button>
+     <button id="submitBtn">
+      Submit
+     </button>
+     <button id="cancelBtn">
+      Cancel
+     </button>
     </div>
+   </div>
   </div>
-</div>
-
-<!-- Dev Modal -->
-<div id="devModal" class="modal">
-  <div class="modal-card">
-    <h2>Dev Menu</h2>
+  <!-- Dev Modal -->
+  <div class="modal" id="devModal">
+   <div class="modal-card">
+    <h2>
+     Dev Menu
+    </h2>
     <div class="row">
-      <button id="pauseAdds">Pause Adds</button>
-      <button id="resumeAdds">Resume Adds</button>
-      <button id="deleteAll">Delete All Entries</button>
-      <button id="closeDev">Close</button>
+     <button id="pauseAdds">
+      Pause Adds
+     </button>
+     <button id="resumeAdds">
+      Resume Adds
+     </button>
+     <button id="deleteAll">
+      Delete All Entries
+     </button>
+     <button id="closeDev">
+      Close
+     </button>
     </div>
+   </div>
   </div>
-</div>
-
-<!-- Key icon -->
-<div id="keyIcon">🔑</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  <!-- Key icon -->
+  <div id="keyIcon">
+   🔑
+  </div>
+  <script type="module">
+   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
 import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
 // Firebase config
@@ -176,13 +203,16 @@ keyIcon.addEventListener('click', ()=>{
   if(pw === "developer") devModal.classList.add('open');
   else alert("Wrong password");
 });
-</script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

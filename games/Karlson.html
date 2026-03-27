@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-	<base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/karlson/">
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Unity WebGL Player | Karlson</title>
-  <script src="Build/UnityLoader.js"></script>
-  		<style>
-			* {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/genizy/web-port@main/karlson/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity WebGL Player | Karlson
+  </title>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <style>
+   * {
 				margin: 0;
 				padding: 0;
 				border: 0;
@@ -28,10 +31,11 @@
 				width: 100%;
 				height: 100%;
 			}
-		</style>
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js">
+  </script>
   <script>
-    			function resizeUnityContainer() {
+   function resizeUnityContainer() {
 				var container = document.getElementById("unityContainer");
 				container.style.width = window.innerWidth + "px";
 				container.style.height = window.innerHeight + "px";
@@ -90,27 +94,30 @@ async function startUnity() {
 
 window.addEventListener("load", startUnity);
   </script>
-</head>
-<body>
-  <div
-    id="loading-text"
-    style="
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="loading-text" style="
       color: white;
       font-size: 48px;
       font-family: cursive;
       text-align: center;
       margin-top: 20px;
-    "
-  >
-    LOADING...
+    ">
+   LOADING...
   </div>
-  <div id="unityContainer" style="width: 960px; height: 600px; margin: auto"></div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  <div id="unityContainer" style="width: 960px; height: 600px; margin: auto">
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

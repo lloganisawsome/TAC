@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<script src="guard.js"></script>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAC - Theme Settings</title>
-
-<script>
-(function(){
+ <head>
+  <script src="guard.js">
+  </script>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC - Theme Settings
+  </title>
+  <script>
+   (function(){
   try {
     if (window.top === window.self) {
       window.location.replace('https://www.google.com/');
@@ -18,10 +20,9 @@
     window.location.replace('https://www.google.com/');
   }
 })();
-</script>
-
-<style>
-:root {
+  </script>
+  <style>
+   :root {
     --bg: #0a0a0b;
     --panel: #111113;
     --panel-hover: #1a1a1c;
@@ -244,79 +245,105 @@ input:checked + .slider:before { transform: translateX(20px); background-color: 
     .main-content { margin-left: 24px; }
     .sidebar, .toggle-btn { display: none; }
 }
-</style>
-</head>
-<body>
-
-<div id="custom-cursor"></div>
-
-<aside class="sidebar" id="sidebar">
-    <div class="logo-container">
-        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="custom-cursor">
+  </div>
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
+    <a class="nav-item" href="index.html">
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
+    </a>
+   </nav>
+  </aside>
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <main class="main-content" id="mainContent">
+   <div class="header">
+    <h1>
+     Appearance
+    </h1>
+    <p style="color: var(--muted)">
+     Personalize your TAC experience
+    </p>
+   </div>
+   <div class="panel">
+    <h2 style="font-size: 18px; margin-bottom: 16px;">
+     System Modes
+    </h2>
+    <div class="setting-row" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+     <div>
+      <span style="font-weight: 600;">
+       Clicky Mode
+      </span>
+      <p style="color: var(--muted); font-size: 11px;">
+       Use the original TAC cursor!
+      </p>
+     </div>
+     <label class="switch">
+      <input id="clickyToggle" type="checkbox"/>
+      <span class="slider">
+      </span>
+     </label>
     </div>
-    <nav class="nav-items">
-        <a href="index.html" class="nav-item">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-            <span>Home</span>
-        </a>
-    </nav>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="15 18 9 12 15 6"/>
-    </svg>
-</button>
-
-<main class="main-content" id="mainContent">
-    <div class="header">
-        <h1>Appearance</h1>
-        <p style="color: var(--muted)">Personalize your TAC experience</p>
+    <div class="setting-row" style="padding-top: 16px;">
+     <div>
+      <span style="font-weight: 600;">
+       Loftis Mode
+      </span>
+      <p style="color: var(--muted); font-size: 11px;">
+       For the memes hehe
+      </p>
+     </div>
+     <label class="switch">
+      <input id="loftisToggle" type="checkbox"/>
+      <span class="slider">
+      </span>
+     </label>
     </div>
-
-    <div class="panel">
-        <h2 style="font-size: 18px; margin-bottom: 16px;">System Modes</h2>
-        
-        <div class="setting-row" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
-            <div>
-                <span style="font-weight: 600;">Clicky Mode</span>
-                <p style="color: var(--muted); font-size: 11px;">Use the original TAC cursor!</p>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="clickyToggle">
-                <span class="slider"></span>
-            </label>
-        </div>
-
-        <div class="setting-row" style="padding-top: 16px;">
-            <div>
-                <span style="font-weight: 600;">Loftis Mode</span>
-                <p style="color: var(--muted); font-size: 11px;">For the memes hehe</p>
-            </div>
-            <label class="switch">
-                <input type="checkbox" id="loftisToggle">
-                <span class="slider"></span>
-            </label>
-        </div>
+   </div>
+   <div class="panel">
+    <h2 style="font-size: 18px; margin-bottom: 8px;">
+     Interface Color
+    </h2>
+    <p style="color: var(--muted); font-size: 13px; margin-bottom: 16px;">
+     Select a theme color to update the sidebar, icons, and highlights.
+    </p>
+    <div class="theme-grid" id="themeGrid">
     </div>
-
-    <div class="panel">
-        <h2 style="font-size: 18px; margin-bottom: 8px;">Interface Color</h2>
-        <p style="color: var(--muted); font-size: 13px; margin-bottom: 16px;">Select a theme color to update the sidebar, icons, and highlights.</p>
-        <div class="theme-grid" id="themeGrid"></div>
+   </div>
+   <div class="panel">
+    <h2 style="font-size: 18px; margin-bottom: 8px;">
+     Live Preview
+    </h2>
+    <div class="preview-box">
+     <p style="color: var(--accent)">
+      This is how your accent text will look.
+     </p>
+     <button class="btn-preview clickable">
+      Action Button
+     </button>
     </div>
-
-    <div class="panel">
-        <h2 style="font-size: 18px; margin-bottom: 8px;">Live Preview</h2>
-        <div class="preview-box">
-            <p style="color: var(--accent)">This is how your accent text will look.</p>
-            <button class="btn-preview clickable">Action Button</button>
-        </div>
-    </div>
-</main>
-
-<script>
-/* --- THEME LOGIC --- */
+   </div>
+  </main>
+  <script>
+   /* --- THEME LOGIC --- */
 const themeColors = {
     red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
     green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
@@ -445,34 +472,49 @@ window.addEventListener('storage', (e) => {
         document.body.classList.toggle('loftis-mode', active);
     }
 });
-</script>
-
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="timeTracker.js"></script>
-
-
-
-<script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+  <div id="tac-phone-container">
+  </div>
+  <script>
+   fetch('phone-widget.html')
         .then(r => r.text())
         .then(html => {
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
 
+
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
+
 </body>
-</html>="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="timeTracker.js"></script>
+</html>="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ 
+<iframe src="popup.html" 
+        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        allowtransparency="true">
+</iframe>
 
-
-
-<script type="module" src="online.js"></script>
 </body>
 </html>

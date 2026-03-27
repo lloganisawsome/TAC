@@ -1,20 +1,20 @@
-<!-- Ultimate Game Stash file--> 
+<!-- Ultimate Game Stash file-->
 <!-- For the regularly updating doc go to https://docs.google.com/document/d/1_FmH3BlSBQI7FGgAQL59-ZPe8eCxs35wel6JUyVaG8Q/ -->
-
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@51462750d29b68ac1e33887c1bf13d9c478d5ead/198/">
-    <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | Slope Plus</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
-    <style>
-        html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <base href="https://cdn.jsdelivr.net/gh/gn-math/assets@51462750d29b68ac1e33887c1bf13d9c478d5ead/198/"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Unity WebGL Player | Slope Plus
+  </title>
+  <link href="TemplateData/favicon.ico" rel="shortcut icon"/>
+  <link href="TemplateData/style.css" rel="stylesheet"/>
+  <style>
+   html,
         body {
             margin: 0;
             padding: 0;
@@ -30,11 +30,13 @@
             top: 0;
             left: 0;
         }
-    </style>
-    <script src="TemplateData/UnityProgress.js"></script>
-    <script src="Build/UnityLoader.js"></script>
-    <script>
-        function mergeFiles(fileParts) {
+  </style>
+  <script src="TemplateData/UnityProgress.js">
+  </script>
+  <script src="Build/UnityLoader.js">
+  </script>
+  <script>
+   function mergeFiles(fileParts) {
             return new Promise((resolve, reject) => {
                 let buffers = [];
 
@@ -104,20 +106,24 @@
                 });
             });
         };
-    </script>
-</head>
-
-<body>
-    <div class="webgl-content">
-        <div id="gameContainer"></div>
-    </div>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
-
+  </script>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="webgl-content">
+   <div id="gameContainer">
+   </div>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

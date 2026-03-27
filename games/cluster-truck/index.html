@@ -1,17 +1,22 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-us">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<meta charset="utf-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>Cluster Truck</title>
-<!--<link rel="canonical" href="https://kbhgames.com/game/cluster-truck-online"/>-->
-</head>
-<body style="margin:0px;">
-<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="width: 100vw; height: 100vh;"></canvas>
-<script type='text/javascript'>
-  var Module = {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+  <title>
+   Cluster Truck
+  </title>
+  <!--<link rel="canonical" href="https://kbhgames.com/game/cluster-truck-online"/>-->
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body style="margin:0px;">
+  <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" style="width: 100vw; height: 100vh;">
+  </canvas>
+  <script type="text/javascript">
+   var Module = {
     TOTAL_MEMORY: 268435456,
     errorhandler: null,			// arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
     compatibilitycheck: null,
@@ -22,14 +27,18 @@
     asmUrl: "Release/NG.asm.js",
     memUrl: "Release/NG.mem",
   };
-</script>
-<script src="Release/UnityLoader.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="Release/UnityLoader.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

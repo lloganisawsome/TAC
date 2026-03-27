@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DNA to RNA and Amino Acids</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="icon" type="image/x-icon" href="https://nintendoboi22.github.io/favicon.jpg">
-    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet">
-    <style>
-        * {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   DNA to RNA and Amino Acids
+  </title>
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://nintendoboi22.github.io/favicon.jpg" rel="icon" type="image/x-icon"/>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&amp;display=swap" rel="stylesheet"/>
+  <style>
+   * {
             box-sizing: border-box;
         }
 
@@ -324,68 +326,97 @@
                 grid-template-columns: 1fr;
             }
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🧬 DNA Converter</h1>
-        <p class="subtitle">Convert DNA sequences to mRNA, tRNA, and amino acids</p>
-
-        <div class="input-section">
-            <label for="dna-sequence"><strong>Enter DNA Sequence:</strong></label>
-            <textarea id="dna-sequence" rows="4" placeholder="Enter DNA sequence (A, T, C, G only)&#10;Example: ATGCGATACGCTTGA"></textarea>
-            <div>
-                <button onclick="convertDNA()" class="cool-button">Convert</button>
-                <button onclick="clearAll()" class="cool-button secondary">Clear</button>
-            </div>
-        </div>
-
-        <div class="toggle-section">
-            <h3>Display Options</h3>
-            <div class="toggle-group">
-                <div class="toggle-item">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-mrna" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <label for="toggle-mrna">Show mRNA</label>
-                </div>
-                <div class="toggle-item">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-trna" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <label for="toggle-trna">Show tRNA</label>
-                </div>
-                <div class="toggle-item">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-amino" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <label for="toggle-amino">Show Amino Acids</label>
-                </div>
-                <div class="toggle-item">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-codons">
-                        <span class="slider"></span>
-                    </label>
-                    <label for="toggle-codons">Group by Codons</label>
-                </div>
-                <div class="toggle-item">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="toggle-stats" checked>
-                        <span class="slider"></span>
-                    </label>
-                    <label for="toggle-stats">Show Statistics</label>
-                </div>
-            </div>
-        </div>
-
-        <div id="results-container"></div>
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="container">
+   <h1>
+    🧬 DNA Converter
+   </h1>
+   <p class="subtitle">
+    Convert DNA sequences to mRNA, tRNA, and amino acids
+   </p>
+   <div class="input-section">
+    <label for="dna-sequence">
+     <strong>
+      Enter DNA Sequence:
+     </strong>
+    </label>
+    <textarea id="dna-sequence" placeholder="Enter DNA sequence (A, T, C, G only)
+Example: ATGCGATACGCTTGA" rows="4"></textarea>
+    <div>
+     <button class="cool-button" onclick="convertDNA()">
+      Convert
+     </button>
+     <button class="cool-button secondary" onclick="clearAll()">
+      Clear
+     </button>
     </div>
-
-    <script>
-        const codonTable = {
+   </div>
+   <div class="toggle-section">
+    <h3>
+     Display Options
+    </h3>
+    <div class="toggle-group">
+     <div class="toggle-item">
+      <label class="toggle-switch">
+       <input checked="" id="toggle-mrna" type="checkbox"/>
+       <span class="slider">
+       </span>
+      </label>
+      <label for="toggle-mrna">
+       Show mRNA
+      </label>
+     </div>
+     <div class="toggle-item">
+      <label class="toggle-switch">
+       <input checked="" id="toggle-trna" type="checkbox"/>
+       <span class="slider">
+       </span>
+      </label>
+      <label for="toggle-trna">
+       Show tRNA
+      </label>
+     </div>
+     <div class="toggle-item">
+      <label class="toggle-switch">
+       <input checked="" id="toggle-amino" type="checkbox"/>
+       <span class="slider">
+       </span>
+      </label>
+      <label for="toggle-amino">
+       Show Amino Acids
+      </label>
+     </div>
+     <div class="toggle-item">
+      <label class="toggle-switch">
+       <input id="toggle-codons" type="checkbox"/>
+       <span class="slider">
+       </span>
+      </label>
+      <label for="toggle-codons">
+       Group by Codons
+      </label>
+     </div>
+     <div class="toggle-item">
+      <label class="toggle-switch">
+       <input checked="" id="toggle-stats" type="checkbox"/>
+       <span class="slider">
+       </span>
+      </label>
+      <label for="toggle-stats">
+       Show Statistics
+      </label>
+     </div>
+    </div>
+   </div>
+   <div id="results-container">
+   </div>
+  </div>
+  <script>
+   const codonTable = {
             'AUG': 'M (Methionine - Start)', 'UUU': 'F (Phenylalanine)', 'UUC': 'F (Phenylalanine)',
             'UUA': 'L (Leucine)', 'UUG': 'L (Leucine)', 'UCU': 'S (Serine)', 'UCC': 'S (Serine)',
             'UCA': 'S (Serine)', 'UCG': 'S (Serine)', 'UAU': 'Y (Tyrosine)', 'UAC': 'Y (Tyrosine)',
@@ -568,13 +599,16 @@
                 }
             });
         });
-    </script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

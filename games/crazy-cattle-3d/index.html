@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0"
-    />
-    <title>CrazyCattle3D</title>
-    <style>
-      html,
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, user-scalable=no, initial-scale=1.0" name="viewport"/>
+  <title>
+   CrazyCattle3D
+  </title>
+  <style>
+   html,
       body,
       #canvas {
         margin: 0;
@@ -100,35 +99,33 @@
         text-align: center;
         z-index: 1;
       }
-    </style>
-    <link
-      id="-gd-engine-icon"
-      rel="icon"
-      type="image/png"
-      href="CrazyCattle3D.icon.png"
-    />
-    <link rel="apple-touch-icon" href="CrazyCattle3D.apple-touch-icon.png" />
-    <link rel="manifest" href="CrazyCattle3D.manifest.json" />
-  </head>
-  <body>
-    <canvas id="canvas"> Your browser does not support the canvas tag. </canvas>
-
-    <noscript> Your browser does not support JavaScript. </noscript>
-
-    <div id="status">
-      <img
-        id="status-splash"
-        class="show-image--true fullsize--true use-filter--true"
-        src="CrazyCattle3D.png"
-        alt=""
-      />
-      <progress id="status-progress"></progress>
-      <div id="status-notice"></div>
-    </div>
-
-    <script src="CrazyCattle3D.js" type="ecbf153156c43198d07198f7-text/javascript"></script>
-    <script type="ecbf153156c43198d07198f7-text/javascript">
-      const GODOT_CONFIG = {
+  </style>
+  <link href="CrazyCattle3D.icon.png" id="-gd-engine-icon" rel="icon" type="image/png">
+   <link href="CrazyCattle3D.apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="CrazyCattle3D.manifest.json" rel="manifest"/>
+   </link>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <canvas id="canvas">
+   Your browser does not support the canvas tag.
+  </canvas>
+  <noscript>
+   Your browser does not support JavaScript.
+  </noscript>
+  <div id="status">
+   <img alt="" class="show-image--true fullsize--true use-filter--true" id="status-splash" src="CrazyCattle3D.png"/>
+   <progress id="status-progress">
+   </progress>
+   <div id="status-notice">
+   </div>
+  </div>
+  <script src="CrazyCattle3D.js" type="ecbf153156c43198d07198f7-text/javascript">
+  </script>
+  <script type="ecbf153156c43198d07198f7-text/javascript">
+   const GODOT_CONFIG = {
         args: [],
         canvasResizePolicy: 2,
         ensureCrossOriginIsolationHeaders: false,
@@ -260,14 +257,20 @@
             }, displayFailureNotice);
         }
       })();
-    </script>
-  <script src="rocket-loader.min.js" data-cf-settings="ecbf153156c43198d07198f7-|49" defer></script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"933fd7037b014288","version":"2025.4.0-1-g37f21b1","r":1,"token":"54bb1b95f13b4d299cf174564c6af2d5","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' crossorigin="anonymous"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
-
-
-<script type="module" src="online.js"></script>
-</body>
+  </script>
+  <script data-cf-settings="ecbf153156c43198d07198f7-|49" defer="" src="rocket-loader.min.js">
+  </script>
+  <script crossorigin="anonymous" data-cf-beacon='{"rayId":"933fd7037b014288","version":"2025.4.0-1-g37f21b1","r":1,"token":"54bb1b95f13b4d299cf174564c6af2d5","serverTiming":{"name":{"cfExtPri":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}}}' defer="" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  <script src="online.js" type="module">
+  </script>
+ </body>
 </html>

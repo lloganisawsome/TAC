@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-    <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
-    <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
-    <meta property="og:image" content="moto-x3m.png" />
-    <title>Moto X3M</title>
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <meta content="ie=edge" http-equiv="x-ua-compatible"/>
+  <meta content="initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" name="viewport">
+   <link href="assets/css/app.css" rel="stylesheet" type="text/css">
+    <meta content="moto-x3m.png" property="og:image"/>
+    <title>
+     Moto X3M
+    </title>
     <script type="text/javascript">
-        var useEvents = (typeof(Event) === 'function');
+     var useEvents = (typeof(Event) === 'function');
 
         var myDispatchEvent = function (name){
             var event;
@@ -52,18 +53,24 @@
             firstJS.parentNode.insertBefore(fgJS, firstJS);
             })(document, 'js/start.js?e=');
     </script>
-</head>
-
-<body>
-    <div id="content"></div>
-    <div id="orientation"></div>
-    <div id="loader">Loading ...</div>
-    <script src="js/analytics_ubg_v1_4.js"></script>
-    <script src="js/ubg235_client_v1_1.js"></script>
+   </link>
+  </meta>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div id="content">
+  </div>
+  <div id="orientation">
+  </div>
+  <div id="loader">
+   Loading ...
+  </div>
+  <script src="js/analytics_ubg_v1_4.js">
+  </script>
+  <script src="js/ubg235_client_v1_1.js">
+  </script>
+ </body>
 </html>
-
-
-
-
-
-<script type="module" src="online.js"></script>
+<script src="online.js" type="module">
+</script>
