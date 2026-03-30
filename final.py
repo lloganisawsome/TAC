@@ -3,11 +3,11 @@ import os
 # Text to remove if it exists from previous attempts
 BAD_TEXT = "How to embed popup.html on every page"
 
-# Clean Iframe to add
+# Clean Iframe to add (Positioned Top Right)
 WIDGET_IFRAME = """
 <iframe src="popup.html" 
         sandbox="allow-scripts allow-same-origin"
-        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        style="position:fixed; top:16px; right:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
         allowtransparency="true">
 </iframe>
 """

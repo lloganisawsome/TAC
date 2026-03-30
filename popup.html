@@ -26,9 +26,9 @@ html, body {
 /* ── FULL & TITLE states: normal widget ── */
 .widget {
     position: fixed;
-    bottom: 0;
-    left: 0;
+    top: 0;
     right: 0;
+    left: 0;
     max-width: 320px;
     background: var(--panel);
     border: 1px solid var(--accent);
@@ -56,8 +56,8 @@ html, body {
 .icon-btn {
     display: none;
     position: fixed;
-    bottom: 0;
-    left: 0;
+    top: 0;
+    right: 0;
     width: 40px;
     height: 40px;
     background: var(--panel);
@@ -91,6 +91,7 @@ body.state-icon .widget { display: none; }
     overflow: hidden;
     text-overflow: ellipsis;
     color: var(--accent);
+    text-align: left; /* Aligns text left next to the minimize button */
 }
 
 .minimize-btn {
@@ -231,7 +232,6 @@ body.state-icon .widget { display: none; }
 
 <audio id="audio"></audio>
 
-<!-- Icon-only button (state 2 = fully minimised) -->
 <button class="icon-btn" id="iconBtn" title="Expand">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="18 15 12 9 6 15"></polyline>
@@ -240,14 +240,14 @@ body.state-icon .widget { display: none; }
 
 <div class="widget" id="widget">
     <div class="widget-top">
-        <span class="widget-song-name" id="songName">Loading...</span>
-        <button class="mini-play-btn" id="miniPlayBtn">
-            <svg viewBox="0 0 24 24" fill="currentColor" id="miniPlayIcon"><path d="M8 5v14l11-7z"/></svg>
-        </button>
         <button class="minimize-btn" id="minimizeBtn" title="Minimise">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
+        </button>
+        <span class="widget-song-name" id="songName">Loading...</span>
+        <button class="mini-play-btn" id="miniPlayBtn">
+            <svg viewBox="0 0 24 24" fill="currentColor" id="miniPlayIcon"><path d="M8 5v14l11-7z"/></svg>
         </button>
     </div>
     <div class="expandable" id="expandable">
