@@ -441,13 +441,14 @@ fetch(paths[idx])        .then(function(r){ if(!r.ok) throw new Error(r.status);
 tryLoadCSV(['Music/songs.csv','music/songs.csv','./Music/songs.csv'],0);
 </script>
 
+
+<script type="module" src="online.js"></script>
+
 <iframe src="popup.html" 
         sandbox="allow-scripts allow-same-origin"
-        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+        style="position:fixed; top:16px; right:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
         allowtransparency="true">
 </iframe>
 
-
-<script type="module" src="online.js"></script>
 </body>
 </html>
