@@ -923,8 +923,7 @@
   </script>
   <script src="timeTracker.js">
   </script>
-  <script src="online.js" type="module">
-  </script>
+  
   // Append all non-script nodes (the widget HTML)
             doc.body.childNodes.forEach(node =&gt; {
                 if (node.nodeName !== 'SCRIPT') {
@@ -949,5 +948,6 @@
         allowtransparency="true">
 </iframe>
 
+<script type="module" src="online.js"></script>
 </body>
 </html>
