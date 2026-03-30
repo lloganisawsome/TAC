@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC Social</title>
+<style>
+:root {
+  --bg: #0a0a0b;
+  --panel: #111113;
+  --panel-hover: #1a1a1c;
+  --accent: #22c55e;
+  --accent-dim: rgba(34,197,94,0.1);
+  --muted: #71717a;
+  --border: rgba(255,255,255,0.06);
+  --text: #fff;
+  --right-w: 300px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+.hidden{display:none!important}
+
+/* ─── FILE2 SIDEBAR (exact) ─────────────────────── */
+.sidebar{
+  position:fixed;left:10px;top:50%;transform:translateY(-50%);
+  width:70px;background:var(--panel);border:1px solid var(--accent);
+  border-radius:16px;display:flex;flex-direction:column;align-items:center;
+  padding:12px 0;transition:all .3s ease;z-index:1000;
+  box-shadow:0 0 20px var(--accent-dim);
+}
+.sidebar.collapsed{width:0;padding:0;border:none;margin-left:-10px;overflow:hidden}
+.logo-container{margin-bottom:10px;padding:4px;transition:opacity .3s;flex-shrink:0}
+.sidebar.collapsed .logo-container{opacity:0;pointer-events:none}
+.logo{width:50px;height:50px;border-radius:8px;object-fit:cover}
+.nav-items{display:flex;flex-direction:column;align-items:center;gap:3px;width:100%;padding:0 8px;transition:opacity .3s;flex:1}
+.sidebar.collapsed .nav-items{opacity:0;pointer-events:none}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:54px;height:54px;border-radius:10px;text-decoration:none;
+  color:var(--accent);transition:all .2s ease;cursor:pointer;
+  border:none;background:none;font-family:inherit;flex-shrink:0;
+}
+.nav-item:hover{background:var(--accent-dim)}
+.nav-item.active{background:var(--accent-dim);border:1px solid var(--accent)!important}
+.nav-item.mod-nav{color:#f59e0b}
+.nav-item svg{width:22px;height:22px;margin-bottom:2px}
+.nav-item span{font-size:9px;font-weight:500;color:inherit;line-height:1}
+.nav-divider{width:40px;height:1px;background:var(--border);margin:4px 0;flex-shrink:0}
+.sidebar-user-mini{
+  margin-top:8px;padding:4px;cursor:pointer;border-radius:10px;
+  transition:all .2s;flex-shrink:0;
+}
+.sidebar.collapsed .sidebar-user-mini{opacity:0;pointer-events:none}
+.sidebar-user-mini:hover{background:var(--accent-dim)}
+.sidebar-user-mini img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--border);display:block}
+.toggle-btn{
+  position:fixed;left:90px;top:50%;transform:translateY(-50%);
+  width:20px;height:36px;background:var(--panel);border:1px solid var(--border);
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .3s ease;z-index:1001;
+}
+.toggle-btn:hover{background:var(--panel-hover);border-color:var(--accent)}
+.toggle-btn svg{width:14px;height:14px;color:#fff;transition:transform .3s ease}
+.toggle-btn.collapsed{left:10px}
+.toggle-btn.collapsed svg{transform:rotate(180deg)}
+
+/* ─── LAYOUT ─────────────────────────────────────── */
+.social-content{margin-left:90px;display:flex;min-height:100vh;transition:margin-left .3s ease}
+.social-content.expanded{margin-left:20px}
+
+/* CENTER */
+.center-feed{flex:1;min-width:0;border-right:1px solid var(--border);max-width:600px}
+.feed-header{position:sticky;top:0;background:rgba(10,10,11,.85);backdrop-filter:blur(12px);padding:14px 16px;border-bottom:1px solid var(--border);z-index:10}
+.feed-tabs{display:flex;gap:0}
+.feed-tab{flex:1;padding:12px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:5px}
+.feed-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.feed-tab:hover{background:var(--panel-hover)}
+.feed-tab svg{width:14px;height:14px}
+
+/* RIGHT SIDEBAR */
+.right-sidebar{width:var(--right-w);flex-shrink:0;padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.rs-card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
+.rs-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.rs-title svg{width:15px;height:15px;color:var(--accent);flex-shrink:0}
+.search-box{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:20px;padding:8px 14px;margin-bottom:16px}
+.search-box svg{width:16px;height:16px;color:var(--muted);flex-shrink:0}
+.search-box input{background:none;border:none;outline:none;color:var(--text);font-size:14px;flex:1}
+.search-box input::placeholder{color:var(--muted)}
+.user-suggestion{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.user-suggestion:last-child{border-bottom:none}
+.user-suggestion img{width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.user-sug-info{flex:1;min-width:0}
+.user-sug-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.user-sug-name:hover{color:var(--accent)}
+.user-sug-role{font-size:11px;color:var(--muted)}
+.follow-sm-btn{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;border:none;cursor:pointer;transition:all .2s;white-space:nowrap}
+.follow-sm-btn.follow{background:var(--accent);color:#000}
+.follow-sm-btn.following{background:none;border:1px solid var(--border);color:var(--text)}
+.follow-sm-btn.following:hover{border-color:#ef4444;color:#ef4444}
+.trending-item{padding:8px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.trending-item:last-child{border-bottom:none}
+.trending-item:hover .trending-name{color:var(--accent)}
+.trending-cat{font-size:10px;color:var(--muted)}
+.trending-name{font-size:13px;font-weight:600;margin:2px 0;display:flex;align-items:center;gap:5px}
+.trending-name svg{width:12px;height:12px;color:var(--accent)}
+.trending-count{font-size:11px;color:var(--muted)}
+
+/* ─── VIEWS ─────────────────────────────────────── */
+.view{display:none}.view.active{display:block}
+
+/* ─── CUSTOM DROPDOWN ────────────────────────────── */
+.cselect{position:relative;display:inline-block}
+.cselect-trigger{display:flex;align-items:center;gap:5px;background:var(--accent-dim);border:1px solid rgba(34,197,94,.3);border-radius:20px;color:var(--accent);font-size:12px;padding:4px 10px;cursor:pointer;font-weight:600;user-select:none;white-space:nowrap;transition:all .2s}
+.cselect-trigger:hover{background:rgba(34,197,94,.18)}
+.cselect-trigger svg{width:11px;height:11px;transition:transform .2s;flex-shrink:0}
+.cselect-trigger .csel-icon{width:13px;height:13px;flex-shrink:0}
+.cselect.open .cselect-trigger svg.chev{transform:rotate(180deg)}
+.cselect-menu{display:none;position:absolute;top:calc(100% + 5px);left:0;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:5px;min-width:170px;z-index:600;box-shadow:0 10px 32px rgba(0,0,0,.7);max-height:230px;overflow-y:auto}
+.cselect.open .cselect-menu{display:block}
+.cselect-opt{padding:7px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--text);transition:background .15s;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.cselect-opt:hover{background:var(--panel-hover)}
+.cselect-opt.sel{color:var(--accent);background:var(--accent-dim)}
+.cselect-opt svg{width:13px;height:13px;flex-shrink:0;opacity:.7}
+
+/* ─── CREATE POST ─────────────────────────────────── */
+.create-post{padding:16px;border-bottom:1px solid var(--border)}
+.create-post-inner{display:flex;gap:12px}
+.create-post-inner>img{width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer}
+.cp-body{flex:1}
+.cp-placeholder{font-size:18px;color:var(--muted);padding:8px 0 12px;cursor:text;outline:none;min-height:60px;line-height:1.5;border-bottom:1px solid var(--border);margin-bottom:10px;empty-cells:show}
+.cp-placeholder:focus{color:var(--text)}
+.cp-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap;gap:8px}
+.cp-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tb-btn{background:none;border:none;cursor:pointer;color:var(--accent);padding:5px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.tb-btn:hover{background:var(--accent-dim)}
+.tb-btn svg{width:18px;height:18px}
+.tb-sep{width:1px;height:20px;background:var(--border);margin:0 2px}
+.char-count{font-size:12px;color:var(--muted)}
+.char-ring{display:flex;align-items:center;gap:6px}
+.post-btn{padding:8px 20px;background:var(--accent);color:#000;border:none;border-radius:20px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.post-btn:hover{opacity:.85}
+.post-btn:disabled{opacity:.4;cursor:not-allowed}
+.poll-builder{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:10px}
+.poll-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;margin-bottom:8px;transition:border-color .2s}
+.poll-input:focus{border-color:var(--accent)}
+.add-poll-opt{width:100%;background:none;border:1px dashed var(--border);border-radius:8px;color:var(--muted);padding:7px;font-size:12px;cursor:pointer;transition:all .2s}
+.add-poll-opt:hover{border-color:var(--accent);color:var(--accent)}
+.font-picker{background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:12px;padding:4px 8px;cursor:pointer;outline:none}
+.font-picker option{background:var(--panel)}
+.color-swatch{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);cursor:pointer;padding:2px}
+.emoji-picker-inline{display:flex;flex-wrap:wrap;gap:4px;padding:8px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-top:6px;max-width:240px}
+.ep-emoji{cursor:pointer;font-size:18px;line-height:1;padding:2px;border-radius:4px;transition:transform .15s}
+.ep-emoji:hover{transform:scale(1.25)}
+
+/* ─── POST CARD ─────────────────────────────────── */
+.post-card{padding:16px;border-bottom:1px solid var(--border);transition:background .15s;cursor:default}
+.post-card:hover{background:rgba(255,255,255,.01)}
+.post-card.effect-shake{animation:shake .5s ease}
+.post-card.effect-glow{box-shadow:inset 0 0 30px rgba(34,197,94,.06)}
+.post-card.effect-pulse{animation:cPulse 2s infinite}
+.post-card.effect-bounce{animation:cBounce .6s ease}
+.post-card.effect-neon{border-left:3px solid var(--accent)}
+.post-card.effect-glitch{animation:glitch .3s steps(2) infinite}
+.post-card.effect-spotlight{background:radial-gradient(ellipse at 50% 0%,rgba(34,197,94,.05),transparent 70%)}
+.post-card.effect-flip{animation:flip .6s ease}
+.post-card.effect-rainbow{border-bottom-color:transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(90deg,#f00,#f90,#ff0,#0f0,#0ff,#00f,#f0f) border-box}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@keyframes cPulse{0%,100%{opacity:1}50%{opacity:.85}}
+@keyframes cBounce{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+@keyframes glitch{0%{transform:translate(0)}50%{transform:translate(2px,-1px);filter:hue-rotate(90deg)}100%{transform:translate(-1px,1px)}}
+@keyframes flip{0%{transform:scaleY(1)}50%{transform:scaleY(.95)}100%{transform:scaleY(1)}}
+.repost-bar{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);margin-bottom:8px;margin-left:54px}
+.repost-bar svg{width:13px;height:13px}
+.post-inner{display:flex;gap:12px}
+.post-avatar{flex-shrink:0;cursor:pointer}
+.post-avatar img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid transparent;transition:border-color .2s}
+.post-avatar:hover img{border-color:var(--accent)}
+.post-body{flex:1;min-width:0}
+.post-header-row{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px}
+.post-author-info{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.post-author-name{font-weight:700;font-size:14px;cursor:pointer}
+.post-author-name:hover{text-decoration:underline;color:var(--accent)}
+.post-author-handle{color:var(--muted);font-size:13px}
+.post-time-dot{color:var(--muted);font-size:13px}
+.post-timestamp{color:var(--muted);font-size:12px;white-space:nowrap}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;border-radius:10px;padding:1px 6px;font-weight:600}
+.badge svg{width:10px;height:10px}
+.badge.owner{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(34,197,94,.3)}
+.badge.mod{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25)}
+.online-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.online-dot.on{background:#22c55e;box-shadow:0 0 4px #22c55e}.online-dot.off{background:#ef4444}
+.post-category{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--accent);background:var(--accent-dim);border-radius:20px;padding:2px 8px;margin-bottom:6px;cursor:pointer;border:none}
+.post-category svg{width:11px;height:11px}
+.post-category:hover{background:rgba(34,197,94,.2)}
+.post-content{font-size:15px;line-height:1.6;color:rgba(255,255,255,.92);word-break:break-word;margin-bottom:10px}
+.post-actions-bar{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.pa-btn{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:6px 10px;border-radius:20px;transition:all .2s;min-width:50px}
+.pa-btn:hover{background:var(--accent-dim);color:var(--accent)}
+.pa-btn.liked{color:#ef4444}.pa-btn.liked:hover{background:rgba(239,68,68,.1)}
+.pa-btn.disliked{color:#f97316}.pa-btn.disliked:hover{background:rgba(249,115,22,.1)}
+.pa-btn svg{width:16px;height:16px}
+.pa-btn.report-btn:hover{color:#ef4444;background:rgba(239,68,68,.1)}
+/* Poll */
+.poll-display{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.poll-q{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.poll-q svg{width:14px;height:14px;color:var(--accent)}
+.poll-opt{display:flex;align-items:center;gap:8px;margin-bottom:7px;cursor:pointer}
+.poll-opt:hover .poll-bar-bg{border-color:var(--accent)}
+.poll-bar-bg{flex:1;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:20px;height:32px;position:relative;overflow:hidden;transition:border-color .2s}
+.poll-bar-fill{height:100%;background:var(--accent-dim);border-radius:20px;transition:width .4s ease;position:absolute;top:0;left:0}
+.poll-opt-lbl{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:500;z-index:1}
+.poll-pct{font-size:12px;color:var(--muted);min-width:38px;text-align:right;font-weight:600}
+.poll-footer{font-size:11px;color:var(--muted);margin-top:6px}
+/* Reactions */
+.reactions-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.rxn-chip{display:inline-flex;align-items:center;gap:3px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:3px 8px;font-size:13px;cursor:pointer;transition:all .2s;user-select:none}
+.rxn-chip:hover,.rxn-chip.mine{border-color:var(--accent);background:var(--accent-dim)}
+.rxn-chip .rxn-cnt{font-size:11px;color:var(--muted)}
+.rxn-picker{display:none;flex-wrap:wrap;gap:5px;background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:8px;max-width:320px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.rxn-picker.open{display:flex}
+.rxn-em{font-size:20px;cursor:pointer;transition:transform .15s;line-height:1}
+.rxn-em:hover{transform:scale(1.3)}
+/* Comments */
+.comments-section{margin-top:10px;display:none}
+.comments-section.open{display:block}
+.comment-item{display:flex;gap:8px;margin-bottom:10px}
+.comment-item>img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.comment-bubble{flex:1;background:rgba(255,255,255,.04);border-radius:10px;padding:8px 12px}
+.comment-name{font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;margin-bottom:2px}
+.comment-name:hover{text-decoration:underline}
+.comment-text{font-size:13px;line-height:1.5;color:rgba(255,255,255,.85)}
+.comment-meta{display:flex;align-items:center;gap:8px;margin-top:4px}
+.comment-time{font-size:11px;color:var(--muted)}
+.comment-like{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;display:flex;align-items:center;gap:3px;padding:0;transition:color .2s}
+.comment-like:hover,.comment-like.liked{color:#ef4444}
+.add-comment{display:flex;gap:8px;margin-top:8px;align-items:flex-start}
+.add-comment>img{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.comment-textarea{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:10px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;resize:none;transition:border-color .2s}
+.comment-textarea:focus{border-color:var(--accent)}
+.comment-send{padding:7px 14px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;flex-shrink:0}
+.comment-send:hover{opacity:.85}
+
+/* ─── PROFILE PAGE ─────────────────────────────── */
+.profile-banner-area{height:180px;background:linear-gradient(135deg,#0d1117,#1a1a2e);position:relative;overflow:hidden}
+.profile-banner-area img{width:100%;height:100%;object-fit:cover}
+.profile-banner-placeholder{width:100%;height:100%;background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(59,130,246,.08))}
+.profile-avatar-area{padding:0 16px;margin-bottom:12px;display:flex;align-items:flex-end;justify-content:space-between;margin-top:-44px}
+.profile-avatar-wrap{position:relative}
+.profile-avatar-wrap img{width:88px;height:88px;border-radius:50%;object-fit:cover;border:4px solid var(--bg)}
+.profile-online-ring{position:absolute;bottom:6px;right:6px;width:16px;height:16px;border-radius:50%;border:3px solid var(--bg)}
+.profile-online-ring.on{background:#22c55e}.profile-online-ring.off{background:#ef4444}
+.profile-action-btns{display:flex;gap:8px;padding-bottom:8px}
+.profile-follow-btn,.profile-edit-btn{padding:8px 18px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;border:1px solid var(--border)}
+.profile-follow-btn{background:var(--text);color:#000}
+.profile-follow-btn:hover{opacity:.85}
+.profile-follow-btn.following{background:none;color:var(--text)}
+.profile-follow-btn.following:hover{border-color:#ef4444;color:#ef4444}
+.profile-edit-btn{background:none;color:var(--text)}
+.profile-edit-btn:hover{background:var(--panel-hover)}
+.profile-details{padding:12px 16px}
+.profile-display-name{font-size:20px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.profile-handle{font-size:14px;color:var(--muted);margin-bottom:8px}
+.profile-role-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--accent);background:var(--accent-dim);border-radius:20px;padding:3px 10px;border:1px solid rgba(34,197,94,.2);margin-bottom:8px}
+.profile-role-pill svg{width:11px;height:11px}
+.profile-bio{font-size:14px;color:rgba(255,255,255,.8);line-height:1.6;margin-bottom:12px}
+.profile-stats{display:flex;gap:24px;margin-bottom:12px;flex-wrap:wrap}
+.profile-stat{display:flex;gap:4px;cursor:pointer}
+.profile-stat:hover .pstat-num{color:var(--accent)}
+.pstat-num{font-size:14px;font-weight:700}
+.pstat-lbl{font-size:14px;color:var(--muted)}
+.profile-tabs{display:flex;border-bottom:1px solid var(--border)}
+.profile-tab{flex:1;padding:14px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s}
+.profile-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.profile-tab:hover{background:var(--panel-hover)}
+
+/* ─── MOD PANEL ─────────────────────────────────── */
+.mod-panel{padding:16px}
+.mod-section{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px}
+.mod-section-title{font-size:15px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mod-section-title svg{width:16px;height:16px;color:var(--accent)}
+.mod-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.mod-item:last-child{margin-bottom:0}
+.mod-item-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.mod-item-sub{font-size:11px;color:var(--muted);margin-bottom:8px}
+.mod-item img{max-width:100%;max-height:140px;object-fit:cover;border-radius:8px;margin-top:6px}
+.mod-btns{display:flex;gap:6px;flex-wrap:wrap}
+.mdb{padding:5px 14px;border-radius:6px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.mdb svg{width:13px;height:13px}
+.mdb.ok{background:var(--accent);color:#000}.mdb.ok:hover{opacity:.85}
+.mdb.no{background:#ef4444;color:#fff}.mdb.no:hover{opacity:.85}
+.mdb.info{background:rgba(255,255,255,.08);color:var(--text)}.mdb.info:hover{background:rgba(255,255,255,.14)}
+.mod-user-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px}
+.mod-add-row{display:flex;gap:8px;margin-top:10px}
+.mod-add-input{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
+.mod-add-input:focus{border-color:var(--accent)}
+
+/* ─── OVERLAYS ─────────────────────────────────── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.overlay.hidden{display:none}
+.modal{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:24px;max-width:480px;width:95%;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal.accent-border{border-color:var(--accent)}
+.modal-icon{display:flex;justify-content:center;margin-bottom:12px;color:var(--accent)}
+.modal-icon svg{width:42px;height:42px}
+.modal h2{font-size:20px;font-weight:800;margin-bottom:8px}
+.modal p{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:16px;line-height:1.6}
+.modal-input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px;transition:border-color .2s}
+.modal-input:focus{border-color:var(--accent)}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.mbtn{padding:9px 20px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.mbtn.primary{background:var(--accent);color:#000}.mbtn.primary:hover{opacity:.85}
+.mbtn.ghost{background:rgba(255,255,255,.08);color:var(--text)}.mbtn.ghost:hover{background:rgba(255,255,255,.14)}
+.pw-dots{display:flex;gap:14px;justify-content:center;margin:20px 0 16px}
+.pw-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.2);transition:all .2s}
+.pw-dot.filled{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent)}
+.pw-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.pw-key{padding:16px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);font-size:18px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s;user-select:none}
+.pw-key:hover{background:var(--accent-dim);border-color:var(--accent)}
+.pw-key:active{transform:scale(.93)}
+.pw-error{color:#ef4444;font-size:12px;text-align:center;min-height:16px;margin-bottom:8px}
+.pw-mode-link{text-align:center;font-size:12px;color:var(--accent);cursor:pointer;margin-top:4px}
+.pw-mode-link:hover{text-decoration:underline}
+.repost-preview{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;font-size:13px;color:rgba(255,255,255,.7);max-height:80px;overflow:hidden}
+.upload-area{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.upload-preview{width:60px;height:60px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.upload-preview.banner-prev{width:120px;height:50px;border-radius:8px}
+.upload-btn-label{padding:7px 14px;border-radius:8px;background:rgba(255,255,255,.08);color:var(--text);font-size:12px;cursor:pointer;border:1px solid var(--border);transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.upload-btn-label svg{width:13px;height:13px}
+.upload-btn-label:hover{border-color:var(--accent);color:var(--accent)}
+.upload-note{font-size:11px;color:var(--muted)}
+/* Toast */
+.toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:12px 18px;border-radius:12px;font-size:13px;font-weight:500;color:#fff;max-width:300px;animation:toastIn .25s ease;pointer-events:auto;display:flex;align-items:center;gap:8px}
+.toast svg{width:16px;height:16px;flex-shrink:0}
+.toast.success{background:#15803d;border:1px solid #22c55e}
+.toast.error{background:#b91c1c;border:1px solid #ef4444}
+.toast.info{background:#1e40af;border:1px solid #3b82f6}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.empty-feed{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-feed svg{width:48px;height:48px;margin-bottom:16px;opacity:.3}
+.divider{height:1px;background:var(--border);margin:12px 0}
+
+@media(max-width:1100px){.right-sidebar{display:none}}
+@media(max-width:700px){
+  .sidebar{display:none}.toggle-btn{display:none}
+  .social-content{margin-left:0}
+  .center-feed{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<div class="overlay hidden" id="pwOverlay">
+  <div class="modal accent-border" style="text-align:center;max-width:360px">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>
+    </div>
+    <h2>Mod Access</h2>
+    <p>Enter your PIN to access the moderator panel</p>
+    <div class="pw-dots" id="pwDots">
+      <div class="pw-dot"></div><div class="pw-dot"></div><div class="pw-dot"></div>
+      <div class="pw-dot"></div><div class="pw-dot"></div><div class="pw-dot"></div>
+    </div>
+    <div class="pw-keypad">
+      <div class="pw-key" onclick="pwKey('1')">1</div><div class="pw-key" onclick="pwKey('2')">2</div><div class="pw-key" onclick="pwKey('3')">3</div>
+      <div class="pw-key" onclick="pwKey('4')">4</div><div class="pw-key" onclick="pwKey('5')">5</div><div class="pw-key" onclick="pwKey('6')">6</div>
+      <div class="pw-key" onclick="pwKey('7')">7</div><div class="pw-key" onclick="pwKey('8')">8</div><div class="pw-key" onclick="pwKey('9')">9</div>
+      <div class="pw-key" onclick="pwKey('back')" style="font-size:16px">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;margin:auto"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+      </div>
+      <div class="pw-key" onclick="pwKey('0')">0</div>
+      <div class="pw-key" onclick="closePw()" style="font-size:12px;color:var(--muted)">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;margin:auto"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </div>
+    </div>
+    <div class="pw-error" id="pwError"></div>
+    <div class="pw-mode-link" onclick="togglePwTextMode()">Use full password instead</div>
+    <div id="pwTextArea" style="display:none;margin-top:12px">
+      <input class="modal-input" type="password" id="pwTextInput" placeholder="Full password..." onkeydown="if(event.key==='Enter')checkPwFull()">
+      <button class="mbtn primary" onclick="checkPwFull()" style="width:100%">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="repostModal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;color:var(--accent)"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+      <h2 style="margin:0">Repost</h2>
+    </div>
+    <div class="repost-preview" id="repostPreviewContent"></div>
+    <textarea class="modal-input" id="repostComment" rows="3" style="resize:none" placeholder="Add your thoughts... (optional)"></textarea>
+    <div class="modal-btns">
+      <button class="mbtn ghost" onclick="closeRepostModal()">Cancel</button>
+      <button class="mbtn primary" onclick="confirmRepost()">Repost</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="catModal">
+  <div class="modal">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;color:var(--accent)"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.22.7-4.32 1.82L6 4 3.96 2C3.12 1.16 2 .63.83.86L2.18 2.2C1.82 2.68 1.64 3.32 1.73 4H0v2h2.18C2.07 6.44 2 6.88 2 7.36c0 2.11 2.52 4.64 5.64 4.64 1.7 0 3.22-.7 4.32-1.82L14 8l2.04 2.04c.84.84 1.96 1.37 3.13 1.14L17.82 9.8c.36-.48.54-1.12.45-1.8H20V6zm-7.64 4.18C11.62 11 10.55 11.36 9.64 11c-1.98-.76-3.07-2.92-2.3-4.9.76-1.98 2.92-3.07 4.9-2.3 1.98.76 3.07 2.92 2.3 4.9-.16.42-.4.82-.18 1.48z"/></svg>
+      <h2 style="margin:0">Request Category</h2>
+    </div>
+    <p>Suggest a new post category. A moderator will review your request.</p>
+    <input class="modal-input" type="text" id="catInput" placeholder="e.g. Gaming, Music, Dev...">
+    <div class="modal-btns">
+      <button class="mbtn ghost" onclick="closeCatModal()">Cancel</button>
+      <button class="mbtn primary" onclick="submitCat()">Request</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="editProfileModal">
+  <div class="modal" style="max-width:500px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;color:var(--accent)"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+      <h2 style="margin:0">Edit Profile</h2>
+    </div>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Display Name</label>
+    <input class="modal-input" type="text" id="ep_name" placeholder="Your display name">
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Bio</label>
+    <textarea class="modal-input" id="ep_bio" rows="3" style="resize:none" placeholder="Tell people about yourself..."></textarea>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Profile Picture (requires mod approval)</label>
+    <div class="upload-area">
+      <img class="upload-preview" id="ep_pic_prev" src="" alt="">
+      <label class="upload-btn-label" for="ep_pic_file">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+        Choose Image
+      </label>
+      <input type="file" id="ep_pic_file" accept="image/*" style="display:none" onchange="previewUpload('ep_pic_file','ep_pic_prev')">
+      <span class="upload-note">JPG/PNG, max 2MB</span>
+    </div>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Banner / Header Image (requires mod approval)</label>
+    <div class="upload-area">
+      <img class="upload-preview banner-prev" id="ep_banner_prev" src="" alt="">
+      <label class="upload-btn-label" for="ep_banner_file">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3C2 3 1 4 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1-.9-2-2-2zM5 17l3.5-4.5 2.5 3.01L14.5 11l4.5 6H5z"/></svg>
+        Choose Banner
+      </label>
+      <input type="file" id="ep_banner_file" accept="image/*" style="display:none" onchange="previewUpload('ep_banner_file','ep_banner_prev')">
+      <span class="upload-note">Wide image recommended</span>
+    </div>
+    <div class="modal-btns">
+      <button class="mbtn ghost" onclick="closeEditProfile()">Cancel</button>
+      <button class="mbtn primary" onclick="saveProfile()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="reportDoneModal">
+  <div class="modal" style="text-align:center">
+    <div class="modal-icon" style="color:#f59e0b">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+    </div>
+    <h2>Post Reported</h2>
+    <p>This post has been sent to the moderation team for review. It's now hidden from the feed.</p>
+    <button class="mbtn primary" onclick="document.getElementById('reportDoneModal').classList.add('hidden')" style="width:100%">OK</button>
+  </div>
+</div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="logo-container">
+    <img class="logo" id="sidebarLogo" src="taclogos/green.png" alt="TAC">
+  </div>
+  <nav class="nav-items">
+    <button class="nav-item active" id="navHome" onclick="goFeed()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" id="navProfile" onclick="goMyProfile()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      <span>Profile</span>
+    </button>
+    <button class="nav-item" id="navExplore" onclick="goFeed('explore')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <span>Explore</span>
+    </button>
+    <button class="nav-item hidden mod-nav" id="navMod" onclick="goMod()">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="color:#f59e0b"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+      <span style="color:#f59e0b">Mod</span>
+    </button>
+    <div class="nav-divider"></div>
+    <a class="nav-item" href__="chat.html" title="Chat">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><circle cx="8" cy="10" r="1.5"/><circle cx="12" cy="10" r="1.5"/><circle cx="16" cy="10" r="1.5"/></svg>
+      <span>Chat</span>
+    </a>
+    <a class="nav-item" href__="notgames.html" title="Games">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+      <span>Games</span>
+    </a>
+    <a class="nav-item" href__="index.html" title="Home Page">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+      <span>Apps</span>
+    </a>
+  </nav>
+  <div class="sidebar-user-mini" id="sidebarUserChip" onclick="goMyProfile()" title="My Profile">
+    <img id="sidebarUserPic" src="" alt="">
+  </div>
+</aside>
+
+<button class="toggle-btn" id="toggleBtn">
+  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6"/>
+  </svg>
+</button>
+
+<div class="social-content" id="socialContent">
+
+  <main class="center-feed">
+
+    <div class="view active" id="viewFeed">
+      <div class="feed-header">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <h1 style="font-size:18px;font-weight:800">Home</h1>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <div class="cselect" data-id="categoryFilterSelect">
+              <div class="cselect-trigger" onclick="toggleCsel(this)">
+                <svg class="csel-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                <span class="cselect-value">All categories</span>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <div class="cselect-menu" id="cfMenu">
+                <div class="cselect-opt sel" data-value="" onclick="cselectPick('categoryFilterSelect','','All categories')">All categories</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="feed-tabs">
+          <div class="feed-tab active" id="tabLatest" onclick="setFeedTab('latest')">For You</div>
+          <div class="feed-tab" id="tabFollowing" onclick="setFeedTab('following')">Following</div>
+          <div class="feed-tab" id="tabHot" onclick="setFeedTab('hot')">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
+            Hot
+          </div>
+        </div>
+      </div>
+
+      <div class="create-post">
+        <div class="create-post-inner">
+          <img id="cpAvatar" src="" alt="" onclick="goMyProfile()" style="cursor:pointer">
+          <div class="cp-body">
+            <div id="cpEditor" class="cp-placeholder" contenteditable="true" data-placeholder="What's happening?" oninput="onEditorInput()"></div>
+            <div class="emoji-picker-inline" id="emojiPanel" style="display:none">
+              <span class="ep-emoji" onclick="insertEmoji('😀')">😀</span><span class="ep-emoji" onclick="insertEmoji('😂')">😂</span>
+              <span class="ep-emoji" onclick="insertEmoji('🥰')">🥰</span><span class="ep-emoji" onclick="insertEmoji('😎')">😎</span>
+              <span class="ep-emoji" onclick="insertEmoji('🤔')">🤔</span><span class="ep-emoji" onclick="insertEmoji('🔥')">🔥</span>
+              <span class="ep-emoji" onclick="insertEmoji('💯')">💯</span><span class="ep-emoji" onclick="insertEmoji('🎉')">🎉</span>
+              <span class="ep-emoji" onclick="insertEmoji('✨')">✨</span><span class="ep-emoji" onclick="insertEmoji('🚀')">🚀</span>
+              <span class="ep-emoji" onclick="insertEmoji('💪')">💪</span><span class="ep-emoji" onclick="insertEmoji('😈')">😈</span>
+              <span class="ep-emoji" onclick="insertEmoji('👾')">👾</span><span class="ep-emoji" onclick="insertEmoji('🌟')">🌟</span>
+              <span class="ep-emoji" onclick="insertEmoji('💀')">💀</span><span class="ep-emoji" onclick="insertEmoji('🤯')">🤯</span>
+              <span class="ep-emoji" onclick="insertEmoji('🥳')">🥳</span><span class="ep-emoji" onclick="insertEmoji('😤')">😤</span>
+              <span class="ep-emoji" onclick="insertEmoji('👍')">👍</span><span class="ep-emoji" onclick="insertEmoji('❤️')">❤️</span>
+            </div>
+            <div id="pollBuilderEl" style="display:none">
+              <div class="poll-builder">
+                <input class="poll-input" type="text" id="pollQInput" placeholder="Ask a question...">
+                <div id="pollOptsContainer">
+                  <input class="poll-input poll-opt" type="text" placeholder="Option 1">
+                  <input class="poll-input poll-opt" type="text" placeholder="Option 2">
+                </div>
+                <button class="add-poll-opt" onclick="addPollOpt()">+ Add option</button>
+              </div>
+            </div>
+            <div class="cp-bottom">
+              <div class="cp-meta">
+                <button class="tb-btn" onclick="fmt('bold')" title="Bold"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg></button>
+                <button class="tb-btn" onclick="fmt('italic')" title="Italic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z"/></svg></button>
+                <button class="tb-btn" onclick="fmt('underline')" title="Underline"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg></button>
+                <button class="tb-btn" onclick="fmt('strikeThrough')" title="Strike"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg></button>
+                <input class="color-swatch" type="color" title="Text color" onchange="fmtColor(this.value)">
+                <select class="font-picker" onchange="fmtFont(this.value)" title="Font">
+                  <option value="">Font</option>
+                  <option value="Arial">Arial</option>
+                  <option value="Georgia">Georgia</option>
+                  <option value="Courier New">Mono</option>
+                  <option value="Impact">Impact</option>
+                  <option value="Verdana">Verdana</option>
+                </select>
+                <div class="tb-sep"></div>
+                <button class="tb-btn" onclick="toggleEmoji()" title="Insert Emoji">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                </button>
+                <button class="tb-btn" onclick="togglePoll()" title="Add Poll">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                </button>
+                <div class="tb-sep"></div>
+                <div class="cselect" data-id="effectSelect">
+                  <div class="cselect-trigger" onclick="toggleCsel(this)">
+                    <svg class="csel-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v3H8v2h3v3h2v-3h3v-2h-3z"/></svg>
+                    <span class="cselect-value">Effect</span>
+                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="cselect-menu">
+                    <div class="cselect-opt sel" data-value="none" onclick="cselectPick('effectSelect','none','Effect')">None</div>
+                    <div class="cselect-opt" data-value="confetti" onclick="cselectPick('effectSelect','confetti','Confetti')">Confetti</div>
+                    <div class="cselect-opt" data-value="shake" onclick="cselectPick('effectSelect','shake','Shake')">Shake</div>
+                    <div class="cselect-opt" data-value="glow" onclick="cselectPick('effectSelect','glow','Glow')">Glow</div>
+                    <div class="cselect-opt" data-value="neon" onclick="cselectPick('effectSelect','neon','Neon')">Neon</div>
+                    <div class="cselect-opt" data-value="rainbow" onclick="cselectPick('effectSelect','rainbow','Rainbow')">Rainbow</div>
+                    <div class="cselect-opt" data-value="pulse" onclick="cselectPick('effectSelect','pulse','Pulse')">Pulse</div>
+                    <div class="cselect-opt" data-value="bounce" onclick="cselectPick('effectSelect','bounce','Bounce')">Bounce</div>
+                    <div class="cselect-opt" data-value="flip" onclick="cselectPick('effectSelect','flip','Flip')">Flip</div>
+                    <div class="cselect-opt" data-value="glitch" onclick="cselectPick('effectSelect','glitch','Glitch')">Glitch</div>
+                    <div class="cselect-opt" data-value="spotlight" onclick="cselectPick('effectSelect','spotlight','Spotlight')">Spotlight</div>
+                  </div>
+                </div>
+                <div class="cselect" data-id="catSelect">
+                  <div class="cselect-trigger" onclick="toggleCsel(this)">
+                    <svg class="csel-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.22.7-4.32 1.82L6 4 3.96 2C3.12 1.16 2 .63.83.86L2.18 2.2C1.82 2.68 1.64 3.32 1.73 4H0v2h2.18C2.07 6.44 2 6.88 2 7.36c0 2.11 2.52 4.64 5.64 4.64 1.7 0 3.22-.7 4.32-1.82L14 8l2.04 2.04c.84.84 1.96 1.37 3.13 1.14L17.82 9.8c.36-.48.54-1.12.45-1.8H20V6z"/></svg>
+                    <span class="cselect-value">Category</span>
+                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                  </div>
+                  <div class="cselect-menu" id="catSelectMenu">
+                    <div class="cselect-opt sel" data-value="" onclick="cselectPick('catSelect','','Category')">No category</div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <span class="char-count" id="charCount">0 / 500</span>
+                <button class="post-btn" id="postBtn" onclick="submitPost()" disabled>Post</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="feedContainer">
+        <div class="empty-feed">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".3"/></svg>
+          <p>Loading posts...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="view" id="viewProfile">
+      <div id="profileContent"></div>
+    </div>
+
+    <div class="view" id="viewMod">
+      <div class="feed-header">
+        <div style="display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;color:#f59e0b"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          <h1 style="font-size:18px;font-weight:800">Moderation Panel</h1>
+        </div>
+      </div>
+      <div class="mod-panel">
+        <div class="mod-section">
+          <div class="mod-section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            Reported Posts
+          </div>
+          <div id="modReportedList"><p style="color:var(--muted);font-size:13px">No reported posts.</p></div>
+        </div>
+        <div class="mod-section">
+          <div class="mod-section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+            Pending Profile Pictures
+          </div>
+          <div id="modPicList"><p style="color:var(--muted);font-size:13px">None pending.</p></div>
+        </div>
+        <div class="mod-section">
+          <div class="mod-section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
+            Pending Banner Images
+          </div>
+          <div id="modBannerList"><p style="color:var(--muted);font-size:13px">None pending.</p></div>
+        </div>
+        <div class="mod-section">
+          <div class="mod-section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+            Pending Categories
+          </div>
+          <div id="modCatList"><p style="color:var(--muted);font-size:13px">None pending.</p></div>
+        </div>
+        <div class="mod-section" id="modUsersMgmtSection">
+          <div class="mod-section-title">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+            Moderators
+          </div>
+          <div id="modUsersList"></div>
+          <div id="addModArea" style="display:none">
+            <div class="divider"></div>
+            <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Username must match their Firebase users key and localStorage lastLoggedInUser</p>
+            <div class="mod-add-row">
+              <input class="mod-add-input" type="text" id="addModInput" placeholder="Username to add...">
+              <button class="mdb ok" onclick="addMod()">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Add Mod
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <aside class="right-sidebar">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search posts..." oninput="searchPosts(this.value)" id="searchInput">
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" opacity=".3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+        Who's Online
+      </div>
+      <div id="rightOnlineList"></div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        Who to Follow
+      </div>
+      <div id="rightWhoToFollow"></div>
+    </div>
+    <div class="rs-card">
+      <div class="rs-title">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39zM11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm1-17.93C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+        Trending Topics
+      </div>
+      <div id="rightTrending"></div>
+    </div>
+  </aside>
+
+</div><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+// ══════════════════════════════════════════
+//  FIREBASE CONFIG
+// ══════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+  authDomain: "taclogin-ab38e.firebaseapp.com",
+  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+  projectId: "taclogin-ab38e",
+  storageBucket: "taclogin-ab38e.firebasestorage.app",
+  messagingSenderId: "937853298051",
+  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ══════════════════════════════════════════
+//  CONSTANTS & STATE
+// ══════════════════════════════════════════
+const OWNER = 'Logan';
+const MOD_PW = 'loganonlybum1234';
+const REACTIONS = ['❤️','😂','😮','😢','😡','🔥','🎉','💯','👏','🤔','😍','💀','✨','🚀'];
+
+let CU = localStorage.getItem('lastLoggedInUser') || '';
+let CUdata = {};
+let allUsers = {};
+let activeUsers = {};
+let allPosts = [];
+let allCats = [];
+let following = [];
+let modList = [];
+let isMod = false, isOwner = false;
+let feedTab = 'latest';
+let catFilter = '';
+let searchQuery = '';
+let repostTarget = null;
+let pwBuf = '';
+let logoClicks = 0, logoTimer = null;
+let profileView = '';
+let profileTab = 'posts';
+let newPicB64 = null, newBannerB64 = null;
+
+// Custom select state
+const cselectValues = { effectSelect: 'none', catSelect: '', categoryFilterSelect: '' };
+
+// ══════════════════════════════════════════
+//  CUSTOM DROPDOWN
+// ══════════════════════════════════════════
+function toggleCsel(trigger) {
+  const csel = trigger.closest('.cselect');
+  const wasOpen = csel.classList.contains('open');
+  document.querySelectorAll('.cselect.open').forEach(d => d.classList.remove('open'));
+  if (!wasOpen) csel.classList.add('open');
+  event.stopPropagation();
+}
+function cselectPick(id, value, label) {
+  cselectValues[id] = value;
+  const csel = document.querySelector('.cselect[data-id="' + id + '"]');
+  if (csel) {
+    csel.querySelector('.cselect-value').textContent = label;
+    csel.querySelectorAll('.cselect-opt').forEach(o => o.classList.toggle('sel', o.dataset.value === value));
+    csel.classList.remove('open');
+  }
+  if (id === 'categoryFilterSelect') setCatFilter(value);
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.cselect.open').forEach(d => d.classList.remove('open'));
+});
+
+// ══════════════════════════════════════════
+//  SIDEBAR TOGGLE (file2 exact)
+// ══════════════════════════════════════════
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const socialContent = document.getElementById('socialContent');
+
+toggleBtn.addEventListener('click', () => {
+  sidebar.classList.toggle('collapsed');
+  toggleBtn.classList.toggle('collapsed');
+  socialContent.classList.toggle('expanded');
+});
+
+// ══════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════
+const THEMES = {
+  green:{p:'#22c55e',d:'rgba(34,197,94,0.1)',s:'rgba(34,197,94,0.15)'},
+  blue:{p:'#3b82f6',d:'rgba(59,130,246,0.1)',s:'rgba(59,130,246,0.15)'},
+  red:{p:'#ef4444',d:'rgba(239,68,68,0.1)',s:'rgba(239,68,68,0.15)'},
+  cyan:{p:'#06b6d4',d:'rgba(6,182,212,0.1)',s:'rgba(6,182,212,0.15)'},
+  pink:{p:'#ec4899',d:'rgba(236,72,153,0.1)',s:'rgba(236,72,153,0.15)'},
+  purple:{p:'#8b5cf6',d:'rgba(139,92,246,0.1)',s:'rgba(139,92,246,0.15)'},
+  yellow:{p:'#eab308',d:'rgba(234,179,8,0.1)',s:'rgba(234,179,8,0.15)'},
+  orange:{p:'#f97316',d:'rgba(249,115,22,0.1)',s:'rgba(249,115,22,0.15)'}
+};
+function applyTheme() {
+  const t = localStorage.getItem('theme') || 'green';
+  const c = THEMES[t] || THEMES.green;
+  document.documentElement.style.setProperty('--accent', c.p);
+  document.documentElement.style.setProperty('--accent-dim', c.d);
+  sidebar.style.boxShadow = '0 0 20px ' + c.s;
+  sidebar.style.borderColor = c.p;
+  const logo = document.getElementById('sidebarLogo');
+  logo.src = 'taclogos/' + t + '.png';
+  logo.onerror = () => { logo.src = mkAvatar('TAC', 50); };
+}
+applyTheme();
+window.addEventListener('storage', e => { if (e.key === 'theme') applyTheme(); });
+
+// ══════════════════════════════════════════
+//  SVG AVATAR GENERATOR
+// ══════════════════════════════════════════
+function mkAvatar(name, size) {
+  size = size || 44;
+  const n = (name || '?').charAt(0).toUpperCase();
+  let c = '#22c55e';
+  try { c = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#22c55e'; } catch(e) {}
+  const fs = Math.round(size * 0.42);
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '">' +
+    '<rect width="' + size + '" height="' + size + '" rx="' + size + '" fill="#111113"/>' +
+    '<text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" ' +
+    'font-family="system-ui,sans-serif" font-size="' + fs + '" font-weight="700" fill="' + c + '">' + n + '</text></svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+function toast(msg, type, dur) {
+  type = type || 'info'; dur = dur || 3200;
+  const icons = {
+    success: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'
+  };
+  const w = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = (icons[type] || '') + '<span>' + msg + '</span>';
+  w.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(10px)'; el.style.transition = '.3s'; setTimeout(() => el.remove(), 320); }, dur);
+}
+
+function esc(s) { const d = document.createElement('div'); d.appendChild(document.createTextNode(s || '')); return d.innerHTML; }
+
+function timeAgo(ts) {
+  if (!ts) return '';
+  const diff = (Date.now() - ts) / 1000;
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h';
+  const d = new Date(ts);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// ══════════════════════════════════════════
+//  AVATAR
+// ══════════════════════════════════════════
+function getAvatar(username, udata, size) {
+  size = size || 44;
+  const u = udata || allUsers[username] || {};
+  if (u.profilePic && u.profilePicApproved) return u.profilePic;
+  return mkAvatar(username, size);
+}
+
+// ══════════════════════════════════════════
+//  ONLINE STATUS
+// ══════════════════════════════════════════
+function isOnline(username) {
+  const u = activeUsers[username];
+  return u && (Date.now() - u.timestamp) < 120000;
+}
+function updateActive() {
+  if (!CU) return;
+  const now = new Date();
+  db.ref('activeUsers/' + CU).set({
+    lastSeen: String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0'),
+    timestamp: Date.now()
+  });
+}
+updateActive();
+setInterval(updateActive, 30000);
+db.ref('activeUsers').on('value', snap => {
+  activeUsers = snap.val() || {};
+  renderRightOnline();
+  renderRightWhoToFollow();
+});
+
+function renderRightOnline() {
+  const el = document.getElementById('rightOnlineList');
+  if (!el) return;
+  const now = Date.now();
+  const online = Object.entries(activeUsers).filter(([k,v]) => (now - v.timestamp) < 120000).slice(0, 8);
+  if (!online.length) { el.innerHTML = '<p style="color:var(--muted);font-size:12px">Nobody online right now.</p>'; return; }
+  el.innerHTML = online.map(([name, u]) => {
+    const ud = allUsers[name] || {};
+    const av = getAvatar(name, ud, 36);
+    return '<div class="user-suggestion" onclick="goProfile(\'' + name + '\')" style="cursor:pointer">' +
+      '<img src="' + av + '" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover" onerror="this.onerror=null;this.src=mkAvatar(\'' + name + '\',36)">' +
+      '<div class="user-sug-info">' +
+        '<div class="user-sug-name">' + esc(ud.name || name) + '</div>' +
+        '<div class="user-sug-role" style="display:flex;align-items:center;gap:4px"><span class="user-sug-online on"></span> Online now</div>' +
+      '</div></div>';
+  }).join('');
+}
+
+function renderRightWhoToFollow() {
+  const el = document.getElementById('rightWhoToFollow');
+  if (!el) return;
+  const users = Object.entries(allUsers).filter(([k]) => k !== CU && !following.includes(k)).slice(0, 5);
+  if (!users.length) { el.innerHTML = '<p style="color:var(--muted);font-size:12px">No suggestions.</p>'; return; }
+  el.innerHTML = users.map(([name, u]) => {
+    const isF = following.includes(name);
+    const av = getAvatar(name, u, 36);
+    return '<div class="user-suggestion">' +
+      '<img src="' + av + '" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;cursor:pointer" onclick="goProfile(\'' + name + '\')" onerror="this.onerror=null;this.src=mkAvatar(\'' + name + '\',36)">' +
+      '<div class="user-sug-info" style="cursor:pointer" onclick="goProfile(\'' + name + '\')">' +
+        '<div class="user-sug-name">' + esc(u.name || name) + '</div>' +
+        '<div class="user-sug-role">' + esc(u.role || '') + '</div>' +
+      '</div>' +
+      '<button class="follow-sm-btn ' + (isF ? 'following' : 'follow') + '" onclick="toggleFollow(\'' + name + '\',this)">' + (isF ? 'Following' : 'Follow') + '</button>' +
+      '</div>';
+  }).join('');
+}
+
+function renderRightTrending() {
+  const el = document.getElementById('rightTrending');
+  if (!el) return;
+  const catCounts = {};
+  allPosts.filter(p => p.category && p.status === 'active').forEach(p => { catCounts[p.category] = (catCounts[p.category] || 0) + 1; });
+  const sorted = Object.entries(catCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  if (!sorted.length) { el.innerHTML = '<p style="color:var(--muted);font-size:12px">No trending topics yet.</p>'; return; }
+  el.innerHTML = sorted.map(([cat, cnt]) =>
+    '<div class="trending-item" onclick="setCatFilterClick(\'' + cat + '\')">' +
+      '<div class="trending-cat">Category</div>' +
+      '<div class="trending-name"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>' + esc(cat) + '</div>' +
+      '<div class="trending-count">' + cnt + ' post' + (cnt !== 1 ? 's' : '') + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+// ══════════════════════════════════════════
+//  LOAD CURRENT USER
+// ══════════════════════════════════════════
+function loadCurrentUser() {
+  if (!CU) CU = 'Guest';
+  db.ref('users/' + CU).once('value').then(snap => {
+    let d = snap.val() || {};
+    if (!snap.exists()) {
+      d = { name: CU, bio: '', role: '', profilePic: '', profilePicApproved: false, banner: '', bannerApproved: false };
+      db.ref('users/' + CU).set(d);
+    }
+    CUdata = d;
+    refreshSidebarUser();
+    loadFollowing();
+  });
+  db.ref('users').on('value', snap => {
+    allUsers = snap.val() || {};
+    renderRightWhoToFollow();
+  });
+}
+
+function refreshSidebarUser() {
+  const pic = getAvatar(CU, CUdata, 38);
+  const picEl = document.getElementById('sidebarUserPic');
+  picEl.src = pic;
+  picEl.onerror = () => { picEl.onerror = null; picEl.src = mkAvatar(CU, 38); };
+  const cpAv = document.getElementById('cpAvatar');
+  cpAv.src = getAvatar(CU, CUdata, 44);
+  cpAv.onerror = () => { cpAv.onerror = null; cpAv.src = mkAvatar(CU, 44); };
+}
+
+function loadFollowing() {
+  db.ref('social/following/' + CU).once('value').then(snap => {
+    const d = snap.val() || {};
+    following = Object.keys(d).filter(k => d[k]);
+  });
+}
+
+// ══════════════════════════════════════════
+//  MOD CHECK
+// ══════════════════════════════════════════
+function checkModStatus() {
+  db.ref('socialMods').once('value').then(snap => {
+    const d = snap.val() || {};
+    modList = Object.keys(d);
+    isOwner = CU === OWNER;
+    isMod = isOwner || modList.includes(CU);
+    if (isMod) document.getElementById('navMod').classList.remove('hidden');
+  });
+}
+
+// ══════════════════════════════════════════
+//  LOGO EASTER EGG
+// ══════════════════════════════════════════
+document.getElementById('sidebarLogo').addEventListener('click', () => {
+  logoClicks++;
+  clearTimeout(logoTimer);
+  logoTimer = setTimeout(() => logoClicks = 0, 1500);
+  if (logoClicks >= 7) {
+    logoClicks = 0;
+    if (isMod || isOwner) { goMod(); return; }
+    openPw();
+  }
+});
+
+// ══════════════════════════════════════════
+//  PASSWORD MODAL
+// ══════════════════════════════════════════
+function openPw() {
+  pwBuf = '';
+  document.getElementById('pwError').textContent = '';
+  document.getElementById('pwTextInput').value = '';
+  document.getElementById('pwTextArea').style.display = 'none';
+  updatePwDots();
+  document.getElementById('pwOverlay').classList.remove('hidden');
+}
+function closePw() { document.getElementById('pwOverlay').classList.add('hidden'); pwBuf = ''; }
+function updatePwDots() {
+  document.querySelectorAll('.pw-dot').forEach((d, i) => d.classList.toggle('filled', i < pwBuf.length));
+}
+function pwKey(k) {
+  if (k === 'back') pwBuf = pwBuf.slice(0, -1);
+  else if (pwBuf.length < 6) pwBuf += k;
+  updatePwDots();
+  if (pwBuf.length === 6) setTimeout(checkPwPin, 200);
+}
+function checkPwPin() {
+  document.getElementById('pwError').textContent = 'Use full password mode for this password.';
+  pwBuf = ''; updatePwDots();
+}
+function togglePwTextMode() {
+  const a = document.getElementById('pwTextArea');
+  a.style.display = a.style.display === 'none' ? 'block' : 'none';
+  if (a.style.display === 'block') document.getElementById('pwTextInput').focus();
+}
+function checkPwFull() {
+  const v = document.getElementById('pwTextInput').value;
+  if (v === MOD_PW) {
+    closePw();
+    db.ref('socialMods/' + CU).once('value').then(snap => {
+      if (snap.exists() || CU === OWNER) {
+        isMod = true; isOwner = (CU === OWNER);
+        document.getElementById('navMod').classList.remove('hidden');
+        toast('Mod panel unlocked!', 'success');
+        goMod();
+      } else {
+        toast('Password correct but you\'re not on the mod list. Ask Logan to add you.', 'error', 5000);
+      }
+    });
+  } else {
+    document.getElementById('pwError').textContent = 'Incorrect password.';
+  }
+}
+
+// ══════════════════════════════════════════
+//  CATEGORIES
+// ══════════════════════════════════════════
+function loadCategories() {
+  db.ref('socialCategories').on('value', snap => {
+    const d = snap.val() || {};
+    allCats = Object.values(d).filter(c => c.approved).map(c => c.name);
+    updateCatDropdowns();
+    renderRightTrending();
+  });
+}
+
+function updateCatDropdowns() {
+  const catMenu = document.getElementById('catSelectMenu');
+  const cfMenu = document.getElementById('cfMenu');
+  const catOpts = allCats.map(c =>
+    '<div class="cselect-opt" data-value="' + c + '" onclick="cselectPick(\'catSelect\',\'' + c + '\',\'' + c + '\')">' + esc(c) + '</div>'
+  ).join('');
+  const cfOpts = allCats.map(c =>
+    '<div class="cselect-opt" data-value="' + c + '" onclick="cselectPick(\'categoryFilterSelect\',\'' + c + '\',\'' + c + '\')">' + esc(c) + '</div>'
+  ).join('');
+  if (catMenu) catMenu.innerHTML = '<div class="cselect-opt sel" data-value="" onclick="cselectPick(\'catSelect\',\'\',\'Category\')">No category</div>' + catOpts;
+  if (cfMenu) cfMenu.innerHTML = '<div class="cselect-opt sel" data-value="" onclick="cselectPick(\'categoryFilterSelect\',\'\',\'All categories\')">All categories</div>' + cfOpts;
+}
+
+function openCatModal() { document.getElementById('catModal').classList.remove('hidden'); }
+function closeCatModal() { document.getElementById('catModal').classList.add('hidden'); }
+function submitCat() {
+  const v = document.getElementById('catInput').value.trim();
+  if (!v) { toast('Enter a category name', 'error'); return; }
+  db.ref('socialCategories').push({ name: v, approved: false, requested_by: CU, timestamp: Date.now() }).then(() => {
+    toast('Category requested! Mods will review it.', 'success');
+    closeCatModal();
+    document.getElementById('catInput').value = '';
+  });
+}
+
+// ══════════════════════════════════════════
+//  EDITOR
+// ══════════════════════════════════════════
+function fmt(cmd) { document.execCommand(cmd, false, null); document.getElementById('cpEditor').focus(); }
+function fmtColor(c) { document.execCommand('foreColor', false, c); document.getElementById('cpEditor').focus(); }
+function fmtFont(f) { if (f) { document.execCommand('fontName', false, f); document.getElementById('cpEditor').focus(); } }
+function toggleEmoji() {
+  const ep = document.getElementById('emojiPanel');
+  ep.style.display = ep.style.display === 'none' ? 'flex' : 'none';
+}
+function insertEmoji(em) { document.execCommand('insertText', false, em); document.getElementById('cpEditor').focus(); }
+let showPoll = false;
+function togglePoll() {
+  showPoll = !showPoll;
+  document.getElementById('pollBuilderEl').style.display = showPoll ? 'block' : 'none';
+}
+function addPollOpt() {
+  const c = document.querySelectorAll('#pollOptsContainer input').length;
+  if (c >= 6) { toast('Max 6 options', 'error'); return; }
+  const inp = document.createElement('input');
+  inp.className = 'poll-input poll-opt'; inp.type = 'text'; inp.placeholder = 'Option ' + (c + 1);
+  document.getElementById('pollOptsContainer').appendChild(inp);
+}
+function onEditorInput() {
+  const txt = document.getElementById('cpEditor').innerText;
+  const len = txt.length;
+  document.getElementById('charCount').textContent = len + ' / 500';
+  document.getElementById('postBtn').disabled = len === 0 || len > 500;
+}
+
+// ══════════════════════════════════════════
+//  SUBMIT POST
+// ══════════════════════════════════════════
+function submitPost() {
+  const ed = document.getElementById('cpEditor');
+  const html = ed.innerHTML.trim();
+  if (!html || html === '<br>') { toast('Write something!', 'error'); return; }
+  if (!CU) { toast('Login required', 'error'); return; }
+  document.getElementById('postBtn').disabled = true;
+  const effect = cselectValues.effectSelect || 'none';
+  const cat = cselectValues.catSelect || '';
+  let poll = null;
+  if (showPoll) {
+    const q = document.getElementById('pollQInput').value.trim();
+    const opts = [...document.querySelectorAll('#pollOptsContainer .poll-opt')].map(i => i.value.trim()).filter(Boolean);
+    if (q && opts.length >= 2) poll = { question: q, options: opts };
+  }
+  const postData = {
+    author: CU, content: html, plain_text: ed.innerText,
+    category: cat, effect, timestamp: Date.now(),
+    likes: 0, dislikes: 0, liked_by: [], disliked_by: [],
+    comment_count: 0, reactions: {}, reported: false, status: 'active', has_poll: !!poll
+  };
+  if (poll) {
+    postData.poll_question = poll.question;
+    postData.poll_options = poll.options;
+    const votes = {}; poll.options.forEach((_, i) => votes[i] = 0);
+    postData.poll_votes = votes; postData.poll_voters = [];
+    db.ref('socialPolls').push({ question: poll.question, options: poll.options, votes, voters: [], author: CU, timestamp: Date.now() })
+      .then(r => { postData.poll_id = r.key; createPost(postData, ed); });
+    return;
+  }
+  createPost(postData, ed);
+}
+function createPost(data, ed) {
+  db.ref('socialPosts').push(data).then(() => {
+    ed.innerHTML = ''; onEditorInput();
+    cselectValues.effectSelect = 'none'; cselectValues.catSelect = '';
+    const efEl = document.querySelector('.cselect[data-id="effectSelect"]');
+    const ctEl = document.querySelector('.cselect[data-id="catSelect"]');
+    if (efEl) { efEl.querySelector('.cselect-value').textContent = 'Effect'; efEl.querySelectorAll('.cselect-opt').forEach(o => o.classList.toggle('sel', o.dataset.value === 'none')); }
+    if (ctEl) { ctEl.querySelector('.cselect-value').textContent = 'Category'; ctEl.querySelectorAll('.cselect-opt').forEach(o => o.classList.toggle('sel', o.dataset.value === '')); }
+    if (showPoll) {
+      togglePoll();
+      document.getElementById('pollQInput').value = '';
+      document.querySelectorAll('#pollOptsContainer .poll-opt').forEach((el, i) => { if (i < 2) el.value = ''; else el.remove(); });
+    }
+    document.getElementById('emojiPanel').style.display = 'none';
+    toast('Posted!', 'success');
+    document.getElementById('postBtn').disabled = false;
+  });
+}
+
+// ══════════════════════════════════════════
+//  LISTEN POSTS
+// ══════════════════════════════════════════
+db.ref('socialPosts').on('value', snap => {
+  const d = snap.val() || {};
+  allPosts = Object.entries(d).map(([id, p]) => ({ id, ...p })).filter(p => p.status !== 'removed');
+  renderFeed();
+  renderRightTrending();
+});
+
+// ══════════════════════════════════════════
+//  RENDER FEED
+// ══════════════════════════════════════════
+function renderFeed() {
+  const el = document.getElementById('feedContainer');
+  if (!el) return;
+  let posts = [...allPosts];
+  if (catFilter) posts = posts.filter(p => p.category === catFilter);
+  if (searchQuery) { const q = searchQuery.toLowerCase(); posts = posts.filter(p => (p.plain_text || '').toLowerCase().includes(q) || (p.author || '').toLowerCase().includes(q)); }
+  if (feedTab === 'following' && following.length) posts = posts.filter(p => following.includes(p.author) || p.author === CU);
+  if (feedTab === 'hot') posts.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+  else posts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  if (!posts.length) {
+    el.innerHTML = '<div class="empty-feed"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" opacity=".3"/></svg><p>' +
+      (searchQuery ? 'No matching posts.' : feedTab === 'following' ? 'Follow people to see their posts here.' : 'No posts yet. Be the first!') + '</p></div>';
+    return;
+  }
+  el.innerHTML = posts.map(p => buildPost(p)).join('');
+}
+
+function buildPost(p) {
+  const ud = allUsers[p.author] || {};
+  const pic = getAvatar(p.author, ud, 44);
+  const onl = isOnline(p.author);
+  const likedMe = (p.liked_by || []).includes(CU);
+  const dislikedMe = (p.disliked_by || []).includes(CU);
+  const isMe = p.author === CU;
+  const isModOrOwner = isMod || isOwner;
+  const ownerBadge = p.author === OWNER ? '<span class="badge owner"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>Owner</span>' : '';
+  const modBadge = modList.includes(p.author) ? '<span class="badge mod"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>Mod</span>' : '';
+  const repostBar = p.repost_of ? '<div class="repost-bar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg> Reposted from <b>@' + esc(p.original_author || '?') + '</b></div>' : '';
+  const catBadge = p.category ? '<button class="post-category" onclick="setCatFilterClick(\'' + p.category + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"/></svg>' + esc(p.category) + '</button>' : '';
+
+  let pollHtml = '';
+  if (p.has_poll && p.poll_question) {
+    const opts = p.poll_options || [];
+    const votes = p.poll_votes || {};
+    const total = Object.values(votes).reduce((a, b) => a + b, 0);
+    const voted = (p.poll_voters || []).includes(CU);
+    pollHtml = '<div class="poll-display"><div class="poll-q"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>' + esc(p.poll_question) + '</div>' +
+      opts.map((o, i) => { const v = votes[i] || 0, pct = total ? Math.round(v / total * 100) : 0; return '<div class="poll-opt"' + (!voted ? ' onclick="votePoll(\'' + p.id + '\',' + i + ')"' : '') + '><div class="poll-bar-bg"><div class="poll-bar-fill" style="width:' + pct + '%"></div><span class="poll-opt-lbl">' + esc(o) + '</span></div><span class="poll-pct">' + pct + '%</span></div>'; }).join('') +
+      '<div class="poll-footer">' + total + ' vote' + (total !== 1 ? 's' : '') + (voted ? ' · You voted' : '') + '</div></div>';
+  }
+
+  const rxns = p.reactions || {};
+  let rxnRow = '<div class="reactions-row" id="rxnrow-' + p.id + '">';
+  Object.entries(rxns).forEach(([em, users]) => {
+    if (!users || !users.length) return;
+    const mine = (users || []).includes(CU);
+    rxnRow += '<span class="rxn-chip ' + (mine ? 'mine' : '') + '" onclick="toggleReaction(\'' + p.id + '\',\'' + em + '\')">' + em + '<span class="rxn-cnt">' + users.length + '</span></span>';
+  });
+  rxnRow += '</div>';
+
+  const authorN = (p.author || '?').charAt(0).toUpperCase();
+
+  return '<article class="post-card effect-' + (p.effect || 'none') + '" id="pc-' + p.id + '" data-id="' + p.id + '">' +
+    repostBar +
+    '<div class="post-inner">' +
+      '<div class="post-avatar" onclick="goProfile(\'' + p.author + '\')"><img src="' + pic + '" alt="" onerror="this.onerror=null;this.src=mkAvatar(\'' + p.author + '\',44)"></div>' +
+      '<div class="post-body">' +
+        '<div class="post-header-row">' +
+          '<div class="post-author-info">' +
+            '<span class="post-author-name" onclick="goProfile(\'' + p.author + '\')">' + esc(ud.name || p.author) + '</span>' +
+            ownerBadge + modBadge +
+            '<span class="online-dot ' + (onl ? 'on' : 'off') + '" title="' + (onl ? 'Online' : 'Offline') + '"></span>' +
+            '<span class="post-author-handle">@' + esc(p.author) + '</span>' +
+            '<span class="post-time-dot">·</span>' +
+            '<span class="post-timestamp">' + timeAgo(p.timestamp) + '</span>' +
+          '</div>' +
+          '<div style="display:flex;gap:4px">' +
+            (!isMe ? '<button class="pa-btn report-btn" onclick="reportPost(\'' + p.id + '\')" title="Report"><svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/></svg></button>' : '') +
+            (isModOrOwner ? '<button class="pa-btn" onclick="modRemove(\'' + p.id + '\')" title="Remove (Mod)" style="color:#ef4444"><svg viewBox="0 0 24 24" fill="currentColor" style="width:14px;height:14px"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>' : '') +
+          '</div>' +
+        '</div>' +
+        catBadge +
+        '<div class="post-content">' + p.content + '</div>' +
+        pollHtml +
+        '<div class="rxn-picker" id="rp-' + p.id + '">' +
+          REACTIONS.map(e => '<span class="rxn-em" onclick="toggleReaction(\'' + p.id + '\',\'' + e + '\')">' + e + '</span>').join('') +
+        '</div>' +
+        rxnRow +
+        '<div class="post-actions-bar">' +
+          '<button class="pa-btn" onclick="openComments(\'' + p.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' + (p.comment_count || 0) +
+          '</button>' +
+          '<button class="pa-btn" onclick="openRepost(\'' + p.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Repost' +
+          '</button>' +
+          '<button class="pa-btn ' + (likedMe ? 'liked' : '') + '" onclick="toggleLike(\'' + p.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="' + (likedMe ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' + (p.likes || 0) +
+          '</button>' +
+          '<button class="pa-btn ' + (dislikedMe ? 'disliked' : '') + '" onclick="toggleDislike(\'' + p.id + '\')">' +
+            '<svg viewBox="0 0 24 24" fill="' + (dislikedMe ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="2"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>' + (p.dislikes || 0) +
+          '</button>' +
+          '<button class="pa-btn" onclick="toggleRxnPicker(\'' + p.id + '\')" title="React">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 13s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>' +
+          '</button>' +
+          '<button class="pa-btn" onclick="bookmarkPost(\'' + p.id + '\')" title="Bookmark">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>' +
+          '</button>' +
+          '<button class="pa-btn" onclick="sharePost(\'' + p.id + '\',\'' + esc(p.plain_text || '') + '\')" title="Share">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="comments-section" id="cs-' + p.id + '">' +
+          '<div id="clist-' + p.id + '"></div>' +
+          '<div class="add-comment">' +
+            '<img src="' + getAvatar(CU, CUdata, 32) + '" alt="" onerror="this.onerror=null;this.src=mkAvatar(\'' + CU + '\',32)">' +
+            '<textarea class="comment-textarea" id="cin-' + p.id + '" rows="2" placeholder="Reply..."></textarea>' +
+            '<button class="comment-send" onclick="submitComment(\'' + p.id + '\')">Reply</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</article>';
+}
+
+// ══════════════════════════════════════════
+//  LIKE / DISLIKE
+// ══════════════════════════════════════════
+function toggleLike(id) {
+  if (!CU) { toast('Login required', 'error'); return; }
+  const p = allPosts.find(x => x.id === id); if (!p) return;
+  const lb = [...(p.liked_by || [])], db2 = [...(p.disliked_by || [])];
+  const isL = lb.includes(CU), isD = db2.includes(CU);
+  let likes = p.likes || 0, dislikes = p.dislikes || 0, newLb = lb, newDb = db2;
+  if (isL) { newLb = lb.filter(u => u !== CU); likes--; }
+  else { newLb.push(CU); likes++; if (isD) { newDb = db2.filter(u => u !== CU); dislikes--; } }
+  db.ref('socialPosts/' + id).update({ likes, dislikes, liked_by: newLb, disliked_by: newDb });
+}
+function toggleDislike(id) {
+  if (!CU) { toast('Login required', 'error'); return; }
+  const p = allPosts.find(x => x.id === id); if (!p) return;
+  const lb = [...(p.liked_by || [])], db2 = [...(p.disliked_by || [])];
+  const isL = lb.includes(CU), isD = db2.includes(CU);
+  let likes = p.likes || 0, dislikes = p.dislikes || 0, newLb = lb, newDb = db2;
+  if (isD) { newDb = db2.filter(u => u !== CU); dislikes--; }
+  else { newDb.push(CU); dislikes++; if (isL) { newLb = lb.filter(u => u !== CU); likes--; } }
+  db.ref('socialPosts/' + id).update({ likes, dislikes, liked_by: newLb, disliked_by: newDb });
+}
+
+// ══════════════════════════════════════════
+//  REACTIONS
+// ══════════════════════════════════════════
+function toggleRxnPicker(id) {
+  const rp = document.getElementById('rp-' + id);
+  document.querySelectorAll('.rxn-picker.open').forEach(el => { if (el.id !== 'rp-' + id) el.classList.remove('open'); });
+  rp.classList.toggle('open');
+}
+function toggleReaction(id, emoji) {
+  if (!CU) { toast('Login required', 'error'); return; }
+  const p = allPosts.find(x => x.id === id); if (!p) return;
+  const rxns = p.reactions ? JSON.parse(JSON.stringify(p.reactions)) : {};
+  if (!rxns[emoji]) rxns[emoji] = [];
+  const idx = rxns[emoji].indexOf(CU);
+  if (idx >= 0) rxns[emoji].splice(idx, 1); else rxns[emoji].push(CU);
+  if (!rxns[emoji].length) delete rxns[emoji];
+  db.ref('socialPosts/' + id + '/reactions').set(rxns);
+  const rp = document.getElementById('rp-' + id); if (rp) rp.classList.remove('open');
+}
+
+// ══════════════════════════════════════════
+//  COMMENTS
+// ══════════════════════════════════════════
+function openComments(id) {
+  const cs = document.getElementById('cs-' + id);
+  const open = cs.classList.toggle('open');
+  if (open) loadComments(id);
+}
+function loadComments(pid) {
+  db.ref('socialComments/' + pid).once('value').then(snap => {
+    const d = snap.val() || {};
+    const cmts = Object.entries(d).map(([k, v]) => ({ id: k, ...v })).sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0));
+    const el = document.getElementById('clist-' + pid); if (!el) return;
+    if (!cmts.length) { el.innerHTML = '<p style="color:var(--muted);font-size:12px;margin-bottom:8px">No replies yet.</p>'; return; }
+    el.innerHTML = cmts.map(c => {
+      const cu = allUsers[c.author] || {};
+      const lm = (c.liked_by || []).includes(CU);
+      const av = getAvatar(c.author, cu, 32);
+      return '<div class="comment-item">' +
+        '<img src="' + av + '" alt="" onerror="this.onerror=null;this.src=mkAvatar(\'' + c.author + '\',32)" style="cursor:pointer" onclick="goProfile(\'' + c.author + '\')">' +
+        '<div class="comment-bubble">' +
+          '<div class="comment-name" onclick="goProfile(\'' + c.author + '\')">' + esc(cu.name || c.author) + '</div>' +
+          '<div class="comment-text">' + esc(c.content) + '</div>' +
+          '<div class="comment-meta">' +
+            '<span class="comment-time">' + timeAgo(c.timestamp) + '</span>' +
+            '<button class="comment-like ' + (lm ? 'liked' : '') + '" onclick="likeComment(\'' + pid + '\',\'' + c.id + '\')">❤ ' + (c.likes || 0) + '</button>' +
+          '</div>' +
+        '</div></div>';
+    }).join('');
+  });
+}
+function submitComment(pid) {
+  const inp = document.getElementById('cin-' + pid);
+  const txt = inp.value.trim();
+  if (!txt) { toast('Write a reply', 'error'); return; }
+  if (!CU) { toast('Login required', 'error'); return; }
+  db.ref('socialComments/' + pid).push({ author: CU, content: txt, timestamp: Date.now(), likes: 0, liked_by: [] }).then(() => {
+    inp.value = '';
+    const p = allPosts.find(x => x.id === pid);
+    db.ref('socialPosts/' + pid + '/comment_count').set((p ? p.comment_count || 0 : 0) + 1);
+    loadComments(pid);
+    toast('Reply posted!', 'success');
+  });
+}
+function likeComment(pid, cid) {
+  if (!CU) return;
+  db.ref('socialComments/' + pid + '/' + cid).once('value').then(snap => {
+    const c = snap.val() || {};
+    const lb = [...(c.liked_by || [])];
+    const idx = lb.indexOf(CU);
+    let likes = c.likes || 0;
+    if (idx >= 0) { lb.splice(idx, 1); likes--; } else { lb.push(CU); likes++; }
+    db.ref('socialComments/' + pid + '/' + cid).update({ likes, liked_by: lb }).then(() => loadComments(pid));
+  });
+}
+
+// ══════════════════════════════════════════
+//  POLL VOTE
+// ══════════════════════════════════════════
+function votePoll(pid, optIdx) {
+  if (!CU) { toast('Login required', 'error'); return; }
+  const p = allPosts.find(x => x.id === pid); if (!p) return;
+  if ((p.poll_voters || []).includes(CU)) { toast('Already voted', 'error'); return; }
+  const votes = { ...(p.poll_votes || {}) };
+  votes[optIdx] = (votes[optIdx] || 0) + 1;
+  const voters = [...(p.poll_voters || []), CU];
+  db.ref('socialPosts/' + pid).update({ poll_votes: votes, poll_voters: voters });
+  if (p.poll_id) db.ref('socialPolls/' + p.poll_id).update({ votes, voters });
+}
+
+// ══════════════════════════════════════════
+//  REPORT / MOD REMOVE
+// ══════════════════════════════════════════
+function reportPost(id) {
+  if (!CU) { toast('Login required', 'error'); return; }
+  db.ref('socialPosts/' + id).update({ status: 'reported', reported: true, reported_by: CU }).then(() => {
+    document.getElementById('reportDoneModal').classList.remove('hidden');
+  });
+}
+function modRemove(id) {
+  db.ref('socialPosts/' + id).update({ status: 'removed' }).then(() => { toast('Post removed', 'info'); });
+}
+
+// ══════════════════════════════════════════
+//  REPOST
+// ══════════════════════════════════════════
+function openRepost(id) {
+  repostTarget = id;
+  const p = allPosts.find(x => x.id === id);
+  document.getElementById('repostPreviewContent').innerHTML = p ? '<b>@' + esc(p.author) + '</b>: ' + p.content.substring(0, 120) + (p.content.length > 120 ? '...' : '') : '';
+  document.getElementById('repostComment').value = '';
+  document.getElementById('repostModal').classList.remove('hidden');
+}
+function closeRepostModal() { document.getElementById('repostModal').classList.add('hidden'); repostTarget = null; }
+function confirmRepost() {
+  if (!repostTarget || !CU) { closeRepostModal(); return; }
+  const orig = allPosts.find(p => p.id === repostTarget); if (!orig) { closeRepostModal(); return; }
+  const comment = document.getElementById('repostComment').value.trim();
+  const content = comment ? '<p>' + esc(comment) + '</p><hr style="border-color:var(--border);margin:8px 0">' + orig.content : orig.content;
+  db.ref('socialPosts').push({
+    author: CU, content, plain_text: comment, category: orig.category || '', effect: 'none',
+    timestamp: Date.now(), likes: 0, dislikes: 0, liked_by: [], disliked_by: [],
+    comment_count: 0, reactions: {}, reported: false, status: 'active', has_poll: false,
+    repost_of: repostTarget, original_author: orig.author
+  }).then(() => { toast('Reposted!', 'success'); closeRepostModal(); });
+}
+
+// ══════════════════════════════════════════
+//  SHARE & BOOKMARK
+// ══════════════════════════════════════════
+function sharePost(id, txt) {
+  if (navigator.share) { navigator.share({ title: 'TAC Social Post', text: txt.substring(0, 200) }).catch(() => {}); }
+  else { navigator.clipboard.writeText(window.location.href + '#post-' + id).then(() => toast('Link copied!', 'success')).catch(() => toast('Copied!', 'success')); }
+}
+function bookmarkPost(id) {
+  const bookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+  if (bookmarks.includes(id)) { const idx = bookmarks.indexOf(id); bookmarks.splice(idx, 1); toast('Bookmark removed', 'info'); }
+  else { bookmarks.push(id); toast('Bookmarked!', 'success'); }
+  localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+}
+
+// ══════════════════════════════════════════
+//  FOLLOW
+// ══════════════════════════════════════════
+function toggleFollow(username, btn) {
+  if (!CU || username === CU) return;
+  const isF = following.includes(username);
+  if (isF) {
+    db.ref('social/following/' + CU + '/' + username).remove();
+    db.ref('social/followers/' + username + '/' + CU).remove();
+    following = following.filter(u => u !== username);
+    toast('Unfollowed @' + username, 'info');
+    if (btn) { btn.textContent = 'Follow'; btn.classList.remove('following'); btn.classList.add('follow'); }
+  } else {
+    db.ref('social/following/' + CU + '/' + username).set(true);
+    db.ref('social/followers/' + username + '/' + CU).set(true);
+    following.push(username);
+    toast('Following @' + username + '!', 'success');
+    if (btn) { btn.textContent = 'Following'; btn.classList.remove('follow'); btn.classList.add('following'); }
+  }
+  if (profileView === username) renderProfileContent(username);
+}
+
+// ══════════════════════════════════════════
+//  PROFILE PAGE
+// ══════════════════════════════════════════
+function renderProfileContent(username) {
+  const el = document.getElementById('profileContent');
+  if (!el) return;
+  db.ref('users/' + username).once('value').then(snap => {
+    const ud = snap.val() || { name: username, bio: '', role: '', profilePic: '', profilePicApproved: false, banner: '', bannerApproved: false };
+    const isMe = username === CU;
+    const isF = following.includes(username);
+    const onl = isOnline(username);
+    const pic = getAvatar(username, ud, 88);
+    const bannerHTML = (ud.banner && ud.bannerApproved) ? '<img src="' + ud.banner + '" alt="" onerror="this.style.display=\'none\'">' : '<div class="profile-banner-placeholder"></div>';
+    const ownerBadge = username === OWNER ? '<span class="badge owner"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>Owner</span>' : '';
+    const modBadge = modList.includes(username) ? '<span class="badge mod"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>Mod</span>' : '';
+    const rolePill = ud.role ? '<div class="profile-role-pill"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' + esc(ud.role) + '</div>' : '';
+
+    db.ref('social/followers/' + username).once('value').then(fSnap => {
+      const followers = Object.keys(fSnap.val() || {}).length;
+      db.ref('social/following/' + username).once('value').then(fgSnap => {
+        const followingCnt = Object.keys(fgSnap.val() || {}).length;
+        const userPosts = allPosts.filter(p => p.author === username && p.status === 'active').sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        const likedPosts = allPosts.filter(p => (p.liked_by || []).includes(username) && p.status === 'active').sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        el.innerHTML =
+          '<div class="profile-page">' +
+            '<div class="profile-banner-area">' + bannerHTML + '</div>' +
+            '<div class="profile-avatar-area">' +
+              '<div class="profile-avatar-wrap">' +
+                '<img src="' + pic + '" alt="" onerror="this.onerror=null;this.src=mkAvatar(\'' + username + '\',88)">' +
+                '<span class="profile-online-ring ' + (onl ? 'on' : 'off') + '" title="' + (onl ? 'Online' : 'Offline') + '"></span>' +
+              '</div>' +
+              '<div class="profile-action-btns">' +
+                (isMe ? '<button class="profile-edit-btn" onclick="openEditProfile()">Edit profile</button>' :
+                  '<button class="profile-follow-btn ' + (isF ? 'following' : '') + '" onclick="toggleFollow(\'' + username + '\',this)">' + (isF ? 'Following' : 'Follow') + '</button>') +
+              '</div>' +
+            '</div>' +
+            '<div class="profile-details">' +
+              '<div class="profile-display-name">' + esc(ud.name || username) + ' ' + ownerBadge + modBadge + '</div>' +
+              '<div class="profile-handle">@' + esc(username) + ' ' + (onl ? '<span style="color:var(--accent);font-size:12px">· Online</span>' : '<span style="color:var(--muted);font-size:12px">· Offline</span>') + '</div>' +
+              rolePill +
+              '<div class="profile-bio">' + esc(ud.bio || 'No bio yet.') + '</div>' +
+              '<div class="profile-stats">' +
+                '<div class="profile-stat"><span class="pstat-num">' + userPosts.length + '</span>&nbsp;<span class="pstat-lbl">Posts</span></div>' +
+                '<div class="profile-stat"><span class="pstat-num">' + followers + '</span>&nbsp;<span class="pstat-lbl">Followers</span></div>' +
+                '<div class="profile-stat"><span class="pstat-num">' + followingCnt + '</span>&nbsp;<span class="pstat-lbl">Following</span></div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="profile-tabs">' +
+              '<div class="profile-tab ' + (profileTab === 'posts' ? 'active' : '') + '" onclick="switchProfileTab(\'posts\',\'' + username + '\')">Posts</div>' +
+              '<div class="profile-tab ' + (profileTab === 'likes' ? 'active' : '') + '" onclick="switchProfileTab(\'likes\',\'' + username + '\')">Likes</div>' +
+            '</div>' +
+            '<div id="profilePostsArea">' +
+              (profileTab === 'posts'
+                ? (userPosts.length ? userPosts.map(p => buildPost(p)).join('') : '<div class="empty-feed" style="padding:40px"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" opacity=".3"/></svg><p>No posts yet.</p></div>')
+                : (likedPosts.length ? likedPosts.map(p => buildPost(p)).join('') : '<div class="empty-feed" style="padding:40px"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" opacity=".3"/></svg><p>No liked posts.</p></div>')) +
+            '</div>' +
+          '</div>';
+      });
+    });
+  });
+}
+
+function switchProfileTab(tab, username) { profileTab = tab; renderProfileContent(username); }
+
+// ══════════════════════════════════════════
+//  EDIT PROFILE
+// ══════════════════════════════════════════
+function openEditProfile() {
+  newPicB64 = null; newBannerB64 = null;
+  document.getElementById('ep_name').value = CUdata.name || CU;
+  document.getElementById('ep_bio').value = CUdata.bio || '';
+  document.getElementById('ep_pic_prev').src = getAvatar(CU, CUdata, 60);
+  document.getElementById('ep_banner_prev').src = (CUdata.banner && CUdata.bannerApproved) ? CUdata.banner : '';
+  document.getElementById('editProfileModal').classList.remove('hidden');
+}
+function closeEditProfile() { document.getElementById('editProfileModal').classList.add('hidden'); }
+function previewUpload(inputId, previewId) {
+  const file = document.getElementById(inputId).files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { toast('Image too large (max 2MB)', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById(previewId).src = e.target.result;
+    if (inputId === 'ep_pic_file') newPicB64 = e.target.result;
+    else newBannerB64 = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function saveProfile() {
+  const name = document.getElementById('ep_name').value.trim();
+  const bio = document.getElementById('ep_bio').value.trim();
+  const updates = {};
+  if (name) updates.name = name;
+  if (bio !== undefined) updates.bio = bio;
+  if (newPicB64) { updates.profilePic = newPicB64; updates.profilePicApproved = false; updates.profilePicPending = true; }
+  if (newBannerB64) { updates.banner = newBannerB64; updates.bannerApproved = false; updates.bannerPending = true; }
+  db.ref('users/' + CU).update(updates).then(() => {
+    CUdata = { ...CUdata, ...updates };
+    refreshSidebarUser();
+    closeEditProfile();
+    if (newPicB64) toast('Profile pic submitted for mod approval', 'info', 4000);
+    if (newBannerB64) toast('Banner submitted for mod approval', 'info', 4000);
+    if (!newPicB64 && !newBannerB64) toast('Profile updated!', 'success');
+    if (profileView === CU) renderProfileContent(CU);
+    newPicB64 = null; newBannerB64 = null;
+  });
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('view' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+}
+function goFeed() {
+  showView('Feed');
+  document.getElementById('navHome').classList.add('active');
+}
+function goMyProfile() {
+  profileView = CU; profileTab = 'posts';
+  showView('Profile');
+  document.getElementById('navProfile').classList.add('active');
+  renderProfileContent(CU);
+}
+function goProfile(username) {
+  profileView = username; profileTab = 'posts';
+  showView('Profile');
+  renderProfileContent(username);
+}
+function goMod() {
+  if (!isMod && !isOwner) { toast('No mod access', 'error'); return; }
+  showView('Mod');
+  document.getElementById('navMod').classList.add('active');
+  loadModPanel();
+}
+
+// ══════════════════════════════════════════
+//  FILTER / SEARCH
+// ══════════════════════════════════════════
+function setFeedTab(tab) {
+  feedTab = tab;
+  document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  renderFeed();
+}
+function setCatFilter(v) { catFilter = v; renderFeed(); }
+function setCatFilterClick(v) {
+  catFilter = v;
+  cselectPick('categoryFilterSelect', v, v || 'All categories');
+  goFeed();
+  renderFeed();
+}
+function searchPosts(q) { searchQuery = q; renderFeed(); }
+
+// ══════════════════════════════════════════
+//  MOD PANEL
+// ══════════════════════════════════════════
+function loadModPanel() { loadModReported(); loadModPics(); loadModBanners(); loadModCats(); loadModUsers(); }
+
+function loadModReported() {
+  db.ref('socialPosts').once('value').then(snap => {
+    const d = snap.val() || {};
+    const posts = Object.entries(d).filter(([, p]) => p.status === 'reported').map(([id, p]) => ({ id, ...p }));
+    const el = document.getElementById('modReportedList');
+    if (!posts.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px">No reported posts.</p>'; return; }
+    el.innerHTML = posts.map(p =>
+      '<div class="mod-item">' +
+        '<div class="mod-item-title">@' + esc(p.author) + ' · ' + timeAgo(p.timestamp) + '</div>' +
+        '<div class="mod-item-sub">Reported by: @' + esc(p.reported_by || '?') + '</div>' +
+        '<div style="font-size:13px;color:rgba(255,255,255,.7);max-height:70px;overflow:hidden;margin-bottom:8px">' + p.content + '</div>' +
+        '<div class="mod-btns">' +
+          '<button class="mdb ok" onclick="modRestore(\'' + p.id + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Restore</button>' +
+          '<button class="mdb no" onclick="modRemoveFull(\'' + p.id + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>Remove</button>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  });
+}
+
+function loadModPics() {
+  db.ref('users').once('value').then(snap => {
+    const d = snap.val() || {};
+    const pending = Object.entries(d).filter(([, v]) => v.profilePicPending && !v.profilePicApproved && v.profilePic);
+    const el = document.getElementById('modPicList');
+    if (!pending.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px">None pending.</p>'; return; }
+    el.innerHTML = pending.map(([u, ud]) =>
+      '<div class="mod-item">' +
+        '<div class="mod-item-title">@' + esc(u) + '</div>' +
+        '<img src="' + ud.profilePic + '" alt="" onerror="this.style.display=\'none\'">' +
+        '<div class="mod-btns" style="margin-top:8px">' +
+          '<button class="mdb ok" onclick="approveProfilePic(\'' + u + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Approve</button>' +
+          '<button class="mdb no" onclick="rejectProfilePic(\'' + u + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Reject</button>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  });
+}
+
+function loadModBanners() {
+  db.ref('users').once('value').then(snap => {
+    const d = snap.val() || {};
+    const pending = Object.entries(d).filter(([, v]) => v.bannerPending && !v.bannerApproved && v.banner);
+    const el = document.getElementById('modBannerList');
+    if (!pending.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px">None pending.</p>'; return; }
+    el.innerHTML = pending.map(([u, ud]) =>
+      '<div class="mod-item">' +
+        '<div class="mod-item-title">@' + esc(u) + '</div>' +
+        '<img src="' + ud.banner + '" alt="" style="max-width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:6px" onerror="this.style.display=\'none\'">' +
+        '<div class="mod-btns" style="margin-top:8px">' +
+          '<button class="mdb ok" onclick="approveBanner(\'' + u + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Approve</button>' +
+          '<button class="mdb no" onclick="rejectBanner(\'' + u + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Reject</button>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  });
+}
+
+function loadModCats() {
+  db.ref('socialCategories').once('value').then(snap => {
+    const d = snap.val() || {};
+    const pending = Object.entries(d).filter(([, v]) => !v.approved);
+    const el = document.getElementById('modCatList');
+    if (!pending.length) { el.innerHTML = '<p style="color:var(--muted);font-size:13px">None pending.</p>'; return; }
+    el.innerHTML = pending.map(([id, c]) =>
+      '<div class="mod-item">' +
+        '<div class="mod-item-title">' + esc(c.name) + '</div>' +
+        '<div class="mod-item-sub">Requested by @' + esc(c.requested_by || '?') + '</div>' +
+        '<div class="mod-btns">' +
+          '<button class="mdb ok" onclick="approveCat(\'' + id + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Approve</button>' +
+          '<button class="mdb no" onclick="rejectCat(\'' + id + '\')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>Reject</button>' +
+        '</div>' +
+      '</div>'
+    ).join('');
+  });
+}
+
+function loadModUsers() {
+  db.ref('socialMods').once('value').then(snap => {
+    const d = snap.val() || {};
+    const el = document.getElementById('modUsersList');
+    const entries = Object.keys(d);
+    el.innerHTML = entries.length ? entries.map(u =>
+      '<div class="mod-user-item"><span>' + esc(u) + (u === OWNER ? ' <span style="font-size:10px;color:var(--accent);background:var(--accent-dim);border-radius:10px;padding:2px 8px">Owner</span>' : '') + '</span>' +
+      (isOwner && u !== OWNER ? '<button class="mdb no" style="padding:3px 10px;font-size:11px" onclick="removeMod(\'' + u + '\')">Remove</button>' : '') + '</div>'
+    ).join('') : '<p style="color:var(--muted);font-size:13px">No moderators yet.</p>';
+    document.getElementById('addModArea').style.display = isOwner ? 'block' : 'none';
+  });
+}
+
+function approveProfilePic(u) { db.ref('users/' + u).update({ profilePicApproved: true, profilePicPending: false }).then(() => { toast('Approved!', 'success'); loadModPics(); }); }
+function rejectProfilePic(u) { db.ref('users/' + u).update({ profilePic: '', profilePicApproved: false, profilePicPending: false }).then(() => { toast('Rejected.', 'info'); loadModPics(); }); }
+function approveBanner(u) { db.ref('users/' + u).update({ bannerApproved: true, bannerPending: false }).then(() => { toast('Banner approved!', 'success'); loadModBanners(); }); }
+function rejectBanner(u) { db.ref('users/' + u).update({ banner: '', bannerApproved: false, bannerPending: false }).then(() => { toast('Rejected.', 'info'); loadModBanners(); }); }
+function approveCat(id) { db.ref('socialCategories/' + id).update({ approved: true }).then(() => { toast('Category approved!', 'success'); loadModCats(); }); }
+function rejectCat(id) { db.ref('socialCategories/' + id).remove().then(() => { toast('Rejected.', 'info'); loadModCats(); }); }
+function modRestore(id) { db.ref('socialPosts/' + id).update({ status: 'active', reported: false }).then(() => { toast('Restored!', 'success'); loadModReported(); }); }
+function modRemoveFull(id) { db.ref('socialPosts/' + id).update({ status: 'removed' }).then(() => { toast('Post removed.', 'info'); loadModReported(); }); }
+
+function addMod() {
+  const v = document.getElementById('addModInput').value.trim();
+  if (!v) { toast('Enter a username', 'error'); return; }
+  if (!isOwner) { toast('Only Logan can add mods', 'error'); return; }
+  db.ref('socialMods/' + v).set(true).then(() => { toast(v + ' added as mod!', 'success'); document.getElementById('addModInput').value = ''; loadModUsers(); });
+}
+
+function removeMod(u) {
+  if (!isOwner) { toast('Only Logan can remove mods', 'error'); return; }
+  db.ref('socialMods/' + u).remove().then(() => { toast(u + ' removed.', 'info'); loadModUsers(); });
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+loadCurrentUser();
+checkModStatus();
+loadCategories();
+if (CU === OWNER) {
+  db.ref('socialMods/' + OWNER).set('owner');
+  isOwner = true;
+  isMod = true;
+  document.getElementById('navMod').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

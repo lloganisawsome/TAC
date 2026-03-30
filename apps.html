@@ -302,7 +302,6 @@
   <source src="homepage.mp3" type="audio/mpeg"/>
  </audio>
  <body>
-  <!-- Ban Overlay -->
   <div id="banOverlay">
    <div class="ban-card">
     <div class="ban-icon">
@@ -314,7 +313,6 @@
     <h2>
      Access Restricted
     </h2>
-    <!-- Shows either global or per-app ban message -->
     <p id="banMessageText">
      Your access to TAC Launcher has been suspended.
     </p>
@@ -331,7 +329,6 @@
     <button class="appeal-btn" id="appealBtn" onclick="showAppealForm()">
      Submit an Appeal
     </button>
-    <!-- Only show "Go Back" for app-specific bans -->
     <button class="back-btn" id="backBtn" onclick="closeBanOverlay()" style="display:none;">
      ← Go Back to Launcher
     </button>
@@ -523,6 +520,8 @@
 
     // ── APP LIST ──────────────────────────────────────────────────────────────
     const apps = [
+      { name:'Social',           link:'social.html',      svg:'M16.01 3L14.4 7.5H10L11.61 3H9.11L7.5 7.5H3V10H6.6L5 14.5H1V17H4.11L2.5 21.5H5L6.6 17H11L9.4 21.5H11.9L13.5 17H18V14.5H14.4L16 10H20V7.5H16.9L18.5 3H16.01ZM13.5 14.5H9L10.6 10H15.1L13.5 14.5Z' },
+      { name:'Music',            link:'music.html',       svg:'M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z' },
       { name:'Not Games',        link:'notgames.html',    svg:'M3 6h18v2H3z M3 10h18v2H3z M3 14h12v2H3z' },
       { name:'Members',          link:'members.html',     svg:'M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z' },
       { name:'Apply Staff',      link:'staff.html',       svg:'M12 2l4 4h-3v4h-2V6H8l4-4z M5 18h14v2H5z' },
@@ -540,7 +539,6 @@
       { name:'To-Do',            link:'todo.html',        svg:'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 6l-6 6-3-3 1.41-1.41L11 12.17l4.59-4.58L17 9z' },
       { name:'Leak Crush',       link:'leakcrush.html',   svg:'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z' },
       { name:'Spacebar Clicker', link:'spacebar.html',    svg:'M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zm0-8h14V7H7v2z' },
-      { name:'Forum',            link:'forum.html',       svg:'M4 4h16v12H5.17L4 17.17V4z M6 6v8h12V6H6z' },
       { name:'Casino',           link:'tg.html',          svg:'M4 6h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm2 2v8h12V8H6zm3 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zm4 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z' },
       { name:'News',             link:'news.html',        svg:'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z' },
       { name:'Loftis Button',    link:'loftis.html',      img:'loftis.png' },
@@ -585,33 +583,30 @@
     //music player
     const bgMusic = document.getElementById('bgMusic');
 
-// Get volume from localStorage (bacvolume)
-let vol = localStorage.getItem('bacvolume');
+    // Get volume from localStorage (bacvolume)
+    let vol = localStorage.getItem('bacvolume');
 
-// If nothing saved, default to 50
-if (vol === null) {
-    vol = 50;
-}
+    // If nothing saved, default to 50
+    if (vol === null) {
+        vol = 50;
+    }
 
-// Make sure it's a number
-vol = parseInt(vol);
+    // Make sure it's a number
+    vol = parseInt(vol);
 
-// Safety clamp (just in case)
-if (isNaN(vol) || vol < 0) vol = 50;
-if (vol > 100) vol = 100;
+    // Safety clamp (just in case)
+    if (isNaN(vol) || vol < 0) vol = 50;
+    if (vol > 100) vol = 100;
 
-// Convert to 0–1 for audio element
-bgMusic.volume = vol / 100;
+    // Convert to 0–1 for audio element
+    bgMusic.volume = vol / 100;
 
-// Start on user interaction (browser rules)
-document.addEventListener('click', () => {
-    bgMusic.play().catch(() => {});
-}, { once: true });
+    // Start on user interaction (browser rules)
+    document.addEventListener('click', () => {
+        bgMusic.play().catch(() => {});
+    }, { once: true });
 
 
-    
-    
-    
     // ── APPEAL FUNCTIONS ───────────────────────────────────────────────────────
     window.submitAppeal = async function() {
       const message = document.getElementById('appealMessage').value.trim();
@@ -639,42 +634,31 @@ document.addEventListener('click', () => {
       document.getElementById('appealSuccess').classList.add('active');
     };
   </script>
-  <script src="custom-cursor.js">
-  </script>
-  <script src="rightclick.js">
-  </script>
-  <script src="panic-key.js">
-  </script>
-  <script src="idle-dvd.js">
-  </script>
-  <script src="timeTracker.js">
-  </script>
-  <script src="online.js" type="module">
-  </script>
-  <div id="tac-phone-container">
-  </div>
+  <script src="custom-cursor.js"></script>
+  <script src="rightclick.js"></script>
+  <script src="panic-key.js"></script>
+  <script src="idle-dvd.js"></script>
+  <script src="timeTracker.js"></script>
+  <script src="online.js" type="module"></script>
+  <div id="tac-phone-container"></div>
   <script>
-   fetch('phone-widget.html')
-        .then(r => r.text())
-        .then(html => {
-            const container = document.getElementById('tac-phone-container');
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-
-<iframe src="popup.html" 
-        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
-        allowtransparency="true">
-</iframe>
-
-</body>
-</html>
+    fetch('phone-widget.html')
+      .then(r => r.text())
+      .then(html => {
+          const container = document.getElementById('tac-phone-container');
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          if (doc.body.firstChild) {
+              container.appendChild(doc.body.firstChild);
+          }
+      })
+      .catch(e => console.error('Failed to load phone widget:', e));
   </script>
  
-<iframe src="popup.html" 
-        style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
-        allowtransparency="true">
-</iframe>
+  <iframe src="popup.html" 
+          style="position:fixed; bottom:16px; left:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
+          allowtransparency="true">
+  </iframe>
 
 </body>
 </html>
