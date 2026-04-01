@@ -977,15 +977,26 @@ const currentUser = localStorage.getItem('lastLoggedInUser') || 'Unknown';
 
 // ─── Fools Button Logic ───────────────────────────────────────────────────────
 const foolsBtn = document.getElementById('foolsButton');
+
 if (foolsBtn) {
-    foolsBtn.style.display = 'inline-block'; // Make the button visible
+    // 1. Force the button to show up on the page
+    foolsBtn.style.display = 'inline-block'; 
     
     foolsBtn.addEventListener('click', () => {
-        const randomNum = Math.floor(Math.random() * 20) + 1;
-        const storageKey = `emojis:${randomNum}`;
+        const storageKey = 'emojis'; // Use the single key "emojis"
+        
+        // 2. Get the current value from localStorage.
+        // If it does NOT exist yet, it will default to 0.
         let currentValue = parseInt(localStorage.getItem(storageKey) || "0", 10);
-        localStorage.setItem(storageKey, currentValue + 1);
-        console.log(`Saved ${storageKey} : ${currentValue + 1}`); // Optional: helps you test it in the console
+        
+        // 3. Add 1 to the current number
+        let newValue = currentValue + 1;
+        
+        // 4. Save the new number back into localStorage
+        localStorage.setItem(storageKey, newValue);
+        
+        // 5. Log the result to your browser console so you can see it counting up
+        console.log(`Key "emojis" is now at: ${newValue}`);
     });
 }
 // ─── Kinetic Dots ─────────────────────────────────────────────────────────────
