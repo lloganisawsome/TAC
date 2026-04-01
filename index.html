@@ -1,8 +1,6 @@
-
-<script src="timeTracker.js"></script>
-
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
+<!DOCTYPE html>
+<html lang="en">
+ <head>
   <script src="guard.js"></script>
   <link href="rightclick.css" rel="stylesheet"/>
   <link href="custom-cursor.css" rel="stylesheet"/>
@@ -976,25 +974,20 @@ const currentUser = localStorage.getItem('lastLoggedInUser') || 'Unknown';
     });
 })();
 
-// ─── Fools Button Logic ───────────────────────────────────────────────────────
-// Uses fetch to check if fools.csv exists in the current directory.
-fetch('fools.csv', { method: 'HEAD' })
-    .then(response => {
-        if (response.ok) {
-            const foolsBtn = document.getElementById('foolsButton');
-            if (foolsBtn) {
-                foolsBtn.style.display = 'inline-block';
-                foolsBtn.addEventListener('click', () => {
-                    const randomNum = Math.floor(Math.random() * 20) + 1;
-                    const storageKey = `emojis:${randomNum}`;
-                    let currentValue = parseInt(localStorage.getItem(storageKey) || "0", 10);
-                    localStorage.setItem(storageKey, currentValue + 1);
-                });
-            }
-        }
-    })
-    .catch(error => console.log('fools.csv not detected.', error));
 
+// ─── Fools Button Logic ───────────────────────────────────────────────────────
+const foolsBtn = document.getElementById('foolsButton');
+if (foolsBtn) {
+    foolsBtn.style.display = 'inline-block'; // Make the button visible
+    
+    foolsBtn.addEventListener('click', () => {
+        const randomNum = Math.floor(Math.random() * 20) + 1;
+        const storageKey = `emojis:${randomNum}`;
+        let currentValue = parseInt(localStorage.getItem(storageKey) || "0", 10);
+        localStorage.setItem(storageKey, currentValue + 1);
+        console.log(`Saved ${storageKey} : ${currentValue + 1}`); // Optional: helps you test it in the console
+    });
+}
 // ─── Kinetic Dots ─────────────────────────────────────────────────────────────
 const canvas = document.getElementById('dotsCanvas');
 const ctx = canvas.getContext('2d');
@@ -1534,8 +1527,7 @@ loadNews();
         });
   </script>
  
-
-<script src="emojis.js"></script>
 <script type="module" src="online.js"></script>
+<script src="emojis.js"></script>
 </body>
 </html>
