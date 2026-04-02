@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="guard.js"></script>
+    <link href="rightclick.css" rel="stylesheet"/>
+    <link href="custom-cursor.css" rel="stylesheet"/>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>TAC - PW</title>
+    <style>
+        :root {
+            --bg: #0a0a0b;
+            --panel: #111113;
+            --panel-hover: #1a1a1c;
+            --accent: #22c55e;
+            --accent-dim: rgba(34, 197, 94, 0.1);
+            --muted: #71717a;
+            --border: rgba(255,255,255,0.06);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: #fff;
+            font-size: 14px;
+            overflow: hidden; /* Prevent body scroll, let iframe handle it */
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        #dotsCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 0 20px var(--accent-dim);
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            border: none;
+            margin-left: -10px;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            margin-bottom: 16px;
+            padding: 4px;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed .logo-container {
+            opacity: 0;
+        }
+
+        .logo {
+            width: 62px;
+            height: 62px;
+            border-radius: 8px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            padding: 0 8px;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed .nav-items {
+            opacity: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--accent);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            background: var(--accent-dim);
+        }
+
+        .nav-item.active {
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+        }
+
+        .nav-item span {
+            font-size: 9px;
+            font-weight: 500;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 90px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 36px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toggle-btn:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent);
+        }
+
+        .toggle-btn svg {
+            width: 14px;
+            height: 14px;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.collapsed {
+            left: 10px;
+        }
+
+        .toggle-btn.collapsed svg {
+            transform: rotate(180deg);
+        }
+
+        .main-content {
+            margin-left: 100px;
+            padding: 24px;
+            transition: margin-left 0.3s ease;
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content.expanded {
+            margin-left: 24px;
+        }
+
+        .iframe-container {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 24px;
+            }
+            .sidebar, .toggle-btn {
+                display: none;
+            }
+        }
+    </style>
+    <script src="app-presence.js"></script>
+</head>
+<body>
+
+    <canvas id="dotsCanvas"></canvas>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+        </div>
+        <nav class="nav-items">
+            <a class="nav-item" href="index.html">
+                <svg fill="currentColor" viewbox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path>
+                </svg>
+                <span>Home</span>
+            </a>
+            <a class="nav-item" href="chat.html">
+                <svg fill="currentColor" viewbox="0 0 24 24">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path>
+                    <circle cx="8" cy="10" r="1.5"></circle>
+                    <circle cx="12" cy="10" r="1.5"></circle>
+                    <circle cx="16" cy="10" r="1.5"></circle>
+                </svg>
+                <span>Chat</span>
+            </a>
+            <a class="nav-item" href="notgames.html">
+                <svg fill="currentColor" viewbox="0 0 24 24">
+                    <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"></path>
+                </svg>
+                <span>Games</span>
+            </a>
+            <a class="nav-item" href="phone.html">
+                <svg fill="currentColor" viewbox="0 0 24 24">
+                    <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"></path>
+                </svg>
+                <span>Phone</span>
+            </a>
+            <a class="nav-item" href="apps.html">
+                <svg fill="currentColor" viewbox="0 0 24 24">
+                    <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"></path>
+                </svg>
+                <span>All Apps</span>
+            </a>
+        </nav>
+    </aside>
+
+    <button class="toggle-btn" id="toggleBtn">
+        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+
+    <main class="main-content" id="mainContent">
+        <div class="iframe-container">
+            <iframe src="mv.html" title="PW App"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // ─── Theme Colors Logic ──────────────────────────────────────────────
+        const themeColors = {
+            green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+            blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+            red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+            cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+            pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+            purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+            yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+            orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+            white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+            whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
+        };
+
+        function applyTheme() {
+            const theme = localStorage.getItem('theme') || 'green';
+            const colors = themeColors[theme] || themeColors.green;
+
+            document.documentElement.style.setProperty('--accent', colors.primary);
+            document.documentElement.style.setProperty('--accent-dim', colors.dim);
+
+            const logo = document.getElementById('logo');
+            if (logo) logo.src = `taclogos/${theme}.png`;
+
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+        }
+
+        applyTheme();
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'theme') applyTheme();
+        });
+
+        // ─── Sidebar Toggle ──────────────────────────────────────────────────
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const mainContent = document.getElementById('mainContent');
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+        });
+
+        // ─── Kinetic Dots Animation ──────────────────────────────────────────
+        const canvas = document.getElementById('dotsCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let mouse = { x: -9999, y: -9999 };
+        const NUM_DOTS = 80;
+        const CONNECT_DIST = 120;
+        const CURSOR_REPEL = 100;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        document.addEventListener('mousemove', e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            mouse.x = -9999;
+            mouse.y = -9999;
+        });
+
+        function getAccentRGB() {
+            const style = getComputedStyle(document.documentElement);
+            const accent = style.getPropertyValue('--accent').trim();
+            const hex = accent.replace('#', '');
+            const r = parseInt(hex.substring(0,2), 16) || 34;
+            const g = parseInt(hex.substring(2,4), 16) || 197;
+            const b = parseInt(hex.substring(4,6), 16) || 94;
+            return { r, g, b };
+        }
+
+        const dots = Array.from({ length: NUM_DOTS }, () => ({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6,
+            r: Math.random() * 2 + 1
+        }));
+
+        function animateDots() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const { r: cr, g: cg, b: cb } = getAccentRGB();
+
+            dots.forEach(dot => {
+                dot.x += dot.vx;
+                dot.y += dot.vy;
+                if (dot.x < 0 || dot.x > canvas.width) dot.vx *= -1;
+                if (dot.y < 0 || dot.y > canvas.height) dot.vy *= -1;
+
+                const dx = dot.x - mouse.x;
+                const dy = dot.y - mouse.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < CURSOR_REPEL && dist > 0) {
+                    const force = (CURSOR_REPEL - dist) / CURSOR_REPEL * 0.8;
+                    dot.vx += (dx / dist) * force;
+                    dot.vy += (dy / dist) * force;
+                }
+
+                const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
+                if (speed > 2) {
+                    dot.vx = (dot.vx / speed) * 2;
+                    dot.vy = (dot.vy / speed) * 2;
+                }
+
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${cr}, ${cg}, ${cb}, 0.55)`;
+                ctx.fill();
+            });
+
+            for (let i = 0; i < dots.length; i++) {
+                for (let j = i + 1; j < dots.length; j++) {
+                    const dx = dots[i].x - dots[j].x;
+                    const dy = dots[i].y - dots[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < CONNECT_DIST) {
+                        const alpha = (1 - dist / CONNECT_DIST) * 0.25;
+                        ctx.beginPath();
+                        ctx.moveTo(dots[i].x, dots[i].y);
+                        ctx.lineTo(dots[j].x, dots[j].y);
+                        ctx.strokeStyle = `rgba(${cr}, ${cg}, ${cb}, ${alpha})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateDots);
+        }
+        animateDots();
+    </script>
+    <script src="timeTracker.js"></script>
+    <script src="panic-key.js"></script>
+    <script src="custom-cursor.js"></script>
+    <script src="rightclick.js"></script>
+    <script src="idle-dvd.js"></script>
+</body>
+</html>
