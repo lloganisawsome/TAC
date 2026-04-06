@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">
   <link href="rightclick.css" rel="stylesheet"/>
   <link href="custom-cursor.css" rel="stylesheet"/>
   <meta charset="utf-8"/>
@@ -1602,8 +1604,14 @@
                         const basePath = src.substring(0, src.lastIndexOf('/') + 1);
                         let compiledCode = htmlCode;
                         
-                        if (compiledCode.includes('<head>')) {
-                            compiledCode = compiledCode.replace('<head>', `<head><base href="${basePath}">`);
+                        if (compiledCode.includes('<head>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">')) {
+                            compiledCode = compiledCode.replace('<head>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">', `<head>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css"><base href="${basePath}">`);
                         } else {
                             compiledCode = `<base href="${basePath}">` + compiledCode;
                         }
@@ -1841,7 +1849,8 @@
         .catch(err => console.error("Error loading phone widget:", err));
   </script>
 
-<script type="module" src="online.js"></script>
+
 <script src="emojis.js"></script>
+<script type="module" src="online.js"></script>
 </body>
 </html>

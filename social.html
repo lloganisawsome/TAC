@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-<script src="guard.js"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TAC Social</title>
-<style>
-:root {
+ <head>
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <script src="guard.js">
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   TAC Social
+  </title>
+  <style>
+   :root {
   --bg: #0a0a0b;
   --panel: #111113;
   --panel-hover: #1a1a1c;
@@ -349,392 +352,772 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
   .social-content{margin-left:0}
   .center-feed{max-width:100%}
 }
-</style>
-</head>
-<body>
-
-<div class="toast-wrap" id="toastWrap"></div>
-
-<div class="overlay hidden" id="pwOverlay">
-  <div class="modal accent-border" style="text-align:center;max-width:360px">
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <div class="toast-wrap" id="toastWrap">
+  </div>
+  <div class="overlay hidden" id="pwOverlay">
+   <div class="modal accent-border" style="text-align:center;max-width:360px">
     <div class="modal-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/><circle cx="12" cy="16" r="1.5" fill="currentColor" stroke="none"/></svg>
+     <svg fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24">
+      <rect height="11" rx="2" width="18" x="3" y="11">
+      </rect>
+      <path d="M7 11V7a5 5 0 0 1 10 0v4">
+      </path>
+      <circle cx="12" cy="16" fill="currentColor" r="1.5" stroke="none">
+      </circle>
+     </svg>
     </div>
-    <h2>Mod Access</h2>
-    <p>Enter your PIN to access the moderator panel</p>
+    <h2>
+     Mod Access
+    </h2>
+    <p>
+     Enter your PIN to access the moderator panel
+    </p>
     <div class="pw-dots" id="pwDots">
-      <div class="pw-dot"></div><div class="pw-dot"></div><div class="pw-dot"></div>
-      <div class="pw-dot"></div><div class="pw-dot"></div><div class="pw-dot"></div>
+     <div class="pw-dot">
+     </div>
+     <div class="pw-dot">
+     </div>
+     <div class="pw-dot">
+     </div>
+     <div class="pw-dot">
+     </div>
+     <div class="pw-dot">
+     </div>
+     <div class="pw-dot">
+     </div>
     </div>
     <div class="pw-keypad">
-      <div class="pw-key" onclick="pwKey('1')">1</div><div class="pw-key" onclick="pwKey('2')">2</div><div class="pw-key" onclick="pwKey('3')">3</div>
-      <div class="pw-key" onclick="pwKey('4')">4</div><div class="pw-key" onclick="pwKey('5')">5</div><div class="pw-key" onclick="pwKey('6')">6</div>
-      <div class="pw-key" onclick="pwKey('7')">7</div><div class="pw-key" onclick="pwKey('8')">8</div><div class="pw-key" onclick="pwKey('9')">9</div>
-      <div class="pw-key" onclick="pwKey('back')" style="font-size:16px">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;margin:auto"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
-      </div>
-      <div class="pw-key" onclick="pwKey('0')">0</div>
-      <div class="pw-key" onclick="closePw()" style="font-size:12px;color:var(--muted)">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;margin:auto"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-      </div>
+     <div class="pw-key" onclick="pwKey('1')">
+      1
+     </div>
+     <div class="pw-key" onclick="pwKey('2')">
+      2
+     </div>
+     <div class="pw-key" onclick="pwKey('3')">
+      3
+     </div>
+     <div class="pw-key" onclick="pwKey('4')">
+      4
+     </div>
+     <div class="pw-key" onclick="pwKey('5')">
+      5
+     </div>
+     <div class="pw-key" onclick="pwKey('6')">
+      6
+     </div>
+     <div class="pw-key" onclick="pwKey('7')">
+      7
+     </div>
+     <div class="pw-key" onclick="pwKey('8')">
+      8
+     </div>
+     <div class="pw-key" onclick="pwKey('9')">
+      9
+     </div>
+     <div class="pw-key" onclick="pwKey('back')" style="font-size:16px">
+      <svg fill="currentColor" style="width:18px;height:18px;margin:auto" viewbox="0 0 24 24">
+       <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z">
+       </path>
+      </svg>
+     </div>
+     <div class="pw-key" onclick="pwKey('0')">
+      0
+     </div>
+     <div class="pw-key" onclick="closePw()" style="font-size:12px;color:var(--muted)">
+      <svg fill="currentColor" style="width:18px;height:18px;margin:auto" viewbox="0 0 24 24">
+       <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z">
+       </path>
+      </svg>
+     </div>
     </div>
-    <div class="pw-error" id="pwError"></div>
-    <div class="pw-mode-link" onclick="togglePwTextMode()">Use full password instead</div>
+    <div class="pw-error" id="pwError">
+    </div>
+    <div class="pw-mode-link" onclick="togglePwTextMode()">
+     Use full password instead
+    </div>
     <div id="pwTextArea" style="display:none;margin-top:12px">
-      <input class="modal-input" type="password" id="pwTextInput" placeholder="Full password..." onkeydown="if(event.key==='Enter')checkPwFull()">
-      <button class="mbtn primary" onclick="checkPwFull()" style="width:100%">Unlock</button>
+     <input class="modal-input" id="pwTextInput" onkeydown="if(event.key==='Enter')checkPwFull()" placeholder="Full password..." type="password"/>
+     <button class="mbtn primary" onclick="checkPwFull()" style="width:100%">
+      Unlock
+     </button>
     </div>
+   </div>
   </div>
-</div>
-
-<div class="overlay hidden" id="repostModal">
-  <div class="modal">
+  <div class="overlay hidden" id="repostModal">
+   <div class="modal">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;color:var(--accent)"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-      <h2 style="margin:0">Repost</h2>
+     <svg fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;color:var(--accent)" viewbox="0 0 24 24">
+      <path d="M17 1l4 4-4 4">
+      </path>
+      <path d="M3 11V9a4 4 0 0 1 4-4h14">
+      </path>
+      <path d="M7 23l-4-4 4-4">
+      </path>
+      <path d="M21 13v2a4 4 0 0 1-4 4H3">
+      </path>
+     </svg>
+     <h2 style="margin:0">
+      Repost
+     </h2>
     </div>
-    <div class="repost-preview" id="repostPreviewContent"></div>
-    <textarea class="modal-input" id="repostComment" rows="3" style="resize:none" placeholder="Add your thoughts... (optional)"></textarea>
+    <div class="repost-preview" id="repostPreviewContent">
+    </div>
+    <textarea class="modal-input" id="repostComment" placeholder="Add your thoughts... (optional)" rows="3" style="resize:none"></textarea>
     <div class="modal-btns">
-      <button class="mbtn ghost" onclick="closeRepostModal()">Cancel</button>
-      <button class="mbtn primary" onclick="confirmRepost()">Repost</button>
+     <button class="mbtn ghost" onclick="closeRepostModal()">
+      Cancel
+     </button>
+     <button class="mbtn primary" onclick="confirmRepost()">
+      Repost
+     </button>
     </div>
+   </div>
   </div>
-</div>
-
-<div class="overlay hidden" id="catModal">
-  <div class="modal">
+  <div class="overlay hidden" id="catModal">
+   <div class="modal">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-      <svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;color:var(--accent)"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.22.7-4.32 1.82L6 4 3.96 2C3.12 1.16 2 .63.83.86L2.18 2.2C1.82 2.68 1.64 3.32 1.73 4H0v2h2.18C2.07 6.44 2 6.88 2 7.36c0 2.11 2.52 4.64 5.64 4.64 1.7 0 3.22-.7 4.32-1.82L14 8l2.04 2.04c.84.84 1.96 1.37 3.13 1.14L17.82 9.8c.36-.48.54-1.12.45-1.8H20V6zm-7.64 4.18C11.62 11 10.55 11.36 9.64 11c-1.98-.76-3.07-2.92-2.3-4.9.76-1.98 2.92-3.07 4.9-2.3 1.98.76 3.07 2.92 2.3 4.9-.16.42-.4.82-.18 1.48z"/></svg>
-      <h2 style="margin:0">Request Category</h2>
+     <svg fill="currentColor" style="width:22px;height:22px;color:var(--accent)" viewbox="0 0 24 24">
+      <path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.22.7-4.32 1.82L6 4 3.96 2C3.12 1.16 2 .63.83.86L2.18 2.2C1.82 2.68 1.64 3.32 1.73 4H0v2h2.18C2.07 6.44 2 6.88 2 7.36c0 2.11 2.52 4.64 5.64 4.64 1.7 0 3.22-.7 4.32-1.82L14 8l2.04 2.04c.84.84 1.96 1.37 3.13 1.14L17.82 9.8c.36-.48.54-1.12.45-1.8H20V6zm-7.64 4.18C11.62 11 10.55 11.36 9.64 11c-1.98-.76-3.07-2.92-2.3-4.9.76-1.98 2.92-3.07 4.9-2.3 1.98.76 3.07 2.92 2.3 4.9-.16.42-.4.82-.18 1.48z">
+      </path>
+     </svg>
+     <h2 style="margin:0">
+      Request Category
+     </h2>
     </div>
-    <p>Suggest a new post category. A moderator will review your request.</p>
-    <input class="modal-input" type="text" id="catInput" placeholder="e.g. Gaming, Music, Dev...">
+    <p>
+     Suggest a new post category. A moderator will review your request.
+    </p>
+    <input class="modal-input" id="catInput" placeholder="e.g. Gaming, Music, Dev..." type="text"/>
     <div class="modal-btns">
-      <button class="mbtn ghost" onclick="closeCatModal()">Cancel</button>
-      <button class="mbtn primary" onclick="submitCat()">Request</button>
+     <button class="mbtn ghost" onclick="closeCatModal()">
+      Cancel
+     </button>
+     <button class="mbtn primary" onclick="submitCat()">
+      Request
+     </button>
     </div>
+   </div>
   </div>
-</div>
-
-<div class="overlay hidden" id="editProfileModal">
-  <div class="modal" style="max-width:500px">
+  <div class="overlay hidden" id="editProfileModal">
+   <div class="modal" style="max-width:500px">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
-      <svg viewBox="0 0 24 24" fill="currentColor" style="width:22px;height:22px;color:var(--accent)"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-      <h2 style="margin:0">Edit Profile</h2>
+     <svg fill="currentColor" style="width:22px;height:22px;color:var(--accent)" viewbox="0 0 24 24">
+      <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z">
+      </path>
+     </svg>
+     <h2 style="margin:0">
+      Edit Profile
+     </h2>
     </div>
-    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Display Name</label>
-    <input class="modal-input" type="text" id="ep_name" placeholder="Your display name">
-    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Bio</label>
-    <textarea class="modal-input" id="ep_bio" rows="3" style="resize:none" placeholder="Tell people about yourself..."></textarea>
-    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Profile Picture (requires mod approval)</label>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">
+     Display Name
+    </label>
+    <input class="modal-input" id="ep_name" placeholder="Your display name" type="text"/>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">
+     Bio
+    </label>
+    <textarea class="modal-input" id="ep_bio" placeholder="Tell people about yourself..." rows="3" style="resize:none"></textarea>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">
+     Profile Picture (requires mod approval)
+    </label>
     <div class="upload-area">
-      <img class="upload-preview" id="ep_pic_prev" src="" alt="">
-      <label class="upload-btn-label" for="ep_pic_file">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
-        Choose Image
-      </label>
-      <input type="file" id="ep_pic_file" accept="image/*" style="display:none" onchange="previewUpload('ep_pic_file','ep_pic_prev')">
-      <span class="upload-note">JPG/PNG, max 2MB</span>
+     <img alt="" class="upload-preview" id="ep_pic_prev" src=""/>
+     <label class="upload-btn-label" for="ep_pic_file">
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z">
+       </path>
+      </svg>
+      Choose Image
+     </label>
+     <input accept="image/*" id="ep_pic_file" onchange="previewUpload('ep_pic_file','ep_pic_prev')" style="display:none" type="file"/>
+     <span class="upload-note">
+      JPG/PNG, max 2MB
+     </span>
     </div>
-    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">Banner / Header Image (requires mod approval)</label>
+    <label style="font-size:12px;color:var(--muted);display:block;margin-bottom:6px">
+     Banner / Header Image (requires mod approval)
+    </label>
     <div class="upload-area">
-      <img class="upload-preview banner-prev" id="ep_banner_prev" src="" alt="">
-      <label class="upload-btn-label" for="ep_banner_file">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3C2 3 1 4 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1-.9-2-2-2zM5 17l3.5-4.5 2.5 3.01L14.5 11l4.5 6H5z"/></svg>
-        Choose Banner
-      </label>
-      <input type="file" id="ep_banner_file" accept="image/*" style="display:none" onchange="previewUpload('ep_banner_file','ep_banner_prev')">
-      <span class="upload-note">Wide image recommended</span>
+     <img alt="" class="upload-preview banner-prev" id="ep_banner_prev" src=""/>
+     <label class="upload-btn-label" for="ep_banner_file">
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M21 3H3C2 3 1 4 1 5v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1-.9-2-2-2zM5 17l3.5-4.5 2.5 3.01L14.5 11l4.5 6H5z">
+       </path>
+      </svg>
+      Choose Banner
+     </label>
+     <input accept="image/*" id="ep_banner_file" onchange="previewUpload('ep_banner_file','ep_banner_prev')" style="display:none" type="file"/>
+     <span class="upload-note">
+      Wide image recommended
+     </span>
     </div>
     <div class="modal-btns">
-      <button class="mbtn ghost" onclick="closeEditProfile()">Cancel</button>
-      <button class="mbtn primary" onclick="saveProfile()">Save Changes</button>
+     <button class="mbtn ghost" onclick="closeEditProfile()">
+      Cancel
+     </button>
+     <button class="mbtn primary" onclick="saveProfile()">
+      Save Changes
+     </button>
     </div>
+   </div>
   </div>
-</div>
-
-<div class="overlay hidden" id="reportDoneModal">
-  <div class="modal" style="text-align:center">
+  <div class="overlay hidden" id="reportDoneModal">
+   <div class="modal" style="text-align:center">
     <div class="modal-icon" style="color:#f59e0b">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z">
+      </path>
+     </svg>
     </div>
-    <h2>Post Reported</h2>
-    <p>This post has been sent to the moderation team for review. It's now hidden from the feed.</p>
-    <button class="mbtn primary" onclick="document.getElementById('reportDoneModal').classList.add('hidden')" style="width:100%">OK</button>
+    <h2>
+     Post Reported
+    </h2>
+    <p>
+     This post has been sent to the moderation team for review. It's now hidden from the feed.
+    </p>
+    <button class="mbtn primary" onclick="document.getElementById('reportDoneModal').classList.add('hidden')" style="width:100%">
+     OK
+    </button>
+   </div>
   </div>
-</div>
-
-<aside class="sidebar" id="sidebar">
-  <div class="logo-container">
-    <img class="logo" id="sidebarLogo" src="taclogos/green.png" alt="TAC">
-  </div>
-  <nav class="nav-items">
+  <aside class="sidebar" id="sidebar">
+   <div class="logo-container">
+    <img alt="TAC" class="logo" id="sidebarLogo" src="taclogos/green.png"/>
+   </div>
+   <nav class="nav-items">
     <button class="nav-item active" id="navHome" onclick="goFeed()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
-      <span>Home</span>
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
+      </path>
+     </svg>
+     <span>
+      Home
+     </span>
     </button>
     <button class="nav-item" id="navProfile" onclick="goMyProfile()">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-      <span>Profile</span>
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z">
+      </path>
+     </svg>
+     <span>
+      Profile
+     </span>
     </button>
     <button class="nav-item" id="navExplore" onclick="goFeed('explore')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <span>Explore</span>
+     <svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+      <circle cx="11" cy="11" r="8">
+      </circle>
+      <path d="m21 21-4.35-4.35">
+      </path>
+     </svg>
+     <span>
+      Explore
+     </span>
     </button>
     <button class="nav-item hidden mod-nav" id="navMod" onclick="goMod()">
-      <svg viewBox="0 0 24 24" fill="currentColor" style="color:#f59e0b"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-      <span style="color:#f59e0b">Mod</span>
+     <svg fill="currentColor" style="color:#f59e0b" viewbox="0 0 24 24">
+      <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z">
+      </path>
+     </svg>
+     <span style="color:#f59e0b">
+      Mod
+     </span>
     </button>
-    <div class="nav-divider"></div>
+    <div class="nav-divider">
+    </div>
     <a class="nav-item" href="chat.html" title="Chat">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><circle cx="8" cy="10" r="1.5"/><circle cx="12" cy="10" r="1.5"/><circle cx="16" cy="10" r="1.5"/></svg>
-      <span>Chat</span>
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
+      </path>
+      <circle cx="8" cy="10" r="1.5">
+      </circle>
+      <circle cx="12" cy="10" r="1.5">
+      </circle>
+      <circle cx="16" cy="10" r="1.5">
+      </circle>
+     </svg>
+     <span>
+      Chat
+     </span>
     </a>
     <a class="nav-item" href="notgames.html" title="Games">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
-      <span>Games</span>
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
+      </path>
+     </svg>
+     <span>
+      Games
+     </span>
     </a>
     <a class="nav-item" href="index.html" title="Home Page">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
-      <span>Apps</span>
+     <svg fill="currentColor" viewbox="0 0 24 24">
+      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
+      </path>
+     </svg>
+     <span>
+      Apps
+     </span>
     </a>
-  </nav>
-  <div class="sidebar-user-mini" id="sidebarUserChip" onclick="goMyProfile()" title="My Profile">
-    <img id="sidebarUserPic" src="" alt="">
-  </div>
-</aside>
-
-<button class="toggle-btn" id="toggleBtn">
-  <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
-    <polyline points="15 18 9 12 15 6"/>
-  </svg>
-</button>
-
-<div class="social-content" id="socialContent">
-
-  <main class="center-feed">
-
-    <div class="view active" id="viewFeed">
-      <div class="feed-header">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <h1 style="font-size:18px;font-weight:800">Home</h1>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <div class="cselect" data-id="categoryFilterSelect">
-              <div class="cselect-trigger" onclick="toggleCsel(this)">
-                <svg class="csel-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
-                <span class="cselect-value">All categories</span>
-                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
-              <div class="cselect-menu" id="cfMenu">
-                <div class="cselect-opt sel" data-value="" onclick="cselectPick('categoryFilterSelect','','All categories')">All categories</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="feed-tabs">
-          <div class="feed-tab active" id="tabLatest" onclick="setFeedTab('latest')">For You</div>
-          <div class="feed-tab" id="tabFollowing" onclick="setFeedTab('following')">Following</div>
-          <div class="feed-tab" id="tabHot" onclick="setFeedTab('hot')">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
-            Hot
-          </div>
-        </div>
-      </div>
-
-      <div class="create-post">
-        <div class="create-post-inner">
-          <img id="cpAvatar" src="" alt="" onclick="goMyProfile()" style="cursor:pointer">
-          <div class="cp-body">
-            <div id="cpEditor" class="cp-placeholder" contenteditable="true" data-placeholder="What's happening?" oninput="onEditorInput()"></div>
-            <div class="emoji-picker-inline" id="emojiPanel" style="display:none">
-              <span class="ep-emoji" onclick="insertEmoji('😀')">😀</span><span class="ep-emoji" onclick="insertEmoji('😂')">😂</span>
-              <span class="ep-emoji" onclick="insertEmoji('🥰')">🥰</span><span class="ep-emoji" onclick="insertEmoji('😎')">😎</span>
-              <span class="ep-emoji" onclick="insertEmoji('🤔')">🤔</span><span class="ep-emoji" onclick="insertEmoji('🔥')">🔥</span>
-              <span class="ep-emoji" onclick="insertEmoji('💯')">💯</span><span class="ep-emoji" onclick="insertEmoji('🎉')">🎉</span>
-              <span class="ep-emoji" onclick="insertEmoji('✨')">✨</span><span class="ep-emoji" onclick="insertEmoji('🚀')">🚀</span>
-              <span class="ep-emoji" onclick="insertEmoji('💪')">💪</span><span class="ep-emoji" onclick="insertEmoji('😈')">😈</span>
-              <span class="ep-emoji" onclick="insertEmoji('👾')">👾</span><span class="ep-emoji" onclick="insertEmoji('🌟')">🌟</span>
-              <span class="ep-emoji" onclick="insertEmoji('💀')">💀</span><span class="ep-emoji" onclick="insertEmoji('🤯')">🤯</span>
-              <span class="ep-emoji" onclick="insertEmoji('🥳')">🥳</span><span class="ep-emoji" onclick="insertEmoji('😤')">😤</span>
-              <span class="ep-emoji" onclick="insertEmoji('👍')">👍</span><span class="ep-emoji" onclick="insertEmoji('❤️')">❤️</span>
-            </div>
-            <div id="pollBuilderEl" style="display:none">
-              <div class="poll-builder">
-                <input class="poll-input" type="text" id="pollQInput" placeholder="Ask a question...">
-                <div id="pollOptsContainer">
-                  <input class="poll-input poll-opt" type="text" placeholder="Option 1">
-                  <input class="poll-input poll-opt" type="text" placeholder="Option 2">
-                </div>
-                <button class="add-poll-opt" onclick="addPollOpt()">+ Add option</button>
-              </div>
-            </div>
-            <div class="cp-bottom">
-              <div class="cp-meta">
-                <button class="tb-btn" onclick="fmt('bold')" title="Bold"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg></button>
-                <button class="tb-btn" onclick="fmt('italic')" title="Italic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z"/></svg></button>
-                <button class="tb-btn" onclick="fmt('underline')" title="Underline"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg></button>
-                <button class="tb-btn" onclick="fmt('strikeThrough')" title="Strike"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z"/></svg></button>
-                <input class="color-swatch" type="color" title="Text color" onchange="fmtColor(this.value)">
-                <select class="font-picker" onchange="fmtFont(this.value)" title="Font">
-                  <option value="">Font</option>
-                  <option value="Arial">Arial</option>
-                  <option value="Georgia">Georgia</option>
-                  <option value="Courier New">Mono</option>
-                  <option value="Impact">Impact</option>
-                  <option value="Verdana">Verdana</option>
-                </select>
-                <div class="tb-sep"></div>
-                <button class="tb-btn" onclick="toggleEmoji()" title="Insert Emoji">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
-                </button>
-                <button class="tb-btn" onclick="togglePoll()" title="Add Poll">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                </button>
-                <div class="tb-sep"></div>
-                <div class="cselect" data-id="effectSelect">
-                  <div class="cselect-trigger" onclick="toggleCsel(this)">
-                    <svg class="csel-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v3H8v2h3v3h2v-3h3v-2h-3z"/></svg>
-                    <span class="cselect-value">Effect</span>
-                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                  </div>
-                  <div class="cselect-menu">
-                    <div class="cselect-opt sel" data-value="none" onclick="cselectPick('effectSelect','none','Effect')">None</div>
-                    <div class="cselect-opt" data-value="confetti" onclick="cselectPick('effectSelect','confetti','Confetti')">Confetti</div>
-                    <div class="cselect-opt" data-value="shake" onclick="cselectPick('effectSelect','shake','Shake')">Shake</div>
-                    <div class="cselect-opt" data-value="glow" onclick="cselectPick('effectSelect','glow','Glow')">Glow</div>
-                    <div class="cselect-opt" data-value="neon" onclick="cselectPick('effectSelect','neon','Neon')">Neon</div>
-                    <div class="cselect-opt" data-value="rainbow" onclick="cselectPick('effectSelect','rainbow','Rainbow')">Rainbow</div>
-                    <div class="cselect-opt" data-value="pulse" onclick="cselectPick('effectSelect','pulse','Pulse')">Pulse</div>
-                    <div class="cselect-opt" data-value="bounce" onclick="cselectPick('effectSelect','bounce','Bounce')">Bounce</div>
-                    <div class="cselect-opt" data-value="flip" onclick="cselectPick('effectSelect','flip','Flip')">Flip</div>
-                    <div class="cselect-opt" data-value="glitch" onclick="cselectPick('effectSelect','glitch','Glitch')">Glitch</div>
-                    <div class="cselect-opt" data-value="spotlight" onclick="cselectPick('effectSelect','spotlight','Spotlight')">Spotlight</div>
-                  </div>
-                </div>
-                <div class="cselect" data-id="catSelect">
-                  <div class="cselect-trigger" onclick="toggleCsel(this)">
-                    <svg class="csel-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.22.7-4.32 1.82L6 4 3.96 2C3.12 1.16 2 .63.83.86L2.18 2.2C1.82 2.68 1.64 3.32 1.73 4H0v2h2.18C2.07 6.44 2 6.88 2 7.36c0 2.11 2.52 4.64 5.64 4.64 1.7 0 3.22-.7 4.32-1.82L14 8l2.04 2.04c.84.84 1.96 1.37 3.13 1.14L17.82 9.8c.36-.48.54-1.12.45-1.8H20V6z"/></svg>
-                    <span class="cselect-value">Category</span>
-                    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-                  </div>
-                  <div class="cselect-menu" id="catSelectMenu">
-                    <div class="cselect-opt sel" data-value="" onclick="cselectPick('catSelect','','Category')">No category</div>
-                  </div>
-                </div>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px">
-                <span class="char-count" id="charCount">0 / 500</span>
-                <button class="post-btn" id="postBtn" onclick="submitPost()" disabled>Post</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="feedContainer">
-        <div class="empty-feed">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".3"/></svg>
-          <p>Loading posts...</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="view" id="viewProfile">
-      <div id="profileContent"></div>
-    </div>
-
-    <div class="view" id="viewMod">
-      <div class="feed-header">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;color:#f59e0b"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-          <h1 style="font-size:18px;font-weight:800">Moderation Panel</h1>
-        </div>
-      </div>
-      <div class="mod-panel">
-        <div class="mod-section">
-          <div class="mod-section-title">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            Reported Posts
-          </div>
-          <div id="modReportedList"><p style="color:var(--muted);font-size:13px">No reported posts.</p></div>
-        </div>
-        <div class="mod-section">
-          <div class="mod-section-title">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-            Pending Profile Pictures
-          </div>
-          <div id="modPicList"><p style="color:var(--muted);font-size:13px">None pending.</p></div>
-        </div>
-        <div class="mod-section">
-          <div class="mod-section-title">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z"/></svg>
-            Pending Banner Images
-          </div>
-          <div id="modBannerList"><p style="color:var(--muted);font-size:13px">None pending.</p></div>
-        </div>
-        <div class="mod-section">
-          <div class="mod-section-title">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
-            Pending Categories
-          </div>
-          <div id="modCatList"><p style="color:var(--muted);font-size:13px">None pending.</p></div>
-        </div>
-        <div class="mod-section" id="modUsersMgmtSection">
-          <div class="mod-section-title">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-            Moderators
-          </div>
-          <div id="modUsersList"></div>
-          <div id="addModArea" style="display:none">
-            <div class="divider"></div>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:8px">Username must match their Firebase users key and localStorage lastLoggedInUser</p>
-            <div class="mod-add-row">
-              <input class="mod-add-input" type="text" id="addModInput" placeholder="Username to add...">
-              <button class="mdb ok" onclick="addMod()">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-                Add Mod
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <aside class="right-sidebar">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search posts..." oninput="searchPosts(this.value)" id="searchInput">
-    </div>
-    <div class="rs-card">
-      <div class="rs-title">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" opacity=".3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
-        Who's Online
-      </div>
-      <div id="rightOnlineList"></div>
-    </div>
-    <div class="rs-card">
-      <div class="rs-title">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-        Who to Follow
-      </div>
-      <div id="rightWhoToFollow"></div>
-    </div>
-    <div class="rs-card">
-      <div class="rs-title">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39zM11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm1-17.93C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
-        Trending Topics
-      </div>
-      <div id="rightTrending"></div>
-    </div>
+   </nav>
+   <div class="sidebar-user-mini" id="sidebarUserChip" onclick="goMyProfile()" title="My Profile">
+    <img alt="" id="sidebarUserPic" src=""/>
+   </div>
   </aside>
-
-</div><script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script>
-// ══════════════════════════════════════════
+  <button class="toggle-btn" id="toggleBtn">
+   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+    <polyline points="15 18 9 12 15 6">
+    </polyline>
+   </svg>
+  </button>
+  <div class="social-content" id="socialContent">
+   <main class="center-feed">
+    <div class="view active" id="viewFeed">
+     <div class="feed-header">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+       <h1 style="font-size:18px;font-weight:800">
+        Home
+       </h1>
+       <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <div class="cselect" data-id="categoryFilterSelect">
+         <div class="cselect-trigger" onclick="toggleCsel(this)">
+          <svg class="csel-icon" fill="currentColor" viewbox="0 0 24 24">
+           <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z">
+           </path>
+          </svg>
+          <span class="cselect-value">
+           All categories
+          </span>
+          <svg class="chev" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+           <polyline points="6 9 12 15 18 9">
+           </polyline>
+          </svg>
+         </div>
+         <div class="cselect-menu" id="cfMenu">
+          <div class="cselect-opt sel" data-value="" onclick="cselectPick('categoryFilterSelect','','All categories')">
+           All categories
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+      <div class="feed-tabs">
+       <div class="feed-tab active" id="tabLatest" onclick="setFeedTab('latest')">
+        For You
+       </div>
+       <div class="feed-tab" id="tabFollowing" onclick="setFeedTab('following')">
+        Following
+       </div>
+       <div class="feed-tab" id="tabHot" onclick="setFeedTab('hot')">
+        <svg fill="currentColor" viewbox="0 0 24 24">
+         <path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z">
+         </path>
+        </svg>
+        Hot
+       </div>
+      </div>
+     </div>
+     <div class="create-post">
+      <div class="create-post-inner">
+       <img alt="" id="cpAvatar" onclick="goMyProfile()" src="" style="cursor:pointer"/>
+       <div class="cp-body">
+        <div class="cp-placeholder" contenteditable="true" data-placeholder="What's happening?" id="cpEditor" oninput="onEditorInput()">
+        </div>
+        <div class="emoji-picker-inline" id="emojiPanel" style="display:none">
+         <span class="ep-emoji" onclick="insertEmoji('😀')">
+          😀
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('😂')">
+          😂
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🥰')">
+          🥰
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('😎')">
+          😎
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🤔')">
+          🤔
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🔥')">
+          🔥
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('💯')">
+          💯
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🎉')">
+          🎉
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('✨')">
+          ✨
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🚀')">
+          🚀
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('💪')">
+          💪
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('😈')">
+          😈
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('👾')">
+          👾
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🌟')">
+          🌟
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('💀')">
+          💀
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🤯')">
+          🤯
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('🥳')">
+          🥳
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('😤')">
+          😤
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('👍')">
+          👍
+         </span>
+         <span class="ep-emoji" onclick="insertEmoji('❤️')">
+          ❤️
+         </span>
+        </div>
+        <div id="pollBuilderEl" style="display:none">
+         <div class="poll-builder">
+          <input class="poll-input" id="pollQInput" placeholder="Ask a question..." type="text"/>
+          <div id="pollOptsContainer">
+           <input class="poll-input poll-opt" placeholder="Option 1" type="text"/>
+           <input class="poll-input poll-opt" placeholder="Option 2" type="text"/>
+          </div>
+          <button class="add-poll-opt" onclick="addPollOpt()">
+           + Add option
+          </button>
+         </div>
+        </div>
+        <div class="cp-bottom">
+         <div class="cp-meta">
+          <button class="tb-btn" onclick="fmt('bold')" title="Bold">
+           <svg fill="currentColor" viewbox="0 0 24 24">
+            <path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z">
+            </path>
+           </svg>
+          </button>
+          <button class="tb-btn" onclick="fmt('italic')" title="Italic">
+           <svg fill="currentColor" viewbox="0 0 24 24">
+            <path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4h-8z">
+            </path>
+           </svg>
+          </button>
+          <button class="tb-btn" onclick="fmt('underline')" title="Underline">
+           <svg fill="currentColor" viewbox="0 0 24 24">
+            <path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z">
+            </path>
+           </svg>
+          </button>
+          <button class="tb-btn" onclick="fmt('strikeThrough')" title="Strike">
+           <svg fill="currentColor" viewbox="0 0 24 24">
+            <path d="M10 19h4v-3h-4v3zM5 4v3h5v3h4V7h5V4H5zM3 14h18v-2H3v2z">
+            </path>
+           </svg>
+          </button>
+          <input class="color-swatch" onchange="fmtColor(this.value)" title="Text color" type="color"/>
+          <select class="font-picker" onchange="fmtFont(this.value)" title="Font">
+           <option value="">
+            Font
+           </option>
+           <option value="Arial">
+            Arial
+           </option>
+           <option value="Georgia">
+            Georgia
+           </option>
+           <option value="Courier New">
+            Mono
+           </option>
+           <option value="Impact">
+            Impact
+           </option>
+           <option value="Verdana">
+            Verdana
+           </option>
+          </select>
+          <div class="tb-sep">
+          </div>
+          <button class="tb-btn" onclick="toggleEmoji()" title="Insert Emoji">
+           <svg fill="currentColor" viewbox="0 0 24 24">
+            <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z">
+            </path>
+           </svg>
+          </button>
+          <button class="tb-btn" onclick="togglePoll()" title="Add Poll">
+           <svg fill="currentColor" viewbox="0 0 24 24">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z">
+            </path>
+           </svg>
+          </button>
+          <div class="tb-sep">
+          </div>
+          <div class="cselect" data-id="effectSelect">
+           <div class="cselect-trigger" onclick="toggleCsel(this)">
+            <svg class="csel-icon" fill="currentColor" viewbox="0 0 24 24">
+             <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7zm1-11h-2v3H8v2h3v3h2v-3h3v-2h-3z">
+             </path>
+            </svg>
+            <span class="cselect-value">
+             Effect
+            </span>
+            <svg class="chev" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+             <polyline points="6 9 12 15 18 9">
+             </polyline>
+            </svg>
+           </div>
+           <div class="cselect-menu">
+            <div class="cselect-opt sel" data-value="none" onclick="cselectPick('effectSelect','none','Effect')">
+             None
+            </div>
+            <div class="cselect-opt" data-value="confetti" onclick="cselectPick('effectSelect','confetti','Confetti')">
+             Confetti
+            </div>
+            <div class="cselect-opt" data-value="shake" onclick="cselectPick('effectSelect','shake','Shake')">
+             Shake
+            </div>
+            <div class="cselect-opt" data-value="glow" onclick="cselectPick('effectSelect','glow','Glow')">
+             Glow
+            </div>
+            <div class="cselect-opt" data-value="neon" onclick="cselectPick('effectSelect','neon','Neon')">
+             Neon
+            </div>
+            <div class="cselect-opt" data-value="rainbow" onclick="cselectPick('effectSelect','rainbow','Rainbow')">
+             Rainbow
+            </div>
+            <div class="cselect-opt" data-value="pulse" onclick="cselectPick('effectSelect','pulse','Pulse')">
+             Pulse
+            </div>
+            <div class="cselect-opt" data-value="bounce" onclick="cselectPick('effectSelect','bounce','Bounce')">
+             Bounce
+            </div>
+            <div class="cselect-opt" data-value="flip" onclick="cselectPick('effectSelect','flip','Flip')">
+             Flip
+            </div>
+            <div class="cselect-opt" data-value="glitch" onclick="cselectPick('effectSelect','glitch','Glitch')">
+             Glitch
+            </div>
+            <div class="cselect-opt" data-value="spotlight" onclick="cselectPick('effectSelect','spotlight','Spotlight')">
+             Spotlight
+            </div>
+           </div>
+          </div>
+          <div class="cselect" data-id="catSelect">
+           <div class="cselect-trigger" onclick="toggleCsel(this)">
+            <svg class="csel-icon" fill="currentColor" viewbox="0 0 24 24">
+             <path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.53 15.48 0 12.36 0c-1.7 0-3.22.7-4.32 1.82L6 4 3.96 2C3.12 1.16 2 .63.83.86L2.18 2.2C1.82 2.68 1.64 3.32 1.73 4H0v2h2.18C2.07 6.44 2 6.88 2 7.36c0 2.11 2.52 4.64 5.64 4.64 1.7 0 3.22-.7 4.32-1.82L14 8l2.04 2.04c.84.84 1.96 1.37 3.13 1.14L17.82 9.8c.36-.48.54-1.12.45-1.8H20V6z">
+             </path>
+            </svg>
+            <span class="cselect-value">
+             Category
+            </span>
+            <svg class="chev" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+             <polyline points="6 9 12 15 18 9">
+             </polyline>
+            </svg>
+           </div>
+           <div class="cselect-menu" id="catSelectMenu">
+            <div class="cselect-opt sel" data-value="" onclick="cselectPick('catSelect','','Category')">
+             No category
+            </div>
+           </div>
+          </div>
+         </div>
+         <div style="display:flex;align-items:center;gap:8px">
+          <span class="char-count" id="charCount">
+           0 / 500
+          </span>
+          <button class="post-btn" disabled="" id="postBtn" onclick="submitPost()">
+           Post
+          </button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div id="feedContainer">
+      <div class="empty-feed">
+       <svg fill="currentColor" viewbox="0 0 24 24">
+        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".3">
+        </path>
+       </svg>
+       <p>
+        Loading posts...
+       </p>
+      </div>
+     </div>
+    </div>
+    <div class="view" id="viewProfile">
+     <div id="profileContent">
+     </div>
+    </div>
+    <div class="view" id="viewMod">
+     <div class="feed-header">
+      <div style="display:flex;align-items:center;gap:8px">
+       <svg fill="currentColor" style="width:20px;height:20px;color:#f59e0b" viewbox="0 0 24 24">
+        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z">
+        </path>
+       </svg>
+       <h1 style="font-size:18px;font-weight:800">
+        Moderation Panel
+       </h1>
+      </div>
+     </div>
+     <div class="mod-panel">
+      <div class="mod-section">
+       <div class="mod-section-title">
+        <svg fill="currentColor" viewbox="0 0 24 24">
+         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z">
+         </path>
+        </svg>
+        Reported Posts
+       </div>
+       <div id="modReportedList">
+        <p style="color:var(--muted);font-size:13px">
+         No reported posts.
+        </p>
+       </div>
+      </div>
+      <div class="mod-section">
+       <div class="mod-section-title">
+        <svg fill="currentColor" viewbox="0 0 24 24">
+         <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z">
+         </path>
+        </svg>
+        Pending Profile Pictures
+       </div>
+       <div id="modPicList">
+        <p style="color:var(--muted);font-size:13px">
+         None pending.
+        </p>
+       </div>
+      </div>
+      <div class="mod-section">
+       <div class="mod-section-title">
+        <svg fill="currentColor" viewbox="0 0 24 24">
+         <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h18v14z">
+         </path>
+        </svg>
+        Pending Banner Images
+       </div>
+       <div id="modBannerList">
+        <p style="color:var(--muted);font-size:13px">
+         None pending.
+        </p>
+       </div>
+      </div>
+      <div class="mod-section">
+       <div class="mod-section-title">
+        <svg fill="currentColor" viewbox="0 0 24 24">
+         <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z">
+         </path>
+        </svg>
+        Pending Categories
+       </div>
+       <div id="modCatList">
+        <p style="color:var(--muted);font-size:13px">
+         None pending.
+        </p>
+       </div>
+      </div>
+      <div class="mod-section" id="modUsersMgmtSection">
+       <div class="mod-section-title">
+        <svg fill="currentColor" viewbox="0 0 24 24">
+         <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z">
+         </path>
+        </svg>
+        Moderators
+       </div>
+       <div id="modUsersList">
+       </div>
+       <div id="addModArea" style="display:none">
+        <div class="divider">
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:8px">
+         Username must match their Firebase users key and localStorage lastLoggedInUser
+        </p>
+        <div class="mod-add-row">
+         <input class="mod-add-input" id="addModInput" placeholder="Username to add..." type="text"/>
+         <button class="mdb ok" onclick="addMod()">
+          <svg fill="currentColor" viewbox="0 0 24 24">
+           <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z">
+           </path>
+          </svg>
+          Add Mod
+         </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </main>
+   <aside class="right-sidebar">
+    <div class="search-box">
+     <svg fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+      <circle cx="11" cy="11" r="8">
+      </circle>
+      <path d="m21 21-4.35-4.35">
+      </path>
+     </svg>
+     <input id="searchInput" oninput="searchPosts(this.value)" placeholder="Search posts..." type="text"/>
+    </div>
+    <div class="rs-card">
+     <div class="rs-title">
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" opacity=".3">
+       </path>
+       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z">
+       </path>
+       <circle cx="12" cy="12" r="3">
+       </circle>
+      </svg>
+      Who's Online
+     </div>
+     <div id="rightOnlineList">
+     </div>
+    </div>
+    <div class="rs-card">
+     <div class="rs-title">
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z">
+       </path>
+      </svg>
+      Who to Follow
+     </div>
+     <div id="rightWhoToFollow">
+     </div>
+    </div>
+    <div class="rs-card">
+     <div class="rs-title">
+      <svg fill="currentColor" viewbox="0 0 24 24">
+       <path d="M17.9 17.39c-.26-.8-1.01-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39zM11 19.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm1-17.93C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z">
+       </path>
+      </svg>
+      Trending Topics
+     </div>
+     <div id="rightTrending">
+     </div>
+    </div>
+   </aside>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+  </script>
+  <script>
+   // ══════════════════════════════════════════
 //  FIREBASE CONFIG
 // ══════════════════════════════════════════
 const firebaseConfig = {
@@ -1807,21 +2190,22 @@ if (CU === OWNER) {
   isMod = true;
   document.getElementById('navMod').classList.remove('hidden');
 }
-</script>
-
-<script type="module" src="online.js"></script>
-
-<iframe src="popup.html" 
-        sandbox="allow-scripts allow-same-origin"
-        style="position:fixed; top:16px; right:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;" 
-        allowtransparency="true">
-</iframe>
-
-<script src="emojis.js"></script>
-    <script src="timeTracker.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="idle-dvd.js"></script>
+  </script>
+  
+  <iframe allowtransparency="true" sandbox="allow-scripts allow-same-origin" src="popup.html" style="position:fixed; top:16px; right:16px; width:340px; height:200px; border:none; overflow:hidden; z-index:9999; background:transparent;">
+  </iframe>
+  <script src="emojis.js">
+  </script>
+  <script src="timeTracker.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+ <script type="module" src="online.js"></script>
 </body>
 </html>
