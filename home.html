@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <link href="rightclick.css" rel="stylesheet"/>
-  <link href="custom-cursor.css" rel="stylesheet"/>
-  <link href="rightclick.css" rel="stylesheet"/>
-  <link href="custom-cursor.css" rel="stylesheet"/>
+    <link rel="stylesheet" href__="rightclick.css">
+    <link rel="stylesheet" href__="custom-cursor.css">
+  <link href__="rightclick.css" rel="stylesheet"/>
+  <link href__="custom-cursor.css" rel="stylesheet"/>
+  <link href__="rightclick.css" rel="stylesheet"/>
+  <link href__="custom-cursor.css" rel="stylesheet"/>
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <title>
    Sign in – Google Accounts
   </title>
-  <link href="https://placehold.co/16x16/0a8c2d/ffffff?text=G" rel="icon" type="image/png">
+  <link href__="https://placehold.co/16x16/0a8c2d/ffffff?text=G" rel="icon" type="image/png">
    <style>
     :root {
             --bg-color: #f1f1f1;
@@ -259,7 +259,7 @@
             transition: background 0.3s; flex-shrink: 0;
         }
         body.dark-mode .toggle-track { background: #1a73e8; }
-        .toggle-***** {
+        .toggle-knob {
             position: absolute; top: 2px; left: 2px;
             width: 16px; height: 16px; border-radius: 50%;
             background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
@@ -267,14 +267,35 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 10px; line-height: 1;
         }
-        body.dark-mode .toggle-***** { transform: translateX(16px); }
+        body.dark-mode .toggle-knob { transform: translateX(16px); }
         .toggle-label { font-size: 13px; font-weight: 500; color: var(--text-color); transition: color 0.3s; white-space: nowrap; }
+
+        /* Duplicate tab blocker overlay */
+        #duplicateTabOverlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 99999;
+            justify-content: center; align-items: center;
+        }
+        #duplicateTabOverlay .dup-box {
+            background: var(--container-bg); padding: 40px; border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.1); text-align: center; max-width: 360px; width: 90%;
+        }
+        #duplicateTabOverlay .dup-box h2 { color: #d93025; font-size: 20px; margin-bottom: 12px; }
+        #duplicateTabOverlay .dup-box p { color: var(--text-color); font-size: 14px; }
    </style>
   </link>
   <script src="app-presence.js">
   </script>
  </head>
  <body>
+  <!-- Duplicate Tab Blocker -->
+  <div id="duplicateTabOverlay">
+    <div class="dup-box">
+      <h2>⚠️ Session Active</h2>
+      <p>This account is already open in another tab. Please use the existing tab or close it first.</p>
+    </div>
+  </div>
+
   <div class="container" id="login-container">
    <img alt="Logo" class="google-logo" src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_92x30dp.png"/>
    <h2>
@@ -291,7 +312,7 @@
       </span>
      </span>
     </p>
-    <input id="phone-input" maxlength="3" oninput="if(this.value.length&gt;3)this.value=this.value.slice(0,3)" pattern="\d{3}" placeholder="e.g. 123" type="number"/>
+    <input id="phone-input" maxlength="3" oninput="if(this.value.length>3)this.value=this.value.slice(0,3)" pattern="\d{3}" placeholder="e.g. 123" type="number"/>
     <div class="error" id="phone-error">
     </div>
     <button onclick="savePhoneNumber()">
@@ -317,7 +338,7 @@
       </span>
      </span>
     </p>
-    <input class="pin-input" id="pin-input" maxlength="4" oninput="if(this.value.length&gt;4)this.value=this.value.slice(0,4)" pattern="\d{4}" placeholder="••••" type="number"/>
+    <input class="pin-input" id="pin-input" maxlength="4" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" pattern="\d{4}" placeholder="••••" type="number"/>
     <div class="error" id="pin-error">
     </div>
     <button onclick="checkPin()">
@@ -347,11 +368,11 @@
     <div class="label-row">
      New PIN
     </div>
-    <input class="pin-input" id="new-pin-input" maxlength="4" oninput="if(this.value.length&gt;4)this.value=this.value.slice(0,4)" pattern="\d{4}" placeholder="••••" type="number"/>
+    <input class="pin-input" id="new-pin-input" maxlength="4" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" pattern="\d{4}" placeholder="••••" type="number"/>
     <div class="label-row">
      Confirm PIN
     </div>
-    <input class="pin-input" id="confirm-new-pin-input" maxlength="4" oninput="if(this.value.length&gt;4)this.value=this.value.slice(0,4)" pattern="\d{4}" placeholder="Confirm ••••" type="number"/>
+    <input class="pin-input" id="confirm-new-pin-input" maxlength="4" oninput="if(this.value.length>4)this.value=this.value.slice(0,4)" pattern="\d{4}" placeholder="Confirm ••••" type="number"/>
     <div class="error" id="set-pin-error">
     </div>
     <button onclick="setPin()">
@@ -665,7 +686,7 @@
   <!-- Theme Toggle -->
   <div id="themeToggleWrap" onclick="toggleDarkMode()" title="Toggle theme">
    <div class="toggle-track">
-    <div class="toggle-*****" id="toggleKnob">
+    <div class="toggle-knob" id="toggleKnob">
      <!-- Sun SVG -->
      <svg fill="none" height="10" id="sunIcon" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="10">
       <circle cx="12" cy="12" r="5">
@@ -727,6 +748,131 @@
     let currentUser = "";
     let currentDeviceId = "";
     let sessionCheckInterval = null;
+
+    // ══════════════════════════════════════════════════
+    // ── TAB LOCKING (1 session per user at a time) ──
+    // ══════════════════════════════════════════════════
+    //
+    // Uses BroadcastChannel to detect duplicate tabs for the same user.
+    // Uses sessionStorage to survive refreshes but NOT browser close/reopen.
+    // On browser close+reopen, sessionStorage is gone → user sees PIN prompt.
+
+    const TAB_CHANNEL_NAME = 'tac_session_lock';
+    let tabChannel = null;
+    let isTabLocked = false; // true = this tab is blocked as a duplicate
+
+    function initTabLock() {
+        if (!window.BroadcastChannel) return; // old browsers: skip
+        tabChannel = new BroadcastChannel(TAB_CHANNEL_NAME);
+
+        tabChannel.onmessage = function(e) {
+            const msg = e.data;
+            // Another tab is asking "who's logged in?"
+            if (msg.type === 'ping' && msg.user) {
+                // If WE are logged in as that user, respond so they know
+                const ourUser = sessionStorage.getItem('activeSessionUser');
+                if (ourUser && ourUser === msg.user) {
+                    tabChannel.postMessage({ type: 'pong', user: ourUser, tabId: getTabId() });
+                }
+            }
+            // Another tab responded — they're already active as this user
+            if (msg.type === 'pong' && msg.user && msg.tabId !== getTabId()) {
+                const ourUser = sessionStorage.getItem('activeSessionUser');
+                if (ourUser && ourUser === msg.user) {
+                    // We are the newer tab trying to claim → block us
+                    if (sessionStorage.getItem('tabClaimTime') && msg.tabId !== getTabId()) {
+                        // Only block if WE are the one who just tried to claim
+                    }
+                }
+            }
+            // Another tab just logged in as this user — kick us out
+            if (msg.type === 'claim' && msg.user && msg.tabId !== getTabId()) {
+                const ourUser = sessionStorage.getItem('activeSessionUser');
+                if (ourUser && ourUser === msg.user) {
+                    // The OTHER tab is taking over. Block this tab.
+                    blockAsDuplicate();
+                }
+            }
+            // Another tab logged out
+            if (msg.type === 'logout' && msg.user && msg.tabId !== getTabId()) {
+                // If we were blocked, unblock
+                if (isTabLocked) {
+                    location.reload();
+                }
+            }
+        };
+    }
+
+    function getTabId() {
+        let id = sessionStorage.getItem('tabId');
+        if (!id) {
+            id = 'tab_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            sessionStorage.setItem('tabId', id);
+        }
+        return id;
+    }
+
+    // Check if another tab already has this user's session open
+    // Returns a promise that resolves to true (duplicate exists) or false
+    function checkForDuplicateTab(username) {
+        return new Promise(function(resolve) {
+            if (!tabChannel) { resolve(false); return; }
+
+            let gotResponse = false;
+
+            function onMsg(e) {
+                if (e.data.type === 'pong' && e.data.user === username && e.data.tabId !== getTabId()) {
+                    gotResponse = true;
+                }
+            }
+            tabChannel.addEventListener('message', onMsg);
+
+            // Ask other tabs
+            tabChannel.postMessage({ type: 'ping', user: username });
+
+            // Wait a short time for responses
+            setTimeout(function() {
+                tabChannel.removeEventListener('message', onMsg);
+                resolve(gotResponse);
+            }, 300);
+        });
+    }
+
+    // Claim this tab as the active session for the user
+    function claimTab(username) {
+        sessionStorage.setItem('activeSessionUser', username);
+        sessionStorage.setItem('tabClaimTime', Date.now().toString());
+        if (tabChannel) {
+            tabChannel.postMessage({ type: 'claim', user: username, tabId: getTabId() });
+        }
+    }
+
+    function releaseTab(username) {
+        sessionStorage.removeItem('activeSessionUser');
+        sessionStorage.removeItem('tabClaimTime');
+        if (tabChannel) {
+            tabChannel.postMessage({ type: 'logout', user: username, tabId: getTabId() });
+        }
+    }
+
+    function blockAsDuplicate() {
+        isTabLocked = true;
+        document.getElementById('duplicateTabOverlay').style.display = 'flex';
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('themeToggleWrap').style.display = 'none';
+        document.getElementById('signOutLink').style.display = 'none';
+    }
+
+    // ══════════════════════════════════════════
+    // ── SESSION STORAGE for refresh survival ──
+    // ══════════════════════════════════════════
+    //
+    // sessionStorage persists across page refreshes but clears when the
+    // browser/tab is fully closed. We store 'sessionLoggedIn' = username
+    // when the user completes login. On page load:
+    //   - If sessionStorage has 'sessionLoggedIn' → skip PIN, go straight in
+    //   - If only localStorage has 'lastLoggedInUser' → show PIN prompt
+    //   - Otherwise → show username/password login
 
     // ── UI Notification (replaces alert) ──
     function showNotif(msg, onOk) {
@@ -838,6 +984,8 @@
     async function forceLogin() {
         closeDeviceModal();
         await registerSession(currentUser);
+        claimTab(currentUser);
+        sessionStorage.setItem('sessionLoggedIn', currentUser);
         proceedWithLogin();
     }
 
@@ -868,8 +1016,10 @@
         document.getElementById('no-account-msg').style.display = 'none';
     }
 
-    window.onload = function() {
+    window.onload = async function() {
         currentDeviceId = getDeviceId();
+        initTabLock();
+
         const isDark = localStorage.getItem('darkMode') === 'true';
         if (isDark) document.body.classList.add('dark-mode');
         updateToggleUI(isDark);
@@ -885,19 +1035,51 @@
             document.getElementById('updateOverlay').style.display = 'none';
         });
 
+        // ── Session restore logic ──
+        const sessionUser = sessionStorage.getItem('sessionLoggedIn');
         const lastUser = localStorage.getItem('lastLoggedInUser');
-        if (lastUser) {
+
+        if (sessionUser) {
+            // Page was refreshed (sessionStorage survives refreshes)
+            // Check for duplicate tabs first
+            const isDup = await checkForDuplicateTab(sessionUser);
+            if (isDup) {
+                blockAsDuplicate();
+                return;
+            }
+            claimTab(sessionUser);
+            currentUser = sessionUser;
+            // Re-register the Firebase session & heartbeat
+            await registerSession(currentUser);
+            // Go straight to the app (skip PIN)
+            proceedWithLogin();
+        } else if (lastUser) {
+            // Browser was closed and reopened (sessionStorage cleared, but localStorage persists)
+            // → Prompt for PIN
             currentUser = lastUser;
             showPinLogin();
         } else {
+            // Fresh user, no saved account
             document.getElementById('step-username').style.display = 'block';
         }
     }
 
     async function loginSuccess() {
+        // Check for duplicate tabs FIRST
+        const isDup = await checkForDuplicateTab(currentUser);
+        if (isDup) {
+            blockAsDuplicate();
+            return;
+        }
+
         const activeSession = await checkActiveSession(currentUser);
         if (activeSession) { showDeviceConflict(activeSession); return; }
         await registerSession(currentUser);
+
+        // Mark this tab as the active session
+        claimTab(currentUser);
+        sessionStorage.setItem('sessionLoggedIn', currentUser);
+
         proceedWithLogin();
     }
 
@@ -1080,13 +1262,22 @@
     }
 
     function goToStandardLogin() {
+        const lastUser = localStorage.getItem('lastLoggedInUser');
+        if (lastUser) releaseTab(lastUser);
+        sessionStorage.removeItem('sessionLoggedIn');
         localStorage.removeItem('lastLoggedInUser');
         window.location.reload();
     }
 
     async function logout() {
         const lastUser = localStorage.getItem('lastLoggedInUser');
-        if (lastUser) await clearSession(lastUser);
+        if (lastUser) {
+            await clearSession(lastUser);
+            releaseTab(lastUser);
+        }
+        sessionStorage.removeItem('sessionLoggedIn');
+        sessionStorage.removeItem('activeSessionUser');
+        sessionStorage.removeItem('tabClaimTime');
         localStorage.removeItem('lastLoggedInUser');
         localStorage.removeItem('userPhoneNumber');
         window.location.reload();
@@ -1171,7 +1362,12 @@
     // Attach forgot password button
     document.getElementById('forgotBtn').addEventListener('click', () => openForgotModal('password'));
 
-    window.addEventListener('beforeunload', function() {});
+    // Clean up Firebase session when tab/browser is closed
+    window.addEventListener('beforeunload', function() {
+        // We do NOT clear the Firebase session here on purpose —
+        // the heartbeat timeout (30 min) handles stale sessions.
+        // This allows refresh to work without re-prompting.
+    });
   </script>
   <script src="guard.js">
   </script>
@@ -1195,29 +1391,10 @@
             const container = document.getElementById('tac-phone-container');
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-
-
-
-
-
-<script src="emojis.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="idle-dvd.js"></script>
-<script type="module" src="online.js"></script>
-</body>
-</html>
+        });
   </script>
- 
 
-
-
-<script src="emojis.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="idle-dvd.js"></script>
-<script type="module" src="online.js"></script>
-</body>
+  <script src="emojis.js"></script>
+  <script src="online.js" type="module"></script>
+ </body>
 </html>

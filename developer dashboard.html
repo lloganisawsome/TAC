@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
  <head>
@@ -275,6 +276,10 @@
    <button class="nav-tab" data-page="users">
     👤 Users
    </button>
+   <button class="nav-tab" data-page="modmanagement">
+ 🛡️ Mod Management
+</button>
+
    <button class="nav-tab" data-page="pending">
     ⏳ Pending
    </button>
@@ -287,8 +292,6 @@
    <button class="nav-tab" data-page="privatechats">
     🔒 Private Chats
    </button>
-   <button class="nav-tab" data-page="forum">
-    📋 Forum
    </button>
    <button class="nav-tab" data-page="lpc">
     💕 LPC Likes
@@ -1930,6 +1933,32 @@ Tetris,https://example.com/tetris,
     </div>
    </div>
   </div>
+  <div class="page" id="page-modmanagement">
+ <div class="panel">
+  <div class="panel-header">
+   <div>
+    <h2 class="panel-title">🛡️ Mod Management</h2>
+    <p class="panel-subtitle">Users in this list get the orange Mod Dashboard tile in apps.html</p>
+   </div>
+   <button class="btn btn-primary" onclick="loadData()">Refresh</button>
+  </div>
+  <div class="input-group">
+   <input id="modUserInput" placeholder="Enter username to add as mod..." type="text"/>
+   <button class="btn btn-primary" id="addModBtn">Add Mod</button>
+  </div>
+  <div class="table-wrap" style="max-height: 500px;">
+   <table id="modListTable">
+    <thead>
+     <tr>
+      <th>Username</th>
+      <th>Actions</th>
+     </tr>
+    </thead>
+    <tbody></tbody>
+   </table>
+  </div>
+ </div>
+</div>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
@@ -1963,6 +1992,7 @@ Tetris,https://example.com/tetris,
     let gamePlays = {}, activeUsers = {}, loginsByDay = {}, activeUserSnapshots = {};
     let appBans = {};
     let totalLoginsAll = 0;
+    let modList = {};
 
     const TODAY = new Date().toISOString().split('T')[0];
     function getYesterday() {
@@ -2090,6 +2120,36 @@ Tetris,https://example.com/tetris,
         }).join('');
     }
 
+    // ===================== MOD MANAGEMENT =====================
+function renderModList() {
+    const tbody = document.querySelector('#modListTable tbody');
+    const entries = Object.entries(modList);
+    if (entries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="2" class="empty-state">No mods added yet</td></tr>';
+        return;
+    }
+    tbody.innerHTML = entries.map(([key, val]) => {
+        const username = typeof val === 'string' ? val : (val && val.username ? val.username : key);
+        return `<tr>
+            <td><strong>${username}</strong></td>
+            <td><button class="btn btn-danger btn-sm" onclick="removeMod('${key}')">Remove</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function addMod() {
+    const input = document.getElementById('modUserInput');
+    const username = input.value.trim();
+    if (!username) return alert('Enter a username');
+    db.ref('modList').push(username).then(() => { input.value = ''; });
+}
+
+function removeMod(key) {
+    if (confirm('Remove this mod?')) db.ref('modList/' + key).remove();
+}
+
+document.getElementById('addModBtn').addEventListener('click', addMod);
+    
     // ===================== ACTIVE USERS CHART =====================
     function renderActiveUsersChart() {
         const canvas = document.getElementById('activeUsersChart');
@@ -3382,6 +3442,7 @@ Tetris,https://example.com/tetris,
     // ===================== LOAD DATA =====================
     function loadData() {
         Promise.all([
+            db.ref('modList').once('value'),
             db.ref('logins').once('value'),
             db.ref('allowedUsers').once('value'),
             db.ref('pendingAccounts').once('value'),
@@ -3415,6 +3476,7 @@ Tetris,https://example.com/tetris,
             db.ref('activeUserSnapshots').once('value'),
             db.ref('appBans').once('value'),
         ]).then(snaps => {
+           db.ref('modList').on('value', s => { modList = s.val() || {}; renderModList(); });
             logins = snaps[0].val() || {};
             totalLoginsAll = Object.values(logins).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0);
             allowedUsers = snaps[1].val() || {};

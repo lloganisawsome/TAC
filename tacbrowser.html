@@ -1,4 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TAC - Browser</title>
 
-<script src="timeTracker.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0b;
+            --panel: #111113;
+            --panel-hover: #1a1a1c;
+            --accent: #22c55e;
+            --accent-dim: rgba(34, 197, 94, 0.1);
+            --muted: #71717a;
+            --border: rgba(255,255,255,0.06);
+        }
 
-<script type="module" src="online.js"></script>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: #fff;
+            font-size: 14px;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 70px;
+            background: var(--panel);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 0 20px var(--accent-dim);
+        }
+
+        .sidebar.collapsed {
+            width: 0;
+            padding: 0;
+            border: none;
+            margin-left: -10px;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            margin-bottom: 16px;
+            padding: 4px;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed .logo-container { opacity: 0; }
+
+        .logo {
+            width: 62px;
+            height: 62px;
+            border-radius: 8px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+            padding: 0 8px;
+            transition: opacity 0.3s;
+        }
+
+        .sidebar.collapsed .nav-items { opacity: 0; }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 54px;
+            height: 54px;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--accent);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover { background: var(--accent-dim); }
+
+        .nav-item.active {
+            background: var(--accent-dim);
+            border: 1px solid var(--accent);
+        }
+
+        .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
+        .nav-item span { font-size: 9px; font-weight: 500; }
+
+        .toggle-btn {
+            position: fixed;
+            left: 90px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 36px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1001;
+        }
+
+        .toggle-btn:hover {
+            background: var(--panel-hover);
+            border-color: var(--accent);
+        }
+
+        .toggle-btn svg {
+            width: 14px;
+            height: 14px;
+            color: #fff;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.collapsed { left: 10px; }
+        .toggle-btn.collapsed svg { transform: rotate(180deg); }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 100px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.expanded { margin-left: 24px; }
+
+        /* Toolbar */
+        .browser-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .url-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .url-input {
+            flex: 1;
+            height: 36px;
+            padding: 0 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .url-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-dim);
+        }
+
+        .url-input::placeholder { color: var(--muted); }
+
+        .go-btn {
+            height: 36px;
+            padding: 0 20px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .go-btn:hover { background: var(--accent); color: #000; }
+
+        /* Home Screen */
+        .home-screen {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 48px 24px 32px;
+            gap: 32px;
+        }
+
+        .home-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
+
+        .home-subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            margin-top: -20px;
+        }
+
+        /* Pin Input */
+        .pin-section {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pin-section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .pin-add-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pin-input {
+            flex: 1;
+            height: 38px;
+            padding: 0 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .pin-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px var(--accent-dim);
+        }
+
+        .pin-input::placeholder { color: var(--muted); }
+
+        .pin-add-btn {
+            height: 38px;
+            padding: 0 16px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .pin-add-btn:hover { background: var(--accent); color: #000; }
+
+        /* Pinned List */
+        .pinned-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+            max-width: 560px;
+        }
+
+        .pinned-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        .pinned-item:hover { border-color: var(--accent); background: var(--panel-hover); }
+
+        .pinned-url {
+            flex: 1;
+            font-size: 13px;
+            color: var(--accent);
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .pinned-url:hover { text-decoration: underline; }
+
+        .pinned-delete {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+        }
+
+        .pinned-delete:hover { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .pinned-delete svg { width: 14px; height: 14px; }
+
+        .empty-pins {
+            font-size: 12px;
+            color: var(--muted);
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-content { margin-left: 24px; }
+            .sidebar { display: none; }
+            .toggle-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo-container">
+            <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+        </div>
+
+        <nav class="nav-items">
+            <a href="index.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                <span>Home</span>
+            </a>
+
+            <a href="chat.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
+                    <circle cx="8" cy="10" r="1.5"/>
+                    <circle cx="12" cy="10" r="1.5"/>
+                    <circle cx="16" cy="10" r="1.5"/>
+                </svg>
+                <span>Chat</span>
+            </a>
+
+            <a href="notgames.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+                </svg>
+                <span>Games</span>
+            </a>
+
+            <a href="phone.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+                </svg>
+                <span>Phone</span>
+            </a>
+
+            <a href="apps.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/>
+                </svg>
+                <span>All Apps</span>
+            </a>
+        </nav>
+    </aside>
+
+    <button class="toggle-btn" id="toggleBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"/>
+        </svg>
+    </button>
+
+    <main class="main-content" id="mainContent">
+
+        <div class="browser-toolbar">
+            <div class="url-container">
+                <input type="text" class="url-input" id="urlInput" placeholder="Enter URL and press Go, Not all urls will work..." autofocus>
+                <button class="go-btn" id="goBtn">Go</button>
+            </div>
+        </div>
+
+        <div class="home-screen">
+            <h1 class="home-title">TAC Browser</h1>
+            <p class="home-subtitle">Enter a URL above or open a pinned site below</p>
+
+            <div class="pin-section">
+                <div class="pin-section-label">Pin a site</div>
+                <div class="pin-add-row">
+                    <input type="text" class="pin-input" id="pinInput" placeholder="https://example.com">
+                    <button class="pin-add-btn" id="pinAddBtn">Pin</button>
+                </div>
+            </div>
+
+            <div class="pin-section">
+                <div class="pin-section-label">Pinned</div>
+                <div class="pinned-list" id="pinnedList"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // ===== THEME =====
+        const themeColors = {
+            green:    { primary: '#22c55e', dim: 'rgba(34,197,94,0.1)',   shadow: 'rgba(34,197,94,0.15)' },
+            blue:     { primary: '#3b82f6', dim: 'rgba(59,130,246,0.1)',  shadow: 'rgba(59,130,246,0.15)' },
+            red:      { primary: '#ef4444', dim: 'rgba(239,68,68,0.1)',   shadow: 'rgba(239,68,68,0.15)' },
+            cyan:     { primary: '#06b6d4', dim: 'rgba(6,182,212,0.1)',   shadow: 'rgba(6,182,212,0.15)' },
+            pink:     { primary: '#ec4899', dim: 'rgba(236,72,153,0.1)',  shadow: 'rgba(236,72,153,0.15)' },
+            purple:   { primary: '#8b5cf6', dim: 'rgba(139,92,246,0.1)', shadow: 'rgba(139,92,246,0.15)' },
+            yellow:   { primary: '#eab308', dim: 'rgba(234,179,8,0.1)',   shadow: 'rgba(234,179,8,0.15)' },
+            orange:   { primary: '#f97316', dim: 'rgba(249,115,22,0.1)',  shadow: 'rgba(249,115,22,0.15)' },
+            white:    { primary: '#ffffff', dim: 'rgba(255,255,255,0.1)', shadow: 'rgba(255,255,255,0.15)' },
+            whiteout: { primary: '#ffffff', dim: 'rgba(255,255,255,0.05)',shadow: 'rgba(255,255,255,0.1)' }
+        };
+
+        function applyTheme() {
+            var theme = localStorage.getItem('theme') || 'green';
+            var colors = themeColors[theme] || themeColors.green;
+            document.documentElement.style.setProperty('--accent', colors.primary);
+            document.documentElement.style.setProperty('--accent-dim', colors.dim);
+            var logo = document.getElementById('logo');
+            if (logo) logo.src = 'taclogos/' + theme + '.png';
+            var sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.style.boxShadow = '0 0 20px ' + colors.shadow;
+        }
+
+        applyTheme();
+        window.addEventListener('storage', function(e) { if (e.key === 'theme') applyTheme(); });
+
+        // ===== SIDEBAR TOGGLE =====
+        document.getElementById('toggleBtn').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            this.classList.toggle('collapsed');
+            document.getElementById('mainContent').classList.toggle('expanded');
+        });
+
+        // ===== ABC CLASS =====
+        class ABC {
+            constructor(config) {
+                config = config || {};
+                this.type = config.type || 'blank';
+                this.url  = config.url  || 'about:blank';
+            }
+            getCode() {
+                return '<iframe style="height:100%;width:100%;border:none;position:fixed;top:0;right:0;left:0;bottom:0;" sandbox="allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-presentation allow-same-origin allow-scripts allow-top-navigation allow-top-navigation-by-user-activation" src="' + this.url + '"></iframe>';
+            }
+            open() {
+                try {
+                    var page = window.open();
+                    page.document.body.innerHTML = this.getCode();
+                } catch(e) {}
+            }
+        }
+
+        // ===== URL HELPERS =====
+        function validURL(str) {
+            var pattern = new RegExp('^(https?:\\/\\/)?'+
+                '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+
+                '((\\d{1,3}\\.){3}\\d{1,3}))'+
+                '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+
+                '(\\?[;&a-z\\d%_.~+=-]*)?'+
+                '(\\#[-a-z\\d_]*)?$','i');
+            return !!pattern.test(str);
+        }
+
+        function normalizeUrl(url) {
+            url = url.trim();
+            if (!url) return '';
+            if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+            return url;
+        }
+
+        // ===== OPEN URL =====
+        function openUrl(url) {
+            url = normalizeUrl(url);
+            if (!url || !validURL(url)) return;
+            new ABC({ type: 'blank', url: url }).open();
+        }
+
+        // Toolbar go
+        var urlInput = document.getElementById('urlInput');
+        document.getElementById('goBtn').addEventListener('click', function() {
+            openUrl(urlInput.value);
+        });
+        urlInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') openUrl(urlInput.value);
+        });
+
+        // ===== PINNED URLS =====
+        function getPins() {
+            try { return JSON.parse(localStorage.getItem('tac_pins') || '[]'); } catch(e) { return []; }
+        }
+
+        function savePins(pins) {
+            localStorage.setItem('tac_pins', JSON.stringify(pins));
+        }
+
+        function renderPins() {
+            var list = document.getElementById('pinnedList');
+            var pins = getPins();
+            list.innerHTML = '';
+
+            if (pins.length === 0) {
+                var empty = document.createElement('div');
+                empty.className = 'empty-pins';
+                empty.textContent = 'No pinned sites yet. Add one above.';
+                list.appendChild(empty);
+                return;
+            }
+
+            pins.forEach(function(url, index) {
+                var item = document.createElement('div');
+                item.className = 'pinned-item';
+
+                var label = document.createElement('span');
+                label.className = 'pinned-url';
+                label.textContent = url;
+                label.title = url;
+                label.addEventListener('click', function() { openUrl(url); });
+
+                var delBtn = document.createElement('button');
+                delBtn.className = 'pinned-delete';
+                delBtn.title = 'Remove';
+                delBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>';
+                delBtn.addEventListener('click', function() {
+                    var pins = getPins();
+                    pins.splice(index, 1);
+                    savePins(pins);
+                    renderPins();
+                });
+
+                item.appendChild(label);
+                item.appendChild(delBtn);
+                list.appendChild(item);
+            });
+        }
+
+        // Pin add
+        var pinInput = document.getElementById('pinInput');
+        document.getElementById('pinAddBtn').addEventListener('click', function() {
+            var url = normalizeUrl(pinInput.value);
+            if (!url || !validURL(url)) return;
+            var pins = getPins();
+            if (!pins.includes(url)) {
+                pins.push(url);
+                savePins(pins);
+                renderPins();
+            }
+            pinInput.value = '';
+        });
+        pinInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') document.getElementById('pinAddBtn').click();
+        });
+
+        // Init
+        renderPins();
+    </script>
+</body>
+</html>

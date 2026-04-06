@@ -1,853 +1,973 @@
 <!DOCTYPE html>
 <html lang="en">
- <head>
-    <link rel="stylesheet" href="rightclick.css">
-    <link rel="stylesheet" href="custom-cursor.css">
-  <link href="rightclick.css" rel="stylesheet"/>
-  <link href="custom-cursor.css" rel="stylesheet"/>
+<head>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Ultimate Spacebar Clicker
-  </title>
+  <title>Ultimate Spacebar Clicker</title>
   <style>
-   :root {
-    --bg: #0a0a0b;
-    --panel: #111113;
-    --panel-hover: #1a1a1c;
-    --accent: #22c55e;
-    --accent-dim: rgba(34, 197, 94, 0.1);
-    --muted: #71717a;
-    --border: rgba(255,255,255,0.06);
-}
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050508;
+      --bg2: #0a0a10;
+      --panel: #0d0d14;
+      --panel-hover: #14141f;
+      --accent: #22c55e;
+      --accent-dim: rgba(34, 197, 94, 0.1);
+      --accent-glow: rgba(34, 197, 94, 0.3);
+      --muted: #4a4a5a;
+      --border: rgba(255,255,255,0.04);
+      --text: #e0e0e8;
+      --text-dim: #8888a0;
+    }
 
-html, body {
-    height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: #fff;
-    font-size: 14px;
-}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+    html, body {
+      height: 100%;
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      overflow-x: hidden;
+    }
 
-/* Sidebar */
-.sidebar {
-    position: fixed;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 70px;
-    background: var(--panel);
-    border: 1px solid var(--accent);
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 12px 0;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 0 20px var(--accent-dim);
-}
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--accent-dim); border-radius: 3px; }
 
-.sidebar.collapsed {
-    width: 0;
-    padding: 0;
-    border: none;
-    margin-left: -10px;
-    overflow: hidden;
-}
+    #particles {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
 
-.logo-container {
-    margin-bottom: 16px;
-    padding: 4px;
-    transition: opacity 0.3s;
-}
+    .sidebar {
+      position: fixed; left: 10px; top: 50%; transform: translateY(-50%);
+      width: 70px; background: var(--panel); border: 1px solid var(--accent);
+      border-radius: 16px; display: flex; flex-direction: column; align-items: center;
+      padding: 12px 0; transition: all 0.3s ease; z-index: 1000;
+      box-shadow: 0 0 30px var(--accent-glow), inset 0 0 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+    .sidebar.collapsed { width: 0; padding: 0; border: none; margin-left: -10px; overflow: hidden; }
+    .logo-container { margin-bottom: 16px; padding: 4px; transition: opacity 0.3s; }
+    .sidebar.collapsed .logo-container { opacity: 0; }
+    .logo { width: 62px; height: 62px; border-radius: 8px; }
+    .nav-items { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; padding: 0 8px; transition: opacity 0.3s; }
+    .sidebar.collapsed .nav-items { opacity: 0; }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 54px; height: 54px; border-radius: 10px; text-decoration: none;
+      color: var(--accent); transition: all 0.2s ease; cursor: pointer;
+    }
+    .nav-item:hover { background: var(--accent-dim); }
+    .nav-item.active { background: var(--accent-dim); border: 1px solid var(--accent); box-shadow: 0 0 10px var(--accent-dim); }
+    .nav-item svg { width: 24px; height: 24px; margin-bottom: 2px; }
+    .nav-item span { font-size: 9px; font-weight: 500; }
 
-.sidebar.collapsed .logo-container {
-    opacity: 0;
-}
+    .toggle-btn {
+      position: fixed; left: 90px; top: 50%; transform: translateY(-50%);
+      width: 20px; height: 36px; background: var(--panel); border: 1px solid var(--border);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.3s ease; z-index: 1001;
+    }
+    .toggle-btn:hover { background: var(--panel-hover); border-color: var(--accent); }
+    .toggle-btn svg { width: 14px; height: 14px; color: #fff; transition: transform 0.3s ease; }
+    .toggle-btn.collapsed { left: 10px; }
+    .toggle-btn.collapsed svg { transform: rotate(180deg); }
 
-.logo {
-    width: 62px;
-    height: 62px;
-    border-radius: 8px;
-}
-
-.nav-items {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    width: 100%;
-    padding: 0 8px;
-    transition: opacity 0.3s;
-}
-
-.sidebar.collapsed .nav-items {
-    opacity: 0;
-}
-
-.nav-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 54px;
-    height: 54px;
-    border-radius: 10px;
-    text-decoration: none;
-    color: var(--accent);
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
-.nav-item:hover {
-    background: var(--accent-dim);
-}
-
-.nav-item.active {
-    background: var(--accent-dim);
-    border: 1px solid var(--accent);
-}
-
-.nav-item svg {
-    width: 24px;
-    height: 24px;
-    margin-bottom: 2px;
-}
-
-.nav-item span {
-    font-size: 9px;
-    font-weight: 500;
-}
-
-.toggle-btn {
-    position: fixed;
-    left: 90px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 36px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    z-index: 1001;
-}
-
-.toggle-btn:hover {
-    background: var(--panel-hover);
-    border-color: var(--accent);
-}
-
-.toggle-btn svg {
-    width: 14px;
-    height: 14px;
-    color: #fff;
-    transition: transform 0.3s ease;
-}
-
-.toggle-btn.collapsed {
-    left: 10px;
-}
-
-.toggle-btn.collapsed svg {
-    transform: rotate(180deg);
-}
-
-/* Main Content */
-.main-content {
-    margin-left: 100px;
-    padding: 24px;
-    transition: margin-left 0.3s ease;
-    text-align: center;
-}
-
-.main-content.expanded {
-    margin-left: 24px;
-}
-
-h1 { 
-    font-size: 32px;
-    font-weight: 700;
-    margin: 20px 0;
-    color: var(--accent);
-}
-
-.panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 1200px;
-}
-
-.stats {
-    font-size: 16px;
-    margin: 20px 0;
-    color: var(--accent);
-    line-height: 1.6;
-}
-
-.btn {
-    background: var(--panel);
-    color: var(--accent);
-    border: 2px solid var(--accent);
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-size: 14px;
-    transition: all 0.2s;
-}
-
-.btn:hover {
-    background: var(--accent);
-    color: #000;
-}
-
-#clickBtn {
-    font-size: 24px;
-    padding: 30px 60px;
-    border-radius: 12px;
-    background: var(--panel);
-    color: var(--accent);
-    border: 2px solid var(--accent);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-weight: 600;
-    letter-spacing: 1px;
-}
-
-#clickBtn:hover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px var(--accent-dim);
-}
-
-#clickBtn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 6px var(--accent-dim);
-}
-
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    background: var(--panel);
-    border: 2px solid var(--accent);
-    border-radius: 16px;
-    padding: 30px;
-    z-index: 9999;
-    box-shadow: 0 0 40px var(--accent);
-    animation: popupIn 0.3s forwards;
-    min-width: 300px;
-    text-align: center;
-}
-
-@keyframes popupIn {
-    to { transform: translate(-50%, -50%) scale(1); }
-}
-
-.popup.closing {
-    animation: popupOut 0.3s forwards;
-}
-
-@keyframes popupOut {
-    to { transform: translate(-50%, -50%) scale(0); }
-}
-
-.popup h3 {
-    color: var(--accent);
-    margin-bottom: 15px;
-    font-size: 24px;
-}
-
-.shop-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin: 20px 0;
-}
-
-.shop-item {
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 15px;
-    transition: all 0.2s;
-}
-
-.shop-item:hover {
-    background: var(--panel-hover);
-    border-color: var(--accent);
-}
-
-.shop-item h4 {
-    color: var(--accent);
-    margin-bottom: 10px;
-}
-
-.leaderboard-controls {
-    display: flex;
-    gap: 10px;
-    margin: 15px 0;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.leaderboard-list {
-    text-align: left;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.leaderboard-item {
-    padding: 12px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin: 8px 0;
-    display: flex;
-    justify-content: space-between;
-}
-
-#devMenu {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background: var(--panel);
-    border: 2px solid var(--accent);
-    padding: 15px;
-    display: none;
-    z-index: 999;
-    max-width: 300px;
-    border-radius: 12px;
-}
-
-#devMenu h3 {
-    color: var(--accent);
-    margin-bottom: 10px;
-}
-
-@media (max-width: 768px) {
     .main-content {
-        margin-left: 24px;
+      position: relative; z-index: 1;
+      margin-left: 100px; padding: 24px;
+      transition: margin-left 0.3s ease; text-align: center;
     }
-    .sidebar, .toggle-btn {
-        display: none;
+    .main-content.expanded { margin-left: 24px; }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 36px; font-weight: 900; margin: 20px 0 5px;
+      background: linear-gradient(135deg, var(--accent), #fff, var(--accent));
+      background-size: 200% 200%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 3s ease-in-out infinite;
+      filter: drop-shadow(0 0 20px var(--accent-glow));
     }
-}
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .subtitle { color: var(--text-dim); font-size: 13px; margin-bottom: 20px; letter-spacing: 3px; text-transform: uppercase; font-family: 'Orbitron', sans-serif; }
+
+    .panel {
+      background: linear-gradient(135deg, var(--panel), var(--bg2));
+      border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+      margin: 20px auto; max-width: 1200px; backdrop-filter: blur(5px);
+      position: relative; overflow: hidden;
+    }
+    .panel::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.5;
+    }
+    .panel h2 { font-family: 'Orbitron', sans-serif; color: var(--accent); font-size: 20px; margin-bottom: 16px; letter-spacing: 2px; }
+
+    .stats-bar { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 16px auto; max-width: 1200px; }
+    .stat-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+      padding: 12px 20px; min-width: 120px; transition: all 0.3s;
+    }
+    .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); transform: translateY(-2px); }
+    .stat-card .stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-family: 'Orbitron', sans-serif; }
+    .stat-card .stat-value { font-size: 22px; font-weight: 700; color: var(--accent); font-family: 'Orbitron', sans-serif; }
+
+    #clickBtn {
+      font-family: 'Orbitron', sans-serif; font-size: 22px; padding: 28px 56px;
+      border-radius: 16px; background: linear-gradient(135deg, var(--panel), var(--bg2));
+      color: var(--accent); border: 2px solid var(--accent); cursor: pointer;
+      transition: all 0.15s ease; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      position: relative; overflow: hidden;
+      box-shadow: 0 0 30px var(--accent-dim), inset 0 0 30px var(--accent-dim);
+    }
+    #clickBtn::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle, var(--accent-glow), transparent 70%); opacity: 0; transition: opacity 0.3s;
+    }
+    #clickBtn:hover::before { opacity: 1; }
+    #clickBtn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 50px var(--accent-glow), inset 0 0 30px var(--accent-dim); }
+    #clickBtn:active { transform: translateY(1px) scale(0.98); box-shadow: 0 0 20px var(--accent-dim); }
+
+    .click-hint { color: var(--text-dim); font-size: 12px; margin-top: 8px; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
+
+    .float-number {
+      position: fixed; pointer-events: none; font-family: 'Orbitron', sans-serif;
+      font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow);
+      animation: floatUp 1s ease-out forwards; z-index: 9999;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+    }
+
+    .powerup-bar { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 12px auto; max-width: 800px; }
+    .powerup-indicator {
+      display: none; align-items: center; gap: 6px;
+      background: var(--panel); border: 1px solid var(--accent); border-radius: 20px;
+      padding: 6px 14px; font-size: 12px; font-family: 'Orbitron', sans-serif; color: var(--accent);
+      animation: pulse 1s ease-in-out infinite; box-shadow: 0 0 15px var(--accent-dim);
+    }
+    .powerup-indicator.active { display: flex; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+    .btn {
+      font-family: 'Rajdhani', sans-serif; background: var(--panel); color: var(--accent);
+      border: 1px solid var(--accent); padding: 8px 18px; margin: 5px; cursor: pointer;
+      border-radius: 8px; font-size: 13px; font-weight: 600; transition: all 0.2s; letter-spacing: 0.5px;
+    }
+    .btn:hover { background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent-dim); }
+    .btn:disabled, .btn.disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn:disabled:hover, .btn.disabled:hover { background: var(--panel); color: var(--accent); box-shadow: none; }
+    .btn-save { background: var(--accent); color: #000; font-weight: 700; border: none; padding: 10px 24px; font-size: 14px; }
+    .btn-save:hover { filter: brightness(1.2); box-shadow: 0 0 20px var(--accent-glow); }
+
+    .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin: 16px 0; }
+    .shop-item {
+      background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.005));
+      border: 1px solid var(--border); border-radius: 12px; padding: 16px; transition: all 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .shop-item:hover { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-dim); transform: translateY(-2px); }
+    .shop-item.maxed { border-color: gold; box-shadow: 0 0 15px rgba(255,215,0,0.15); }
+    .shop-item h4 { color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 13px; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .shop-item .item-emoji { font-size: 28px; margin-bottom: 6px; }
+    .shop-item p { color: var(--text-dim); font-size: 12px; margin: 3px 0; }
+    .shop-item .item-effect { color: var(--accent); font-size: 11px; font-weight: 600; margin-top: 6px; }
+    .shop-item .level-bar { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin: 8px 0; overflow: hidden; }
+    .shop-item .level-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; box-shadow: 0 0 6px var(--accent-glow); }
+
+    .shop-tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .shop-tab {
+      font-family: 'Orbitron', sans-serif; font-size: 11px; padding: 6px 16px;
+      background: var(--panel); border: 1px solid var(--border); color: var(--text-dim);
+      border-radius: 20px; cursor: pointer; transition: all 0.2s;
+    }
+    .shop-tab:hover, .shop-tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    .leaderboard-controls { display: flex; gap: 8px; margin: 12px 0; justify-content: center; flex-wrap: wrap; }
+    .leaderboard-list { text-align: left; max-height: 500px; overflow-y: auto; }
+    .leaderboard-item {
+      padding: 10px 14px; background: rgba(255,255,255,0.015); border: 1px solid var(--border);
+      border-radius: 10px; margin: 6px 0; display: flex; justify-content: space-between;
+      align-items: center; transition: all 0.2s; font-size: 13px;
+    }
+    .leaderboard-item:hover { border-color: var(--accent); background: var(--accent-dim); }
+    .leaderboard-item .rank { font-family: 'Orbitron', sans-serif; font-weight: 700; color: var(--accent); min-width: 28px; }
+    .leaderboard-item .rank.gold { color: #ffd700; }
+    .leaderboard-item .rank.silver { color: #c0c0c0; }
+    .leaderboard-item .rank.bronze { color: #cd7f32; }
+    .leaderboard-item .player-name { font-weight: 600; flex: 1; margin-left: 10px; }
+    .leaderboard-item .player-name.you { color: var(--accent); }
+    .leaderboard-item .player-stats { color: var(--text-dim); font-size: 12px; }
+
+    .achievements-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin: 16px 0; }
+    .achievement { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; transition: all 0.3s; opacity: 0.4; }
+    .achievement.unlocked { opacity: 1; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); }
+    .achievement .ach-icon { font-size: 30px; margin-bottom: 6px; }
+    .achievement .ach-name { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--accent); margin-bottom: 4px; }
+    .achievement .ach-desc { font-size: 11px; color: var(--text-dim); }
+
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 8px; }
+    .toast {
+      background: var(--panel); border: 1px solid var(--accent); border-radius: 10px;
+      padding: 12px 20px; color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 12px;
+      box-shadow: 0 0 20px var(--accent-glow); animation: toastIn 0.3s ease-out; max-width: 320px;
+    }
+    .toast.closing { animation: toastOut 0.3s ease-in forwards; }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes toastOut { to { opacity: 0; transform: translateX(50px); } }
+
+    #devMenu {
+      position: fixed; top: 10px; right: 10px; background: var(--panel); border: 2px solid var(--accent);
+      padding: 15px; display: none; z-index: 999; max-width: 300px; border-radius: 12px;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+    #devMenu h3 { color: var(--accent); margin-bottom: 10px; font-family: 'Orbitron', sans-serif; }
+
+    .popup {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0);
+      background: var(--panel); border: 2px solid var(--accent); border-radius: 16px; padding: 30px;
+      z-index: 9999; box-shadow: 0 0 60px var(--accent-glow); animation: popupIn 0.3s forwards;
+      min-width: 300px; text-align: center;
+    }
+    @keyframes popupIn { to { transform: translate(-50%, -50%) scale(1); } }
+    .popup.closing { animation: popupOut 0.3s forwards; }
+    @keyframes popupOut { to { transform: translate(-50%, -50%) scale(0); } }
+    .popup h3 { color: var(--accent); margin-bottom: 15px; font-size: 22px; font-family: 'Orbitron', sans-serif; }
+
+    .prestige-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 10001;
+      display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s;
+    }
+    .prestige-overlay .prestige-box { text-align: center; animation: popupIn 0.5s ease-out; }
+    .prestige-overlay h2 { font-family: 'Orbitron', sans-serif; font-size: 36px; color: var(--accent); margin-bottom: 10px; }
+    .prestige-overlay p { color: var(--text-dim); font-size: 16px; margin-bottom: 20px; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @media (max-width: 768px) {
+      .main-content { margin-left: 24px; }
+      .sidebar, .toggle-btn { display: none; }
+      h1 { font-size: 24px; }
+      .stat-card { min-width: 90px; padding: 8px 12px; }
+      .stat-card .stat-value { font-size: 16px; }
+      .shop-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+    }
   </style>
-  <script src="app-presence.js">
-  </script>
- </head>
- <body>
+</head>
+<body>
+
+  <canvas id="particles"></canvas>
+  <div class="toast-container" id="toastContainer"></div>
+
   <aside class="sidebar" id="sidebar">
-   <div class="logo-container">
-    <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
-   </div>
-   <nav class="nav-items">
-    <a class="nav-item" href="index.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
-      </path>
-     </svg>
-     <span>
-      Home
-     </span>
-    </a>
-    <a class="nav-item" href="chat.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
-      </path>
-      <circle cx="8" cy="10" r="1.5">
-      </circle>
-      <circle cx="12" cy="10" r="1.5">
-      </circle>
-      <circle cx="16" cy="10" r="1.5">
-      </circle>
-     </svg>
-     <span>
-      Chat
-     </span>
-    </a>
-    <a class="nav-item active" href="notgames.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19h0c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75h0c1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
-      </path>
-     </svg>
-     <span>
-      Games
-     </span>
-    </a>
-    <a class="nav-item" href="phone.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
-      </path>
-     </svg>
-     <span>
-      Phone
-     </span>
-    </a>
-    <a class="nav-item" href="apps.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
-      </path>
-     </svg>
-     <span>
-      All Apps
-     </span>
-    </a>
-   </nav>
+    <div class="logo-container">
+      <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
+    </div>
+    <nav class="nav-items">
+      <a class="nav-item" href="index.html">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="nav-item" href="chat.html">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+        <span>Chat</span>
+      </a>
+      <a class="nav-item active" href="notgames.html">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+        <span>Games</span>
+      </a>
+      <a class="nav-item" href="phone.html">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+        <span>Phone</span>
+      </a>
+      <a class="nav-item" href="apps.html">
+        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        <span>All Apps</span>
+      </a>
+    </nav>
   </aside>
+
   <button class="toggle-btn" id="toggleBtn">
-   <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
-    <polyline points="15 18 9 12 15 6">
-    </polyline>
-   </svg>
+    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
   </button>
+
   <main class="main-content" id="mainContent">
-   <h1>
-    🚀 Ultimate Spacebar Clicker
-   </h1>
-   <div class="stats" id="stats">
-    Clicks: 0 | CPS: 0 | AutoClicker: 0
-   </div>
-   <button id="clickBtn">
-    CLICK ME!
-   </button>
-   <div class="panel">
-    <h2 style="color: var(--accent);">
-     Shop
-    </h2>
-    <div class="shop-grid" id="shopGrid">
+    <h1>⚡ SPACEBAR CLICKER</h1>
+    <div class="subtitle">CLICK • UPGRADE • DOMINATE</div>
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="powerup-bar" id="powerupBar">
+      <div class="powerup-indicator" id="pw-frenzy">🔥 FRENZY</div>
+      <div class="powerup-indicator" id="pw-double">✨ 2X CLICKS</div>
+      <div class="powerup-indicator" id="pw-crits">💥 CRITS</div>
+      <div class="powerup-indicator" id="pw-magnet">🧲 MAGNET</div>
+      <div class="powerup-indicator" id="pw-timestop">⏳ TIME WARP</div>
     </div>
-   </div>
-   <div class="panel">
-    <h2 style="color: var(--accent);">
-     Leaderboard
-    </h2>
-    <div class="leaderboard-controls">
-     <button class="btn" id="sortClicks">
-      Sort by Clicks
-     </button>
-     <button class="btn" id="sortCPS">
-      Sort by CPS
-     </button>
-     <button class="btn" id="sortAuto">
-      Sort by AutoClicker
-     </button>
+
+    <button id="clickBtn">⚡ CLICK ⚡</button>
+    <div class="click-hint">or press SPACEBAR</div>
+
+    <div style="margin-top: 16px;">
+      <button class="btn btn-save" id="saveBtn">💾 SAVE & SUBMIT TO LEADERBOARD</button>
     </div>
-    <div class="leaderboard-list" id="leaderboardList">
+
+    <div class="panel">
+      <h2>🛒 UPGRADE SHOP</h2>
+      <div class="shop-tabs" id="shopTabs">
+        <div class="shop-tab active" data-tab="clickers">⚡ Clickers</div>
+        <div class="shop-tab" data-tab="multipliers">✖️ Multipliers</div>
+        <div class="shop-tab" data-tab="generators">🏭 Generators</div>
+        <div class="shop-tab" data-tab="special">🌟 Special</div>
+      </div>
+      <div class="shop-grid" id="shopGrid"></div>
     </div>
-   </div>
+
+    <div class="panel">
+      <h2>🏆 ACHIEVEMENTS</h2>
+      <div class="achievements-grid" id="achievementsGrid"></div>
+    </div>
+
+    <div class="panel">
+      <h2>📊 LEADERBOARD</h2>
+      <div class="leaderboard-controls">
+        <button class="btn" id="sortClicks">🏆 Sort: Clicks</button>
+        <button class="btn" id="sortCPS">⚡ Sort: CPS</button>
+        <button class="btn" id="sortPrestige">⭐ Sort: Prestige</button>
+        <button class="btn" id="refreshLB">🔄 Refresh</button>
+      </div>
+      <div id="lbStatus" style="color:var(--text-dim);font-size:12px;margin-bottom:8px;font-family:'Orbitron',sans-serif;"></div>
+      <div class="leaderboard-list" id="leaderboardList">
+        <div style="text-align:center;color:var(--text-dim);padding:30px;font-family:'Orbitron',sans-serif;font-size:12px;">Loading leaderboard...</div>
+      </div>
+    </div>
   </main>
+
   <div id="devMenu">
-   <h3>
-    DEV MENU
-   </h3>
-   <button class="btn" id="spawnAll">
-    Spawn All Powerups
-   </button>
-   <button class="btn" id="forceFrenzy">
-    Force Frenzy
-   </button>
-   <button class="btn" id="forceDouble">
-    Force DoubleClicks
-   </button>
-   <button class="btn" id="resetGame">
-    Reset Game
-   </button>
-   <button class="btn" id="devSave">
-    Dev Save
-   </button>
+    <h3>⚙️ DEV MENU</h3>
+    <button class="btn" id="spawnAll">Spawn All Powerups</button>
+    <button class="btn" id="forceFrenzy">Force Frenzy</button>
+    <button class="btn" id="forceDouble">Force Double</button>
+    <button class="btn" id="addClicks">+1M Clicks</button>
+    <button class="btn" id="resetGame">Reset Game</button>
+    <button class="btn" id="devSave">Dev Save</button>
   </div>
+
   <script type="module">
-   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
-  authDomain: "taclogin-ab38e.firebaseapp.com",
-  databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
-  projectId: "taclogin-ab38e",
-  storageBucket: "taclogin-ab38e.firebasestorage.app",
-  messagingSenderId: "937853298051",
-  appId: "1:937853298051:web:119ccc7b5499514bd442b6"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBQslLAFRlIRJqsiJ2WWeTNslO067bzKYM",
+      authDomain: "taclogin-ab38e.firebaseapp.com",
+      databaseURL: "https://taclogin-ab38e-default-rtdb.firebaseio.com",
+      projectId: "taclogin-ab38e",
+      storageBucket: "taclogin-ab38e.firebasestorage.app",
+      messagingSenderId: "937853298051",
+      appId: "1:937853298051:web:119ccc7b5499514bd442b6"
+    };
 
-// Theme System
-const themeColors = {
-    green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
-    blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
-    red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
-    cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
-    pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
-    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
-    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
-    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
-    white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
-    whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
-};
+    const fbApp = initializeApp(firebaseConfig);
+    const db = getDatabase(fbApp);
 
-function applyTheme() {
-    const theme = localStorage.getItem('theme') || 'green';
-    const colors = themeColors[theme] || themeColors.green;
-    document.documentElement.style.setProperty('--accent', colors.primary);
-    document.documentElement.style.setProperty('--accent-dim', colors.dim);
-    const logo = document.getElementById('logo');
-    if (logo) logo.src = `taclogos/${theme}.png`;
+    // ========== PARTICLES ==========
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    function createParticle() {
+      return { x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+        size: Math.random()*2+0.5, speedX: (Math.random()-0.5)*0.3, speedY: (Math.random()-0.5)*0.3, opacity: Math.random()*0.5+0.1 };
+    }
+    for (let i=0;i<80;i++) particles.push(createParticle());
+    function animateParticles() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      particles.forEach(p => {
+        p.x+=p.speedX; p.y+=p.speedY;
+        if(p.x<0||p.x>canvas.width) p.speedX*=-1;
+        if(p.y<0||p.y>canvas.height) p.speedY*=-1;
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle=accent; ctx.globalAlpha=p.opacity; ctx.fill();
+      });
+      ctx.globalAlpha=1;
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    // ========== THEME ==========
+    const themeColors = {
+      green:  { primary:'#22c55e', dim:'rgba(34,197,94,0.1)',   glow:'rgba(34,197,94,0.3)' },
+      blue:   { primary:'#3b82f6', dim:'rgba(59,130,246,0.1)',  glow:'rgba(59,130,246,0.3)' },
+      red:    { primary:'#ef4444', dim:'rgba(239,68,68,0.1)',   glow:'rgba(239,68,68,0.3)' },
+      cyan:   { primary:'#06b6d4', dim:'rgba(6,182,212,0.1)',   glow:'rgba(6,182,212,0.3)' },
+      pink:   { primary:'#ec4899', dim:'rgba(236,72,153,0.1)',  glow:'rgba(236,72,153,0.3)' },
+      purple: { primary:'#8b5cf6', dim:'rgba(139,92,246,0.1)', glow:'rgba(139,92,246,0.3)' },
+      yellow: { primary:'#eab308', dim:'rgba(234,179,8,0.1)',   glow:'rgba(234,179,8,0.3)' },
+      orange: { primary:'#f97316', dim:'rgba(249,115,22,0.1)',  glow:'rgba(249,115,22,0.3)' },
+      white:  { primary:'#ffffff', dim:'rgba(255,255,255,0.1)', glow:'rgba(255,255,255,0.15)' },
+      whiteout:{ primary:'#ffffff',dim:'rgba(255,255,255,0.05)',glow:'rgba(255,255,255,0.1)' }
+    };
+    function applyTheme() {
+      const theme = localStorage.getItem('theme') || 'green';
+      const colors = themeColors[theme] || themeColors.green;
+      document.documentElement.style.setProperty('--accent', colors.primary);
+      document.documentElement.style.setProperty('--accent-dim', colors.dim);
+      document.documentElement.style.setProperty('--accent-glow', colors.glow);
+      const logo = document.getElementById('logo');
+      if (logo) logo.src = `taclogos/${theme}.png`;
+      const sb = document.getElementById('sidebar');
+      if (sb) sb.style.boxShadow = `0 0 30px ${colors.glow}, inset 0 0 30px rgba(0,0,0,0.5)`;
+    }
+    applyTheme();
+    window.addEventListener('storage', e => { if(e.key==='theme') applyTheme(); });
+
+    // ========== SIDEBAR ==========
     const sidebar = document.getElementById('sidebar');
-    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
-}
-applyTheme();
-window.addEventListener('storage', (e) => {
-    if (e.key === 'theme') {
-        applyTheme();
+    const toggleBtn = document.getElementById('toggleBtn');
+    const mainContent = document.getElementById('mainContent');
+    toggleBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('collapsed');
+      toggleBtn.classList.toggle('collapsed');
+      mainContent.classList.toggle('expanded');
+    });
+
+    // ========== GAME STATE ==========
+    let username = '';
+    let clicks = 0, bestCPS = 0, totalClicksEver = 0, clicksThisSecond = 0;
+    let frenzyActive=false, doubleClicks=false, critsActive=false, magnetActive=false, timeWarpActive=false;
+    let upgrades = {
+      autoClicker:0, clickMultiplier:0, goldenCursor:0, megaClicker:0, quantumBoost:0,
+      clickFarm:0, nanoSwarm:0, darkMatter:0, timeAccel:0, critChance:0,
+      clickStorm:0, cosmicRay:0, antimatter:0, singularity:0,
+      prestige:0, hyperPrestige:0, luckyDice:0, clickMagnet:0,
+    };
+
+    // ========== SHOP DEFS ==========
+    const shopItems = [
+      { id:'autoClicker',    tab:'clickers',    emoji:'🤖', name:'Auto Clicker',        desc:'Clicks automatically every second',         maxLevel:500, getCost:l=>Math.floor(50*Math.pow(1.08,l)),     getEffect:l=>`+${Math.floor(Math.pow(l,2.15))} CPS` },
+      { id:'megaClicker',    tab:'clickers',    emoji:'🔨', name:'Mega Clicker',         desc:'Powerful automated clicks',                 maxLevel:200, getCost:l=>Math.floor(800*Math.pow(1.12,l)),    getEffect:l=>`+${Math.floor(Math.pow(l,3)*0.5)} CPS` },
+      { id:'clickFarm',      tab:'clickers',    emoji:'🌾', name:'Click Farm',           desc:'A whole farm of clickers',                  maxLevel:150, getCost:l=>Math.floor(5000*Math.pow(1.14,l)),   getEffect:l=>`+${Math.floor(Math.pow(l,2.8)*2)} CPS` },
+      { id:'nanoSwarm',      tab:'clickers',    emoji:'🦠', name:'Nano Swarm',           desc:'Microscopic clicking bots',                 maxLevel:100, getCost:l=>Math.floor(25000*Math.pow(1.16,l)),  getEffect:l=>`+${Math.floor(Math.pow(l,3.2)*3)} CPS` },
+      { id:'cosmicRay',      tab:'clickers',    emoji:'☄️', name:'Cosmic Rays',          desc:'Harness cosmic energy',                     maxLevel:75,  getCost:l=>Math.floor(200000*Math.pow(1.18,l)), getEffect:l=>`+${Math.floor(Math.pow(l,3.5)*10)} CPS` },
+      { id:'clickMultiplier',tab:'multipliers', emoji:'✖️', name:'Click Multiplier',     desc:'Each click is worth more',                  maxLevel:200, getCost:l=>Math.floor(100*Math.pow(1.12,l)),    getEffect:l=>`x${(1+l*0.5).toFixed(1)} per click` },
+      { id:'goldenCursor',   tab:'multipliers', emoji:'👆', name:'Golden Cursor',        desc:'Flat bonus per click',                      maxLevel:150, getCost:l=>Math.floor(300*Math.pow(1.15,l)),    getEffect:l=>`+${l*10} flat per click` },
+      { id:'quantumBoost',   tab:'multipliers', emoji:'⚛️', name:'Quantum Boost',        desc:'Multiplies ALL production',                 maxLevel:75,  getCost:l=>Math.floor(5000*Math.pow(1.25,l)),   getEffect:l=>`x${(1+l*2).toFixed(0)} global` },
+      { id:'critChance',     tab:'multipliers', emoji:'🎯', name:'Critical Clicks',      desc:'Chance for 10x click value',                maxLevel:50,  getCost:l=>Math.floor(2000*Math.pow(1.2,l)),    getEffect:l=>`${Math.min(l*2,80)}% crit chance` },
+      { id:'clickStorm',     tab:'multipliers', emoji:'🌪️', name:'Click Storm',          desc:'Each click fires bonus hits',               maxLevel:30,  getCost:l=>Math.floor(15000*Math.pow(1.3,l)),   getEffect:l=>`+${l} bonus clicks/hit` },
+      { id:'darkMatter',     tab:'generators',  emoji:'🌑', name:'Dark Matter Engine',   desc:'Generates clicks from void',                maxLevel:60,  getCost:l=>Math.floor(50000*Math.pow(1.2,l)),   getEffect:l=>`+${Math.floor(Math.pow(l,3.8)*5)} CPS` },
+      { id:'timeAccel',      tab:'generators',  emoji:'⏰', name:'Time Accelerator',     desc:'Speeds up all generators',                  maxLevel:40,  getCost:l=>Math.floor(100000*Math.pow(1.22,l)), getEffect:l=>`x${(1+l*0.25).toFixed(2)} gen speed` },
+      { id:'antimatter',     tab:'generators',  emoji:'💫', name:'Antimatter Reactor',   desc:'Exponential click generation',              maxLevel:30,  getCost:l=>Math.floor(500000*Math.pow(1.3,l)),  getEffect:l=>`+${Math.floor(Math.pow(l,4)*20)} CPS` },
+      { id:'singularity',    tab:'generators',  emoji:'🕳️', name:'Singularity Core',     desc:'The ultimate generator',                   maxLevel:20,  getCost:l=>Math.floor(5000000*Math.pow(1.5,l)), getEffect:l=>`+${Math.floor(Math.pow(l,5)*100)} CPS` },
+      { id:'prestige',       tab:'special',     emoji:'⭐', name:'Prestige',             desc:'Reset for permanent 2x multiplier',         maxLevel:99,  getCost:l=>Math.floor(10000*Math.pow(3,l)),     getEffect:l=>`x${Math.pow(2,l)} permanent`, isPrestige:true },
+      { id:'hyperPrestige',  tab:'special',     emoji:'🌟', name:'Hyper Prestige',       desc:'Reset everything for 5x multiplier',        maxLevel:20,  getCost:l=>Math.floor(1000000*Math.pow(5,l)),   getEffect:l=>`x${Math.pow(5,l)} permanent`, isHyperPrestige:true },
+      { id:'luckyDice',      tab:'special',     emoji:'🎲', name:'Lucky Dice',           desc:'Powerups appear more often',                maxLevel:10,  getCost:l=>Math.floor(20000*Math.pow(2,l)),     getEffect:l=>`${l*10}% more powerups` },
+      { id:'clickMagnet',    tab:'special',     emoji:'🧲', name:'Click Magnet',         desc:'Earn clicks while away (offline)',           maxLevel:20,  getCost:l=>Math.floor(10000*Math.pow(1.5,l)),   getEffect:l=>`${l*5}% offline earnings` },
+    ];
+
+    let currentTab = 'clickers';
+
+    // ========== ACHIEVEMENTS ==========
+    const achievementDefs = [
+      { id:'click100',    icon:'👆', name:'First Steps',    desc:'Reach 100 clicks',         check:()=>totalClicksEver>=100 },
+      { id:'click1k',     icon:'🔥', name:'Getting Warm',   desc:'Reach 1,000 clicks',       check:()=>totalClicksEver>=1000 },
+      { id:'click10k',    icon:'💥', name:'Click Addict',   desc:'Reach 10,000 clicks',      check:()=>totalClicksEver>=10000 },
+      { id:'click100k',   icon:'⚡', name:'Thunder Fingers',desc:'Reach 100,000 clicks',     check:()=>totalClicksEver>=100000 },
+      { id:'click1m',     icon:'🌟', name:'Millionaire',    desc:'Reach 1M clicks',          check:()=>totalClicksEver>=1000000 },
+      { id:'click1b',     icon:'🏆', name:'Billionaire',    desc:'Reach 1B clicks',          check:()=>totalClicksEver>=1000000000 },
+      { id:'click10b',    icon:'👑', name:'Click God',      desc:'Reach 10B clicks',         check:()=>totalClicksEver>=10000000000 },
+      { id:'auto10',      icon:'🤖', name:'Automation',     desc:'Auto Clicker Lvl 10',      check:()=>upgrades.autoClicker>=10 },
+      { id:'auto50',      icon:'🏭', name:'Factory',        desc:'Auto Clicker Lvl 50',      check:()=>upgrades.autoClicker>=50 },
+      { id:'prestige1',   icon:'⭐', name:'Reborn',         desc:'Prestige once',            check:()=>upgrades.prestige>=1 },
+      { id:'prestige5',   icon:'💎', name:'Veteran',        desc:'Prestige 5 times',         check:()=>upgrades.prestige>=5 },
+      { id:'cps100',      icon:'📈', name:'Speedster',      desc:'Reach 100 CPS',            check:()=>bestCPS>=100 },
+      { id:'cps1k',       icon:'🚀', name:'Lightspeed',     desc:'Reach 1,000 CPS',          check:()=>bestCPS>=1000 },
+      { id:'allUpgrades', icon:'🎖️', name:'Collector',      desc:'Buy 15 different upgrades',check:()=>Object.values(upgrades).filter(v=>v>0).length>=15 },
+      { id:'hyper1',      icon:'🌟', name:'Ascension',      desc:'Hyper Prestige once',      check:()=>upgrades.hyperPrestige>=1 },
+    ];
+    let unlockedAchievements = new Set();
+
+    // ========== TOAST ==========
+    function showToast(text) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = text;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('closing'); setTimeout(()=>toast.remove(),300); }, 3000);
     }
-});
 
-// Sidebar Toggle
-const sidebar = document.getElementById('sidebar');
-const toggleBtn = document.getElementById('toggleBtn');
-const mainContent = document.getElementById('mainContent');
-
-toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('collapsed');
-    toggleBtn.classList.toggle('collapsed');
-    mainContent.classList.toggle('expanded');
-});
-
-// Game State
-let username;
-let clicks = 0, bestCPS = 0, autoClickerLevel = 0, clickMultiplier = 1, goldenClicks = 0, prestigeLevel = 0;
-let frenzyActive = false, doubleClicks = false;
-let clicksThisSecond = 0;
-
-// Login
-async function loginFlow() {
-    const lastUser = localStorage.getItem('lastLoggedInUser');
-    username = lastUser || prompt("Enter your name:") || "Player";
-    
-    if (!lastUser) localStorage.setItem('lastLoggedInUser', username);
-
-    const playerRef = ref(db, `clickerGame/players/${username}`);
-    const snap = await get(playerRef);
-
-    if (snap.exists()) {
-        loadState(snap.val());
-    } else {
-        await set(playerRef, {
-            name: username,
-            totalClicks: 0,
-            bestCPS: 0,
-            autoClickerLevel: 0,
-            clickMultiplier: 1,
-            goldenClicks: 0,
-            prestigeLevel: 0
-        });
+    // ========== FLOAT NUMBERS ==========
+    function spawnFloatNumber(text, x, y) {
+      const el = document.createElement('div');
+      el.className = 'float-number';
+      el.textContent = text;
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+      el.style.fontSize = text.length > 6 ? '16px' : '22px';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 1000);
     }
 
-    if (username === "Logan") {
-        document.getElementById("devMenu").style.display = "block";
+    // ========== FORMAT ==========
+    function fmt(n) {
+      n = Math.floor(n);
+      if (n >= 1e15) return (n/1e15).toFixed(2)+'Q';
+      if (n >= 1e12) return (n/1e12).toFixed(2)+'T';
+      if (n >= 1e9)  return (n/1e9).toFixed(2)+'B';
+      if (n >= 1e6)  return (n/1e6).toFixed(2)+'M';
+      if (n >= 1e3)  return (n/1e3).toFixed(1)+'K';
+      return n.toString();
     }
-}
 
-function loadState(data) {
-    clicks = data.totalClicks || 0;
-    bestCPS = data.bestCPS || 0;
-    autoClickerLevel = data.autoClickerLevel || 0;
-    clickMultiplier = data.clickMultiplier || 1;
-    goldenClicks = data.goldenClicks || 0;
-    prestigeLevel = data.prestigeLevel || 0;
-    updateStats();
-    renderShop();
-}
+    // ========== CALCULATIONS ==========
+    function getAutoCPS() {
+      let cps = 0;
+      cps += Math.floor(Math.pow(upgrades.autoClicker,2.15));
+      cps += Math.floor(Math.pow(upgrades.megaClicker,3)*0.5);
+      cps += Math.floor(Math.pow(upgrades.clickFarm,2.8)*2);
+      cps += Math.floor(Math.pow(upgrades.nanoSwarm,3.2)*3);
+      cps += Math.floor(Math.pow(upgrades.cosmicRay,3.5)*10);
+      cps += Math.floor(Math.pow(upgrades.darkMatter,3.8)*5);
+      cps += Math.floor(Math.pow(upgrades.antimatter,4)*20);
+      cps += Math.floor(Math.pow(upgrades.singularity,5)*100);
+      cps *= (1+upgrades.timeAccel*0.25);
+      cps *= (1+upgrades.quantumBoost*2);
+      cps *= Math.pow(2,upgrades.prestige);
+      cps *= Math.pow(5,upgrades.hyperPrestige);
+      if (frenzyActive) cps *= 10;
+      if (timeWarpActive) cps *= 5;
+      return Math.floor(cps);
+    }
 
-function updateStats() {
-    document.getElementById("stats").textContent = 
-        `Clicks: ${Math.floor(clicks)} | CPS: ${bestCPS} | AutoClicker: Lvl ${autoClickerLevel}\nMultiplier: x${clickMultiplier} | Golden: ${goldenClicks} | Prestige: ${prestigeLevel}`;
-}
+    function getClickValue() {
+      let val = 1;
+      val *= (1+upgrades.clickMultiplier*0.5);
+      val += upgrades.goldenCursor*10;
+      val *= (1+upgrades.clickStorm);
+      val *= (1+upgrades.quantumBoost*2);
+      val *= Math.pow(2,upgrades.prestige);
+      val *= Math.pow(5,upgrades.hyperPrestige);
+      if (doubleClicks) val *= 2;
+      if (frenzyActive) val *= 10;
+      if (critsActive) val *= 10;
+      if (upgrades.critChance>0 && Math.random()*100<Math.min(upgrades.critChance*2,80)) val *= 10;
+      return Math.floor(val);
+    }
 
-// Shop Items
-const shopItems = [
-    { id: 'auto', name: 'AutoClicker', baseCost: 50, level: 0, maxLevel: 500, 
-      getCost: (lvl) => Math.floor(50 * Math.pow(1.1, lvl)),
-      getCPS: (lvl) => Math.floor(Math.pow(lvl, 2.15)) },
-    { id: 'multi', name: 'Click Multiplier', baseCost: 100, level: 0, maxLevel: 200,
-      getCost: (lvl) => Math.floor(100 * Math.pow(1.15, lvl)),
-      getBonus: (lvl) => 1 + (lvl * 0.5) },
-    { id: 'golden', name: 'Golden Cursor', baseCost: 500, level: 0, maxLevel: 100,
-      getCost: (lvl) => Math.floor(500 * Math.pow(1.2, lvl)),
-      getBonus: (lvl) => lvl * 10 },
-    { id: 'prestige', name: 'Prestige (Reset for 2x)', baseCost: 10000, level: 0, maxLevel: 999,
-      getCost: (lvl) => 10000,
-      getBonus: (lvl) => Math.pow(2, lvl) },
-    { id: 'mega', name: 'Mega Clicker', baseCost: 1000, level: 0, maxLevel: 150,
-      getCost: (lvl) => Math.floor(1000 * Math.pow(1.25, lvl)),
-      getCPS: (lvl) => Math.floor(Math.pow(lvl, 3)) },
-    { id: 'quantum', name: 'Quantum Boost', baseCost: 5000, level: 0, maxLevel: 75,
-      getCost: (lvl) => Math.floor(5000 * Math.pow(1.3, lvl)),
-      getBonus: (lvl) => 1 + (lvl * 2) }
-];
+    // ========== UPDATE STATS ==========
+    function updateStats() {
+      const bar = document.getElementById('statsBar');
+      const autoCPS = getAutoCPS();
+      const clickVal = getClickValue();
+      const prestigeMult = Math.pow(2,upgrades.prestige)*Math.pow(5,upgrades.hyperPrestige);
+      bar.innerHTML = `
+        <div class="stat-card"><div class="stat-label">Clicks</div><div class="stat-value">${fmt(clicks)}</div></div>
+        <div class="stat-card"><div class="stat-label">Per Click</div><div class="stat-value">${fmt(clickVal)}</div></div>
+        <div class="stat-card"><div class="stat-label">Auto CPS</div><div class="stat-value">${fmt(autoCPS)}</div></div>
+        <div class="stat-card"><div class="stat-label">Best CPS</div><div class="stat-value">${fmt(bestCPS)}</div></div>
+        <div class="stat-card"><div class="stat-label">Prestige</div><div class="stat-value">x${fmt(prestigeMult)}</div></div>
+        <div class="stat-card"><div class="stat-label">Total Ever</div><div class="stat-value">${fmt(totalClicksEver)}</div></div>
+      `;
+      document.getElementById('pw-frenzy').classList.toggle('active', frenzyActive);
+      document.getElementById('pw-double').classList.toggle('active', doubleClicks);
+      document.getElementById('pw-crits').classList.toggle('active', critsActive);
+      document.getElementById('pw-magnet').classList.toggle('active', magnetActive);
+      document.getElementById('pw-timestop').classList.toggle('active', timeWarpActive);
+    }
 
-function renderShop() {
-    const grid = document.getElementById('shopGrid');
-    grid.innerHTML = '';
-    
-    shopItems.forEach(item => {
-        const level = item.id === 'auto' ? autoClickerLevel : 
-                     item.id === 'multi' ? clickMultiplier - 1 : 
-                     item.id === 'golden' ? goldenClicks :
-                     item.id === 'prestige' ? prestigeLevel : 0;
+    // ========== SHOP ==========
+    function renderShop() {
+      const grid = document.getElementById('shopGrid');
+      grid.innerHTML = '';
+      shopItems.filter(item=>item.tab===currentTab).forEach(item=>{
+        const level = upgrades[item.id]||0;
         const cost = item.getCost(level);
-        const canBuy = clicks >= cost && level < item.maxLevel;
-        
+        const canBuy = clicks>=cost && level<item.maxLevel;
+        const isMaxed = level>=item.maxLevel;
         const div = document.createElement('div');
-        div.className = 'shop-item';
+        div.className = 'shop-item'+(isMaxed?' maxed':'');
         div.innerHTML = `
-            <h4>${item.name}</h4>
-            <p>Level: ${level}/${item.maxLevel}</p>
-            <p>Cost: ${cost}</p>
-            <button class="btn ${canBuy ? '' : 'disabled'}" data-id="${item.id}">Buy</button>
+          <div class="item-emoji">${item.emoji}</div>
+          <h4>${item.name}</h4>
+          <p>${item.desc}</p>
+          <div class="level-bar"><div class="level-fill" style="width:${(level/item.maxLevel)*100}%"></div></div>
+          <p>Level: ${level} / ${item.maxLevel}</p>
+          <p>Cost: ${isMaxed?'MAXED':fmt(cost)}</p>
+          <div class="item-effect">${item.getEffect(level)}</div>
+          <button class="btn" style="margin-top:8px;width:100%;" ${canBuy?'':'disabled'}>${isMaxed?'✅ MAXED':'BUY'}</button>
         `;
-        
-        div.querySelector('button').onclick = () => buyItem(item);
+        if (canBuy) div.querySelector('button').onclick = ()=>buyItem(item);
         grid.appendChild(div);
-    });
-}
+      });
+    }
 
-function buyItem(item) {
-    const level = item.id === 'auto' ? autoClickerLevel : 
-                 item.id === 'multi' ? clickMultiplier - 1 : 
-                 item.id === 'golden' ? goldenClicks :
-                 item.id === 'prestige' ? prestigeLevel : 0;
-    const cost = item.getCost(level);
-    
-    if (clicks >= cost && level < item.maxLevel) {
-        if (item.id === 'prestige') {
-            if (confirm('Prestige will reset your progress but give you 2x multiplier!')) {
-                clicks = 0;
-                autoClickerLevel = 0;
-                clickMultiplier = 1;
-                goldenClicks = 0;
-                prestigeLevel++;
-            } else return;
-        } else {
-            clicks -= cost;
-            if (item.id === 'auto') autoClickerLevel++;
-            else if (item.id === 'multi') clickMultiplier = item.getBonus(level + 1);
-            else if (item.id === 'golden') goldenClicks++;
-        }
-        updateStats();
+    function buyItem(item) {
+      const level = upgrades[item.id]||0;
+      const cost = item.getCost(level);
+      if (clicks<cost||level>=item.maxLevel) return;
+      if (item.isPrestige) {
+        if (!confirm(`⭐ PRESTIGE!\n\nResets clicks + upgrades. Gain permanent x${Math.pow(2,level+1)} mult.\n\nProceed?`)) return;
+        doPrestige(); return;
+      }
+      if (item.isHyperPrestige) {
+        if (!confirm(`🌟 HYPER PRESTIGE!\n\nResets EVERYTHING. Gain permanent x${Math.pow(5,level+1)} mult.\n\nProceed?`)) return;
+        doHyperPrestige(); return;
+      }
+      clicks -= cost;
+      upgrades[item.id] = level+1;
+      showToast(`⬆️ ${item.name} → Lvl ${level+1}`);
+      updateStats(); renderShop(); checkAchievements(); saveLocal();
+    }
+
+    function doPrestige() {
+      const overlay = document.createElement('div');
+      overlay.className = 'prestige-overlay';
+      overlay.innerHTML = `<div class="prestige-box"><h2>⭐ PRESTIGE ${upgrades.prestige+1}</h2><p>Your power grows...</p></div>`;
+      document.body.appendChild(overlay);
+      clicks = 0;
+      for (const key of Object.keys(upgrades)) {
+        if (!['prestige','hyperPrestige','luckyDice','clickMagnet'].includes(key)) upgrades[key]=0;
+      }
+      upgrades.prestige++;
+      setTimeout(()=>{ overlay.remove(); updateStats(); renderShop(); showToast(`⭐ Prestige ${upgrades.prestige}! x${Math.pow(2,upgrades.prestige)} mult!`); saveLocal(); }, 2000);
+    }
+
+    function doHyperPrestige() {
+      const overlay = document.createElement('div');
+      overlay.className = 'prestige-overlay';
+      overlay.innerHTML = `<div class="prestige-box"><h2>🌟 HYPER PRESTIGE ${upgrades.hyperPrestige+1}</h2><p>Reality bends to your will...</p></div>`;
+      document.body.appendChild(overlay);
+      clicks = 0;
+      const hp = upgrades.hyperPrestige+1;
+      for (const key of Object.keys(upgrades)) upgrades[key]=0;
+      upgrades.hyperPrestige = hp;
+      setTimeout(()=>{ overlay.remove(); updateStats(); renderShop(); showToast(`🌟 Hyper Prestige ${hp}! x${Math.pow(5,hp)} mult!`); saveLocal(); }, 3000);
+    }
+
+    document.querySelectorAll('.shop-tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.shop-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        currentTab = tab.dataset.tab;
         renderShop();
-    }
-}
-
-// Clicking
-document.getElementById("clickBtn").onclick = handleClick;
-document.body.onkeydown = (e) => { if (e.code === "Space") handleClick(); };
-
-function handleClick() {
-    let add = clickMultiplier * Math.pow(2, prestigeLevel);
-    if (doubleClicks) add *= 2;
-    if (frenzyActive) add *= 10;
-    add += goldenClicks;
-    clicks += add;
-    clicksThisSecond += add;
-    updateStats();
-}
-
-// AutoClicker
-setInterval(() => {
-    if (autoClickerLevel > 0) {
-        let add = Math.floor(Math.pow(autoClickerLevel, 2.15)) * Math.pow(2, prestigeLevel);
-        if (frenzyActive) add *= 10;
-        clicks += add;
-        clicksThisSecond += add;
-        updateStats();
-    }
-}, 1000);
-
-// CPS Tracking
-setInterval(() => {
-    if (clicksThisSecond > bestCPS) bestCPS = clicksThisSecond;
-    clicksThisSecond = 0;
-    updateStats();
-}, 1000);
-
-// --- UPDATED SAVE LOGIC START ---
-async function saveGame() {
-    // Only save if username is set to avoid errors
-    if (!username) return;
-
-    await update(ref(db, `clickerGame/players/${username}`), {
-        totalClicks: clicks,
-        bestCPS,
-        autoClickerLevel,
-        clickMultiplier,
-        goldenClicks,
-        prestigeLevel
+      });
     });
-}
 
-// 1. Save every minute (60 * 1000ms)
-setInterval(saveGame, 60 * 1000);
-
-// 2. Save when tab is switched/hidden
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-        saveGame();
+    // ========== ACHIEVEMENTS ==========
+    function renderAchievements() {
+      const grid = document.getElementById('achievementsGrid');
+      grid.innerHTML='';
+      achievementDefs.forEach(a=>{
+        const unlocked = unlockedAchievements.has(a.id);
+        const div = document.createElement('div');
+        div.className = 'achievement'+(unlocked?' unlocked':'');
+        div.innerHTML = `<div class="ach-icon">${unlocked?a.icon:'🔒'}</div><div class="ach-name">${a.name}</div><div class="ach-desc">${a.desc}</div>`;
+        grid.appendChild(div);
+      });
     }
-});
 
-// 3. Save when window is closed
-window.addEventListener("beforeunload", () => {
-    saveGame();
-});
-// --- UPDATED SAVE LOGIC END ---
+    function checkAchievements() {
+      achievementDefs.forEach(a=>{
+        if (!unlockedAchievements.has(a.id) && a.check()) {
+          unlockedAchievements.add(a.id);
+          showToast(`🏆 Achievement: ${a.name}!`);
+          renderAchievements();
+        }
+      });
+    }
 
-// Powerups
-const powerups = [
-    { name: "Frenzy", effect: () => { 
-        frenzyActive = true; 
-        showPopup("🔥 FRENZY! 10x clicks for 10s!");
-        setTimeout(() => frenzyActive = false, 10000); 
-    }},
-    { name: "DoubleClicks", effect: () => { 
-        doubleClicks = true; 
-        showPopup("✨ Double Clicks for 20s!");
-        setTimeout(() => doubleClicks = false, 20000); 
-    }},
-    { name: "LuckyBoost", effect: () => { 
-        clicks += 500; 
-        showPopup("💰 +500 Clicks!");
-        updateStats(); 
-    }},
-    { name: "Jackpot", effect: () => { 
-        clicks += 5000; 
-        showPopup("🎰 JACKPOT! +5000 Clicks!");
-        updateStats(); 
-    }}
-];
+    // ========== CLICKING ==========
+    const clickBtn = document.getElementById('clickBtn');
+    function handleClick(e) {
+      const add = getClickValue();
+      clicks += add;
+      totalClicksEver += add;
+      clicksThisSecond += add;
+      const rect = clickBtn.getBoundingClientRect();
+      const x = (e&&e.clientX)?e.clientX:rect.left+rect.width/2;
+      const y = (e&&e.clientY)?e.clientY:rect.top;
+      spawnFloatNumber('+'+fmt(add), x-20+Math.random()*40, y-10);
+      updateStats(); renderShop(); checkAchievements();
+    }
+    clickBtn.addEventListener('click', e=>handleClick(e));
+    document.body.addEventListener('keydown', e=>{
+      if (e.code==='Space'&&e.target.tagName!=='INPUT') { e.preventDefault(); handleClick(null); }
+    });
 
-function showPopup(text) {
-    const popup = document.createElement('div');
-    popup.className = 'popup';
-    popup.innerHTML = `<h3>${text}</h3>`;
-    document.body.appendChild(popup);
-    setTimeout(() => {
-        popup.classList.add('closing');
-        setTimeout(() => popup.remove(), 300);
-    }, 3000);
-}
+    // ========== AUTO TICK ==========
+    setInterval(()=>{
+      const autoCPS = getAutoCPS();
+      if (autoCPS>0) { clicks+=autoCPS; totalClicksEver+=autoCPS; clicksThisSecond+=autoCPS; updateStats(); renderShop(); }
+    }, 1000);
 
-setInterval(() => {
-    const p = powerups[Math.floor(Math.random() * powerups.length)];
-    p.effect();
-}, 180000);
+    // ========== CPS TRACKING ==========
+    setInterval(()=>{
+      if (clicksThisSecond>bestCPS) bestCPS=clicksThisSecond;
+      clicksThisSecond=0;
+      updateStats(); checkAchievements();
+    }, 1000);
 
-// Leaderboard
-let sortMode = 'clicks';
+    // ========== POWERUPS ==========
+    const powerups = [
+      { name:'Frenzy',      effect:()=>{ frenzyActive=true;  showToast('🔥 FRENZY! 10x for 12s!'); setTimeout(()=>{frenzyActive=false;updateStats();},12000); }},
+      { name:'DoubleClicks',effect:()=>{ doubleClicks=true;  showToast('✨ 2X Clicks for 20s!');   setTimeout(()=>{doubleClicks=false;updateStats();},20000); }},
+      { name:'CritStrike',  effect:()=>{ critsActive=true;   showToast('💥 Guaranteed Crits 8s!'); setTimeout(()=>{critsActive=false;updateStats();},8000); }},
+      { name:'ClickMagnet', effect:()=>{ magnetActive=true;  const b=Math.floor(clicks*0.1)+1000; clicks+=b; totalClicksEver+=b; showToast(`🧲 Magnet! +${fmt(b)} clicks!`); setTimeout(()=>{magnetActive=false;updateStats();},3000); updateStats(); }},
+      { name:'TimeWarp',    effect:()=>{ timeWarpActive=true;showToast('⏳ Time Warp! 5x CPS 15s!');setTimeout(()=>{timeWarpActive=false;updateStats();},15000); }},
+      { name:'LuckyBoost',  effect:()=>{ const b=Math.max(500,Math.floor(clicks*0.05)); clicks+=b; totalClicksEver+=b; showToast(`💰 Lucky! +${fmt(b)}!`); updateStats(); }},
+      { name:'Jackpot',     effect:()=>{ const b=Math.max(5000,Math.floor(clicks*0.15)); clicks+=b; totalClicksEver+=b; showToast(`🎰 JACKPOT! +${fmt(b)}!`); updateStats(); }},
+      { name:'ClickRain',   effect:()=>{ const b=Math.max(2000,Math.floor(getAutoCPS()*30)); clicks+=b; totalClicksEver+=b; showToast(`🌧️ Click Rain! +${fmt(b)}!`); updateStats(); }},
+    ];
+    let powerupTimer;
+    function schedulePowerup() {
+      clearTimeout(powerupTimer);
+      const base=120000, reduction=upgrades.luckyDice*0.1;
+      powerupTimer = setTimeout(()=>{ powerups[Math.floor(Math.random()*powerups.length)].effect(); schedulePowerup(); }, Math.max(20000,base*(1-reduction)));
+    }
+    schedulePowerup();
 
-function updateLeaderboard() {
-    onValue(ref(db, "clickerGame/players"), (snap) => {
-        const list = document.getElementById('leaderboardList');
-        list.innerHTML = '';
-        const players = [];
-        snap.forEach(child => players.push(child.val()));
-        
-        if (sortMode === 'clicks') players.sort((a, b) => b.totalClicks - a.totalClicks);
-        else if (sortMode === 'cps') players.sort((a, b) => b.bestCPS - a.bestCPS);
-        else if (sortMode === 'auto') players.sort((a, b) => b.autoClickerLevel - a.autoClickerLevel);
-        
-        players.slice(0, 20).forEach((p, i) => {
-            const div = document.createElement('div');
-            div.className = 'leaderboard-item';
-            div.innerHTML = `
-                <span>${i + 1}. ${p.name}</span>
-                <span>Clicks: ${Math.floor(p.totalClicks || 0)} | CPS: ${p.bestCPS || 0} | Auto: ${p.autoClickerLevel || 0}</span>
-            `;
-            list.appendChild(div);
+    // ========== SAVE / LOAD ==========
+    function saveLocal() {
+      localStorage.setItem('spacebar_save', JSON.stringify({
+        clicks, bestCPS, totalClicksEver, upgrades:{...upgrades}, achievements:[...unlockedAchievements]
+      }));
+    }
+
+    function loadLocal() {
+      const raw = localStorage.getItem('spacebar_save');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      clicks = data.clicks||0;
+      bestCPS = data.bestCPS||0;
+      totalClicksEver = data.totalClicksEver||data.clicks||0;
+      if (data.upgrades) {
+        for (const key of Object.keys(data.upgrades)) {
+          if (key in upgrades) upgrades[key]=data.upgrades[key];
+        }
+      }
+      // Migrate old flat format
+      if (!data.upgrades) {
+        if (data.autoClickerLevel)  upgrades.autoClicker   = data.autoClickerLevel;
+        if (data.clickMultiplier>1) upgrades.clickMultiplier= Math.floor((data.clickMultiplier-1)/0.5);
+        if (data.goldenClicks)      upgrades.goldenCursor   = data.goldenClicks;
+        if (data.prestigeLevel)     upgrades.prestige       = data.prestigeLevel;
+      }
+      if (data.achievements) unlockedAchievements = new Set(data.achievements);
+    }
+
+    async function saveToFirebase() {
+      if (!username) return;
+      try {
+        await update(ref(db, `clickerGame/players/${username}`), {
+          name: username,
+          totalClicks: clicks,
+          totalClicksEver,
+          bestCPS,
+          autoClickerLevel: upgrades.autoClicker,
+          prestigeLevel: upgrades.prestige,
+          hyperPrestigeLevel: upgrades.hyperPrestige,
+          upgrades: {...upgrades},
+          achievements: [...unlockedAchievements],
+          lastSaved: Date.now()
         });
+      } catch(e) { console.warn('Firebase save failed:', e); }
+    }
+
+    async function saveGame() {
+      saveLocal();
+      await saveToFirebase();
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', async ()=>{
+      const btn = document.getElementById('saveBtn');
+      btn.textContent='⏳ SAVING...'; btn.disabled=true;
+      await saveGame();
+      btn.textContent='✅ SAVED!';
+      showToast('💾 Saved & submitted to leaderboard!');
+      renderLeaderboard(cachedPlayers); // re-render with updated data
+      setTimeout(()=>{ btn.textContent='💾 SAVE & SUBMIT TO LEADERBOARD'; btn.disabled=false; },2000);
     });
-}
 
-document.getElementById('sortClicks').onclick = () => { sortMode = 'clicks'; updateLeaderboard(); };
-document.getElementById('sortCPS').onclick = () => { sortMode = 'cps'; updateLeaderboard(); };
-document.getElementById('sortAuto').onclick = () => { sortMode = 'auto'; updateLeaderboard(); };
+    setInterval(saveGame, 60000);
+    document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='hidden') saveGame(); });
+    window.addEventListener('beforeunload', ()=>saveLocal());
 
-updateLeaderboard();
+    // ========== OFFLINE EARNINGS ==========
+    function calculateOfflineEarnings() {
+      const lastSave = localStorage.getItem('spacebar_lastTime');
+      if (lastSave && upgrades.clickMagnet>0) {
+        const elapsed = (Date.now()-parseInt(lastSave))/1000;
+        if (elapsed>60) {
+          const earned = Math.floor(getAutoCPS()*elapsed*(upgrades.clickMagnet*0.05));
+          if (earned>0) { clicks+=earned; totalClicksEver+=earned; showToast(`💤 Welcome back! +${fmt(earned)} offline!`); }
+        }
+      }
+      setInterval(()=>localStorage.setItem('spacebar_lastTime',Date.now().toString()),10000);
+      localStorage.setItem('spacebar_lastTime',Date.now().toString());
+    }
 
-// Dev Menu
-document.getElementById('spawnAll').onclick = () => powerups.forEach(p => p.effect());
-document.getElementById('forceFrenzy').onclick = () => { frenzyActive = true; setTimeout(() => frenzyActive = false, 10000); };
-document.getElementById('forceDouble').onclick = () => { doubleClicks = true; setTimeout(() => doubleClicks = false, 20000); };
-document.getElementById('resetGame').onclick = () => { clicks = 0; autoClickerLevel = 0; bestCPS = 0; clickMultiplier = 1; goldenClicks = 0; prestigeLevel = 0; updateStats(); renderShop(); saveGame(); };
-document.getElementById('devSave').onclick = saveGame;
+    // ========== LEADERBOARD — FIXED ==========
+    let sortMode = 'clicks';
+    let cachedPlayers = [];
+    let lbUnsubscribe = null;
 
-loginFlow();
+    // Normalize a player record so it works with both old & new save formats
+    function normalizePlayer(p) {
+      return {
+        name:          p.name || 'Unknown',
+        totalClicks:   p.totalClicks   || 0,
+        totalClicksEver: p.totalClicksEver || p.totalClicks || 0,
+        bestCPS:       p.bestCPS       || 0,
+        prestigeLevel: p.prestigeLevel || (p.upgrades && p.upgrades.prestige) || 0,
+        hyperPrestigeLevel: p.hyperPrestigeLevel || (p.upgrades && p.upgrades.hyperPrestige) || 0,
+      };
+    }
+
+    function renderLeaderboard(players) {
+      const list = document.getElementById('leaderboardList');
+      const status = document.getElementById('lbStatus');
+
+      if (!players || players.length === 0) {
+        list.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:30px;font-family:\'Orbitron\',sans-serif;font-size:12px;">No players found. Click Save to join!</div>';
+        return;
+      }
+
+      const sorted = [...players];
+      if (sortMode==='clicks')   sorted.sort((a,b)=>b.totalClicks-a.totalClicks);
+      if (sortMode==='cps')      sorted.sort((a,b)=>b.bestCPS-a.bestCPS);
+      if (sortMode==='prestige') sorted.sort((a,b)=>(b.prestigeLevel+b.hyperPrestigeLevel*100)-(a.prestigeLevel+a.hyperPrestigeLevel*100));
+
+      status.textContent = `${sorted.length} players · last updated ${new Date().toLocaleTimeString()}`;
+
+      list.innerHTML = '';
+      sorted.slice(0,50).forEach((p,i)=>{
+        const div = document.createElement('div');
+        div.className = 'leaderboard-item';
+        const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+        const medal = i===0?'👑':i===1?'🥈':i===2?'🥉':`${i+1}`;
+        const isYou = p.name===username;
+        const prestigeStr = p.hyperPrestigeLevel>0 ? `HP${p.hyperPrestigeLevel}·P${p.prestigeLevel}` : `P${p.prestigeLevel}`;
+        div.innerHTML = `
+          <span class="rank ${rankClass}">${medal}</span>
+          <span class="player-name ${isYou?'you':''}">${p.name}${isYou?' (you)':''}</span>
+          <span class="player-stats">${fmt(p.totalClicks)} clicks &nbsp;·&nbsp; ${fmt(p.bestCPS)} CPS &nbsp;·&nbsp; ${prestigeStr}</span>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function subscribeLeaderboard() {
+      // Unsubscribe previous listener to avoid duplicates
+      if (lbUnsubscribe) { lbUnsubscribe(); lbUnsubscribe=null; }
+
+      const lbRef = ref(db, 'clickerGame/players');
+      lbUnsubscribe = onValue(lbRef, (snap)=>{
+        cachedPlayers = [];
+        snap.forEach(child=>{
+          const raw = child.val();
+          if (raw && raw.name) cachedPlayers.push(normalizePlayer(raw));
+        });
+        renderLeaderboard(cachedPlayers);
+      }, (err)=>{
+        console.error('Leaderboard error:', err);
+        document.getElementById('lbStatus').textContent = '⚠️ Could not load leaderboard.';
+      });
+    }
+
+    // Sort buttons just re-sort cached data — no new Firebase calls
+    document.getElementById('sortClicks').onclick   = ()=>{ sortMode='clicks';   renderLeaderboard(cachedPlayers); };
+    document.getElementById('sortCPS').onclick      = ()=>{ sortMode='cps';      renderLeaderboard(cachedPlayers); };
+    document.getElementById('sortPrestige').onclick = ()=>{ sortMode='prestige'; renderLeaderboard(cachedPlayers); };
+    document.getElementById('refreshLB').onclick    = ()=>{ subscribeLeaderboard(); showToast('🔄 Leaderboard refreshed!'); };
+
+    // ========== LOGIN ==========
+    async function loginFlow() {
+      const lastUser = localStorage.getItem('lastLoggedInUser');
+      username = lastUser || prompt('Enter your name:') || 'Player';
+      if (!lastUser) localStorage.setItem('lastLoggedInUser', username);
+
+      // Load local first (instant)
+      loadLocal();
+      updateStats(); renderShop(); renderAchievements();
+
+      // Then sync with Firebase
+      try {
+        const playerRef = ref(db, `clickerGame/players/${username}`);
+        const snap = await get(playerRef);
+        if (snap.exists()) {
+          const fbData = snap.val();
+          const fbClicks = fbData.totalClicks||0;
+          if (fbClicks > clicks) {
+            clicks = fbClicks;
+            totalClicksEver = Math.max(totalClicksEver, fbData.totalClicksEver||fbClicks);
+            bestCPS = Math.max(bestCPS, fbData.bestCPS||0);
+            if (fbData.upgrades) {
+              for (const key of Object.keys(fbData.upgrades)) {
+                if (key in upgrades) upgrades[key]=Math.max(upgrades[key]||0, fbData.upgrades[key]);
+              }
+            } else {
+              // Migrate old flat format from Firebase
+              upgrades.autoClicker   = Math.max(upgrades.autoClicker, fbData.autoClickerLevel||0);
+              upgrades.prestige      = Math.max(upgrades.prestige, fbData.prestigeLevel||0);
+              upgrades.hyperPrestige = Math.max(upgrades.hyperPrestige, fbData.hyperPrestigeLevel||0);
+              if (fbData.goldenClicks) upgrades.goldenCursor = Math.max(upgrades.goldenCursor, fbData.goldenClicks);
+              if (fbData.clickMultiplier>1) upgrades.clickMultiplier = Math.max(upgrades.clickMultiplier, Math.floor((fbData.clickMultiplier-1)/0.5));
+            }
+            if (fbData.achievements) fbData.achievements.forEach(a=>unlockedAchievements.add(a));
+          }
+        } else {
+          await saveToFirebase();
+        }
+      } catch(e) { console.warn('Firebase load failed, using local save:', e); }
+
+      if (username==='Logan') document.getElementById('devMenu').style.display='block';
+
+      calculateOfflineEarnings();
+      updateStats(); renderShop(); renderAchievements(); checkAchievements(); saveLocal();
+
+      // Subscribe leaderboard AFTER login so username is set for highlighting
+      subscribeLeaderboard();
+    }
+
+    // ========== DEV MENU ==========
+    document.getElementById('spawnAll').onclick    = ()=>powerups.forEach(p=>p.effect());
+    document.getElementById('forceFrenzy').onclick = ()=>{ frenzyActive=true; showToast('🔥 Dev Frenzy!'); setTimeout(()=>{frenzyActive=false;updateStats();},10000); };
+    document.getElementById('forceDouble').onclick = ()=>{ doubleClicks=true; showToast('✨ Dev Double!'); setTimeout(()=>{doubleClicks=false;updateStats();},20000); };
+    document.getElementById('addClicks').onclick   = ()=>{ clicks+=1000000; totalClicksEver+=1000000; updateStats(); renderShop(); showToast('+1M clicks!'); };
+    document.getElementById('resetGame').onclick   = ()=>{
+      if (!confirm('Reset everything?')) return;
+      clicks=0; bestCPS=0; totalClicksEver=0;
+      for (const key of Object.keys(upgrades)) upgrades[key]=0;
+      unlockedAchievements.clear();
+      updateStats(); renderShop(); renderAchievements(); saveGame(); showToast('🗑️ Reset!');
+    };
+    document.getElementById('devSave').onclick = ()=>{ saveGame(); showToast('Dev saved!'); };
+
+    // ========== START ==========
+    loginFlow();
   </script>
-  <script src="guard.js">
-  </script>
-  <script src="custom-cursor.js">
-  </script>
-  <script src="rightclick.js">
-  </script>
-  <script src="panic-key.js">
-  </script>
-  <script src="idle-dvd.js">
-  </script>
-  <script src="timeTracker.js">
-  </script>
-  
-  <div id="tac-phone-container">
-  </div>
-  <script>
-   fetch('phone-widget.html')
-        .then(r => r.text())
-        .then(html => {
-            const container = document.getElementById('tac-phone-container');
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
 
-
-
-
-
-<script src="emojis.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-<script type="module" src="online.js"></script>
-    <script src="idle-dvd.js"></script>
-</body>
-</html>
-  </script>
- 
-
-
-
-<script src="emojis.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-<script type="module" src="online.js"></script>
-    <script src="idle-dvd.js"></script>
+  <script src="guard.js"></script>
+  <script src="custom-cursor.js"></script>
+  <script src="rightclick.js"></script>
+  <script src="panic-key.js"></script>
+  <script src="idle-dvd.js"></script>
+  <script src="timeTracker.js"></script>
+  <script src="emojis.js"></script>
+  <script type="module" src="online.js"></script>
 </body>
 </html>
