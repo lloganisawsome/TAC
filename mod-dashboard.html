@@ -800,5 +800,13 @@ window.addEventListener('resize',()=>{if(document.getElementById('page-charts').
 <script src="emojis.js"></script>
 
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('tac-phone-container').innerHTML = html);
+</script>
+
 </body>
 </html>

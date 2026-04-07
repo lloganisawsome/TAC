@@ -1074,5 +1074,13 @@ setInterval(() => {
     <script src="panic-key.js"></script>
     <script src="idle-dvd.js"></script>
 <script type="module" src="online.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('tac-phone-container').innerHTML = html);
+</script>
+
 </body>
 </html>

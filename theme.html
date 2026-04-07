@@ -1,7 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAC - Theme Settings</title>
 
-<script src="timeTracker.js">
-</script>
-<script src="app-presence.js">
+<script>
+(function(){
+  try {
+    if (window.top === window.self) {
+      window.location.replace('https://www.google.com/');
+    }
+  } catch (e) {
+    window.location.replace('https://www.google.com/');
+  }
+})();
 </script>
 
-<script type="module" src="online.js"></script>
+<style>
+:root {
+    --bg: #0a0a0b;
+    --panel: #111113;
+    --panel-hover: #1a1a1c;
+    --accent: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.1);
+    --muted: #71717a;
+    --border: rgba(255,255,255,0.06);
+}
+
+/* Loftis Mode Overrides - Add your custom loftis styles here */
+body.loftis-mode {
+    filter: contrast(1.1) saturate(1.2); /* Example effect */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; cursor: none !important; }
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    font-size: 14px;
+    overflow-x: hidden;
+}
+
+/* Custom Cursor Styling */
+#custom-cursor {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  pointer-events: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 70px;
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 0 20px var(--accent-dim);
+}
+
+.sidebar.collapsed { width: 0; padding: 0; border: none; margin-left: -10px; overflow: hidden; }
+
+.logo-container { margin-bottom: 16px; padding: 4px; transition: opacity 0.3s; }
+.logo { width: 62px; height: 62px; border-radius: 8px; }
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--accent);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-bottom: 4px;
+}
+
+.nav-item:hover, .nav-item.active { background: var(--accent-dim); }
+.nav-item.active { border: 1px solid var(--accent); }
+.nav-item svg { width: 24px; height: 24px; }
+.nav-item span { font-size: 9px; font-weight: 500; margin-top: 2px; }
+
+.toggle-btn {
+    position: fixed;
+    left: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 36px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toggle-btn.collapsed { left: 10px; }
+.toggle-btn.collapsed svg { transform: rotate(180deg); }
+
+/* Main Content */
+.main-content { margin-left: 100px; padding: 24px; transition: margin-left 0.3s ease; }
+.main-content.expanded { margin-left: 24px; }
+
+.header { margin-bottom: 32px; text-align: center; }
+.header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+
+/* Shared Switch Styling */
+.setting-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+}
+
+.switch input { opacity: 0; width: 0; height: 0; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #27272a;
+    transition: .3s;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 4px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s;
+    border-radius: 50%;
+}
+
+input:checked + .slider { background-color: var(--accent-dim); border-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(20px); background-color: var(--accent); }
+
+/* Theme Selector Grid */
+.theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.theme-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-card:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.theme-card.active { border-color: var(--accent); background: var(--accent-dim); }
+
+.swatch {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.theme-name { font-size: 12px; font-weight: 600; text-transform: capitalize; }
+
+.preview-box {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px dashed var(--accent);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.btn-preview {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 700;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .main-content { margin-left: 24px; }
+    .sidebar, .toggle-btn { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="custom-cursor"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="logo-container">
+        <img src="taclogos/green.png" alt="Logo" class="logo" id="logo">
+    </div>
+    <nav class="nav-items">
+        <a href="index.html" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span>Home</span>
+        </a>
+    </nav>
+</aside>
+
+<button class="toggle-btn" id="toggleBtn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+    </svg>
+</button>
+
+<main class="main-content" id="mainContent">
+    <div class="header">
+        <h1>Appearance</h1>
+        <p style="color: var(--muted)">Personalize your TAC experience</p>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 16px;">System Modes</h2>
+        
+        <div class="setting-row" style="border-bottom: 1px solid var(--border); padding-bottom: 16px;">
+            <div>
+                <span style="font-weight: 600;">Clicky Mode</span>
+                <p style="color: var(--muted); font-size: 11px;">Use the original TAC cursor!</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="clickyToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="setting-row" style="padding-top: 16px;">
+            <div>
+                <span style="font-weight: 600;">Loftis Mode</span>
+                <p style="color: var(--muted); font-size: 11px;">For the memes hehe</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="loftisToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Interface Color</h2>
+        <p style="color: var(--muted); font-size: 13px; margin-bottom: 16px;">Select a theme color to update the sidebar, icons, and highlights.</p>
+        <div class="theme-grid" id="themeGrid"></div>
+    </div>
+
+    <div class="panel">
+        <h2 style="font-size: 18px; margin-bottom: 8px;">Live Preview</h2>
+        <div class="preview-box">
+            <p style="color: var(--accent)">This is how your accent text will look.</p>
+            <button class="btn-preview clickable">Action Button</button>
+        </div>
+    </div>
+</main>
+
+<script>
+/* --- THEME LOGIC --- */
+const themeColors = {
+    red: { primary: '#ef4444', dim: 'rgba(239, 68, 68, 0.1)', shadow: 'rgba(239, 68, 68, 0.15)' },
+    green: { primary: '#22c55e', dim: 'rgba(34, 197, 94, 0.1)', shadow: 'rgba(34, 197, 94, 0.15)' },
+    blue: { primary: '#3b82f6', dim: 'rgba(59, 130, 246, 0.1)', shadow: 'rgba(59, 130, 246, 0.15)' },
+    pink: { primary: '#ec4899', dim: 'rgba(236, 72, 153, 0.1)', shadow: 'rgba(236, 72, 153, 0.15)' },
+    purple: { primary: '#8b5cf6', dim: 'rgba(139, 92, 246, 0.1)', shadow: 'rgba(139, 92, 246, 0.15)' },
+    orange: { primary: '#f97316', dim: 'rgba(249, 115, 22, 0.1)', shadow: 'rgba(249, 115, 22, 0.15)' },
+    yellow: { primary: '#eab308', dim: 'rgba(234, 179, 8, 0.1)', shadow: 'rgba(234, 179, 8, 0.15)' },
+    cyan: { primary: '#06b6d4', dim: 'rgba(6, 182, 212, 0.1)', shadow: 'rgba(6, 182, 212, 0.15)' },
+    white: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.1)', shadow: 'rgba(255, 255, 255, 0.15)' },
+    whiteout: { primary: '#ffffff', dim: 'rgba(255, 255, 255, 0.05)', shadow: 'rgba(255, 255, 255, 0.1)' }
+};
+
+function applyTheme() {
+    const currentTheme = localStorage.getItem('theme') || 'green';
+    const colors = themeColors[currentTheme] || themeColors.green;
+    document.documentElement.style.setProperty('--accent', colors.primary);
+    document.documentElement.style.setProperty('--accent-dim', colors.dim);
+    const logo = document.getElementById('logo');
+    if (logo) logo.src = `taclogos/${currentTheme}.png`;
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.style.boxShadow = `0 0 20px ${colors.shadow}`;
+    document.querySelectorAll('.theme-card').forEach(card => {
+        card.classList.remove('active');
+        if(card.dataset.theme === currentTheme) card.classList.add('active');
+    });
+}
+
+function initThemeSelector() {
+    const grid = document.getElementById('themeGrid');
+    Object.keys(themeColors).forEach(key => {
+        const card = document.createElement('div');
+        card.className = 'theme-card clickable';
+        card.dataset.theme = key;
+        card.innerHTML = `<div class="swatch" style="background: ${themeColors[key].primary}"></div><span class="theme-name">${key}</span>`;
+        card.onclick = () => { localStorage.setItem('theme', key); applyTheme(); };
+        grid.appendChild(card);
+    });
+}
+
+/* --- SIDEBAR TOGGLE --- */
+const sidebar = document.getElementById('sidebar');
+const toggleBtn = document.getElementById('toggleBtn');
+const mainContent = document.getElementById('mainContent');
+toggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+    toggleBtn.classList.toggle('collapsed');
+    mainContent.classList.toggle('expanded');
+});
+
+/* --- SETTINGS MODE LOGIC (Clicky & Loftis) --- */
+const clickyToggle = document.getElementById('clickyToggle');
+const loftisToggle = document.getElementById('loftisToggle');
+
+// Clicky Setup
+let isClickyMode = localStorage.getItem('clicky') === 'true';
+clickyToggle.checked = isClickyMode;
+clickyToggle.addEventListener('change', () => {
+    isClickyMode = clickyToggle.checked;
+    localStorage.setItem('clicky', isClickyMode);
+});
+
+// Loftis Setup
+let isLoftisMode = localStorage.getItem('isLoftisMode') === 'true';
+loftisToggle.checked = isLoftisMode;
+if(isLoftisMode) document.body.classList.add('loftis-mode');
+
+loftisToggle.addEventListener('change', () => {
+    const active = loftisToggle.checked;
+    localStorage.setItem('isLoftisMode', active);
+    document.body.classList.toggle('loftis-mode', active);
+});
+
+/* --- CUSTOM CURSOR LOGIC --- */
+const cursor = document.getElementById("custom-cursor");
+let isClicking = false;
+
+function updateCursor(e) {
+    if (isClicking) return;
+    if (isClickyMode) {
+        cursor.style.backgroundImage = "url('cursor.png')";
+        return;
+    }
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    if (!el) return;
+    if (el.closest("input, textarea")) {
+        cursor.style.backgroundImage = "url('text.png')";
+    } else if (el.closest("button, a, input[type='button'], input[type='submit'], .clickable, .nav-item, .toggle-btn, .switch, .theme-card")) {
+        cursor.style.backgroundImage = "url('hover.png')";
+    } else {
+        cursor.style.backgroundImage = "url('normal.png')";
+    }
+}
+
+document.addEventListener("mousemove", (e) => {
+    cursor.style.left = e.clientX + "px";
+    cursor.style.top = e.clientY + "px";
+    updateCursor(e);
+});
+
+document.addEventListener("mousedown", () => {
+    isClicking = true;
+    cursor.style.backgroundImage = isClickyMode ? "url('clicky.png')" : "url('click.png')";
+    cursor.style.transform = "translate(-50%, -50%) scale(0.9)";
+});
+
+document.addEventListener("mouseup", (e) => {
+    isClicking = false;
+    cursor.style.transform = "translate(-50%, -50%) scale(1)";
+    updateCursor(e);
+});
+
+/* --- START --- */
+initThemeSelector();
+applyTheme();
+
+window.addEventListener('storage', (e) => {
+    if (e.key === 'theme') applyTheme();
+    if (e.key === 'clicky') {
+        isClickyMode = localStorage.getItem('clicky') === 'true';
+        clickyToggle.checked = isClickyMode;
+    }
+    if (e.key === 'isLoftisMode') {
+        const active = localStorage.getItem('isLoftisMode') === 'true';
+        loftisToggle.checked = active;
+        document.body.classList.toggle('loftis-mode', active);
+    }
+});
+</script>
+
+</body>
+</html>

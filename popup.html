@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
+<script src="guard.js"></script>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">
   <link href="rightclick.css" rel="stylesheet"/>
   <link href="custom-cursor.css" rel="stylesheet"/>
   <meta charset="utf-8"/>
@@ -529,5 +532,17 @@ body.state-icon .widget { display: none; }
   <script src="idle-dvd.js">
   </script>
  <script type="module" src="online.js"></script>
+    <script src="custom-cursor.js"></script>
+    <script src="rightclick.js"></script>
+    <script src="panic-key.js"></script>
+    <script src="idle-dvd.js"></script>
+
+<div id="tac-phone-container"></div>
+<script>
+    fetch('phone-widget.html')
+        .then(r => r.text())
+        .then(html => document.getElementById('tac-phone-container').innerHTML = html);
+</script>
+
 </body>
 </html>
