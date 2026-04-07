@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
-<script src="guard.js"></script>
     <link rel="stylesheet" href="rightclick.css">
     <link rel="stylesheet" href="custom-cursor.css">
   <link href="rightclick.css" rel="stylesheet"/>
@@ -742,8 +741,7 @@
                         let compiledCode = htmlCode;
                         
                         // FIX APPLIED HERE: Replaced broken multi-line string with dynamic combination
-                        const targetHead = '<head>
-<script src="guard.js"></script>\n    <link rel="stylesheet" href="rightclick.css">\n    <link rel="stylesheet" href="custom-cursor.css">';
+                        const targetHead = '<head>\n    <link rel="stylesheet" href="rightclick.css">\n    <link rel="stylesheet" href="custom-cursor.css">';
                         
                         if (compiledCode.includes(targetHead)) {
                             compiledCode = compiledCode.replace(targetHead, targetHead + `<base href="${basePath}">`);
@@ -990,16 +988,6 @@
     <script src="rightclick.js"></script>
     <script src="panic-key.js"></script>
     <script src="idle-dvd.js"></script>
-
-    <script src="timeTracker.js"></script>
 <script type="module" src="online.js"></script>
-
-<div id="tac-phone-container"></div>
-<script>
-    fetch('phone-widget.html')
-        .then(r => r.text())
-        .then(html => document.getElementById('tac-phone-container').innerHTML = html);
-</script>
-
 </body>
 </html>
