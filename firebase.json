@@ -3,16 +3,22 @@
     "public": ".",
     "ignore": [
       "firebase.json",
+      "**/.*",
       "**/.git/**",
       "**/.github/**",
-      "**/.*",
       "**/node_modules/**",
       "**/venv/**",
       "**/env/**",
       "**/__pycache__/**",
       "**/*.py",
       "**/*.pyc",
-      "**/*.exe"
+      "**/*.exe",
+      "**/*.bin",
+      "**/*.sh",
+      "**/*.bat",
+      "**/*.msi",
+      "**/*.pkg",
+      "**/*.dmg"
     ]
   }
 }
