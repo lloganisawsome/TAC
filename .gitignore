@@ -1,2 +1,7 @@
 .DS_Store
 games/home.html
+__pycache__/
+*.pyc
+venv/
+env/
+.env

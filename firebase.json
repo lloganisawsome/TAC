@@ -4,7 +4,15 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "**/venv/**",
+      "**/env/**",
+      "**/__pycache__/**",
+      "**/*.py",
+      "**/*.pyc",
+      "**/*.exe",
+      "**/*.bin",
+      ".DS_Store"
     ]
   }
 }
