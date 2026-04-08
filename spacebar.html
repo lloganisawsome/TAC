@@ -8,9 +8,7 @@
   <link href="custom-cursor.css" rel="stylesheet"/>
   <meta charset="utf-8"/>
   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-  <title>
-   Ultimate Spacebar Clicker
-  </title>
+  <title>Ultimate Spacebar Clicker</title>
   <style>
    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
@@ -26,6 +24,9 @@
       --border: rgba(255,255,255,0.04);
       --text: #e0e0e8;
       --text-dim: #8888a0;
+      --gold: #ffd700;
+      --gold-dim: rgba(255,215,0,0.15);
+      --gold-glow: rgba(255,215,0,0.4);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -91,6 +92,126 @@
     }
     .main-content.expanded { margin-left: 24px; }
 
+    /* ---- ASCEND SCREEN ---- */
+    #ascendScreen {
+      display: none;
+      position: fixed; inset: 0; z-index: 5000;
+      background: radial-gradient(ellipse at center, #0a0010 0%, #000 100%);
+      overflow-y: auto; padding: 40px 20px;
+      animation: fadeIn 0.4s ease;
+    }
+    #ascendScreen.visible { display: block; }
+    .ascend-header {
+      text-align: center; margin-bottom: 30px;
+    }
+    .ascend-header h1 {
+      font-family: 'Orbitron', sans-serif; font-size: 42px; font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), #fff, var(--gold));
+      background-size: 200% 200%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shimmer 2s ease-in-out infinite;
+      filter: drop-shadow(0 0 30px var(--gold-glow));
+    }
+    .ascend-header p { color: var(--text-dim); font-size: 15px; margin-top: 8px; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
+    .coin-display {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,215,0,0.08); border: 1px solid var(--gold);
+      border-radius: 40px; padding: 10px 24px; margin: 12px auto;
+      font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
+      color: var(--gold); box-shadow: 0 0 20px var(--gold-dim);
+    }
+    .ascend-shop-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px; max-width: 1100px; margin: 24px auto;
+    }
+    .ascend-item {
+      background: linear-gradient(135deg, rgba(255,215,0,0.04), rgba(255,215,0,0.01));
+      border: 1px solid rgba(255,215,0,0.2); border-radius: 16px; padding: 20px;
+      transition: all 0.25s; position: relative; overflow: hidden;
+    }
+    .ascend-item::before {
+      content:''; position:absolute; top:0;left:0;right:0;height:1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity:0.4;
+    }
+    .ascend-item:hover { border-color: var(--gold); box-shadow: 0 0 25px var(--gold-dim); transform: translateY(-3px); }
+    .ascend-item.maxed { border-color: var(--gold); box-shadow: 0 0 20px var(--gold-dim); }
+    .ascend-item .ai-emoji { font-size: 36px; margin-bottom: 8px; animation: float 3s ease-in-out infinite; display: block; }
+    .ascend-item h4 { color: var(--gold); font-family: 'Orbitron', sans-serif; font-size: 13px; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .ascend-item p { color: var(--text-dim); font-size: 12px; margin: 3px 0; }
+    .ascend-item .ai-effect { color: var(--gold); font-size: 12px; font-weight: 700; margin-top: 8px; }
+    .ascend-item .ai-level-bar { width:100%; height:3px; background:rgba(255,215,0,0.1); border-radius:2px; margin:8px 0; }
+    .ascend-item .ai-level-fill { height:100%; background: linear-gradient(90deg, var(--gold), #fff); border-radius:2px; transition:width 0.3s; box-shadow: 0 0 6px var(--gold-glow); }
+    .btn-gold {
+      font-family: 'Rajdhani', sans-serif; background: rgba(255,215,0,0.1); color: var(--gold);
+      border: 1px solid var(--gold); padding: 8px 18px; margin: 5px; cursor: pointer;
+      border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; letter-spacing: 0.5px;
+      width: 100%; margin-top: 10px;
+    }
+    .btn-gold:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold-dim); }
+    .btn-gold:disabled { opacity: 0.3; cursor: not-allowed; }
+    .btn-gold:disabled:hover { background: rgba(255,215,0,0.1); color: var(--gold); box-shadow: none; }
+    .btn-back {
+      font-family: 'Orbitron', sans-serif; background: transparent; color: var(--text-dim);
+      border: 1px solid var(--border); padding: 10px 28px; cursor: pointer;
+      border-radius: 10px; font-size: 13px; font-weight: 600; transition: all 0.2s;
+      letter-spacing: 1px; margin-bottom: 20px;
+    }
+    .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ---- ASCEND BUTTON ---- */
+    #ascendBtn {
+      font-family: 'Orbitron', sans-serif; font-size: 13px; padding: 10px 24px;
+      border-radius: 12px; background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(255,215,0,0.02));
+      color: var(--gold); border: 1px solid var(--gold); cursor: pointer;
+      transition: all 0.2s; font-weight: 700; letter-spacing: 1px;
+      box-shadow: 0 0 15px var(--gold-dim);
+      display: none; margin: 8px auto;
+    }
+    #ascendBtn.ready { display: inline-block; animation: goldPulse 1.5s ease-in-out infinite; }
+    @keyframes goldPulse {
+      0%,100% { box-shadow: 0 0 15px var(--gold-dim); }
+      50% { box-shadow: 0 0 35px var(--gold-glow), 0 0 60px rgba(255,215,0,0.15); }
+    }
+
+    /* ---- BROKEN SPACEBAR ANIMATION ---- */
+    .spacebar-break-overlay {
+      position: fixed; inset:0; background: rgba(0,0,0,0.95); z-index: 9998;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      animation: fadeIn 0.3s;
+    }
+    .break-key {
+      font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; color: var(--accent);
+      border: 3px solid var(--accent); border-radius: 12px; padding: 20px 80px;
+      box-shadow: 0 0 40px var(--accent-glow); margin-bottom: 20px;
+      animation: shakeBreak 0.1s ease-in-out infinite;
+    }
+    @keyframes shakeBreak {
+      0%,100%{transform:rotate(0deg) translateX(0);}
+      25%{transform:rotate(-3deg) translateX(-5px);}
+      75%{transform:rotate(3deg) translateX(5px);}
+    }
+    .break-cracks {
+      position: absolute; inset:0; pointer-events:none;
+      background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 41px);
+    }
+    .break-text {
+      font-family: 'Orbitron', sans-serif; font-size: 28px; font-weight: 900;
+      color: var(--gold); text-shadow: 0 0 20px var(--gold-glow); margin-bottom: 10px;
+      animation: blink 0.4s ease-in-out infinite;
+    }
+    .break-sub { color: var(--text-dim); font-family:'Orbitron',sans-serif; font-size:13px; letter-spacing:2px; }
+    @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+    /* crack pieces */
+    .crack-piece {
+      position: fixed; pointer-events: none; font-size: 24px;
+      animation: crackFly 1.5s ease-out forwards; z-index: 9999;
+    }
+    @keyframes crackFly {
+      0% { opacity:1; transform: translate(0,0) rotate(0deg) scale(1); }
+      100% { opacity:0; transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(0.3); }
+    }
+
     h1 {
       font-family: 'Orbitron', sans-serif;
       font-size: 36px; font-weight: 900; margin: 20px 0 5px;
@@ -127,6 +248,8 @@
     .stat-card:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-dim); transform: translateY(-2px); }
     .stat-card .stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-family: 'Orbitron', sans-serif; }
     .stat-card .stat-value { font-size: 22px; font-weight: 700; color: var(--accent); font-family: 'Orbitron', sans-serif; }
+    .stat-card.gold-card { border-color: rgba(255,215,0,0.3); }
+    .stat-card.gold-card .stat-value { color: var(--gold); }
 
     #clickBtn {
       font-family: 'Orbitron', sans-serif; font-size: 22px; padding: 28px 56px;
@@ -143,6 +266,22 @@
     #clickBtn:hover::before { opacity: 1; }
     #clickBtn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 50px var(--accent-glow), inset 0 0 30px var(--accent-dim); }
     #clickBtn:active { transform: translateY(1px) scale(0.98); box-shadow: 0 0 20px var(--accent-dim); }
+    #clickBtn.wiggle { animation: wiggle 0.15s ease-in-out; }
+    @keyframes wiggle { 0%,100%{transform:scale(1);}50%{transform:scale(1.05) rotate(1deg);} }
+
+    /* shop item animations */
+    .shop-item .item-emoji { font-size: 28px; margin-bottom: 6px; display:inline-block; transition: transform 0.3s; }
+    .shop-item:hover .item-emoji { animation: spin 0.6s ease-in-out; }
+    @keyframes spin { 0%{transform:rotate(0);}50%{transform:rotate(20deg) scale(1.3);}100%{transform:rotate(0) scale(1);} }
+
+    @keyframes float {
+      0%,100%{transform:translateY(0);}
+      50%{transform:translateY(-8px);}
+    }
+    @keyframes floatBig {
+      0%,100%{transform:translateY(0) scale(1);}
+      50%{transform:translateY(-12px) scale(1.05);}
+    }
 
     .click-hint { color: var(--text-dim); font-size: 12px; margin-top: 8px; font-family: 'Orbitron', sans-serif; letter-spacing: 1px; }
 
@@ -151,12 +290,14 @@
       font-weight: 900; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow);
       animation: floatUp 1s ease-out forwards; z-index: 9999;
     }
+    .float-number.crit { color: #ff6b35; font-size: 28px !important; text-shadow: 0 0 20px rgba(255,107,53,0.6); }
+    .float-number.mega { color: var(--gold); font-size: 32px !important; text-shadow: 0 0 25px var(--gold-glow); }
     @keyframes floatUp {
       0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-80px) scale(1.5); }
+      100% { opacity: 0; transform: translateY(-100px) scale(1.5); }
     }
 
-    .powerup-bar { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 12px auto; max-width: 800px; }
+    .powerup-bar { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 12px auto; max-width: 900px; }
     .powerup-indicator {
       display: none; align-items: center; gap: 6px;
       background: var(--panel); border: 1px solid var(--accent); border-radius: 20px;
@@ -164,6 +305,7 @@
       animation: pulse 1s ease-in-out infinite; box-shadow: 0 0 15px var(--accent-dim);
     }
     .powerup-indicator.active { display: flex; }
+    .powerup-indicator .pw-timer { font-size: 10px; opacity: 0.7; margin-left: 4px; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
     .btn {
@@ -191,6 +333,14 @@
     .shop-item .item-effect { color: var(--accent); font-size: 11px; font-weight: 600; margin-top: 6px; }
     .shop-item .level-bar { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin: 8px 0; overflow: hidden; }
     .shop-item .level-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; box-shadow: 0 0 6px var(--accent-glow); }
+
+    /* new rarity glow */
+    .shop-item.rare { border-color: rgba(139,92,246,0.4); }
+    .shop-item.rare:hover { box-shadow: 0 0 25px rgba(139,92,246,0.25); border-color: #8b5cf6; }
+    .shop-item.epic { border-color: rgba(249,115,22,0.4); }
+    .shop-item.epic:hover { box-shadow: 0 0 25px rgba(249,115,22,0.25); border-color: #f97316; }
+    .shop-item.legendary { border-color: rgba(255,215,0,0.4); }
+    .shop-item.legendary:hover { box-shadow: 0 0 25px rgba(255,215,0,0.25); border-color: var(--gold); }
 
     .shop-tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
     .shop-tab {
@@ -229,6 +379,7 @@
       padding: 12px 20px; color: var(--accent); font-family: 'Orbitron', sans-serif; font-size: 12px;
       box-shadow: 0 0 20px var(--accent-glow); animation: toastIn 0.3s ease-out; max-width: 320px;
     }
+    .toast.gold-toast { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 20px var(--gold-glow); }
     .toast.closing { animation: toastOut 0.3s ease-in forwards; }
     @keyframes toastIn { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes toastOut { to { opacity: 0; transform: translateX(50px); } }
@@ -260,6 +411,56 @@
     .prestige-overlay p { color: var(--text-dim); font-size: 16px; margin-bottom: 20px; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+    /* ascend progress bar */
+    .ascend-progress-wrap {
+      max-width: 600px; margin: 8px auto; text-align: center;
+    }
+    .ascend-progress-label {
+      font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--text-dim);
+      margin-bottom: 4px; letter-spacing: 1px;
+    }
+    .ascend-progress-bar {
+      width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+    }
+    .ascend-progress-fill {
+      height: 100%; background: linear-gradient(90deg, var(--gold), #fff);
+      border-radius: 3px; transition: width 0.5s ease;
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    /* random emoji rain */
+    .emoji-rain {
+      position: fixed; pointer-events: none; font-size: 20px;
+      animation: emojiDrop 2s ease-in forwards; z-index: 9990;
+    }
+    @keyframes emojiDrop {
+      0% { opacity: 1; transform: translateY(0) rotate(0deg); }
+      100% { opacity: 0; transform: translateY(200px) rotate(360deg); }
+    }
+
+    /* screen shake */
+    @keyframes screenShake {
+      0%,100%{transform:translate(0,0);}
+      10%{transform:translate(-6px,-4px);}
+      20%{transform:translate(6px,4px);}
+      30%{transform:translate(-4px,6px);}
+      40%{transform:translate(4px,-6px);}
+      50%{transform:translate(-6px,4px);}
+      60%{transform:translate(6px,-4px);}
+      70%{transform:translate(-4px,-6px);}
+      80%{transform:translate(4px,6px);}
+      90%{transform:translate(-6px,4px);}
+    }
+    .shake { animation: screenShake 0.5s ease-in-out; }
+
+    /* powerup spawn animation */
+    @keyframes powerupSpawn {
+      0% { transform: scale(0) rotate(-180deg); opacity:0; }
+      70% { transform: scale(1.2) rotate(10deg); opacity:1; }
+      100% { transform: scale(1) rotate(0deg); opacity:1; }
+    }
+    .powerup-indicator.spawning { animation: powerupSpawn 0.4s ease-out forwards !important; }
+
     @media (max-width: 768px) {
       .main-content { margin-left: 24px; }
       .sidebar, .toggle-btn { display: none; }
@@ -269,187 +470,132 @@
       .shop-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
     }
   </style>
-  <script src="app-presence.js">
-  </script>
+  <script src="app-presence.js"></script>
  </head>
  <body>
-  <canvas id="particles">
-  </canvas>
-  <div class="toast-container" id="toastContainer">
+  <canvas id="particles"></canvas>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ASCEND SCREEN -->
+  <div id="ascendScreen">
+    <div class="ascend-header">
+      <button class="btn-back" id="backBtn">← GO BACK</button>
+      <h1>✦ ASCENSION REALM ✦</h1>
+      <p>YOUR SPACEBAR BROKE. NOW YOU TRANSCEND.</p>
+      <div class="coin-display">🪙 <span id="coinDisplay">0</span> ASCENSION COINS</div>
+      <p style="color:var(--text-dim);font-size:11px;font-family:'Orbitron',sans-serif;margin-top:6px;letter-spacing:1px;">
+        TOTAL ASCENSIONS: <span id="ascendCountDisplay" style="color:var(--gold)">0</span>
+      </p>
+    </div>
+    <div class="ascend-shop-grid" id="ascendShopGrid"></div>
   </div>
+
   <aside class="sidebar" id="sidebar">
    <div class="logo-container">
     <img alt="Logo" class="logo" id="logo" src="taclogos/green.png"/>
    </div>
    <nav class="nav-items">
     <a class="nav-item" href="index.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z">
-      </path>
-     </svg>
-     <span>
-      Home
-     </span>
+     <svg fill="currentColor" viewbox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
+     <span>Home</span>
     </a>
     <a class="nav-item" href="chat.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z">
-      </path>
-     </svg>
-     <span>
-      Chat
-     </span>
+     <svg fill="currentColor" viewbox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></svg>
+     <span>Chat</span>
     </a>
     <a class="nav-item active" href="notgames.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z">
-      </path>
-     </svg>
-     <span>
-      Games
-     </span>
+     <svg fill="currentColor" viewbox="0 0 24 24"><path d="M21.58 16.09l-1.09-7.66A3.996 3.996 0 0016.53 5H7.47a3.996 3.996 0 00-3.96 3.43l-1.09 7.66C2.2 17.63 3.39 19 4.94 19c.68 0 1.32-.27 1.8-.75L9 16h6l2.25 2.25c.48.48 1.13.75 1.8.75 1.55 0 2.75-1.37 2.53-2.91zM11 11H9v2H8v-2H6v-1h2V8h1v2h2v1zm4-1c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm2 3c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"></path></svg>
+     <span>Games</span>
     </a>
     <a class="nav-item" href="phone.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z">
-      </path>
-     </svg>
-     <span>
-      Phone
-     </span>
+     <svg fill="currentColor" viewbox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"></path></svg>
+     <span>Phone</span>
     </a>
     <a class="nav-item" href="apps.html">
-     <svg fill="currentColor" viewbox="0 0 24 24">
-      <path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z">
-      </path>
-     </svg>
-     <span>
-      All Apps
-     </span>
+     <svg fill="currentColor" viewbox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"></path></svg>
+     <span>All Apps</span>
     </a>
    </nav>
   </aside>
   <button class="toggle-btn" id="toggleBtn">
    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
-    <polyline points="15 18 9 12 15 6">
-    </polyline>
+    <polyline points="15 18 9 12 15 6"></polyline>
    </svg>
   </button>
+
   <main class="main-content" id="mainContent">
-   <h1>
-    ⚡ SPACEBAR CLICKER
-   </h1>
-   <div class="subtitle">
-    CLICK • UPGRADE • DOMINATE
+   <h1>⚡ SPACEBAR CLICKER</h1>
+   <div class="subtitle">CLICK • UPGRADE • ASCEND • DOMINATE</div>
+   <div class="stats-bar" id="statsBar"></div>
+
+   <!-- Ascend progress -->
+   <div class="ascend-progress-wrap">
+     <div class="ascend-progress-label" id="ascendProgressLabel">ASCENSION PROGRESS: 0 / 50Q</div>
+     <div class="ascend-progress-bar"><div class="ascend-progress-fill" id="ascendProgressFill" style="width:0%"></div></div>
    </div>
-   <div class="stats-bar" id="statsBar">
-   </div>
+
    <div class="powerup-bar" id="powerupBar">
-    <div class="powerup-indicator" id="pw-frenzy">
-     🔥 FRENZY
-    </div>
-    <div class="powerup-indicator" id="pw-double">
-     ✨ 2X CLICKS
-    </div>
-    <div class="powerup-indicator" id="pw-crits">
-     💥 CRITS
-    </div>
-    <div class="powerup-indicator" id="pw-magnet">
-     🧲 MAGNET
-    </div>
-    <div class="powerup-indicator" id="pw-timestop">
-     ⏳ TIME WARP
-    </div>
+    <div class="powerup-indicator" id="pw-frenzy">🔥 FRENZY <span class="pw-timer" id="t-frenzy"></span></div>
+    <div class="powerup-indicator" id="pw-double">✨ 2X CLICKS <span class="pw-timer" id="t-double"></span></div>
+    <div class="powerup-indicator" id="pw-crits">💥 CRITS <span class="pw-timer" id="t-crits"></span></div>
+    <div class="powerup-indicator" id="pw-magnet">🧲 MAGNET <span class="pw-timer" id="t-magnet"></span></div>
+    <div class="powerup-indicator" id="pw-timestop">⏳ TIME WARP <span class="pw-timer" id="t-timestop"></span></div>
+    <div class="powerup-indicator" id="pw-ghost">👻 GHOST <span class="pw-timer" id="t-ghost"></span></div>
+    <div class="powerup-indicator" id="pw-rainbow">🌈 RAINBOW <span class="pw-timer" id="t-rainbow"></span></div>
+    <div class="powerup-indicator" id="pw-void">🕳️ VOID <span class="pw-timer" id="t-void"></span></div>
+    <div class="powerup-indicator" id="pw-storm">⛈️ STORM <span class="pw-timer" id="t-storm"></span></div>
    </div>
-   <button id="clickBtn">
-    ⚡ CLICK ⚡
-   </button>
-   <div class="click-hint">
-    or press SPACEBAR
+
+   <button id="clickBtn">⚡ CLICK ⚡</button>
+   <div class="click-hint">or press SPACEBAR</div>
+
+   <div style="margin-top: 12px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+     <button class="btn btn-save" id="saveBtn">💾 SAVE & SUBMIT TO LEADERBOARD</button>
+     <button id="ascendBtn">✦ ASCEND ✦</button>
    </div>
-   <div style="margin-top: 16px;">
-    <button class="btn btn-save" id="saveBtn">
-     💾 SAVE &amp; SUBMIT TO LEADERBOARD
-    </button>
-   </div>
+
    <div class="panel">
-    <h2>
-     🛒 UPGRADE SHOP
-    </h2>
+    <h2>🛒 UPGRADE SHOP</h2>
     <div class="shop-tabs" id="shopTabs">
-     <div class="shop-tab active" data-tab="clickers">
-      ⚡ Clickers
-     </div>
-     <div class="shop-tab" data-tab="multipliers">
-      ✖️ Multipliers
-     </div>
-     <div class="shop-tab" data-tab="generators">
-      🏭 Generators
-     </div>
-     <div class="shop-tab" data-tab="special">
-      🌟 Special
-     </div>
+     <div class="shop-tab active" data-tab="clickers">⚡ Clickers</div>
+     <div class="shop-tab" data-tab="multipliers">✖️ Multipliers</div>
+     <div class="shop-tab" data-tab="generators">🏭 Generators</div>
+     <div class="shop-tab" data-tab="special">🌟 Special</div>
     </div>
-    <div class="shop-grid" id="shopGrid">
-    </div>
+    <div class="shop-grid" id="shopGrid"></div>
    </div>
+
    <div class="panel">
-    <h2>
-     🏆 ACHIEVEMENTS
-    </h2>
-    <div class="achievements-grid" id="achievementsGrid">
-    </div>
+    <h2>🏆 ACHIEVEMENTS</h2>
+    <div class="achievements-grid" id="achievementsGrid"></div>
    </div>
+
    <div class="panel">
-    <h2>
-     📊 LEADERBOARD
-    </h2>
+    <h2>📊 LEADERBOARD</h2>
     <div class="leaderboard-controls">
-     <button class="btn" id="sortClicks">
-      🏆 Sort: Clicks
-     </button>
-     <button class="btn" id="sortCPS">
-      ⚡ Sort: CPS
-     </button>
-     <button class="btn" id="sortPrestige">
-      ⭐ Sort: Prestige
-     </button>
-     <button class="btn" id="refreshLB">
-      🔄 Refresh
-     </button>
+     <button class="btn" id="sortClicks">🏆 Sort: Clicks</button>
+     <button class="btn" id="sortCPS">⚡ Sort: CPS</button>
+     <button class="btn" id="sortPrestige">⭐ Sort: Prestige</button>
+     <button class="btn" id="refreshLB">🔄 Refresh</button>
     </div>
-    <div id="lbStatus" style="color:var(--text-dim);font-size:12px;margin-bottom:8px;font-family:'Orbitron',sans-serif;">
-    </div>
+    <div id="lbStatus" style="color:var(--text-dim);font-size:12px;margin-bottom:8px;font-family:'Orbitron',sans-serif;"></div>
     <div class="leaderboard-list" id="leaderboardList">
-     <div style="text-align:center;color:var(--text-dim);padding:30px;font-family:'Orbitron',sans-serif;font-size:12px;">
-      Loading leaderboard...
-     </div>
+     <div style="text-align:center;color:var(--text-dim);padding:30px;font-family:'Orbitron',sans-serif;font-size:12px;">Loading leaderboard...</div>
     </div>
    </div>
   </main>
+
   <div id="devMenu">
-   <h3>
-    ⚙️ DEV MENU
-   </h3>
-   <button class="btn" id="spawnAll">
-    Spawn All Powerups
-   </button>
-   <button class="btn" id="forceFrenzy">
-    Force Frenzy
-   </button>
-   <button class="btn" id="forceDouble">
-    Force Double
-   </button>
-   <button class="btn" id="addClicks">
-    +1M Clicks
-   </button>
-   <button class="btn" id="resetGame">
-    Reset Game
-   </button>
-   <button class="btn" id="devSave">
-    Dev Save
-   </button>
+   <h3>⚙️ DEV MENU</h3>
+   <button class="btn" id="spawnAll">Spawn All Powerups</button>
+   <button class="btn" id="forceFrenzy">Force Frenzy</button>
+   <button class="btn" id="forceDouble">Force Double</button>
+   <button class="btn" id="addClicks">+1M Clicks</button>
+   <button class="btn" id="addCoins">+50 Coins</button>
+   <button class="btn" id="resetGame">Reset Game</button>
+   <button class="btn" id="devSave">Dev Save</button>
   </div>
+
   <script type="module">
    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, get, set, update, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
@@ -478,7 +624,7 @@
       return { x: Math.random()*canvas.width, y: Math.random()*canvas.height,
         size: Math.random()*2+0.5, speedX: (Math.random()-0.5)*0.3, speedY: (Math.random()-0.5)*0.3, opacity: Math.random()*0.5+0.1 };
     }
-    for (let i=0;i<80;i++) particles.push(createParticle());
+    for (let i=0;i<100;i++) particles.push(createParticle());
     function animateParticles() {
       ctx.clearRect(0,0,canvas.width,canvas.height);
       const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
@@ -535,33 +681,75 @@
     let username = '';
     let clicks = 0, bestCPS = 0, totalClicksEver = 0, clicksThisSecond = 0;
     let frenzyActive=false, doubleClicks=false, critsActive=false, magnetActive=false, timeWarpActive=false;
+    let ghostActive=false, rainbowActive=false, voidActive=false, stormActive=false;
+    let ascendCoins = 0, ascendCount = 0;
+
+    // Powerup timers (remaining ms)
+    const pwTimers = { frenzy:0, double:0, crits:0, magnet:0, timestop:0, ghost:0, rainbow:0, void:0, storm:0 };
+
     let upgrades = {
       autoClicker:0, clickMultiplier:0, goldenCursor:0, megaClicker:0, quantumBoost:0,
       clickFarm:0, nanoSwarm:0, darkMatter:0, timeAccel:0, critChance:0,
       clickStorm:0, cosmicRay:0, antimatter:0, singularity:0,
       prestige:0, hyperPrestige:0, luckyDice:0, clickMagnet:0,
+      // new upgrades
+      voidEngine:0, starForge:0, chronoShard:0, neuralNet:0, plasmaCore:0,
+      dimensionRift:0, clickClone:0, hyperDrive:0,
     };
+
+    // Ascend upgrades (bought with coins)
+    let ascendUpgrades = {
+      cosmicMultiplier:0, brokenKeyBoost:0, coinInterest:0, ascendCPS:0,
+      soulHarvester:0, voidResonance:0, timeFracture:0, infiniteLoop:0,
+      quantumEntangle:0, darkEnergy:0,
+    };
+
+    // ========== BIG NUMBER HELPERS ==========
+    // We use regular JS numbers which handle scientific notation fine at these scales
+    const ASCEND_THRESHOLD = 50e15; // 50Q (50 quadrillion)
 
     // ========== SHOP DEFS ==========
     const shopItems = [
-      { id:'autoClicker',    tab:'clickers',    emoji:'🤖', name:'Auto Clicker',        desc:'Clicks automatically every second',         maxLevel:500, getCost:l=>Math.floor(50*Math.pow(1.08,l)),     getEffect:l=>`+${Math.floor(Math.pow(l,2.15))} CPS` },
-      { id:'megaClicker',    tab:'clickers',    emoji:'🔨', name:'Mega Clicker',         desc:'Powerful automated clicks',                 maxLevel:200, getCost:l=>Math.floor(800*Math.pow(1.12,l)),    getEffect:l=>`+${Math.floor(Math.pow(l,3)*0.5)} CPS` },
-      { id:'clickFarm',      tab:'clickers',    emoji:'🌾', name:'Click Farm',           desc:'A whole farm of clickers',                  maxLevel:150, getCost:l=>Math.floor(5000*Math.pow(1.14,l)),   getEffect:l=>`+${Math.floor(Math.pow(l,2.8)*2)} CPS` },
-      { id:'nanoSwarm',      tab:'clickers',    emoji:'🦠', name:'Nano Swarm',           desc:'Microscopic clicking bots',                 maxLevel:100, getCost:l=>Math.floor(25000*Math.pow(1.16,l)),  getEffect:l=>`+${Math.floor(Math.pow(l,3.2)*3)} CPS` },
-      { id:'cosmicRay',      tab:'clickers',    emoji:'☄️', name:'Cosmic Rays',          desc:'Harness cosmic energy',                     maxLevel:75,  getCost:l=>Math.floor(200000*Math.pow(1.18,l)), getEffect:l=>`+${Math.floor(Math.pow(l,3.5)*10)} CPS` },
-      { id:'clickMultiplier',tab:'multipliers', emoji:'✖️', name:'Click Multiplier',     desc:'Each click is worth more',                  maxLevel:200, getCost:l=>Math.floor(100*Math.pow(1.12,l)),    getEffect:l=>`x${(1+l*0.5).toFixed(1)} per click` },
-      { id:'goldenCursor',   tab:'multipliers', emoji:'👆', name:'Golden Cursor',        desc:'Flat bonus per click',                      maxLevel:150, getCost:l=>Math.floor(300*Math.pow(1.15,l)),    getEffect:l=>`+${l*10} flat per click` },
-      { id:'quantumBoost',   tab:'multipliers', emoji:'⚛️', name:'Quantum Boost',        desc:'Multiplies ALL production',                 maxLevel:75,  getCost:l=>Math.floor(5000*Math.pow(1.25,l)),   getEffect:l=>`x${(1+l*2).toFixed(0)} global` },
-      { id:'critChance',     tab:'multipliers', emoji:'🎯', name:'Critical Clicks',      desc:'Chance for 10x click value',                maxLevel:50,  getCost:l=>Math.floor(2000*Math.pow(1.2,l)),    getEffect:l=>`${Math.min(l*2,80)}% crit chance` },
-      { id:'clickStorm',     tab:'multipliers', emoji:'🌪️', name:'Click Storm',          desc:'Each click fires bonus hits',               maxLevel:30,  getCost:l=>Math.floor(15000*Math.pow(1.3,l)),   getEffect:l=>`+${l} bonus clicks/hit` },
-      { id:'darkMatter',     tab:'generators',  emoji:'🌑', name:'Dark Matter Engine',   desc:'Generates clicks from void',                maxLevel:60,  getCost:l=>Math.floor(50000*Math.pow(1.2,l)),   getEffect:l=>`+${Math.floor(Math.pow(l,3.8)*5)} CPS` },
-      { id:'timeAccel',      tab:'generators',  emoji:'⏰', name:'Time Accelerator',     desc:'Speeds up all generators',                  maxLevel:40,  getCost:l=>Math.floor(100000*Math.pow(1.22,l)), getEffect:l=>`x${(1+l*0.25).toFixed(2)} gen speed` },
-      { id:'antimatter',     tab:'generators',  emoji:'💫', name:'Antimatter Reactor',   desc:'Exponential click generation',              maxLevel:30,  getCost:l=>Math.floor(500000*Math.pow(1.3,l)),  getEffect:l=>`+${Math.floor(Math.pow(l,4)*20)} CPS` },
-      { id:'singularity',    tab:'generators',  emoji:'🕳️', name:'Singularity Core',     desc:'The ultimate generator',                   maxLevel:20,  getCost:l=>Math.floor(5000000*Math.pow(1.5,l)), getEffect:l=>`+${Math.floor(Math.pow(l,5)*100)} CPS` },
-      { id:'prestige',       tab:'special',     emoji:'⭐', name:'Prestige',             desc:'Reset for permanent 2x multiplier',         maxLevel:99,  getCost:l=>Math.floor(10000*Math.pow(3,l)),     getEffect:l=>`x${Math.pow(2,l)} permanent`, isPrestige:true },
-      { id:'hyperPrestige',  tab:'special',     emoji:'🌟', name:'Hyper Prestige',       desc:'Reset everything for 5x multiplier',        maxLevel:20,  getCost:l=>Math.floor(1000000*Math.pow(5,l)),   getEffect:l=>`x${Math.pow(5,l)} permanent`, isHyperPrestige:true },
-      { id:'luckyDice',      tab:'special',     emoji:'🎲', name:'Lucky Dice',           desc:'Powerups appear more often',                maxLevel:10,  getCost:l=>Math.floor(20000*Math.pow(2,l)),     getEffect:l=>`${l*10}% more powerups` },
-      { id:'clickMagnet',    tab:'special',     emoji:'🧲', name:'Click Magnet',         desc:'Earn clicks while away (offline)',           maxLevel:20,  getCost:l=>Math.floor(10000*Math.pow(1.5,l)),   getEffect:l=>`${l*5}% offline earnings` },
+      { id:'autoClicker',    tab:'clickers',    emoji:'🤖', name:'Auto Clicker',        desc:'Clicks automatically every second',         maxLevel:500, rarity:'', getCost:l=>Math.floor(50*Math.pow(1.08,l)),     getEffect:l=>`+${fmt(Math.floor(Math.pow(l,2.15)))} CPS` },
+      { id:'megaClicker',    tab:'clickers',    emoji:'🔨', name:'Mega Clicker',         desc:'Powerful automated clicks',                 maxLevel:200, rarity:'', getCost:l=>Math.floor(800*Math.pow(1.12,l)),    getEffect:l=>`+${fmt(Math.floor(Math.pow(l,3)*0.5))} CPS` },
+      { id:'clickFarm',      tab:'clickers',    emoji:'🌾', name:'Click Farm',           desc:'A whole farm of clickers',                  maxLevel:150, rarity:'', getCost:l=>Math.floor(5000*Math.pow(1.14,l)),   getEffect:l=>`+${fmt(Math.floor(Math.pow(l,2.8)*2))} CPS` },
+      { id:'nanoSwarm',      tab:'clickers',    emoji:'🦠', name:'Nano Swarm',           desc:'Microscopic clicking bots',                 maxLevel:100, rarity:'rare', getCost:l=>Math.floor(25000*Math.pow(1.16,l)),  getEffect:l=>`+${fmt(Math.floor(Math.pow(l,3.2)*3))} CPS` },
+      { id:'cosmicRay',      tab:'clickers',    emoji:'☄️', name:'Cosmic Rays',          desc:'Harness cosmic energy',                     maxLevel:75,  rarity:'epic', getCost:l=>Math.floor(200000*Math.pow(1.18,l)), getEffect:l=>`+${fmt(Math.floor(Math.pow(l,3.5)*10))} CPS` },
+      { id:'clickClone',     tab:'clickers',    emoji:'👥', name:'Click Clone',          desc:'Duplicates your clicks every 3rd hit',      maxLevel:50,  rarity:'rare', getCost:l=>Math.floor(1500000*Math.pow(1.2,l)), getEffect:l=>`${l*2}% clone chance` },
+      { id:'neuralNet',      tab:'clickers',    emoji:'🧠', name:'Neural Network',       desc:'AI learns your click pattern and multiplies',maxLevel:40, rarity:'epic', getCost:l=>Math.floor(8000000*Math.pow(1.25,l)),getEffect:l=>`+${fmt(Math.floor(Math.pow(l,3)*50))} CPS` },
+      { id:'clickMultiplier',tab:'multipliers', emoji:'✖️', name:'Click Multiplier',     desc:'Each click is worth more',                  maxLevel:200, rarity:'', getCost:l=>Math.floor(100*Math.pow(1.12,l)),    getEffect:l=>`x${(1+l*0.5).toFixed(1)} per click` },
+      { id:'goldenCursor',   tab:'multipliers', emoji:'👆', name:'Golden Cursor',        desc:'Flat bonus per click',                      maxLevel:150, rarity:'', getCost:l=>Math.floor(300*Math.pow(1.15,l)),    getEffect:l=>`+${fmt(l*10)} flat per click` },
+      { id:'quantumBoost',   tab:'multipliers', emoji:'⚛️', name:'Quantum Boost',        desc:'Multiplies ALL production',                 maxLevel:75,  rarity:'epic', getCost:l=>Math.floor(5000*Math.pow(1.25,l)),   getEffect:l=>`x${(1+l*2).toFixed(0)} global` },
+      { id:'critChance',     tab:'multipliers', emoji:'🎯', name:'Critical Clicks',      desc:'Chance for 10x click value',                maxLevel:50,  rarity:'rare', getCost:l=>Math.floor(2000*Math.pow(1.2,l)),    getEffect:l=>`${Math.min(l*2,80)}% crit chance` },
+      { id:'clickStorm',     tab:'multipliers', emoji:'🌪️', name:'Click Storm',          desc:'Each click fires bonus hits',               maxLevel:30,  rarity:'epic', getCost:l=>Math.floor(15000*Math.pow(1.3,l)),   getEffect:l=>`+${l} bonus clicks/hit` },
+      { id:'chronoShard',    tab:'multipliers', emoji:'⏱️', name:'Chrono Shard',         desc:'Time crystals amplify click speed',         maxLevel:35,  rarity:'epic', getCost:l=>Math.floor(50000*Math.pow(1.28,l)),  getEffect:l=>`+${l*3}% global speed` },
+      { id:'plasmaCore',     tab:'multipliers', emoji:'🔵', name:'Plasma Core',          desc:'Superheated plasma multiplies output',      maxLevel:25,  rarity:'legendary', getCost:l=>Math.floor(500000*Math.pow(1.4,l)),getEffect:l=>`x${(1+l*5).toFixed(0)} plasma mult` },
+      { id:'darkMatter',     tab:'generators',  emoji:'🌑', name:'Dark Matter Engine',   desc:'Generates clicks from void',                maxLevel:60,  rarity:'rare', getCost:l=>Math.floor(50000*Math.pow(1.2,l)),   getEffect:l=>`+${fmt(Math.floor(Math.pow(l,3.8)*5))} CPS` },
+      { id:'timeAccel',      tab:'generators',  emoji:'⏰', name:'Time Accelerator',     desc:'Speeds up all generators',                  maxLevel:40,  rarity:'rare', getCost:l=>Math.floor(100000*Math.pow(1.22,l)), getEffect:l=>`x${(1+l*0.25).toFixed(2)} gen speed` },
+      { id:'antimatter',     tab:'generators',  emoji:'💫', name:'Antimatter Reactor',   desc:'Exponential click generation',              maxLevel:30,  rarity:'epic', getCost:l=>Math.floor(500000*Math.pow(1.3,l)),  getEffect:l=>`+${fmt(Math.floor(Math.pow(l,4)*20))} CPS` },
+      { id:'singularity',    tab:'generators',  emoji:'🕳️', name:'Singularity Core',     desc:'The ultimate generator',                   maxLevel:20,  rarity:'legendary', getCost:l=>Math.floor(5000000*Math.pow(1.5,l)), getEffect:l=>`+${fmt(Math.floor(Math.pow(l,5)*100))} CPS` },
+      { id:'voidEngine',     tab:'generators',  emoji:'🌀', name:'Void Engine',          desc:'Tears reality to produce clicks',           maxLevel:15,  rarity:'legendary', getCost:l=>Math.floor(20000000*Math.pow(1.6,l)),getEffect:l=>`+${fmt(Math.floor(Math.pow(l,5.5)*500))} CPS` },
+      { id:'starForge',      tab:'generators',  emoji:'⭐', name:'Star Forge',           desc:'Forges entire stars into clicks',           maxLevel:10,  rarity:'legendary', getCost:l=>Math.floor(100000000*Math.pow(2,l)), getEffect:l=>`+${fmt(Math.floor(Math.pow(l,6)*5000))} CPS` },
+      { id:'dimensionRift',  tab:'generators',  emoji:'🔮', name:'Dimension Rift',       desc:'Opens rifts to parallel clicking universes',maxLevel:8,   rarity:'legendary', getCost:l=>Math.floor(500000000*Math.pow(2.5,l)),getEffect:l=>`+${fmt(Math.floor(Math.pow(l,6.5)*20000))} CPS` },
+      { id:'hyperDrive',     tab:'generators',  emoji:'🚀', name:'Hyper Drive',          desc:'Quantum drives generate at light speed',    maxLevel:6,   rarity:'legendary', getCost:l=>Math.floor(2000000000*Math.pow(3,l)), getEffect:l=>`+${fmt(Math.floor(Math.pow(l,7)*100000))} CPS` },
+      { id:'prestige',       tab:'special',     emoji:'⭐', name:'Prestige',             desc:'Reset for permanent 2x multiplier',         maxLevel:99,  rarity:'', getCost:l=>Math.floor(10000*Math.pow(3,l)),     getEffect:l=>`x${fmt(Math.pow(2,l))} permanent`, isPrestige:true },
+      { id:'hyperPrestige',  tab:'special',     emoji:'🌟', name:'Hyper Prestige',       desc:'Reset everything for 5x multiplier',        maxLevel:20,  rarity:'epic', getCost:l=>Math.floor(1000000*Math.pow(5,l)),   getEffect:l=>`x${fmt(Math.pow(5,l))} permanent`, isHyperPrestige:true },
+      { id:'luckyDice',      tab:'special',     emoji:'🎲', name:'Lucky Dice',           desc:'Powerups appear more often',                maxLevel:10,  rarity:'', getCost:l=>Math.floor(20000*Math.pow(2,l)),     getEffect:l=>`${l*10}% more powerups` },
+      { id:'clickMagnet',    tab:'special',     emoji:'🧲', name:'Click Magnet',         desc:'Earn clicks while away (offline)',           maxLevel:20,  rarity:'', getCost:l=>Math.floor(10000*Math.pow(1.5,l)),   getEffect:l=>`${l*5}% offline earnings` },
+    ];
+
+    // ========== ASCEND SHOP DEFS ==========
+    const ascendShopItems = [
+      { id:'cosmicMultiplier', emoji:'🌌', name:'COSMIC MULTIPLIER',   desc:'Permanently multiplies ALL clicks & CPS',      maxLevel:10, coinCost:l=>Math.floor(10*Math.pow(2,l)),   getEffect:l=>`x${Math.pow(3,l+1).toFixed(0)} all production` },
+      { id:'brokenKeyBoost',   emoji:'⌨️', name:'BROKEN KEY ESSENCE',  desc:'Your broken spacebar imbues extra power',       maxLevel:10, coinCost:l=>Math.floor(8*Math.pow(2,l)),    getEffect:l=>`+${l*50}% click value` },
+      { id:'coinInterest',     emoji:'💰', name:'COIN INTEREST',        desc:'Earn coins over time based on ascend count',   maxLevel:5,  coinCost:l=>Math.floor(15*Math.pow(3,l)),   getEffect:l=>`+${l} coin/min per ascension` },
+      { id:'ascendCPS',        emoji:'⚡', name:'ASCENDANT CPS',        desc:'Massive permanent CPS boost',                  maxLevel:10, coinCost:l=>Math.floor(20*Math.pow(2,l)),   getEffect:l=>`x${Math.pow(5,l+1).toFixed(0)} CPS permanently` },
+      { id:'soulHarvester',    emoji:'💀', name:'SOUL HARVESTER',       desc:'Absorbs lost clicks and converts to power',    maxLevel:5,  coinCost:l=>Math.floor(25*Math.pow(2.5,l)), getEffect:l=>`x${l+1} prestige multiplier boost` },
+      { id:'voidResonance',    emoji:'🌀', name:'VOID RESONANCE',       desc:'Resonates with the void for bonus powerups',   maxLevel:5,  coinCost:l=>Math.floor(20*Math.pow(2,l)),   getEffect:l=>`Powerups last ${l*50}% longer` },
+      { id:'timeFracture',     emoji:'🕰️', name:'TIME FRACTURE',        desc:'Fractures time — offline gains are massive',   maxLevel:5,  coinCost:l=>Math.floor(30*Math.pow(2,l)),   getEffect:l=>`${l*20}% more offline earnings` },
+      { id:'infiniteLoop',     emoji:'♾️', name:'INFINITE LOOP',        desc:'Auto-buys cheapest shop item every 30s',       maxLevel:3,  coinCost:l=>Math.floor(50*Math.pow(3,l)),   getEffect:l=>`Auto-buy every ${30-l*5}s` },
+      { id:'quantumEntangle',  emoji:'🔗', name:'QUANTUM ENTANGLE',     desc:'Links clicks — every 100 clicks fires 10 extra',maxLevel:5, coinCost:l=>Math.floor(35*Math.pow(2,l)),   getEffect:l=>`Every 100 clicks → +${l*10} bonus` },
+      { id:'darkEnergy',       emoji:'🖤', name:'DARK ENERGY CORE',     desc:'Unleashes raw dark energy after each ascension',maxLevel:5, coinCost:l=>Math.floor(40*Math.pow(2.5,l)), getEffect:l=>`x${Math.pow(2,ascendCount||1)*l} dark mult` },
     ];
 
     let currentTab = 'clickers';
@@ -575,6 +763,8 @@
       { id:'click1m',     icon:'🌟', name:'Millionaire',    desc:'Reach 1M clicks',          check:()=>totalClicksEver>=1000000 },
       { id:'click1b',     icon:'🏆', name:'Billionaire',    desc:'Reach 1B clicks',          check:()=>totalClicksEver>=1000000000 },
       { id:'click10b',    icon:'👑', name:'Click God',      desc:'Reach 10B clicks',         check:()=>totalClicksEver>=10000000000 },
+      { id:'click1t',     icon:'🌌', name:'Cosmic Being',   desc:'Reach 1T clicks',          check:()=>totalClicksEver>=1e12 },
+      { id:'click1q',     icon:'✦',  name:'Ascendant',      desc:'Reach 1Q clicks',          check:()=>totalClicksEver>=1e15 },
       { id:'auto10',      icon:'🤖', name:'Automation',     desc:'Auto Clicker Lvl 10',      check:()=>upgrades.autoClicker>=10 },
       { id:'auto50',      icon:'🏭', name:'Factory',        desc:'Auto Clicker Lvl 50',      check:()=>upgrades.autoClicker>=50 },
       { id:'prestige1',   icon:'⭐', name:'Reborn',         desc:'Prestige once',            check:()=>upgrades.prestige>=1 },
@@ -583,43 +773,77 @@
       { id:'cps1k',       icon:'🚀', name:'Lightspeed',     desc:'Reach 1,000 CPS',          check:()=>bestCPS>=1000 },
       { id:'allUpgrades', icon:'🎖️', name:'Collector',      desc:'Buy 15 different upgrades',check:()=>Object.values(upgrades).filter(v=>v>0).length>=15 },
       { id:'hyper1',      icon:'🌟', name:'Ascension',      desc:'Hyper Prestige once',      check:()=>upgrades.hyperPrestige>=1 },
+      { id:'ascend1',     icon:'✦',  name:'The Transcendent',desc:'Ascend for the first time',check:()=>ascendCount>=1 },
+      { id:'ascend5',     icon:'🌌', name:'Beyond Reality', desc:'Ascend 5 times',           check:()=>ascendCount>=5 },
+      { id:'coins100',    icon:'🪙', name:'Coin Collector',  desc:'Earn 100 total coins',     check:()=>ascendCoins>=100 },
     ];
     let unlockedAchievements = new Set();
 
     // ========== TOAST ==========
-    function showToast(text) {
+    function showToast(text, isGold=false) {
       const container = document.getElementById('toastContainer');
       const toast = document.createElement('div');
-      toast.className = 'toast';
+      toast.className = 'toast' + (isGold?' gold-toast':'');
       toast.textContent = text;
       container.appendChild(toast);
-      setTimeout(() => { toast.classList.add('closing'); setTimeout(()=>toast.remove(),300); }, 3000);
+      setTimeout(() => { toast.classList.add('closing'); setTimeout(()=>toast.remove(),300); }, 3500);
     }
 
     // ========== FLOAT NUMBERS ==========
-    function spawnFloatNumber(text, x, y) {
+    function spawnFloatNumber(text, x, y, type='') {
       const el = document.createElement('div');
-      el.className = 'float-number';
+      el.className = 'float-number' + (type?' '+type:'');
       el.textContent = text;
       el.style.left = x + 'px';
       el.style.top  = y + 'px';
-      el.style.fontSize = text.length > 6 ? '16px' : '22px';
+      if (!type) el.style.fontSize = text.length > 6 ? '16px' : '22px';
       document.body.appendChild(el);
       setTimeout(()=>el.remove(), 1000);
     }
 
+    // ========== EMOJI RAIN ==========
+    function spawnEmojiRain(emoji, count=8) {
+      for (let i=0;i<count;i++) {
+        setTimeout(()=>{
+          const el = document.createElement('div');
+          el.className = 'emoji-rain';
+          el.textContent = emoji;
+          el.style.left = (Math.random()*window.innerWidth)+'px';
+          el.style.top = (Math.random()*window.innerHeight*0.5)+'px';
+          document.body.appendChild(el);
+          setTimeout(()=>el.remove(), 2000);
+        }, i*80);
+      }
+    }
+
+    // ========== SCREEN SHAKE ==========
+    function shakeScreen() {
+      document.body.classList.add('shake');
+      setTimeout(()=>document.body.classList.remove('shake'), 500);
+    }
+
     // ========== FORMAT ==========
     function fmt(n) {
-      n = Math.floor(n);
+      if (typeof n !== 'number' || isNaN(n)) return '0';
+      if (n >= 1e18) return (n/1e18).toExponential(2)+'Q';
       if (n >= 1e15) return (n/1e15).toFixed(2)+'Q';
       if (n >= 1e12) return (n/1e12).toFixed(2)+'T';
       if (n >= 1e9)  return (n/1e9).toFixed(2)+'B';
       if (n >= 1e6)  return (n/1e6).toFixed(2)+'M';
       if (n >= 1e3)  return (n/1e3).toFixed(1)+'K';
-      return n.toString();
+      return Math.floor(n).toString();
     }
 
     // ========== CALCULATIONS ==========
+    function getAscendMult() {
+      let m = 1;
+      m *= Math.pow(3, ascendUpgrades.cosmicMultiplier);
+      m *= Math.pow(5, ascendUpgrades.ascendCPS);
+      m *= (1 + ascendUpgrades.soulHarvester * upgrades.prestige * 0.1);
+      m *= Math.pow(2, ascendUpgrades.darkEnergy * ascendCount);
+      return Math.max(1, m);
+    }
+
     function getAutoCPS() {
       let cps = 0;
       cps += Math.floor(Math.pow(upgrades.autoClicker,2.15));
@@ -630,12 +854,22 @@
       cps += Math.floor(Math.pow(upgrades.darkMatter,3.8)*5);
       cps += Math.floor(Math.pow(upgrades.antimatter,4)*20);
       cps += Math.floor(Math.pow(upgrades.singularity,5)*100);
+      cps += Math.floor(Math.pow(upgrades.voidEngine,5.5)*500);
+      cps += Math.floor(Math.pow(upgrades.starForge,6)*5000);
+      cps += Math.floor(Math.pow(upgrades.dimensionRift,6.5)*20000);
+      cps += Math.floor(Math.pow(upgrades.hyperDrive,7)*100000);
+      cps += Math.floor(Math.pow(upgrades.neuralNet,3)*50);
       cps *= (1+upgrades.timeAccel*0.25);
       cps *= (1+upgrades.quantumBoost*2);
+      cps *= (1+upgrades.chronoShard*0.03);
+      cps *= (1+upgrades.plasmaCore*5);
       cps *= Math.pow(2,upgrades.prestige);
       cps *= Math.pow(5,upgrades.hyperPrestige);
+      cps *= getAscendMult();
       if (frenzyActive) cps *= 10;
       if (timeWarpActive) cps *= 5;
+      if (voidActive) cps *= 8;
+      if (stormActive) cps *= 3;
       return Math.floor(cps);
     }
 
@@ -645,11 +879,16 @@
       val += upgrades.goldenCursor*10;
       val *= (1+upgrades.clickStorm);
       val *= (1+upgrades.quantumBoost*2);
+      val *= (1+upgrades.plasmaCore*5);
+      val *= (1+ascendUpgrades.brokenKeyBoost*0.5);
       val *= Math.pow(2,upgrades.prestige);
       val *= Math.pow(5,upgrades.hyperPrestige);
+      val *= getAscendMult();
       if (doubleClicks) val *= 2;
       if (frenzyActive) val *= 10;
       if (critsActive) val *= 10;
+      if (ghostActive) val *= 4;
+      if (rainbowActive) val *= (1 + Math.random()*9); // 1x-10x random
       if (upgrades.critChance>0 && Math.random()*100<Math.min(upgrades.critChance*2,80)) val *= 10;
       return Math.floor(val);
     }
@@ -667,12 +906,54 @@
         <div class="stat-card"><div class="stat-label">Best CPS</div><div class="stat-value">${fmt(bestCPS)}</div></div>
         <div class="stat-card"><div class="stat-label">Prestige</div><div class="stat-value">x${fmt(prestigeMult)}</div></div>
         <div class="stat-card"><div class="stat-label">Total Ever</div><div class="stat-value">${fmt(totalClicksEver)}</div></div>
+        <div class="stat-card gold-card"><div class="stat-label">🪙 Coins</div><div class="stat-value">${ascendCoins}</div></div>
+        <div class="stat-card gold-card"><div class="stat-label">✦ Ascensions</div><div class="stat-value">${ascendCount}</div></div>
       `;
+
       document.getElementById('pw-frenzy').classList.toggle('active', frenzyActive);
       document.getElementById('pw-double').classList.toggle('active', doubleClicks);
       document.getElementById('pw-crits').classList.toggle('active', critsActive);
       document.getElementById('pw-magnet').classList.toggle('active', magnetActive);
       document.getElementById('pw-timestop').classList.toggle('active', timeWarpActive);
+      document.getElementById('pw-ghost').classList.toggle('active', ghostActive);
+      document.getElementById('pw-rainbow').classList.toggle('active', rainbowActive);
+      document.getElementById('pw-void').classList.toggle('active', voidActive);
+      document.getElementById('pw-storm').classList.toggle('active', stormActive);
+
+      // Ascend progress
+      const threshold = ASCEND_THRESHOLD;
+      const pct = Math.min((clicks / threshold) * 100, 100);
+      document.getElementById('ascendProgressLabel').textContent = `ASCENSION PROGRESS: ${fmt(clicks)} / ${fmt(threshold)} clicks`;
+      document.getElementById('ascendProgressFill').style.width = pct + '%';
+
+      // Show ascend button if ready
+      const btn = document.getElementById('ascendBtn');
+      if (clicks >= threshold) {
+        btn.classList.add('ready');
+      } else {
+        btn.classList.remove('ready');
+      }
+    }
+
+    // ========== POWERUP TIMER DISPLAY ==========
+    function updatePwTimers() {
+      const timerMap = {
+        frenzy: {el:'t-frenzy', active:frenzyActive},
+        double: {el:'t-double', active:doubleClicks},
+        crits:  {el:'t-crits',  active:critsActive},
+        magnet: {el:'t-magnet', active:magnetActive},
+        timestop:{el:'t-timestop',active:timeWarpActive},
+        ghost:  {el:'t-ghost',  active:ghostActive},
+        rainbow:{el:'t-rainbow',active:rainbowActive},
+        void:   {el:'t-void',   active:voidActive},
+        storm:  {el:'t-storm',  active:stormActive},
+      };
+      Object.entries(timerMap).forEach(([k,v])=>{
+        const el = document.getElementById(v.el);
+        if (el && pwTimers[k] > 0) {
+          el.textContent = Math.ceil(pwTimers[k]/1000)+'s';
+        }
+      });
     }
 
     // ========== SHOP ==========
@@ -685,7 +966,7 @@
         const canBuy = clicks>=cost && level<item.maxLevel;
         const isMaxed = level>=item.maxLevel;
         const div = document.createElement('div');
-        div.className = 'shop-item'+(isMaxed?' maxed':'');
+        div.className = 'shop-item'+(isMaxed?' maxed':'')+(item.rarity?' '+item.rarity:'');
         div.innerHTML = `
           <div class="item-emoji">${item.emoji}</div>
           <h4>${item.name}</h4>
@@ -719,6 +1000,147 @@
       updateStats(); renderShop(); checkAchievements(); saveLocal();
     }
 
+    // ========== ASCEND SHOP ==========
+    function renderAscendShop() {
+      const grid = document.getElementById('ascendShopGrid');
+      grid.innerHTML = '';
+      document.getElementById('coinDisplay').textContent = ascendCoins;
+      document.getElementById('ascendCountDisplay').textContent = ascendCount;
+      ascendShopItems.forEach(item=>{
+        const level = ascendUpgrades[item.id]||0;
+        const cost = item.coinCost(level);
+        const canBuy = ascendCoins >= cost && level < item.maxLevel;
+        const isMaxed = level >= item.maxLevel;
+        const div = document.createElement('div');
+        div.className = 'ascend-item' + (isMaxed?' maxed':'');
+        div.innerHTML = `
+          <span class="ai-emoji">${item.emoji}</span>
+          <h4>${item.name}</h4>
+          <p>${item.desc}</p>
+          <div class="ai-level-bar"><div class="ai-level-fill" style="width:${(level/item.maxLevel)*100}%"></div></div>
+          <p style="color:var(--text-dim);font-size:12px;">Level: ${level} / ${item.maxLevel}</p>
+          <p style="color:var(--text-dim);font-size:12px;">Cost: ${isMaxed?'MAXED':cost+' 🪙'}</p>
+          <div class="ai-effect">${item.getEffect(level)}</div>
+          <button class="btn-gold" ${canBuy?'':'disabled'}>${isMaxed?'✅ MAXED':'🪙 BUY'}</button>
+        `;
+        if (canBuy) div.querySelector('button').onclick = ()=>buyAscendItem(item);
+        grid.appendChild(div);
+      });
+    }
+
+    function buyAscendItem(item) {
+      const level = ascendUpgrades[item.id]||0;
+      const cost = item.coinCost(level);
+      if (ascendCoins < cost || level >= item.maxLevel) return;
+      ascendCoins -= cost;
+      ascendUpgrades[item.id] = level + 1;
+      showToast(`✦ ${item.name} → Lvl ${level+1}`, true);
+      spawnEmojiRain('🪙', 5);
+      renderAscendShop();
+      saveLocal();
+    }
+
+    // ========== ASCEND LOGIC ==========
+    function calculateAscendCoins() {
+      // Base 100 coins + bonus based on how far past threshold
+      const base = 100;
+      const bonus = Math.floor(Math.log10(Math.max(clicks / ASCEND_THRESHOLD, 1)) * 20);
+      return base + bonus;
+    }
+
+    function doAscend() {
+      if (clicks < ASCEND_THRESHOLD) return;
+      const coinsEarned = calculateAscendCoins();
+
+      // Crack animation
+      const crackEmojis = ['💥','⚡','🔥','✨','💫'];
+      for (let i=0;i<20;i++) {
+        setTimeout(()=>{
+          const el = document.createElement('div');
+          el.className = 'crack-piece';
+          el.textContent = crackEmojis[Math.floor(Math.random()*crackEmojis.length)];
+          el.style.left = (30+Math.random()*40)+'vw';
+          el.style.top  = (20+Math.random()*60)+'vh';
+          const angle = Math.random()*360;
+          const dist = 100+Math.random()*300;
+          el.style.setProperty('--tx', Math.cos(angle)*dist+'px');
+          el.style.setProperty('--ty', Math.sin(angle)*dist+'px');
+          el.style.setProperty('--rot', (Math.random()*720-360)+'deg');
+          document.body.appendChild(el);
+          setTimeout(()=>el.remove(), 1600);
+        }, i*60);
+      }
+
+      // Show break overlay
+      const overlay = document.createElement('div');
+      overlay.className = 'spacebar-break-overlay';
+      overlay.innerHTML = `
+        <div class="break-cracks"></div>
+        <div class="break-key">⌨️ SPACE</div>
+        <div class="break-text">YOUR SPACEBAR BROKE!</div>
+        <div class="break-sub">+${coinsEarned} ASCENSION COINS EARNED</div>
+      `;
+      document.body.appendChild(overlay);
+      shakeScreen();
+
+      setTimeout(()=>{
+        overlay.remove();
+        // Apply ascend
+        ascendCoins += coinsEarned;
+        ascendCount++;
+        clicks = 0;
+        totalClicksEver = 0; // reset for this ascension (totalClicksEver carries over in some games — keeping reset here per your design)
+        for (const key of Object.keys(upgrades)) {
+          if (!['prestige','hyperPrestige','luckyDice','clickMagnet'].includes(key)) upgrades[key]=0;
+        }
+        saveLocal();
+        updateStats(); renderShop(); checkAchievements();
+        showToast(`✦ ASCENDED! +${coinsEarned} 🪙 coins! Total: ${ascendCoins}`, true);
+        spawnEmojiRain('✦', 15);
+        // Open ascend screen
+        openAscendScreen();
+      }, 2500);
+    }
+
+    function openAscendScreen() {
+      document.getElementById('ascendScreen').classList.add('visible');
+      renderAscendShop();
+    }
+    function closeAscendScreen() {
+      document.getElementById('ascendScreen').classList.remove('visible');
+    }
+
+    document.getElementById('backBtn').addEventListener('click', closeAscendScreen);
+    document.getElementById('ascendBtn').addEventListener('click', ()=>{
+      if (clicks >= ASCEND_THRESHOLD) {
+        doAscend();
+      } else {
+        openAscendScreen(); // already ascended before — open shop to spend coins
+      }
+    });
+    // Show ascend screen if we have coins but haven't ascended yet just by clicking button when not ready:
+    // Actually let's only open it if clicks >= threshold or ascendCount > 0
+    document.getElementById('ascendBtn').addEventListener('click', ()=>{
+      if (clicks < ASCEND_THRESHOLD && ascendCount > 0) openAscendScreen();
+    });
+
+    // Fix: single listener approach
+    document.getElementById('ascendBtn').onclick = ()=>{
+      if (clicks >= ASCEND_THRESHOLD) {
+        doAscend();
+      } else if (ascendCount > 0) {
+        openAscendScreen();
+      }
+    };
+    // Always show ascend button if ascendCount > 0
+    // (handled in updateStats for the 'ready' animation, but button visibility separately)
+    setInterval(()=>{
+      const btn = document.getElementById('ascendBtn');
+      if (ascendCount > 0 && btn.style.display !== 'inline-block') {
+        btn.style.display = 'inline-block';
+      }
+    }, 500);
+
     function doPrestige() {
       const overlay = document.createElement('div');
       overlay.className = 'prestige-overlay';
@@ -729,7 +1151,7 @@
         if (!['prestige','hyperPrestige','luckyDice','clickMagnet'].includes(key)) upgrades[key]=0;
       }
       upgrades.prestige++;
-      setTimeout(()=>{ overlay.remove(); updateStats(); renderShop(); showToast(`⭐ Prestige ${upgrades.prestige}! x${Math.pow(2,upgrades.prestige)} mult!`); saveLocal(); }, 2000);
+      setTimeout(()=>{ overlay.remove(); updateStats(); renderShop(); showToast(`⭐ Prestige ${upgrades.prestige}! x${fmt(Math.pow(2,upgrades.prestige))} mult!`); saveLocal(); }, 2000);
     }
 
     function doHyperPrestige() {
@@ -741,7 +1163,7 @@
       const hp = upgrades.hyperPrestige+1;
       for (const key of Object.keys(upgrades)) upgrades[key]=0;
       upgrades.hyperPrestige = hp;
-      setTimeout(()=>{ overlay.remove(); updateStats(); renderShop(); showToast(`🌟 Hyper Prestige ${hp}! x${Math.pow(5,hp)} mult!`); saveLocal(); }, 3000);
+      setTimeout(()=>{ overlay.remove(); updateStats(); renderShop(); showToast(`🌟 Hyper Prestige ${hp}! x${fmt(Math.pow(5,hp))} mult!`); saveLocal(); }, 3000);
     }
 
     document.querySelectorAll('.shop-tab').forEach(tab=>{
@@ -771,6 +1193,7 @@
         if (!unlockedAchievements.has(a.id) && a.check()) {
           unlockedAchievements.add(a.id);
           showToast(`🏆 Achievement: ${a.name}!`);
+          spawnEmojiRain('🏆', 5);
           renderAchievements();
         }
       });
@@ -778,17 +1201,56 @@
 
     // ========== CLICKING ==========
     const clickBtn = document.getElementById('clickBtn');
+    let clickCombo = 0, comboTimer;
+    let entangleCounter = 0;
+
     function handleClick(e) {
       const add = getClickValue();
+      const isCrit = add > getClickValue() * 5; // rough crit detection
       clicks += add;
       totalClicksEver += add;
       clicksThisSecond += add;
+
+      // Clone chance
+      if (upgrades.clickClone > 0 && Math.random()*100 < upgrades.clickClone*2) {
+        const bonus = Math.floor(add * 0.5);
+        clicks += bonus; totalClicksEver += bonus;
+        spawnFloatNumber('👥+'+fmt(bonus), Math.random()*200+100, 200);
+      }
+
+      // Quantum entangle
+      if (ascendUpgrades.quantumEntangle > 0) {
+        entangleCounter++;
+        if (entangleCounter >= 100) {
+          entangleCounter = 0;
+          const bonus = Math.floor(add * ascendUpgrades.quantumEntangle * 10);
+          clicks += bonus; totalClicksEver += bonus;
+          spawnFloatNumber('🔗 ENTANGLE +'+fmt(bonus), window.innerWidth/2-50, 150, 'mega');
+        }
+      }
+
       const rect = clickBtn.getBoundingClientRect();
       const x = (e&&e.clientX)?e.clientX:rect.left+rect.width/2;
       const y = (e&&e.clientY)?e.clientY:rect.top;
-      spawnFloatNumber('+'+fmt(add), x-20+Math.random()*40, y-10);
+
+      const floatType = rainbowActive ? 'mega' : (critsActive||frenzyActive?'crit':'');
+      spawnFloatNumber('+'+fmt(add), x-20+Math.random()*40, y-10, floatType);
+
+      // Combo system
+      clickCombo++;
+      clearTimeout(comboTimer);
+      comboTimer = setTimeout(()=>{ clickCombo=0; }, 1000);
+      if (clickCombo > 0 && clickCombo % 50 === 0) {
+        spawnFloatNumber('🔥 COMBO x'+clickCombo+'!', x, y-60, 'crit');
+      }
+
+      // Button wiggle
+      clickBtn.classList.add('wiggle');
+      setTimeout(()=>clickBtn.classList.remove('wiggle'), 150);
+
       updateStats(); renderShop(); checkAchievements();
     }
+
     clickBtn.addEventListener('click', e=>handleClick(e));
     document.body.addEventListener('keydown', e=>{
       if (e.code==='Space'&&e.target.tagName!=='INPUT') { e.preventDefault(); handleClick(null); }
@@ -807,29 +1269,100 @@
       updateStats(); checkAchievements();
     }, 1000);
 
+    // ========== POWERUP TIMER TICK ==========
+    setInterval(()=>{
+      Object.keys(pwTimers).forEach(k=>{
+        if (pwTimers[k]>0) {
+          pwTimers[k] = Math.max(0, pwTimers[k]-500);
+        }
+      });
+      updatePwTimers();
+    }, 500);
+
+    // ========== COIN INTEREST (ascend upgrade) ==========
+    setInterval(()=>{
+      if (ascendUpgrades.coinInterest > 0 && ascendCount > 0) {
+        const perMin = ascendUpgrades.coinInterest * ascendCount;
+        ascendCoins += perMin / 60; // per second (divide by 60)
+        if (Math.floor(ascendCoins) > Math.floor(ascendCoins - perMin/60)) {
+          // show coin notification occasionally
+        }
+        renderAscendShop();
+      }
+    }, 1000);
+
+    // ========== INFINITE LOOP (ascend upgrade) ==========
+    let infiniteLoopTimer = null;
+    function scheduleInfiniteLoop() {
+      if (infiniteLoopTimer) clearInterval(infiniteLoopTimer);
+      if (ascendUpgrades.infiniteLoop > 0) {
+        const delay = (30 - ascendUpgrades.infiniteLoop * 5) * 1000;
+        infiniteLoopTimer = setInterval(()=>{
+          // Buy cheapest affordable item
+          const affordable = shopItems
+            .filter(i=>i.tab!=='special')
+            .map(i=>({ item:i, cost:i.getCost(upgrades[i.id]||0), level:upgrades[i.id]||0 }))
+            .filter(x=>x.cost<=clicks && x.level<x.item.maxLevel)
+            .sort((a,b)=>a.cost-b.cost);
+          if (affordable.length > 0) {
+            const {item, cost} = affordable[0];
+            clicks -= cost;
+            upgrades[item.id] = (upgrades[item.id]||0)+1;
+            showToast(`♾️ Auto-bought ${item.name} Lvl ${upgrades[item.id]}`);
+            updateStats(); renderShop();
+          }
+        }, delay);
+      }
+    }
+
     // ========== POWERUPS ==========
+    function setPwTimer(key, ms) {
+      // Apply void resonance duration bonus
+      const bonus = 1 + (ascendUpgrades.voidResonance||0)*0.5;
+      pwTimers[key] = Math.floor(ms * bonus);
+    }
+
     const powerups = [
-      { name:'Frenzy',      effect:()=>{ frenzyActive=true;  showToast('🔥 FRENZY! 10x for 12s!'); setTimeout(()=>{frenzyActive=false;updateStats();},12000); }},
-      { name:'DoubleClicks',effect:()=>{ doubleClicks=true;  showToast('✨ 2X Clicks for 20s!');   setTimeout(()=>{doubleClicks=false;updateStats();},20000); }},
-      { name:'CritStrike',  effect:()=>{ critsActive=true;   showToast('💥 Guaranteed Crits 8s!'); setTimeout(()=>{critsActive=false;updateStats();},8000); }},
-      { name:'ClickMagnet', effect:()=>{ magnetActive=true;  const b=Math.floor(clicks*0.1)+1000; clicks+=b; totalClicksEver+=b; showToast(`🧲 Magnet! +${fmt(b)} clicks!`); setTimeout(()=>{magnetActive=false;updateStats();},3000); updateStats(); }},
-      { name:'TimeWarp',    effect:()=>{ timeWarpActive=true;showToast('⏳ Time Warp! 5x CPS 15s!');setTimeout(()=>{timeWarpActive=false;updateStats();},15000); }},
-      { name:'LuckyBoost',  effect:()=>{ const b=Math.max(500,Math.floor(clicks*0.05)); clicks+=b; totalClicksEver+=b; showToast(`💰 Lucky! +${fmt(b)}!`); updateStats(); }},
-      { name:'Jackpot',     effect:()=>{ const b=Math.max(5000,Math.floor(clicks*0.15)); clicks+=b; totalClicksEver+=b; showToast(`🎰 JACKPOT! +${fmt(b)}!`); updateStats(); }},
-      { name:'ClickRain',   effect:()=>{ const b=Math.max(2000,Math.floor(getAutoCPS()*30)); clicks+=b; totalClicksEver+=b; showToast(`🌧️ Click Rain! +${fmt(b)}!`); updateStats(); }},
+      { name:'Frenzy',      weight:8,  emoji:'🔥', effect:()=>{ frenzyActive=true;  setPwTimer('frenzy',12000); showToast('🔥 FRENZY! 10x for 12s!'); setTimeout(()=>{frenzyActive=false;updateStats();},pwTimers.frenzy); spawnEmojiRain('🔥'); }},
+      { name:'DoubleClicks',weight:10, emoji:'✨', effect:()=>{ doubleClicks=true;  setPwTimer('double',20000); showToast('✨ 2X Clicks for 20s!'); setTimeout(()=>{doubleClicks=false;updateStats();},pwTimers.double); spawnEmojiRain('✨'); }},
+      { name:'CritStrike',  weight:8,  emoji:'💥', effect:()=>{ critsActive=true;   setPwTimer('crits',8000);  showToast('💥 Guaranteed Crits 8s!'); setTimeout(()=>{critsActive=false;updateStats();},pwTimers.crits); spawnEmojiRain('💥'); }},
+      { name:'ClickMagnet', weight:7,  emoji:'🧲', effect:()=>{ magnetActive=true;  const b=Math.floor(clicks*0.1)+1000; clicks+=b; totalClicksEver+=b; showToast(`🧲 Magnet! +${fmt(b)} clicks!`); setTimeout(()=>{magnetActive=false;updateStats();},3000); setPwTimer('magnet',3000); updateStats(); spawnEmojiRain('🧲'); }},
+      { name:'TimeWarp',    weight:6,  emoji:'⏳', effect:()=>{ timeWarpActive=true;setPwTimer('timestop',15000); showToast('⏳ Time Warp! 5x CPS 15s!'); setTimeout(()=>{timeWarpActive=false;updateStats();},pwTimers.timestop); spawnEmojiRain('⏳'); }},
+      { name:'LuckyBoost',  weight:12, emoji:'💰', effect:()=>{ const b=Math.max(500,Math.floor(clicks*0.05)); clicks+=b; totalClicksEver+=b; showToast(`💰 Lucky! +${fmt(b)}!`); updateStats(); spawnEmojiRain('💰'); }},
+      { name:'Jackpot',     weight:4,  emoji:'🎰', effect:()=>{ const b=Math.max(5000,Math.floor(clicks*0.15)); clicks+=b; totalClicksEver+=b; showToast(`🎰 JACKPOT! +${fmt(b)}!`); shakeScreen(); spawnEmojiRain('🎰',12); updateStats(); }},
+      { name:'ClickRain',   weight:8,  emoji:'🌧️', effect:()=>{ const b=Math.max(2000,Math.floor(getAutoCPS()*30)); clicks+=b; totalClicksEver+=b; showToast(`🌧️ Click Rain! +${fmt(b)}!`); updateStats(); spawnEmojiRain('🌧️'); }},
+      { name:'GhostMode',   weight:5,  emoji:'👻', effect:()=>{ ghostActive=true;  setPwTimer('ghost',10000);  showToast('👻 GHOST MODE! 4x clicks 10s!'); setTimeout(()=>{ghostActive=false;updateStats();},pwTimers.ghost); spawnEmojiRain('👻'); }},
+      { name:'RainbowRush', weight:4,  emoji:'🌈', effect:()=>{ rainbowActive=true;setPwTimer('rainbow',8000); showToast('🌈 RAINBOW RUSH! Random 1-10x!'); setTimeout(()=>{rainbowActive=false;updateStats();},pwTimers.rainbow); spawnEmojiRain('🌈',15); }},
+      { name:'VoidPulse',   weight:3,  emoji:'🕳️', effect:()=>{ voidActive=true;   setPwTimer('void',12000);   showToast('🕳️ VOID PULSE! 8x CPS 12s!'); setTimeout(()=>{voidActive=false;updateStats();},pwTimers.void); spawnEmojiRain('🌀'); }},
+      { name:'ThunderStorm',weight:5,  emoji:'⛈️', effect:()=>{ stormActive=true;  setPwTimer('storm',20000);  showToast('⛈️ THUNDER STORM! 3x CPS 20s!'); setTimeout(()=>{stormActive=false;updateStats();},pwTimers.storm); spawnEmojiRain('⛈️'); }},
+      { name:'MegaBomb',    weight:3,  emoji:'💣', effect:()=>{ const b=Math.max(10000,Math.floor(clicks*0.25)); clicks+=b; totalClicksEver+=b; showToast(`💣 MEGA BOMB! +${fmt(b)}!`); shakeScreen(); spawnEmojiRain('💣',15); updateStats(); }},
+      { name:'StarPower',   weight:2,  emoji:'⭐', effect:()=>{ const b=Math.max(50000,Math.floor(clicks*0.4)); clicks+=b; totalClicksEver+=b; showToast(`⭐ STAR POWER! +${fmt(b)}!`); shakeScreen(); spawnEmojiRain('⭐',20); updateStats(); }},
+      { name:'DragonBreath',weight:2,  emoji:'🐉', effect:()=>{ frenzyActive=true; doubleClicks=true; critsActive=true; setPwTimer('frenzy',15000); showToast('🐉 DRAGON BREATH! ALL BUFFS 15s!'); spawnEmojiRain('🐉',20); shakeScreen(); setTimeout(()=>{frenzyActive=false;doubleClicks=false;critsActive=false;updateStats();},15000); }},
+      { name:'UFO',         weight:2,  emoji:'🛸', effect:()=>{ const b=Math.max(1000,Math.floor(getAutoCPS()*120)); clicks+=b; totalClicksEver+=b; showToast(`🛸 UFO ABDUCTION! +${fmt(b)}!`); spawnEmojiRain('🛸',10); shakeScreen(); updateStats(); }},
     ];
+
+    // Weighted random powerup
+    function getWeightedPowerup() {
+      const totalWeight = powerups.reduce((s,p)=>s+p.weight, 0);
+      let r = Math.random()*totalWeight;
+      for (const p of powerups) { r -= p.weight; if (r<=0) return p; }
+      return powerups[0];
+    }
+
     let powerupTimer;
     function schedulePowerup() {
       clearTimeout(powerupTimer);
       const base=120000, reduction=upgrades.luckyDice*0.1;
-      powerupTimer = setTimeout(()=>{ powerups[Math.floor(Math.random()*powerups.length)].effect(); schedulePowerup(); }, Math.max(20000,base*(1-reduction)));
+      powerupTimer = setTimeout(()=>{ getWeightedPowerup().effect(); updateStats(); schedulePowerup(); }, Math.max(15000,base*(1-reduction)));
     }
     schedulePowerup();
 
     // ========== SAVE / LOAD ==========
     function saveLocal() {
       localStorage.setItem('spacebar_save', JSON.stringify({
-        clicks, bestCPS, totalClicksEver, upgrades:{...upgrades}, achievements:[...unlockedAchievements]
+        clicks, bestCPS, totalClicksEver, upgrades:{...upgrades},
+        achievements:[...unlockedAchievements],
+        ascendCoins, ascendCount, ascendUpgrades:{...ascendUpgrades}
       }));
     }
 
@@ -840,12 +1373,18 @@
       clicks = data.clicks||0;
       bestCPS = data.bestCPS||0;
       totalClicksEver = data.totalClicksEver||data.clicks||0;
+      ascendCoins = data.ascendCoins||0;
+      ascendCount = data.ascendCount||0;
       if (data.upgrades) {
         for (const key of Object.keys(data.upgrades)) {
           if (key in upgrades) upgrades[key]=data.upgrades[key];
         }
       }
-      // Migrate old flat format
+      if (data.ascendUpgrades) {
+        for (const key of Object.keys(data.ascendUpgrades)) {
+          if (key in ascendUpgrades) ascendUpgrades[key]=data.ascendUpgrades[key];
+        }
+      }
       if (!data.upgrades) {
         if (data.autoClickerLevel)  upgrades.autoClicker   = data.autoClickerLevel;
         if (data.clickMultiplier>1) upgrades.clickMultiplier= Math.floor((data.clickMultiplier-1)/0.5);
@@ -866,7 +1405,9 @@
           autoClickerLevel: upgrades.autoClicker,
           prestigeLevel: upgrades.prestige,
           hyperPrestigeLevel: upgrades.hyperPrestige,
+          ascendCount,
           upgrades: {...upgrades},
+          ascendUpgrades: {...ascendUpgrades},
           achievements: [...unlockedAchievements],
           lastSaved: Date.now()
         });
@@ -884,7 +1425,7 @@
       await saveGame();
       btn.textContent='✅ SAVED!';
       showToast('💾 Saved & submitted to leaderboard!');
-      renderLeaderboard(cachedPlayers); // re-render with updated data
+      renderLeaderboard(cachedPlayers);
       setTimeout(()=>{ btn.textContent='💾 SAVE & SUBMIT TO LEADERBOARD'; btn.disabled=false; },2000);
     });
 
@@ -895,10 +1436,12 @@
     // ========== OFFLINE EARNINGS ==========
     function calculateOfflineEarnings() {
       const lastSave = localStorage.getItem('spacebar_lastTime');
-      if (lastSave && upgrades.clickMagnet>0) {
+      if (lastSave && (upgrades.clickMagnet>0 || ascendUpgrades.timeFracture>0)) {
         const elapsed = (Date.now()-parseInt(lastSave))/1000;
         if (elapsed>60) {
-          const earned = Math.floor(getAutoCPS()*elapsed*(upgrades.clickMagnet*0.05));
+          const magnet = upgrades.clickMagnet*0.05;
+          const fracture = ascendUpgrades.timeFracture*0.2;
+          const earned = Math.floor(getAutoCPS()*elapsed*(magnet+fracture));
           if (earned>0) { clicks+=earned; totalClicksEver+=earned; showToast(`💤 Welcome back! +${fmt(earned)} offline!`); }
         }
       }
@@ -906,12 +1449,11 @@
       localStorage.setItem('spacebar_lastTime',Date.now().toString());
     }
 
-    // ========== LEADERBOARD — FIXED ==========
+    // ========== LEADERBOARD ==========
     let sortMode = 'clicks';
     let cachedPlayers = [];
     let lbUnsubscribe = null;
 
-    // Normalize a player record so it works with both old & new save formats
     function normalizePlayer(p) {
       return {
         name:          p.name || 'Unknown',
@@ -920,25 +1462,22 @@
         bestCPS:       p.bestCPS       || 0,
         prestigeLevel: p.prestigeLevel || (p.upgrades && p.upgrades.prestige) || 0,
         hyperPrestigeLevel: p.hyperPrestigeLevel || (p.upgrades && p.upgrades.hyperPrestige) || 0,
+        ascendCount:   p.ascendCount   || 0,
       };
     }
 
     function renderLeaderboard(players) {
       const list = document.getElementById('leaderboardList');
       const status = document.getElementById('lbStatus');
-
       if (!players || players.length === 0) {
         list.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:30px;font-family:\'Orbitron\',sans-serif;font-size:12px;">No players found. Click Save to join!</div>';
         return;
       }
-
       const sorted = [...players];
       if (sortMode==='clicks')   sorted.sort((a,b)=>b.totalClicks-a.totalClicks);
       if (sortMode==='cps')      sorted.sort((a,b)=>b.bestCPS-a.bestCPS);
-      if (sortMode==='prestige') sorted.sort((a,b)=>(b.prestigeLevel+b.hyperPrestigeLevel*100)-(a.prestigeLevel+a.hyperPrestigeLevel*100));
-
+      if (sortMode==='prestige') sorted.sort((a,b)=>(b.prestigeLevel+b.hyperPrestigeLevel*100+b.ascendCount*1000)-(a.prestigeLevel+a.hyperPrestigeLevel*100+a.ascendCount*1000));
       status.textContent = `${sorted.length} players · last updated ${new Date().toLocaleTimeString()}`;
-
       list.innerHTML = '';
       sorted.slice(0,50).forEach((p,i)=>{
         const div = document.createElement('div');
@@ -947,9 +1486,10 @@
         const medal = i===0?'👑':i===1?'🥈':i===2?'🥉':`${i+1}`;
         const isYou = p.name===username;
         const prestigeStr = p.hyperPrestigeLevel>0 ? `HP${p.hyperPrestigeLevel}·P${p.prestigeLevel}` : `P${p.prestigeLevel}`;
+        const ascendStr = p.ascendCount>0 ? ` ✦${p.ascendCount}` : '';
         div.innerHTML = `
           <span class="rank ${rankClass}">${medal}</span>
-          <span class="player-name ${isYou?'you':''}">${p.name}${isYou?' (you)':''}</span>
+          <span class="player-name ${isYou?'you':''}">${p.name}${isYou?' (you)':''}${ascendStr}</span>
           <span class="player-stats">${fmt(p.totalClicks)} clicks &nbsp;·&nbsp; ${fmt(p.bestCPS)} CPS &nbsp;·&nbsp; ${prestigeStr}</span>
         `;
         list.appendChild(div);
@@ -957,9 +1497,7 @@
     }
 
     function subscribeLeaderboard() {
-      // Unsubscribe previous listener to avoid duplicates
       if (lbUnsubscribe) { lbUnsubscribe(); lbUnsubscribe=null; }
-
       const lbRef = ref(db, 'clickerGame/players');
       lbUnsubscribe = onValue(lbRef, (snap)=>{
         cachedPlayers = [];
@@ -974,7 +1512,6 @@
       });
     }
 
-    // Sort buttons just re-sort cached data — no new Firebase calls
     document.getElementById('sortClicks').onclick   = ()=>{ sortMode='clicks';   renderLeaderboard(cachedPlayers); };
     document.getElementById('sortCPS').onclick      = ()=>{ sortMode='cps';      renderLeaderboard(cachedPlayers); };
     document.getElementById('sortPrestige').onclick = ()=>{ sortMode='prestige'; renderLeaderboard(cachedPlayers); };
@@ -986,11 +1523,10 @@
       username = lastUser || prompt('Enter your name:') || 'Player';
       if (!lastUser) localStorage.setItem('lastLoggedInUser', username);
 
-      // Load local first (instant)
       loadLocal();
       updateStats(); renderShop(); renderAchievements();
+      scheduleInfiniteLoop();
 
-      // Then sync with Firebase
       try {
         const playerRef = ref(db, `clickerGame/players/${username}`);
         const snap = await get(playerRef);
@@ -1001,17 +1537,16 @@
             clicks = fbClicks;
             totalClicksEver = Math.max(totalClicksEver, fbData.totalClicksEver||fbClicks);
             bestCPS = Math.max(bestCPS, fbData.bestCPS||0);
+            ascendCount = Math.max(ascendCount, fbData.ascendCount||0);
             if (fbData.upgrades) {
               for (const key of Object.keys(fbData.upgrades)) {
                 if (key in upgrades) upgrades[key]=Math.max(upgrades[key]||0, fbData.upgrades[key]);
               }
-            } else {
-              // Migrate old flat format from Firebase
-              upgrades.autoClicker   = Math.max(upgrades.autoClicker, fbData.autoClickerLevel||0);
-              upgrades.prestige      = Math.max(upgrades.prestige, fbData.prestigeLevel||0);
-              upgrades.hyperPrestige = Math.max(upgrades.hyperPrestige, fbData.hyperPrestigeLevel||0);
-              if (fbData.goldenClicks) upgrades.goldenCursor = Math.max(upgrades.goldenCursor, fbData.goldenClicks);
-              if (fbData.clickMultiplier>1) upgrades.clickMultiplier = Math.max(upgrades.clickMultiplier, Math.floor((fbData.clickMultiplier-1)/0.5));
+            }
+            if (fbData.ascendUpgrades) {
+              for (const key of Object.keys(fbData.ascendUpgrades)) {
+                if (key in ascendUpgrades) ascendUpgrades[key]=Math.max(ascendUpgrades[key]||0, fbData.ascendUpgrades[key]);
+              }
             }
             if (fbData.achievements) fbData.achievements.forEach(a=>unlockedAchievements.add(a));
           }
@@ -1024,20 +1559,25 @@
 
       calculateOfflineEarnings();
       updateStats(); renderShop(); renderAchievements(); checkAchievements(); saveLocal();
-
-      // Subscribe leaderboard AFTER login so username is set for highlighting
       subscribeLeaderboard();
+
+      // Show ascend button if already ascended before
+      if (ascendCount > 0) {
+        document.getElementById('ascendBtn').style.display = 'inline-block';
+      }
     }
 
     // ========== DEV MENU ==========
     document.getElementById('spawnAll').onclick    = ()=>powerups.forEach(p=>p.effect());
-    document.getElementById('forceFrenzy').onclick = ()=>{ frenzyActive=true; showToast('🔥 Dev Frenzy!'); setTimeout(()=>{frenzyActive=false;updateStats();},10000); };
-    document.getElementById('forceDouble').onclick = ()=>{ doubleClicks=true; showToast('✨ Dev Double!'); setTimeout(()=>{doubleClicks=false;updateStats();},20000); };
+    document.getElementById('forceFrenzy').onclick = ()=>{ frenzyActive=true; setPwTimer('frenzy',10000); showToast('🔥 Dev Frenzy!'); setTimeout(()=>{frenzyActive=false;updateStats();},10000); };
+    document.getElementById('forceDouble').onclick = ()=>{ doubleClicks=true; setPwTimer('double',20000); showToast('✨ Dev Double!'); setTimeout(()=>{doubleClicks=false;updateStats();},20000); };
     document.getElementById('addClicks').onclick   = ()=>{ clicks+=1000000; totalClicksEver+=1000000; updateStats(); renderShop(); showToast('+1M clicks!'); };
+    document.getElementById('addCoins').onclick    = ()=>{ ascendCoins+=50; updateStats(); renderAscendShop(); showToast('+50 coins!', true); };
     document.getElementById('resetGame').onclick   = ()=>{
       if (!confirm('Reset everything?')) return;
-      clicks=0; bestCPS=0; totalClicksEver=0;
+      clicks=0; bestCPS=0; totalClicksEver=0; ascendCoins=0; ascendCount=0;
       for (const key of Object.keys(upgrades)) upgrades[key]=0;
+      for (const key of Object.keys(ascendUpgrades)) ascendUpgrades[key]=0;
       unlockedAchievements.clear();
       updateStats(); renderShop(); renderAchievements(); saveGame(); showToast('🗑️ Reset!');
     };
@@ -1046,26 +1586,18 @@
     // ========== START ==========
     loginFlow();
   </script>
-  <script src="guard.js">
-  </script>
-  <script src="custom-cursor.js">
-  </script>
-  <script src="rightclick.js">
-  </script>
-  <script src="panic-key.js">
-  </script>
-  <script src="idle-dvd.js">
-  </script>
-  <script src="timeTracker.js">
-  </script>
-  <script src="emojis.js">
-  </script>
-  
- <script type="module" src="online.js"></script>
-    <script src="custom-cursor.js"></script>
-    <script src="rightclick.js"></script>
-    <script src="panic-key.js"></script>
-    <script src="idle-dvd.js"></script>
+  <script src="guard.js"></script>
+  <script src="custom-cursor.js"></script>
+  <script src="rightclick.js"></script>
+  <script src="panic-key.js"></script>
+  <script src="idle-dvd.js"></script>
+  <script src="timeTracker.js"></script>
+  <script src="emojis.js"></script>
+  <script type="module" src="online.js"></script>
+  <script src="custom-cursor.js"></script>
+  <script src="rightclick.js"></script>
+  <script src="panic-key.js"></script>
+  <script src="idle-dvd.js"></script>
 
 <div id="tac-phone-container"></div>
 <script>

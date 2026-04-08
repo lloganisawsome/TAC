@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
  <head>
-    <link rel="stylesheet" href__="rightclick.css">
-    <link rel="stylesheet" href__="custom-cursor.css">
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">
   <meta charset="utf-8"/>
   <meta content="width=device-width,initial-scale=1" name="viewport"/>
   <title>Developer Dashboard — TAC</title>
@@ -1253,7 +1253,7 @@ Tetris,https://example.com/tetris,
         const allUsers = new Set([...Object.keys(logins),...Object.keys(allowedUsers),...Object.keys(pending)]);
         Object.keys(activeUsers).forEach(u=>allUsers.add(u));
         Array.from(allUsers).forEach(u=>{ const online=isUserOnline(u); csv+=`${u},${logins[u]||0},${todayData[u]||0},${!!allowedUsers[u]},${!!pending[u]},${online},${online?'Online':timeAgo(activeUsers[u]?.lastSeen)||'Never'}\n`; });
-        const a=document.createElement('a'); a.href__=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='users.csv'; a.click();
+        const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='users.csv'; a.click();
     });
 
     const CSV_REQUIRED_HEADERS = ['title','iframe','logo'];
