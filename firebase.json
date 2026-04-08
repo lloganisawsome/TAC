@@ -3,6 +3,8 @@
     "public": ".",
     "ignore": [
       "firebase.json",
+      "**/.git/**",
+      "**/.github/**",
       "**/.*",
       "**/node_modules/**",
       "**/venv/**",
@@ -10,9 +12,7 @@
       "**/__pycache__/**",
       "**/*.py",
       "**/*.pyc",
-      "**/*.exe",
-      "**/*.bin",
-      ".DS_Store"
+      "**/*.exe"
     ]
   }
 }
