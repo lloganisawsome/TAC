@@ -1,0 +1,32 @@
+[debug] [2026-04-08T22:18:11.956Z] ----------------------------------------------------------------------
+[debug] [2026-04-08T22:18:11.962Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2026-04-08T22:18:11.963Z] CLI Version:   15.13.0
+[debug] [2026-04-08T22:18:11.963Z] Platform:      darwin
+[debug] [2026-04-08T22:18:11.963Z] Node Version:  v22.14.0
+[debug] [2026-04-08T22:18:11.963Z] Time:          Wed Apr 08 2026 17:18:11 GMT-0500 (Central Daylight Time)
+[debug] [2026-04-08T22:18:11.963Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-04-08T22:18:12.957Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-04-08T22:18:12.957Z] > authorizing via signed-in user (loganstatham76@gmail.com)
+[debug] [2026-04-08T22:18:12.957Z] [iam] checking project tacstorage-53748 for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-04-08T22:18:12.958Z] Checked if tokens are valid: true, expires at: 1775688906033
+[debug] [2026-04-08T22:18:12.958Z] Checked if tokens are valid: true, expires at: 1775688906033
+[debug] [2026-04-08T22:18:12.959Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/tacstorage-53748:testIamPermissions [none]
+[debug] [2026-04-08T22:18:12.959Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/tacstorage-53748:testIamPermissions  x-goog-user-project=tacstorage-53748
+[debug] [2026-04-08T22:18:12.959Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tacstorage-53748:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-08T22:18:13.176Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/tacstorage-53748:testIamPermissions 200
+[debug] [2026-04-08T22:18:13.177Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tacstorage-53748:testIamPermissions {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-04-08T22:18:13.177Z] Checked if tokens are valid: true, expires at: 1775688906033
+[debug] [2026-04-08T22:18:13.177Z] Checked if tokens are valid: true, expires at: 1775688906033
+[debug] [2026-04-08T22:18:13.178Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/tacstorage-53748 [none]
+[debug] [2026-04-08T22:18:13.423Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/tacstorage-53748 200
+[debug] [2026-04-08T22:18:13.423Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/tacstorage-53748 {"projectId":"tacstorage-53748","projectNumber":"744601420844","displayName":"TACstorage","name":"projects/tacstorage-53748","resources":{"hostingSite":"tacstorage-53748"},"state":"ACTIVE","etag":"1_68e872e4-e3b5-4676-b702-92a6f8bc9605"}
+[info] 
+[info] === Deploying to 'tacstorage-53748'...
+[info] 
+[info] i  deploying hosting 
+[debug] [2026-04-08T22:18:13.428Z] Checked if tokens are valid: true, expires at: 1775688906033
+[debug] [2026-04-08T22:18:13.428Z] Checked if tokens are valid: true, expires at: 1775688906033
+[debug] [2026-04-08T22:18:13.428Z] >>> [apiv2][query] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/tacstorage-53748/versions [none]
+[debug] [2026-04-08T22:18:13.428Z] >>> [apiv2][body] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/tacstorage-53748/versions {"status":"CREATED","labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2026-04-08T22:18:15.220Z] <<< [apiv2][status] POST https://firebasehosting.googleapis.com/v1beta1/projects/-/sites/tacstorage-53748/versions 200

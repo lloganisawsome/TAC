@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "tacstorage-53748",
+    "tacweb": "tacstorage-53748"
+  },
+  "targets": {},
+  "etags": {}
+}
