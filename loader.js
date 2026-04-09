@@ -8358,6 +8358,8 @@ function resolveURL(dir, rel) {
   if (!rel || isAbs(rel)) return rel;
   if (rel.startsWith("//")) return "https:" + rel;
   if (rel.startsWith("/")) return BASE + rel.slice(1);
+  // If dir somehow isn't under BASE (e.g. blob: origin crept in), reset to BASE
+  if (!dir.startsWith(BASE)) dir = BASE;
   // Collapse ../ segments
   const stack = (dir + rel).split("/");
   const out = [];
@@ -8365,7 +8367,9 @@ function resolveURL(dir, rel) {
     if (s === "..") out.pop();
     else if (s !== ".") out.push(s);
   }
-  return out.join("/");
+  // If result escaped BASE, clamp back to BASE
+  const result = out.join("/");
+  return result.startsWith(BASE) ? result : BASE + rel;
 }
 
 // ── HTML rewriter ────────────────────────────────────────────────
@@ -8376,7 +8380,11 @@ function rewriteHTML(html, filePath) {
   const injected = `<script>
 (function(){
   const __d="${dir}";
-  const __r=u=>/^(https?:|data:|blob:|#|javascript:)/.test(u)?u:__d+u;
+  const __r=u=>{
+    if(/^(https?:|data:|blob:|#|javascript:)/.test(u))return u;
+    if(u.startsWith('/'))return "${BASE}"+u.slice(1);
+    return __d+u;
+  };
   const _f=window.fetch;
   window.fetch=(u,o)=>_f(__r(String(u)),o);
   const _x=XMLHttpRequest.prototype.open;
