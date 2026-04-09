@@ -8399,6 +8399,9 @@ function rewriteHTML(html, filePath) {
       (_,a,u) => `${a}='${res(u)}'`)
     .replace(/url\(\s*["']?(?!https?:|data:|blob:)([^"'\)]+?)["']?\s*\)/g,
       (_,u) => `url("${res(u)}")`)
+    // Strip type="module" — GitHub raw serves JS as text/plain which
+    // browsers reject for ES module scripts
+    .replace(/type\s*=\s*["']module["']/gi, "")
     .replace(/<\/head>/i, injected + "\n</head>");
 }
 

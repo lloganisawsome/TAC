@@ -1,5 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+// online.js — converted from ES module to regular script
+// Uses dynamic import() so it works without type="module"
+
+(async function() {
+
+const { initializeApp } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js");
+const { getDatabase, ref, set } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js");
 
 // Your Firebase configuration
 const firebaseConfig = {
@@ -17,17 +22,14 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 function updateActiveUserStatus() {
-  // Get the username from local storage
   const username = localStorage.getItem('lastLoggedInUser');
 
-  // Only run if a username actually exists
   if (username) {
     const now = new Date();
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const timeString = `${hours}:${minutes}`;
 
-    // Store in DB under activeUsers/Username
     set(ref(db, 'activeUsers/' + username), {
       lastSeen: timeString,
       timestamp: now.getTime()
@@ -42,5 +44,7 @@ function updateActiveUserStatus() {
 // Run immediately when page loads
 updateActiveUserStatus();
 
-// Then run every 60 seconds (60,000 milliseconds)
+// Then run every 60 seconds
 setInterval(updateActiveUserStatus, 60000);
+
+})();
