@@ -1,0 +1,64 @@
+<html>
+ <head>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Papas Burgeria
+  </title>
+  <style>
+   html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      #ruffle {
+        width: 100%;
+        height: 100%;
+      }
+  </style>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body>
+  <script src="/js/main.js">
+  </script>
+  <div id="ruffle">
+  </div>
+  <script src="https://ruffle-bay.vercel.app/ruffle.js">
+  </script>
+  <script>
+   window.RufflePlayer = window.RufflePlayer || {};
+      window.addEventListener("load", (event) => {
+        const ruffle = window.RufflePlayer.newest();
+        const player = ruffle.createPlayer();
+        const container = document.getElementById("ruffle");
+        player.id = "player";
+        player.style.width = "100%";
+        player.style.height = "100%";
+        container.appendChild(player);
+        player.load("YHiaMNblkItEvi.swf");
+      });
+  </script>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  
+ 
+
+    <script src="custom-cursor.js"></script>
+    <script src="rightclick.js"></script>
+    <script src="panic-key.js"></script>
+    <script src="idle-dvd.js"></script>
+<script type="module" src="online.js"></script>
+</body>
+</html>
