@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+ <head>
+    <link rel="stylesheet" href="rightclick.css">
+    <link rel="stylesheet" href="custom-cursor.css">
+  <link href="rightclick.css" rel="stylesheet"/>
+  <link href="custom-cursor.css" rel="stylesheet"/>
+  <meta charset="utf-8"/>
+  <title>
+   Random Siege OP
+  </title>
+  <link href="/favicon.jpg?v2" rel="icon" type="image/jpg">
+   <link href="https://fonts.googleapis.com" rel="preconnect"/>
+   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet"/>
+   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&amp;display=swap" rel="stylesheet"/>
+   <!--Google website stuff-->
+   <meta content="I made this website at school bc I wanted to play games" name="description"/>
+   <meta content="Games,nintendoboi2,github.io,nintendoboi22,github website, github game" name="keywords"/>
+   <meta content="Nintendoboi2" name="author"/>
+   <meta content="ca-pub-8650522196901208" name="google-adsense-account"/>
+   <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+   <script src="https://randojs.com/1.0.0.js">
+   </script>
+   <style>
+    body {
+            background-color: #1a1a1a;
+            font-family: 'Oxanium', sans-serif;
+        }
+
+        /*https://getcssscan.com/css-buttons-examples#:~:text=by-,Typedream,-Button%2035*/
+        .cool-button {
+            background: #5E5DF0;
+            border-radius: 999px;
+            box-shadow: #5E5DF0 0 10px 20px -10px;
+            box-sizing: border-box;
+            color: #FFFFFF;
+            cursor: pointer;
+            font-family: Inter, Helvetica, "Apple Color Emoji", "Segoe UI Emoji", NotoColorEmoji, "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", EmojiSymbols, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 24px;
+            opacity: 1;
+            outline: 0 solid transparent;
+            padding: 8px 18px;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+            width: fit-content;
+            word-break: break-word;
+            border: 0;
+        }
+   </style>
+   <script>
+    const attackers = ["Striker","Sledge", "Thatcher", "Ash", "Thermite", "Twitch", "Montagne", "Glaz", "Fuze","Blitz","IQ","Buck","Blackbeard","Capitão","Hibana","Jackal","Ying","Zofia","Dokkaebi","Lion","Finka","Maverick","Nomad","Gridlock","Nøkk","Amaru","Kali","Iana","Ace","Zero","Flores","Osa","Sens","Grimm","Brava","Ram","Deimos"];
+        const defenders = ["Sentry","Smoke","Mute","Castle","Pulse","Doc","Rook","Kapkan","Tachanka","Jäger","Bandit","Frost","Valkyrie","Caveira","Echo","Mira","Lesion","Ela","Vigil","Maestro","Alibi","Clash","Kaid","Mozzie","Warden","Goyo","Wamai","Orax","Melusi","Aruni","Thunderbird","Thorn","Azami","Solis","Fenrir","Tubarão","Skopos"];
+
+        function getRandomOperator(list) {
+            return list[Math.floor(Math.random() * list.length)];
+        }
+
+        function setOperators() {
+            document.getElementById("attacker").innerText = getRandomOperator(attackers);
+            document.getElementById("defender").innerText = getRandomOperator(defenders);
+        }
+   </script>
+  </link>
+  <script src="app-presence.js">
+  </script>
+ </head>
+ <body onload="setOperators()">
+  <div style="text-align: center;">
+   <br/>
+   <br/>
+   <br/>
+   <h1 class="title" style="color:#aaaaaa;">
+    Random Siege Op
+   </h1>
+   <br/>
+   <br/>
+   <h2 style="color:#aaaaaa;">
+    Attacker:
+    <strong>
+     <span id="attacker">
+     </span>
+    </strong>
+    <br/>
+    <br/>
+    Defender:
+    <strong>
+     <span id="defender">
+     </span>
+    </strong>
+   </h2>
+   <br/>
+   <button class="cool-button" onclick="setOperators()" role="button">
+    New Op?
+   </button>
+  </div>
+  <script src="custom-cursor.js">
+  </script>
+  <script src="rightclick.js">
+  </script>
+  <script src="panic-key.js">
+  </script>
+  <script src="idle-dvd.js">
+  </script>
+  
+ 
+
+    <script src="custom-cursor.js"></script>
+    <script src="rightclick.js"></script>
+    <script src="panic-key.js"></script>
+    <script src="idle-dvd.js"></script>
+<script type="module" src="online.js"></script>
+</body>
+</html>
